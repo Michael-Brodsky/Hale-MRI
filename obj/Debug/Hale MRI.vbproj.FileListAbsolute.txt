@@ -11,3 +11,16 @@ C:\Users\super\source\repos\Hale MRI\bin\Debug\Hale MRI.xml
 C:\Users\super\source\repos\Hale MRI\obj\Debug\Hale MRI.exe
 C:\Users\super\source\repos\Hale MRI\obj\Debug\Hale MRI.xml
 C:\Users\super\source\repos\Hale MRI\obj\Debug\Hale MRI.pdb
+C:\Users\super\source\repos\Hale-MRI\bin\Debug\HaleMRI.accdb
+C:\Users\super\source\repos\Hale-MRI\bin\Debug\Hale MRI.exe.config
+C:\Users\super\source\repos\Hale-MRI\bin\Debug\Hale MRI.exe
+C:\Users\super\source\repos\Hale-MRI\bin\Debug\Hale MRI.pdb
+C:\Users\super\source\repos\Hale-MRI\bin\Debug\Hale MRI.xml
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.vbproj.AssemblyReference.cache
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale_MRI.HaleMri.resources
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale_MRI.Resources.resources
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.vbproj.GenerateResource.cache
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.vbproj.CoreCompileInputs.cache
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.exe
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.xml
+C:\Users\super\source\repos\Hale-MRI\obj\Debug\Hale MRI.pdb
