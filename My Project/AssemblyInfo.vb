@@ -8,17 +8,17 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("Hale MRI")>
+<Assembly: AssemblyTitle("Hale-MRI")>
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("")>
-<Assembly: AssemblyProduct("Hale MRI")>
+<Assembly: AssemblyProduct("Hale-MRI")>
 <Assembly: AssemblyCopyright("Copyright ©  2025")>
 <Assembly: AssemblyTrademark("")>
 
 <Assembly: ComVisible(False)>
 
 'The following GUID is for the ID of the typelib if this project is exposed to COM
-<Assembly: Guid("4e8ed4c9-efc9-4530-a840-23444b72f80c")>
+<Assembly: Guid("52ad3501-fa4c-46b9-a209-65c6847add4f")>
 
 ' Version information for an assembly consists of the following four values:
 '
