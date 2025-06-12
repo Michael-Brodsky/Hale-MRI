@@ -1,0 +1,88 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|c:\\users\\super\\source\\repos\\hale-mri 2.0\\libencoder\\encoderdata.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|solutionrelative:encoderdata.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|c:\\users\\super\\source\\repos\\hale-mri 2.0\\libencoder\\usdigital.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|solutionrelative:usdigital.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|c:\\users\\super\\source\\repos\\hale-mri 2.0\\libencoder\\usb4.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|solutionrelative:usb4.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|c:\\users\\super\\source\\repos\\hale-mri 2.0\\libencoder\\iencoderdata.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{EBFB7D52-E112-40AB-A960-63B6A71B11FF}|LibEncoder.vbproj|solutionrelative:iencoderdata.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "USB4.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\USB4.vb",
+              "RelativeDocumentMoniker": "USB4.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\USB4.vb*",
+              "RelativeToolTip": "USB4.vb*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-05-30T15:06:57.913Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "USDigital.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\USDigital.vb",
+              "RelativeDocumentMoniker": "USDigital.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\USDigital.vb*",
+              "RelativeToolTip": "USDigital.vb*",
+              "ViewState": "AgIAAMgAAAAAAAAAAAAqwNMAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-05-30T14:59:26.504Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EncoderData.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\EncoderData.vb",
+              "RelativeDocumentMoniker": "EncoderData.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\EncoderData.vb*",
+              "RelativeToolTip": "EncoderData.vb*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-05-30T14:58:42.623Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IEncoderData.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\IEncoderData.vb",
+              "RelativeDocumentMoniker": "IEncoderData.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI 2.0\\LibEncoder\\IEncoderData.vb*",
+              "RelativeToolTip": "IEncoderData.vb*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-05-30T14:56:54.518Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,33 @@
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\bin\Debug\net8.0\LibEncoder.deps.json
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\bin\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\bin\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfoInputs.cache
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfo.vb
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.vbproj.CoreCompileInputs.cache
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\refint\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI 2.0\LibEncoder\obj\Debug\net8.0\ref\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\bin\Debug\net8.0\LibEncoder.deps.json
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\bin\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\bin\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfoInputs.cache
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfo.vb
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.vbproj.CoreCompileInputs.cache
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\refint\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI EF\LibEncoder\obj\Debug\net8.0\ref\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\bin\Debug\net8.0\LibEncoder.deps.json
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\bin\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\bin\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfoInputs.cache
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.AssemblyInfo.vb
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.vbproj.CoreCompileInputs.cache
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\refint\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.pdb
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\ref\LibEncoder.dll
