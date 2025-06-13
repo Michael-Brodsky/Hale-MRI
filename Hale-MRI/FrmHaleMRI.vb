@@ -11,6 +11,7 @@ Public Class FrmHaleMRI
     Private mFrmJobs As FrmJobs
     Private mFrmMeasurements As FrmMeasurements
     Private mFrmVessels As FrmVessels
+    'Git commit hash: 65eb0ef
     Private Sub CmdCalibrate_Click(sender As Object, e As EventArgs) Handles cmdCalibrate.Click
         If mFrmCalibration Is Nothing Then
             mFrmCalibration = New FrmCalibration(mWorkstationEncoders)

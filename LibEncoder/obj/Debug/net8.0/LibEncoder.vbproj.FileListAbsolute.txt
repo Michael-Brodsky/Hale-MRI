@@ -31,3 +31,4 @@ C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.dll
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\refint\LibEncoder.dll
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.pdb
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\ref\LibEncoder.dll
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\Debug\net8.0\LibEncoder.sourcelink.json

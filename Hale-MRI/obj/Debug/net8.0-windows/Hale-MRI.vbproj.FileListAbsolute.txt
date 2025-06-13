@@ -308,3 +308,4 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\refint\Ha
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.pdb
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\ref\Hale-MRI.dll
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.sourcelink.json

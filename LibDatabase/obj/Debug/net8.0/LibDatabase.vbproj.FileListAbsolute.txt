@@ -40,3 +40,4 @@ C:\Users\super\source\repos\Hale-MRI\LibDatabase\obj\Debug\net8.0\refint\LibData
 C:\Users\super\source\repos\Hale-MRI\LibDatabase\obj\Debug\net8.0\LibDatabase.pdb
 C:\Users\super\source\repos\Hale-MRI\LibDatabase\obj\Debug\net8.0\LibDatabase.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\LibDatabase\obj\Debug\net8.0\ref\LibDatabase.dll
+C:\Users\super\source\repos\Hale-MRI\LibDatabase\obj\Debug\net8.0\LibDatabase.sourcelink.json
