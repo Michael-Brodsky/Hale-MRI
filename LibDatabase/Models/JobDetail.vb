@@ -16,7 +16,7 @@ Namespace Models
 
         Public Property PerformedBy As Integer?
 
-        Public Property [Class] As String
+        Public Property ToleranceClass As String
 
         Public Property Rotation As String
 
@@ -40,8 +40,6 @@ Namespace Models
 
         Public Overridable Property CellMeasurements As ICollection(Of CellMeasurement) = New List(Of CellMeasurement)()
 
-        Public Overridable Property ClassNavigation As Tolerance
-
         Public Overridable Property CupNavigation As Cup
 
         Public Overridable Property ExtremeMeasurements As ICollection(Of ExtremeMeasurement) = New List(Of ExtremeMeasurement)()
@@ -57,5 +55,7 @@ Namespace Models
         Public Overridable Property RotationNavigation As Rotation
 
         Public Overridable Property TeExclusionNavigation As Exclusion
+
+        Public Overridable Property ToleranceClassNavigation As Tolerance
     End Class
 End Namespace

@@ -102,6 +102,10 @@
             "System.Data.OleDb": {
               "target": "Package",
               "version": "[8.0.1, )"
+            },
+            "WinForms.DataVisualization": {
+              "target": "Package",
+              "version": "[1.10.0, )"
             }
           },
           "imports": [

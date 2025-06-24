@@ -41,21 +41,18 @@ Partial Class FrmMeasurements
         cmdDepth = New Button()
         cmdMeasureAll = New Button()
         cmdZero = New Button()
-        StatusStrip1 = New StatusStrip()
-        WorkstationLabel = New ToolStripStatusLabel()
-        EncodersSplitButton = New ToolStripSplitButton()
-        InitializeToolStripMenuItem = New ToolStripMenuItem()
-        ResetAngleToolStripMenuItem = New ToolStripMenuItem()
-        ResetDepthToolStripMenuItem = New ToolStripMenuItem()
-        ResetRadiusToolStripMenuItem = New ToolStripMenuItem()
-        StatusLabel = New ToolStripStatusLabel()
-        StatusStrip1.SuspendLayout()
+        cmdCalibrationFile = New Button()
+        cmdExportScanData = New Button()
+        cmdImportScanData = New Button()
+        labScanDataFile = New Label()
+        txtScanDataFile = New TextBox()
+        WorkstationStatusStrip1 = New WorkstationStatusStrip()
         SuspendLayout()
         ' 
         ' comboBlade
         ' 
         comboBlade.FormattingEnabled = True
-        comboBlade.Location = New Point(261, 103)
+        comboBlade.Location = New Point(270, 225)
         comboBlade.Name = "comboBlade"
         comboBlade.Size = New Size(107, 40)
         comboBlade.TabIndex = 0
@@ -63,7 +60,7 @@ Partial Class FrmMeasurements
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(31, 106)
+        Label1.Location = New Point(40, 228)
         Label1.Name = "Label1"
         Label1.Size = New Size(73, 32)
         Label1.TabIndex = 1
@@ -71,7 +68,7 @@ Partial Class FrmMeasurements
         ' 
         ' txtAngle
         ' 
-        txtAngle.Location = New Point(263, 232)
+        txtAngle.Location = New Point(272, 354)
         txtAngle.Name = "txtAngle"
         txtAngle.Size = New Size(346, 39)
         txtAngle.TabIndex = 2
@@ -79,7 +76,7 @@ Partial Class FrmMeasurements
         ' labAngle
         ' 
         labAngle.AutoSize = True
-        labAngle.Location = New Point(33, 239)
+        labAngle.Location = New Point(42, 361)
         labAngle.Name = "labAngle"
         labAngle.Size = New Size(76, 32)
         labAngle.TabIndex = 3
@@ -88,7 +85,7 @@ Partial Class FrmMeasurements
         ' labDepth
         ' 
         labDepth.AutoSize = True
-        labDepth.Location = New Point(33, 284)
+        labDepth.Location = New Point(42, 406)
         labDepth.Name = "labDepth"
         labDepth.Size = New Size(80, 32)
         labDepth.TabIndex = 5
@@ -96,7 +93,7 @@ Partial Class FrmMeasurements
         ' 
         ' txtDepth
         ' 
-        txtDepth.Location = New Point(263, 277)
+        txtDepth.Location = New Point(272, 399)
         txtDepth.Name = "txtDepth"
         txtDepth.Size = New Size(346, 39)
         txtDepth.TabIndex = 4
@@ -104,7 +101,7 @@ Partial Class FrmMeasurements
         ' labRadius
         ' 
         labRadius.AutoSize = True
-        labRadius.Location = New Point(33, 329)
+        labRadius.Location = New Point(42, 451)
         labRadius.Name = "labRadius"
         labRadius.Size = New Size(84, 32)
         labRadius.TabIndex = 7
@@ -112,7 +109,7 @@ Partial Class FrmMeasurements
         ' 
         ' txtRadius
         ' 
-        txtRadius.Location = New Point(263, 322)
+        txtRadius.Location = New Point(272, 444)
         txtRadius.Name = "txtRadius"
         txtRadius.Size = New Size(346, 39)
         txtRadius.TabIndex = 6
@@ -120,7 +117,7 @@ Partial Class FrmMeasurements
         ' labRadiusPercent
         ' 
         labRadiusPercent.AutoSize = True
-        labRadiusPercent.Location = New Point(33, 424)
+        labRadiusPercent.Location = New Point(42, 546)
         labRadiusPercent.Name = "labRadiusPercent"
         labRadiusPercent.Size = New Size(170, 32)
         labRadiusPercent.TabIndex = 9
@@ -128,7 +125,7 @@ Partial Class FrmMeasurements
         ' 
         ' txtRadiusPercent
         ' 
-        txtRadiusPercent.Location = New Point(263, 417)
+        txtRadiusPercent.Location = New Point(272, 539)
         txtRadiusPercent.Name = "txtRadiusPercent"
         txtRadiusPercent.Size = New Size(346, 39)
         txtRadiusPercent.TabIndex = 8
@@ -136,7 +133,7 @@ Partial Class FrmMeasurements
         ' labDiameter
         ' 
         labDiameter.AutoSize = True
-        labDiameter.Location = New Point(33, 469)
+        labDiameter.Location = New Point(42, 591)
         labDiameter.Name = "labDiameter"
         labDiameter.Size = New Size(112, 32)
         labDiameter.TabIndex = 11
@@ -144,7 +141,7 @@ Partial Class FrmMeasurements
         ' 
         ' txtDiameter
         ' 
-        txtDiameter.Location = New Point(263, 462)
+        txtDiameter.Location = New Point(272, 584)
         txtDiameter.Name = "txtDiameter"
         txtDiameter.Size = New Size(346, 39)
         txtDiameter.TabIndex = 10
@@ -152,7 +149,7 @@ Partial Class FrmMeasurements
         ' labWheelPitch
         ' 
         labWheelPitch.AutoSize = True
-        labWheelPitch.Location = New Point(33, 514)
+        labWheelPitch.Location = New Point(42, 636)
         labWheelPitch.Name = "labWheelPitch"
         labWheelPitch.Size = New Size(141, 32)
         labWheelPitch.TabIndex = 13
@@ -160,14 +157,14 @@ Partial Class FrmMeasurements
         ' 
         ' txtWheelPitch
         ' 
-        txtWheelPitch.Location = New Point(263, 507)
+        txtWheelPitch.Location = New Point(272, 629)
         txtWheelPitch.Name = "txtWheelPitch"
         txtWheelPitch.Size = New Size(346, 39)
         txtWheelPitch.TabIndex = 12
         ' 
         ' cmdAngle
         ' 
-        cmdAngle.Location = New Point(643, 231)
+        cmdAngle.Location = New Point(652, 353)
         cmdAngle.Name = "cmdAngle"
         cmdAngle.Size = New Size(152, 40)
         cmdAngle.TabIndex = 14
@@ -176,7 +173,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdRadius
         ' 
-        cmdRadius.Location = New Point(643, 321)
+        cmdRadius.Location = New Point(652, 443)
         cmdRadius.Name = "cmdRadius"
         cmdRadius.Size = New Size(152, 40)
         cmdRadius.TabIndex = 15
@@ -185,7 +182,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdDepth
         ' 
-        cmdDepth.Location = New Point(643, 276)
+        cmdDepth.Location = New Point(652, 398)
         cmdDepth.Name = "cmdDepth"
         cmdDepth.Size = New Size(152, 40)
         cmdDepth.TabIndex = 16
@@ -194,7 +191,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdMeasureAll
         ' 
-        cmdMeasureAll.Location = New Point(643, 185)
+        cmdMeasureAll.Location = New Point(652, 307)
         cmdMeasureAll.Name = "cmdMeasureAll"
         cmdMeasureAll.Size = New Size(152, 40)
         cmdMeasureAll.TabIndex = 17
@@ -203,78 +200,77 @@ Partial Class FrmMeasurements
         ' 
         ' cmdZero
         ' 
-        cmdZero.Location = New Point(643, 367)
+        cmdZero.Location = New Point(652, 489)
         cmdZero.Name = "cmdZero"
         cmdZero.Size = New Size(152, 40)
         cmdZero.TabIndex = 18
         cmdZero.Text = "Zero"
         cmdZero.UseVisualStyleBackColor = True
         ' 
-        ' StatusStrip1
+        ' cmdCalibrationFile
         ' 
-        StatusStrip1.ImageScalingSize = New Size(32, 32)
-        StatusStrip1.Items.AddRange(New ToolStripItem() {WorkstationLabel, EncodersSplitButton, StatusLabel})
-        StatusStrip1.Location = New Point(0, 898)
-        StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Size = New Size(1971, 42)
-        StatusStrip1.TabIndex = 19
-        StatusStrip1.Text = "StatusStrip1"
+        cmdCalibrationFile.Location = New Point(1384, 31)
+        cmdCalibrationFile.Name = "cmdCalibrationFile"
+        cmdCalibrationFile.Size = New Size(65, 38)
+        cmdCalibrationFile.TabIndex = 38
+        cmdCalibrationFile.UseVisualStyleBackColor = True
         ' 
-        ' WorkstationLabel
+        ' cmdExportScanData
         ' 
-        WorkstationLabel.Margin = New Padding(29, 6, 26, 4)
-        WorkstationLabel.Name = "WorkstationLabel"
-        WorkstationLabel.Size = New Size(141, 32)
-        WorkstationLabel.Text = "Workstation"
-        WorkstationLabel.ToolTipText = "Workstation Name"
+        cmdExportScanData.Enabled = False
+        cmdExportScanData.Location = New Point(180, 101)
+        cmdExportScanData.Name = "cmdExportScanData"
+        cmdExportScanData.Size = New Size(134, 45)
+        cmdExportScanData.TabIndex = 37
+        cmdExportScanData.UseVisualStyleBackColor = True
         ' 
-        ' EncodersSplitButton
+        ' cmdImportScanData
         ' 
-        EncodersSplitButton.DisplayStyle = ToolStripItemDisplayStyle.Image
-        EncodersSplitButton.DropDownItems.AddRange(New ToolStripItem() {InitializeToolStripMenuItem, ResetAngleToolStripMenuItem, ResetDepthToolStripMenuItem, ResetRadiusToolStripMenuItem})
-        EncodersSplitButton.ImageTransparentColor = Color.Magenta
-        EncodersSplitButton.Margin = New Padding(0, 4, 10, 0)
-        EncodersSplitButton.Name = "EncodersSplitButton"
-        EncodersSplitButton.Size = New Size(27, 38)
-        EncodersSplitButton.Text = "Encoders"
+        cmdImportScanData.Enabled = False
+        cmdImportScanData.Location = New Point(40, 101)
+        cmdImportScanData.Name = "cmdImportScanData"
+        cmdImportScanData.Size = New Size(134, 45)
+        cmdImportScanData.TabIndex = 36
+        cmdImportScanData.UseVisualStyleBackColor = True
         ' 
-        ' InitializeToolStripMenuItem
+        ' labScanDataFile
         ' 
-        InitializeToolStripMenuItem.Name = "InitializeToolStripMenuItem"
-        InitializeToolStripMenuItem.Size = New Size(277, 44)
-        InitializeToolStripMenuItem.Text = "Initialize"
+        labScanDataFile.AutoSize = True
+        labScanDataFile.Location = New Point(40, 38)
+        labScanDataFile.Name = "labScanDataFile"
+        labScanDataFile.Size = New Size(164, 32)
+        labScanDataFile.TabIndex = 35
+        labScanDataFile.Text = "Scan Data File"
         ' 
-        ' ResetAngleToolStripMenuItem
+        ' txtScanDataFile
         ' 
-        ResetAngleToolStripMenuItem.Name = "ResetAngleToolStripMenuItem"
-        ResetAngleToolStripMenuItem.Size = New Size(277, 44)
-        ResetAngleToolStripMenuItem.Text = "Reset Angle"
+        txtScanDataFile.Location = New Point(270, 31)
+        txtScanDataFile.Name = "txtScanDataFile"
+        txtScanDataFile.Size = New Size(1104, 39)
+        txtScanDataFile.TabIndex = 34
+        txtScanDataFile.Text = "C:\Hale MRI 4\ScanData.txt"
         ' 
-        ' ResetDepthToolStripMenuItem
+        ' WorkstationStatusStrip1
         ' 
-        ResetDepthToolStripMenuItem.Name = "ResetDepthToolStripMenuItem"
-        ResetDepthToolStripMenuItem.Size = New Size(277, 44)
-        ResetDepthToolStripMenuItem.Text = "Reset Depth"
-        ' 
-        ' ResetRadiusToolStripMenuItem
-        ' 
-        ResetRadiusToolStripMenuItem.Name = "ResetRadiusToolStripMenuItem"
-        ResetRadiusToolStripMenuItem.Size = New Size(277, 44)
-        ResetRadiusToolStripMenuItem.Text = "ResetRadius"
-        ' 
-        ' StatusLabel
-        ' 
-        StatusLabel.Name = "StatusLabel"
-        StatusLabel.Size = New Size(78, 32)
-        StatusLabel.Text = "Status"
-        StatusLabel.ToolTipText = "Encoder Status"
+        WorkstationStatusStrip1.Encoders = Nothing
+        WorkstationStatusStrip1.Location = New Point(12, 882)
+        WorkstationStatusStrip1.Name = "WorkstationStatusStrip1"
+        WorkstationStatusStrip1.Size = New Size(1947, 46)
+        WorkstationStatusStrip1.Status = WorkstationStatusStrip.EncoderStatus.NoEncoders
+        WorkstationStatusStrip1.TabIndex = 39
+        WorkstationStatusStrip1.WorkstationName = "WorkstationNameLabel"
         ' 
         ' FrmMeasurements
         ' 
         AutoScaleDimensions = New SizeF(13F, 32F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1971, 940)
-        Controls.Add(StatusStrip1)
+        Controls.Add(WorkstationStatusStrip1)
+        Controls.Add(cmdCalibrationFile)
+        Controls.Add(cmdExportScanData)
+        Controls.Add(cmdImportScanData)
+        Controls.Add(labScanDataFile)
+        Controls.Add(txtScanDataFile)
         Controls.Add(cmdZero)
         Controls.Add(cmdMeasureAll)
         Controls.Add(cmdDepth)
@@ -296,8 +292,6 @@ Partial Class FrmMeasurements
         Controls.Add(comboBlade)
         Name = "FrmMeasurements"
         Text = "Measurements"
-        StatusStrip1.ResumeLayout(False)
-        StatusStrip1.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -321,12 +315,10 @@ Partial Class FrmMeasurements
     Friend WithEvents cmdDepth As Button
     Friend WithEvents cmdMeasureAll As Button
     Friend WithEvents cmdZero As Button
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents WorkstationLabel As ToolStripStatusLabel
-    Friend WithEvents EncodersSplitButton As ToolStripSplitButton
-    Friend WithEvents InitializeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetAngleToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetDepthToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetRadiusToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents StatusLabel As ToolStripStatusLabel
+    Friend WithEvents cmdCalibrationFile As Button
+    Friend WithEvents cmdExportScanData As Button
+    Friend WithEvents cmdImportScanData As Button
+    Friend WithEvents labScanDataFile As Label
+    Friend WithEvents txtScanDataFile As TextBox
+    Friend WithEvents WorkstationStatusStrip1 As WorkstationStatusStrip
 End Class

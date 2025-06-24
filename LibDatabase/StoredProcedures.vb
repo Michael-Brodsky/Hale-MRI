@@ -2,57 +2,240 @@
 Imports LibDatabase.Contexts
 Imports Microsoft.EntityFrameworkCore
 Public Module StoredProcedures
-    Public Function QryCustomerVessels(ByVal db As HaleMRIContext, Optional ByVal customerID As Integer = 0) As List(Of Customer)
-        ' This query retrieves customers and includes their associated vessels.
-        If customerID > 0 Then
-            ' If a specific customer ID is provided, filter by that ID.
-            Return db.Customers.Include(Function(c) c.Vessels).Where(Function(c) c.Id = customerID).ToList()
-        Else
-            ' If no specific customer ID is provided, retrieve all customers with their vessels.
-            Return db.Customers.Include(Function(c) c.Vessels).ToList()
-        End If
+    Public Function FormatString(ByVal str As String) As FormattableString
+        'Returns a FormattableString from the given string that can be
+        'used in LINQ queries taking string variables as parameters.
+        'Plain string variables cannot be used in LINQ queries because
+        'they get mangled by the SQL translator and compiler and will
+        'not work as expected or throw an exception. Ostensibly, this
+        'is to prevent SQL injection attacks, but it also prevents 
+        'the use of string variables in LINQ queries.
+        Return $"{str}"
     End Function
-    Public Function QryVesselJobs(ByVal db As HaleMRIContext, Optional ByVal vesselID As Integer = 0) As List(Of Vessel)
-        ' This query retrieves vessels and includes their associated jobs.
-        If vesselID > 0 Then
-            ' If a specific vessel ID is provided, filter by that ID.
-            Return db.Vessels.Include(Function(v) v.Jobs).Where(Function(v) v.Id = vesselID).ToList()
-        Else
-            ' If no specific vessel ID is provided, retrieve all vessels with their jobs.
-            Return db.Vessels.Include(Function(v) v.Jobs).ToList()
-        End If
+#Region "Customer Queries"
+    Public Function QryCustomerNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
+        'Returns TRUE if a customer with the specified name exists in the database,
+        'else returns FALSE.
+        Return db.Customers _
+            .Any(Function(c) c.CustomerName = customerName.ToString)
     End Function
-    Public Function QryJobJobDetails(ByVal db As HaleMRIContext, Optional ByVal jobID As Integer = 0) As List(Of Job)
-        ' This query retrieves jobs and includes their associated job details.
-        If jobID > 0 Then
-            ' If a specific job ID is provided, filter by that ID.
-            Return db.Jobs.Include(Function(j) j.JobDetails).Where(Function(j) j.Id = jobID).ToList()
-        Else
-            Return db.Jobs.Include(Function(j) j.JobDetails).ToList()
-        End If
+    Public Function QryCustomerIdExists(ByVal db As HaleMRIContext, ByVal customerID As Integer) As Boolean
+        'Returns TRUE if a customer with the specified ID exists in the database,
+        'else returns FALSE.
+        Return db.Customers _
+            .Any(Function(c) c.Id = customerID.ToString)
     End Function
-    Public Function QryJobDetailMeasurements(ByVal db As HaleMRIContext, Optional ByVal jobdetailID As Integer = 0) As List(Of JobDetail)
-        ' This query retrieves job details and includes their associated measurements.
-        If jobdetailID > 0 Then
-            ' If a specific job detail ID is provided, filter by that ID.
-            Return db.JobDetails.Where(Function(jd) jd.Id = jobdetailID) _
-                .Include(Function(jd) jd.CellMeasurements) _
-                .Include(Function(jd) jd.RadiusMeasurements) _
-                .Include(Function(jd) jd.ExtremeMeasurements).ToList()
-        Else
-            ' If no specific job detail ID is provided, retrieve all job details with their measurements.
-            Return db.JobDetails _
-                .Include(Function(jd) jd.CellMeasurements) _
-                .Include(Function(jd) jd.RadiusMeasurements) _
-                .Include(Function(jd) jd.ExtremeMeasurements).ToList()
-        End If
+    Public Function QryCustomersByName(ByRef db As HaleMRIContext, Optional ByVal customerName As FormattableString = Nothing, Optional ByVal includeVessels As Boolean = False) As List(Of Customer)
+        ' This query retrieves customers optionally by name and optionally includes their associated vessels.
+        Dim qry = From c In db.Customers
+                  Select c
+        If includeVessels Then qry = qry.Include(Function(c) c.Vessels)
+        If customerName IsNot Nothing Then qry = qry.Where(Function(c) c.CustomerName = customerName.ToString)
+        Return qry.ToList()
     End Function
-    Public Function QryWorkstationCalibration(ByVal db As HaleMRIContext, ByVal hostName As String) As Workstation
-        ' This query retrieves the named workstation's calibration data.
-        Return QryWorkstations(db).Find(Function(ws) ws.Hostname = hostName)
+    Public Function QryCustomersByID(ByRef db As HaleMRIContext, Optional ByVal customerID As Integer = 0, Optional ByVal includeVessels As Boolean = False) As List(Of Customer)
+        ' This query retrieves customers optionally by id and optionally includes their associated vessels.
+        Dim qry = From c In db.Customers
+                  Select c
+        If includeVessels Then qry = qry.Include(Function(c) c.Vessels)
+        If customerID <> 0 Then qry = qry.Where(Function(c) c.Id = customerID.ToString)
+        Return qry.ToList()
+    End Function
+#End Region
+#Region "Vessel Queries"
+    Public Function QryVesselNameExists(ByRef db As HaleMRIContext, ByVal vesselName As FormattableString) As Boolean
+        ' Returns TRUE if a vessel with the specified name exists in the database,
+        ' else returns FALSE.
+        Return db.Vessels _
+            .Any(Function(v) v.VesselName = vesselName.ToString)
+    End Function
+    Public Function QryVesselIdExists(ByRef db As HaleMRIContext, ByVal vesselID As Integer) As Boolean
+        ' Returns TRUE if a vessel with the specified ID exists in the database,
+        ' else returns FALSE.
+        Return db.Vessels _
+            .Any(Function(v) v.Id = vesselID.ToString)
+    End Function
+    Public Function QryEmployeeNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
+        'Returns TRUE if an employee with the specified name exists in the database,
+        'else returns FALSE.
+        Return db.Employees _
+            .Any(Function(c) c.EmployeeName = customerName.ToString)
+    End Function
+    Public Function QryVesselsByName(ByRef db As HaleMRIContext, Optional ByVal vesselName As FormattableString = Nothing, Optional ByVal includeJobs As Boolean = False) As List(Of Vessel)
+        ' This query retrieves vessels optionally by name and optionally includes their associated jobs.
+        Dim qry = From v In db.Vessels
+                  Select v
+        If includeJobs Then qry = qry.Include(Function(v) v.Jobs)
+        If vesselName IsNot Nothing Then qry = qry.Where(Function(v) v.VesselName = vesselName.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryVesselsById(ByRef db As HaleMRIContext, Optional ByVal vesselID As Integer = 0, Optional ByVal includeJobs As Boolean = False) As List(Of Vessel)
+        ' This query retrieves vessels optionally by id and optionally includes their associated jobs.
+        Dim qry = From v In db.Vessels
+                  Select v
+        If includeJobs Then qry = qry.Include(Function(v) v.Jobs)
+        If vesselID <> 0 Then qry = qry.Where(Function(v) v.Id = vesselID.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryVesselsByCustomerName(ByRef db As HaleMRIContext, Optional ByVal customerName As FormattableString = Nothing, Optional ByVal includeJobs As Boolean = False) As List(Of Vessel)
+        ' This query retrieves vessels optionally by customer name and optionally includes their associated jobs.
+        Dim qry = From v In db.Vessels
+                  Select v
+        If includeJobs Then qry = qry.Include(Function(v) v.Jobs)
+        If customerName IsNot Nothing Then qry = qry.Where(Function(v) v.Customer.CustomerName = customerName.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryVesselsByCustomerId(ByRef db As HaleMRIContext, Optional ByVal customerID As Integer = 0, Optional ByVal includeJobs As Boolean = False) As List(Of Vessel)
+        ' This query retrieves vessels optionally by customer id and optionally includes their associated jobs.
+        Dim qry = From v In db.Vessels
+                  Select v
+        If includeJobs Then qry = qry.Include(Function(v) v.Jobs)
+        If customerID <> 0 Then qry = qry.Where(Function(v) v.CustomerId = customerID.ToString)
+        Return qry.ToList()
+    End Function
+#End Region
+#Region "Job Queries"
+    Public Function QryJobNumberExists(ByRef db As HaleMRIContext, ByVal jobNumber As Integer) As Boolean
+        ' Returns TRUE if a job with the specified job number exists in the database,
+        ' else returns FALSE.
+        Return db.Jobs _
+            .Any(Function(j) j.JobNumber = jobNumber.ToString)
+    End Function
+    Public Function QryJobIdExists(ByRef db As HaleMRIContext, ByVal jobID As Integer) As Boolean
+        ' Returns TRUE if a job with the specified ID exists in the database,
+        ' else returns FALSE.
+        Return db.Jobs _
+            .Any(Function(j) j.Id = jobID.ToString)
+    End Function
+    Public Function QryJobsByVesselId(ByRef db As HaleMRIContext, Optional ByVal vesselID As Integer = 0, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by vessel id and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If vesselID <> 0 Then qry = qry.Where(Function(j) j.VesselId = vesselID.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobsByVesselName(ByRef db As HaleMRIContext, Optional ByVal vesselName As FormattableString = Nothing, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by vessel name and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If vesselName IsNot Nothing Then qry = qry.Where(Function(j) j.Vessel.VesselName = vesselName.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobsByJobNumber(ByRef db As HaleMRIContext, Optional ByVal jobNumber As Integer = 0, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by job number and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If jobNumber <> 0 Then qry = qry.Where(Function(j) j.JobNumber = jobNumber.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobsById(ByRef db As HaleMRIContext, Optional ByVal jobID As Integer = 0, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by id and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If jobID <> 0 Then qry = qry.Where(Function(j) j.Id = jobID.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobsByCustomerName(ByRef db As HaleMRIContext, Optional ByVal customerName As FormattableString = Nothing, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by customer name and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If customerName IsNot Nothing Then qry = qry.Where(Function(j) j.Vessel.Customer.CustomerName = customerName.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobsByCustomerId(ByRef db As HaleMRIContext, Optional ByVal customerID As Integer = 0, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
+        ' This query retrieves jobs optionally by customer id and optionally includes their associated job details.
+        Dim qry = From j In db.Jobs
+                  Select j
+        If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
+        If customerID <> 0 Then qry = qry.Where(Function(j) j.Vessel.CustomerId = customerID.ToString)
+        Return qry.ToList()
+    End Function
+#End Region
+#Region "Job Detail Queries"
+    Public Function QryJobDetailsByJobId(ByRef db As HaleMRIContext, Optional ByVal jobId As Integer = 0, Optional ByVal includeMeasurements As Boolean = False) As List(Of JobDetail)
+        ' This query retrieves job details optionally by job id number and optionally includes their associated measurements.
+        Dim qry = From jd In db.JobDetails
+                  Select jd
+        If includeMeasurements Then
+            qry = qry.Include(Function(jd) jd.CellMeasurements) _
+                     .Include(Function(jd) jd.ExtremeMeasurements) _
+                     .Include(Function(jd) jd.RadiusMeasurements)
+        End If
+        If jobId <> 0 Then qry = qry.Where(Function(jd) jd.JobId = jobId.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobDetailsById(ByRef db As HaleMRIContext, Optional ByVal jobDetailID As Integer = 0, Optional ByVal includeMeasurements As Boolean = False) As List(Of JobDetail)
+        ' This query retrieves job details optionally by id and optionally includes their associated measurements.
+        Dim qry = From jd In db.JobDetails
+                  Select jd
+        If includeMeasurements Then
+            qry = qry.Include(Function(jd) jd.CellMeasurements) _
+                     .Include(Function(jd) jd.ExtremeMeasurements) _
+                     .Include(Function(jd) jd.RadiusMeasurements)
+        End If
+        If jobDetailID <> 0 Then qry = qry.Where(Function(jd) jd.Id = jobDetailID.ToString)
+        Return qry.ToList()
+    End Function
+    Public Function QryJobDetailsByJobNumber(ByRef db As HaleMRIContext, Optional ByVal jobNumber As Integer = 0, Optional ByVal includeMeasurements As Boolean = False) As List(Of JobDetail)
+        ' This query retrieves job details optionally by job number and optionally includes their associated measurements.
+        Dim qry = From jd In db.JobDetails
+                  Select jd
+        If includeMeasurements Then
+            qry = qry.Include(Function(jd) jd.CellMeasurements) _
+                     .Include(Function(jd) jd.ExtremeMeasurements) _
+                     .Include(Function(jd) jd.RadiusMeasurements)
+        End If
+        If jobNumber <> 0 Then qry = qry.Where(Function(jd) jd.Job.JobNumber = jobNumber.ToString)
+        Return qry.ToList()
+    End Function
+#End Region
+#Region "Workstation Queries"
+    Public Function QryWorkstationCalibration(ByVal db As HaleMRIContext, ByVal hostName As FormattableString) As Workstation
+        ' This query retrieves the named workstation (which consists of calibration data).
+        Return db.Workstations.FirstOrDefault(Function(ws) ws.Hostname = hostName.ToString)
     End Function
     Public Function QryWorkstations(ByVal db As HaleMRIContext) As List(Of Workstation)
         ' This query retrieves all workstations.
         Return db.Workstations.ToList()
     End Function
+#End Region
+    Private Sub Test()
+        Using db As New HaleMRIContext
+            'Dim c As String = "Mr. Dude"
+            'Dim ci As Integer = 5
+            'Dim v As String = "Boat XXX"
+            'Dim vi As Integer = 5
+            'Dim jn As Integer = 12345
+            Dim ji As Integer = 1
+            'Dim ce1 As Boolean = QryCustomerNameExists(db, FormatString(c))
+            'Dim ce2 As Boolean = QryCustomerNameExists(db, FormatString("Mr. Dude"))
+            'Dim ce3 As Boolean = QryCustomerIdExists(db, ci)
+            'Dim ce4 As Boolean = QryCustomerIdExists(db, 5)
+            'Dim c1 As List(Of Customer) = QryCustomersByName(db, FormatString(c), True)
+            'Dim c2 As List(Of Customer) = QryCustomersByID(db, ci, True)
+            'Dim c3 As List(Of Customer) = QryCustomersByName(db, FormatString("Mr. Dude"), True)
+            'Dim c4 As List(Of Customer) = QryCustomersByID(db, 5, True)
+            'Dim w As Workstation = QryWorkstationCalibration(db, FormatString(My.Computer.Name))
+            'Dim v1 As List(Of Vessel) = QryVesselsByName(db, FormatString(v), True)
+            'Dim v2 As List(Of Vessel) = QryVesselsById(db, vi, True)
+            'Dim v3 As List(Of Vessel) = QryVesselsByName(db, FormatString("Boat 42"), True)
+            'Dim v4 As List(Of Vessel) = QryVesselsById(db, 5, True)
+            'Dim v5 As List(Of Vessel) = QryVesselsByCustomerName(db, FormatString(c), True)
+            'Dim v6 As List(Of Vessel) = QryVesselsByCustomerId(db, ci, True)
+            'Dim j1 As List(Of Job) = QryJobsByJobNumber(db, jn, True)
+            'Dim j2 As List(Of Job) = QryJobsByJobNumber(db, 12345, True)
+            'Dim j3 As List(Of Job) = QryJobsById(db, ji, True)
+            'Dim j4 As List(Of Job) = QryJobsById(db, 1, True)
+            'Dim j5 As List(Of Job) = QryJobsByVesselId(db, vi, True)
+            'Dim j6 As List(Of Job) = QryJobsByVesselName(db, FormatString(v), True)
+            'Dim jd1 As List(Of JobDetail) = QryJobDetailsByJobNumber(db, jn, True)
+            Dim jd2 As List(Of JobDetail) = QryJobDetailsByJobId(db, ji, True)
+            Debug.Print(db.Customers.Count)
+        End Using
+    End Sub
 End Module

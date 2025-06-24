@@ -309,3 +309,5 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\ref\Hale-MRI.dll
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale-MRI.sourcelink.json
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale_MRI.Resources.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\Debug\net8.0-windows\Hale_MRI.WorkstationStatusStrip.resources

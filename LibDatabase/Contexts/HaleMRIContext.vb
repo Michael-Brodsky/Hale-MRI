@@ -246,6 +246,10 @@ Namespace Contexts
                     entity.Property(Function(e) e.Style).HasMaxLength(255)
                     entity.Property(Function(e) e.VesselId).HasColumnName("Vessel ID")
 
+                    entity.HasOne(Function(d) d.BladesNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.Blades).
+                        HasConstraintName("~BladesJobs")
+
                     entity.HasOne(Function(d) d.InspectedByNavigation).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.InspectedBy).
                         HasConstraintName("EmployeesJobs")
@@ -253,6 +257,14 @@ Namespace Contexts
                     entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.ManufacturerId).
                         HasConstraintName("ManufacturersJobs")
+
+                    entity.HasOne(Function(d) d.MaterialNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.Material).
+                        HasConstraintName("~MaterialsJobs")
+
+                    entity.HasOne(Function(d) d.StyleNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.Style).
+                        HasConstraintName("~StylesJobs")
 
                     entity.HasOne(Function(d) d.Vessel).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.VesselId).
@@ -278,7 +290,6 @@ Namespace Contexts
                         HasColumnType("counter").
                         HasColumnName("ID")
                     entity.Property(Function(e) e.Bore).HasMaxLength(9)
-                    entity.Property(Function(e) e.[Class]).HasMaxLength(4)
                     entity.Property(Function(e) e.Dar).HasColumnName("DAR")
                     entity.Property(Function(e) e.Description).HasMaxLength(16)
                     entity.Property(Function(e) e.DesiredPitch).HasColumnName("Desired Pitch")
@@ -292,11 +303,10 @@ Namespace Contexts
                     entity.Property(Function(e) e.Rotation).HasMaxLength(1)
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
                     entity.Property(Function(e) e.TeExclusion).HasColumnName("TE Exclusion")
+                    entity.Property(Function(e) e.ToleranceClass).
+                        HasMaxLength(4).
+                        HasColumnName("Tolerance Class")
                     entity.Property(Function(e) e.WheelPitch).HasColumnName("Wheel Pitch")
-
-                    entity.HasOne(Function(d) d.ClassNavigation).WithMany(Function(p) p.JobDetails).
-                        HasForeignKey(Function(d) d.Class).
-                        HasConstraintName("~ClassesPropellers")
 
                     entity.HasOne(Function(d) d.CupNavigation).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.Cup).
@@ -321,6 +331,10 @@ Namespace Contexts
                     entity.HasOne(Function(d) d.TeExclusionNavigation).WithMany(Function(p) p.JobDetailTeExclusionNavigations).
                         HasForeignKey(Function(d) d.TeExclusion).
                         HasConstraintName("~ExclusionsPropellers1")
+
+                    entity.HasOne(Function(d) d.ToleranceClassNavigation).WithMany(Function(p) p.JobDetails).
+                        HasForeignKey(Function(d) d.ToleranceClass).
+                        HasConstraintName("~ClassesPropellers")
                 End Sub)
 
             modelBuilder.Entity(Of Manufacturer)(

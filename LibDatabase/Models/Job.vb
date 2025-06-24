@@ -32,11 +32,17 @@ Namespace Models
 
         Public Property Blades As Short?
 
+        Public Overridable Property BladesNavigation As Blade
+
         Public Overridable Property InspectedByNavigation As Employee
 
         Public Overridable Property JobDetails As ICollection(Of JobDetail) = New List(Of JobDetail)()
 
         Public Overridable Property Manufacturer As Manufacturer
+
+        Public Overridable Property MaterialNavigation As Material
+
+        Public Overridable Property StyleNavigation As Style
 
         Public Overridable Property Vessel As Vessel
     End Class

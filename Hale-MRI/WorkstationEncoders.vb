@@ -2,7 +2,6 @@
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
-Imports Microsoft.EntityFrameworkCore
 Public Class WorkstationEncoders
     ' This class encapsulates the encoder hardware and workstation calibration data
     ' and performs routine initialization.
@@ -28,15 +27,15 @@ Public Class WorkstationEncoders
         End Set
     End Property
     Public Sub New()
-        ' Constructor retrieves the workstation calibration data and initializes the encoders
+        ' Constructor retrieves the workstation calibration data and initializes the USDigital encoders
         mEncoders = New EncoderHardware(New USDigital())
         Using dbContext As New HaleMRIContext()
-            Me.Workstation = QryWorkstationCalibration(dbContext, My.Computer.Name)
+            Me.Workstation = QryWorkstationCalibration(dbContext, FormatString(My.Computer.Name))
             Me.PollingInterval = dbContext.Settings.FirstOrDefault().EncoderCalibrationSampleRate
         End Using
     End Sub
     Private Sub InitializeEncoders()
-        ' Copy the workstation calibration data to the encoders
+        ' Copy the workstation calibration data to the encoder calibration properties.
         If mWorkstation IsNot Nothing AndAlso mEncoders IsNot Nothing Then
             mEncoders.AngleCalibration = mWorkstation.AngleCalibration
             mEncoders.DepthCalibration = mWorkstation.DepthCalibration
