@@ -12,6 +12,7 @@ Public Module StoredProcedures
         'the use of string variables in LINQ queries.
         Return $"{str}"
     End Function
+
 #Region "Customer Queries"
     Public Function QryCustomerNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
         'Returns TRUE if a customer with the specified name exists in the database,
@@ -31,7 +32,7 @@ Public Module StoredProcedures
                   Select c
         If includeVessels Then qry = qry.Include(Function(c) c.Vessels)
         If customerName IsNot Nothing Then qry = qry.Where(Function(c) c.CustomerName = customerName.ToString)
-        Return qry.ToList()
+        Return qry.AsNoTracking.ToList()
     End Function
     Public Function QryCustomersByID(ByRef db As HaleMRIContext, Optional ByVal customerID As Integer = 0, Optional ByVal includeVessels As Boolean = False) As List(Of Customer)
         ' This query retrieves customers optionally by id and optionally includes their associated vessels.
@@ -55,11 +56,17 @@ Public Module StoredProcedures
         Return db.Vessels _
             .Any(Function(v) v.Id = vesselID.ToString)
     End Function
-    Public Function QryEmployeeNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
+    Public Function QryEmployeeNameExists(ByVal db As HaleMRIContext, ByVal employeeName As FormattableString) As Boolean
         'Returns TRUE if an employee with the specified name exists in the database,
         'else returns FALSE.
         Return db.Employees _
-            .Any(Function(c) c.EmployeeName = customerName.ToString)
+            .Any(Function(c) c.EmployeeName = employeeName.ToString)
+    End Function
+    Public Function QryManufacturerNameExists(ByRef db As HaleMRIContext, ByVal manufacturerName As FormattableString) As Boolean
+        'Returns TRUE if a manufacturer with the specified name exists in the database,
+        'else returns FALSE.
+        Return db.Manufacturers _
+            .Any(Function(m) m.ManufacturerName = manufacturerName.ToString)
     End Function
     Public Function QryVesselsByName(ByRef db As HaleMRIContext, Optional ByVal vesselName As FormattableString = Nothing, Optional ByVal includeJobs As Boolean = False) As List(Of Vessel)
         ' This query retrieves vessels optionally by name and optionally includes their associated jobs.
@@ -121,7 +128,7 @@ Public Module StoredProcedures
                   Select j
         If includeJobDetails Then qry = qry.Include(Function(j) j.JobDetails)
         If vesselName IsNot Nothing Then qry = qry.Where(Function(j) j.Vessel.VesselName = vesselName.ToString)
-        Return qry.ToList()
+        Return qry.AsNoTracking.ToList()
     End Function
     Public Function QryJobsByJobNumber(ByRef db As HaleMRIContext, Optional ByVal jobNumber As Integer = 0, Optional ByVal includeJobDetails As Boolean = False) As List(Of Job)
         ' This query retrieves jobs optionally by job number and optionally includes their associated job details.

@@ -22,11 +22,16 @@ Partial Class FrmHaleMRI
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         cmdJobs = New Button()
         cmdCalibrate = New Button()
         cmdVessels = New Button()
         cmdMeasure = New Button()
         cmdCustomers = New Button()
+        CustomerBindingSource = New BindingSource(components)
+        CustomerBindingSource1 = New BindingSource(components)
+        CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' cmdJobs
@@ -79,6 +84,14 @@ Partial Class FrmHaleMRI
         cmdCustomers.Text = "Customers"
         cmdCustomers.UseVisualStyleBackColor = True
         ' 
+        ' CustomerBindingSource
+        ' 
+        CustomerBindingSource.DataSource = GetType(LibDatabase.Models.Customer)
+        ' 
+        ' CustomerBindingSource1
+        ' 
+        CustomerBindingSource1.DataSource = GetType(LibDatabase.Models.Customer)
+        ' 
         ' FrmHaleMRI
         ' 
         AutoScaleDimensions = New SizeF(13F, 32F)
@@ -91,6 +104,8 @@ Partial Class FrmHaleMRI
         Controls.Add(cmdJobs)
         Name = "FrmHaleMRI"
         Text = "Hale-MRI"
+        CType(CustomerBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
     Friend WithEvents cmdJobs As Button
@@ -98,5 +113,7 @@ Partial Class FrmHaleMRI
     Friend WithEvents cmdVessels As Button
     Friend WithEvents cmdMeasure As Button
     Friend WithEvents cmdCustomers As Button
+    Friend WithEvents CustomerBindingSource As BindingSource
+    Friend WithEvents CustomerBindingSource1 As BindingSource
 
 End Class

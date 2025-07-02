@@ -58,6 +58,9 @@ Namespace Contexts
         Public Overridable Property VesselServiceTypes As DbSet(Of VesselServiceType)
 
         Public Overridable Property Workstations As DbSet(Of Workstation)
+        'Public Shared Function QryScanDataImport(ByVal filespec As String) As Integer
+        '    Throw New NotSupportedException()
+        'End Function
 
         Protected Overrides Sub OnConfiguring(optionsBuilder As DbContextOptionsBuilder)
             'TODO /!\ To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -65,6 +68,7 @@ Namespace Contexts
         End Sub
 
         Protected Overrides Sub OnModelCreating(modelBuilder As ModelBuilder)
+            'modelBuilder.HasDbFunction(GetType(HaleMRIContext).GetMethod(NameOf(QryScanDataImport), New Type() {GetType(String)})).HasName("imexImScanDataContext").HasParameter("filespec")
             modelBuilder.Entity(Of Blade)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.BladeCount).HasName("PrimaryKey")
@@ -130,6 +134,8 @@ Namespace Contexts
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
 
+                    entity.HasIndex(Function(e) e.CustomerName, "Customer Name")
+
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
@@ -162,6 +168,8 @@ Namespace Contexts
             modelBuilder.Entity(Of Employee)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.HasIndex(Function(e) e.EmployeeName, "Employee Name")
 
                     entity.HasIndex(Function(e) e.Id, "ID")
 
@@ -342,6 +350,8 @@ Namespace Contexts
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
 
                     entity.HasIndex(Function(e) e.Id, "ID")
+
+                    entity.HasIndex(Function(e) e.ManufacturerName, "Manufacturer Name")
 
                     entity.HasIndex(Function(e) e.PostalCode, "Postal Code")
 
@@ -530,6 +540,8 @@ Namespace Contexts
                     entity.HasIndex(Function(e) e.CustomerId, "Customer ID")
 
                     entity.HasIndex(Function(e) e.Id, "ID")
+
+                    entity.HasIndex(Function(e) e.VesselName, "Vessel Name")
 
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").

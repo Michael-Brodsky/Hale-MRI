@@ -4,6 +4,7 @@ Imports System.IO
 Imports System.Text.RegularExpressions
 Imports System.Linq
 Imports System.Diagnostics.Metrics
+
 Public Module Imex
     ' This module provides functionality to import and export calibration and scan data.
 #Region "Types and Constants"
@@ -207,15 +208,15 @@ Public Module Imex
         WriteCalibrationsData(ws, ostream)
         ostream.Close()
     End Sub
-	Public Function CalibrationDataImport(ByVal name As String, ByVal inFile As String) As Workstation
-		' Imports the calibration data from a text file into a workstation object.
-		If Not File.Exists(inFile) Then Throw New FileNotFoundException("Calibration data file not found.", inFile)
-		Dim istream As New StreamReader(inFile)
-		Dim ws As New Workstation With {.Hostname = name}
-		ReadCalibrationData(ws, istream)
-		istream.Close()
-		Return ws
-	End Function
+    Public Function CalibrationDataImport(ByVal name As String, ByVal inFile As String) As Workstation
+        ' Imports the calibration data from a text file into a workstation object.
+        If Not File.Exists(inFile) Then Throw New FileNotFoundException("Calibration data file not found.", inFile)
+        Dim istream As New StreamReader(inFile)
+        Dim ws As New Workstation With {.Hostname = name}
+        ReadCalibrationData(ws, istream)
+        istream.Close()
+        Return ws
+    End Function
 
     Public Sub ScanDataExport(ByVal sd As ScanData, ByVal outFile As String)
         If File.Exists(outFile) Then Throw New IOException("Scan data file already exists: " & outFile)
@@ -286,7 +287,7 @@ SkipLine:
         On Error Resume Next
         Do While Not istream.EndOfStream
             line = TrimReplace(regex, istream.ReadLine())
-            If String.IsNullOrWhiteSpace(line) Then GoTo SkipLine
+            If lineId > ScanDataLineId.idJobNumber And String.IsNullOrWhiteSpace(line) Then GoTo SkipLine
             Select Case lineId
                 Case ScanDataLineId.idFileType
                     ' Skip this line
@@ -294,6 +295,7 @@ SkipLine:
                 Case ScanDataLineId.idCustomer
                     sd.Customer = New Customer With {.CustomerName = line}
                 Case ScanDataLineId.idVessel
+                    If sd.Customer Is Nothing Then sd.Customer = New Customer With {.CustomerName = String.Empty}
                     sd.Customer.Vessels = New List(Of Vessel) From {
                         New Vessel With {.VesselName = line}
                     }
@@ -301,11 +303,14 @@ SkipLine:
                     ' If we don't get a valid job number, exit the loop.
                     Dim jobNumber As Integer = Convert.ToInt32(line)
                     If jobNumber = 0 Then Exit Do
-                    sd.Job = New Job With {.JobNumber = jobNumber}
-                Case ScanDataLineId.idDiameter
-                    sd.Job.JobDetails = New List(Of JobDetail) From {
-                        New JobDetail With {.Diameter = Convert.ToDouble(line)}
+                    sd.Job = New Job With {
+                        .JobNumber = jobNumber,
+                        .JobDetails = New List(Of JobDetail) From {
+                            New JobDetail With {.Diameter = Nothing}
+                        }
                     }
+                Case ScanDataLineId.idDiameter
+                    sd.Job.JobDetails(0).Diameter = Convert.ToDouble(line)
                 Case ScanDataLineId.idMarkedPitch
                     sd.Job.JobDetails(0).MarkedPitch = Convert.ToDouble(line)
                 Case ScanDataLineId.idRotation
@@ -375,29 +380,30 @@ SkipLine:
             End Select
 SkipLine:
             lineId += 1
+            'If lineId > ScanDataLineId.idJobNumber And sd.Job Is Nothing Then Exit Do
         Loop
     End Sub
-	Private Sub WriteScanData(ByVal sd As ScanData, ByVal ostream As StreamWriter)
-		' Writes the scan data to a text file in the expected order.
-	End Sub
+    Private Sub WriteScanData(ByVal sd As ScanData, ByVal ostream As StreamWriter)
+        ' Writes the scan data to a text file in the expected order.
+    End Sub
     Private Sub SaveMeasurements(ByRef sd As ScanData, ByVal radii As Radius, ByVal extremes As Extremes, ByVal cells As Cell)
-		' Saves the collected measurements into the ScanData object.
-		SaveRadiusMeasurements(sd, radii)
-		SaveCellMeasurements(sd, cells)
+        ' Saves the collected measurements into the ScanData object.
+        SaveRadiusMeasurements(sd, radii)
+        SaveCellMeasurements(sd, cells)
         SaveExtremeMeasurements(sd, extremes)
     End Sub
-	Private Sub SaveCellMeasurements(ByRef sd As ScanData, ByVal cells As Cell)
-		' Saves cell measurements into the ScanData object.
-		For Each cm As CellMeasurement In cells.Measurements
-			sd.Job.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
-				.Angle = cm.Angle,
-				.Depth = cm.Depth
-			})
-		Next
-	End Sub
-	Private Sub SaveExtremeMeasurements(ByRef sd As ScanData, ByVal extremes As Extremes)
-		' Saves extreme measurements into the ScanData object.
-		Dim b As Integer = 1
+    Private Sub SaveCellMeasurements(ByRef sd As ScanData, ByVal cells As Cell)
+        ' Saves cell measurements into the ScanData object.
+        For Each cm As CellMeasurement In cells.Measurements
+            sd.Job.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
+                .Angle = cm.Angle,
+                .Depth = cm.Depth
+            })
+        Next
+    End Sub
+    Private Sub SaveExtremeMeasurements(ByRef sd As ScanData, ByVal extremes As Extremes)
+        ' Saves extreme measurements into the ScanData object.
+        Dim b As Integer = 1
         For Each em As Double In extremes.Measurements
             sd.Job.JobDetails(0).ExtremeMeasurements.Add(New Models.ExtremeMeasurement With {
                 .BladeId = b,
@@ -406,7 +412,7 @@ SkipLine:
             b += 1
         Next
     End Sub
-	Private Sub SaveRadiusMeasurements(ByRef sd As ScanData, ByVal radii As Radius)
+    Private Sub SaveRadiusMeasurements(ByRef sd As ScanData, ByVal radii As Radius)
         ' Saves radius measurements into the ScanData object.
         Dim b As Integer = 1
         Dim m As Integer = 0

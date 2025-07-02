@@ -1,11 +1,13 @@
 ﻿Imports System.IO
 Imports System.Windows.Forms.VisualStyles
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
+Imports FxResources.System.Data
 Imports LibDatabase
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking
+Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Public Class FrmMeasurements
     Private mHardware As WorkstationEncoders
     Public Sub New()
@@ -61,87 +63,159 @@ Public Class FrmMeasurements
         cmdImportScanData.Enabled = enabled
         cmdExportScanData.Enabled = enabled
     End Sub
-    Public Function ImportFiles(ByVal fileSpec As String) As String()
-        ' Returns a list of scan data files matching and imported from
+    Public Function ImportFiles(ByVal fileSpec As String) As Integer
+        ' Returns a count of scan data files matching and imported from
         ' the file specification. FileSpec should be a full path to a file or a wildcard pattern.
-        Dim result = Array.Empty(Of String)()
+        Dim result As Integer = 0
         If Not Directory.Exists(Path.GetDirectoryName(fileSpec)) Then
             Throw New DirectoryNotFoundException("Directory not found: " & Path.GetDirectoryName(fileSpec))
         End If
         If Path.GetFileName(fileSpec) = "" Then fileSpec = Path.Combine(Path.GetDirectoryName(fileSpec), "*.*")
-        On Error Resume Next
-        For Each fileName As String In Directory.GetFiles(Path.GetDirectoryName(fileSpec), Path.GetFileName(fileSpec))
-            WorkstationStatusStrip1.Operation = fileName
-            ImportScanData(fileName)
-            Application.DoEvents()
-            result.AsEnumerable().ToList().Add(fileName)
-        Next
-        Return Directory.GetFiles(Path.GetDirectoryName(fileSpec), Path.GetFileName(fileSpec))
+        'On Error Resume Next
+        Using dB As New HaleMRIContext
+            For Each fileName As String In Directory.GetFiles(Path.GetDirectoryName(fileSpec), Path.GetFileName(fileSpec))
+                Debug.Print("Importing: " & fileName)
+                WorkstationStatusStrip1.Operation = fileName
+                ImportScanData(dB, fileName)
+                If dB.ChangeTracker.HasChanges AndAlso result > 0 AndAlso result Mod 100 = 0 Then
+                    Try
+                        'For Each entry As EntityEntry In dB.ChangeTracker.Entries
+                        '    Select Case entry.Entity.GetType().Name
+                        '        Case "Vessel"
+                        '            Debug.Print(entry.Entity.GetType().Name & " " & entry.Entity.VesselName & " " & entry.State.ToString)
+                        '        Case "Customer"
+                        '            Debug.Print(entry.Entity.GetType().Name & " " & entry.Entity.CustomerName & " " & entry.State.ToString)
+                        '        Case Else
+                        '    End Select
+                        'Next
+                        'Debug.Print("------------------------------------------------")
+                        dB.SaveChanges()
+                        'dB.ChangeTracker.Clear()
+                    Catch ex As Exception
+                        DebugTracking(dB)
+                        MsgBox(fileName & ": " & ex.Message & vbCrLf & ex.InnerException.Message, MsgBoxStyle.Critical, STR_TITLE_DATABASE_ERROR)
+                    End Try
+                End If
+                Application.DoEvents()
+                result += 1
+            Next
+            If dB.ChangeTracker.HasChanges Then dB.SaveChanges()
+        End Using
+        Return result
     End Function
-    Private Sub ImportScanData(ByVal fileName As String)
+    Private Sub ImportScanData(ByRef dB As HaleMRIContext, ByVal fileName As String)
         ' Import scan data from the specified file
         Dim sd As ScanData = ScanDataImport(fileName)
-        If sd IsNot Nothing Then
-            Using db As New HaleMRIContext
-                With sd
-                    ' Ensure both customer and vessel are provided, as they are required for the job.
-                    If .Customer IsNot Nothing AndAlso .Customer.Vessels IsNot Nothing Then
-                        CustomerDataValidate(db, .Customer) ' Validate the customer data before adding it to the database.)
-                        If Not QryCustomerNameExists(db, FormatString(.Customer.CustomerName)) Then
-                            ' If the customer does not exist, add it and the vessel to the database.
-                            db.Customers.Add(.Customer)
-                        Else
-                            ' Associate the existing customer with the vessel.
-                            .Customer.Vessels(0).Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = FormatString(.Customer.CustomerName).ToString)
-                            If Not QryVesselNameExists(db, FormatString(.Customer.Vessels(0).VesselName)) Then
-                                ' If the vessel does not exist, add it to the database
-                                db.Vessels.Add(.Customer.Vessels(0))
-                            End If
-                        End If
-                    Else
-                        Exit Sub ' Exit if no customer or vessel are provided.
-                    End If
-                    If .Job IsNot Nothing Then
-                        .Job.Vessel = .Customer.Vessels(0)  ' Associate the vessel with the job.
-                        JobDataValidate(db, .Job)           ' Validate the job data before adding it to the database.
-                        If Not QryJobNumberExists(db, .Job.JobNumber) Then
-                            ' If the job does not exist, add it and the job details to the database
-                            db.Jobs.Add(.Job)
-                        ElseIf .Job.JobDetails IsNot Nothing AndAlso .Job.JobDetails.Count > 0 Then
-                            ' If the job exists, associate the existing job with the job details and add them to that job.
-                            .Job.JobDetails(0).Job = db.Jobs.FirstOrDefault(Function(j) j.JobNumber = .Job.JobNumber.ToString)
-                            db.JobDetails.AddRange(.Job.JobDetails)
-                        End If
-                    End If
-                End With
-                db.SaveChanges()
-            End Using
+        If sd IsNot Nothing AndAlso sd.Job IsNot Nothing Then ScanDataAddJob(dB, sd)
+    End Sub
+    Private Function ScanDataAddVessel(ByRef db As HaleMRIContext, ByVal sdCustomer As Customer) As Vessel
+        ' Insert or lookup the customer and vessel data in the database.
+        Dim v As Vessel = Nothing
+        If sdCustomer Is Nothing OrElse sdCustomer.Vessels.Count = 0 OrElse String.IsNullOrEmpty(sdCustomer.Vessels(0).VesselName) Then
+            v = New Vessel With {.VesselName = "(New Vessel)"}
+        Else
+            v = db.Vessels.FirstOrDefault(Function(u) u.VesselName = sdCustomer.Vessels(0).VesselName.ToString)
+            If v Is Nothing Then v = New Vessel With {.VesselName = sdCustomer.Vessels(0).VesselName}
         End If
-    End Sub
-    Private Sub CustomerDataValidate(ByRef db As HaleMRIContext, ByRef c As Customer)
-        ' Ensure that the customer data is properly formatted and valid in the
-        ' associated lookup tables (table names beginning with a tilde (~)).
-        With c
-            If c.Vessels Is Nothing OrElse c.Vessels.Count = 0 Then
-                ' If no vessels are provided, create a new vessel with default values.
-                c.Vessels = New List(Of Vessel) From {New Vessel With {.VesselName = "(New Vessel)"}}
+        If v.Customer Is Nothing Then
+            If sdCustomer Is Nothing OrElse String.IsNullOrEmpty(sdCustomer.CustomerName) Then
+                ' If no customer is provided, create a new customer with default values.
+                v.Customer = New Customer With {.CustomerName = "(New Customer)"}
+            Else
+                v.Customer = db.Customers.FirstOrDefault(Function(u) u.CustomerName = sdCustomer.CustomerName.ToString)
+                If v.Customer Is Nothing Then v.Customer = New Customer With {.CustomerName = sdCustomer.CustomerName}
             End If
-        End With
-    End Sub
+        End If
+        Return v
+    End Function
     Private Sub JobDataValidate(ByRef db As HaleMRIContext, ByRef j As Job)
         ' Ensure that the scan data is properly formatted and valid in the
         ' associated lookup tables (table names beginning with a tilde (~)).
         With j
-            If .InspectedBy IsNot Nothing AndAlso QryEmployeeNameExists(db, FormatString(.InspectedBy)) Then .InspectedBy = db.Employees.FirstOrDefault(Function(u) u.EmployeeName = .InspectedBy.ToString)?.EmployeeName
-            If .Blades IsNot Nothing Then .Blades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = .Blades.ToString)?.BladeCount
-            If .Style IsNot Nothing Then .Style = db.Styles.FirstOrDefault(Function(s) s.Style1 = .Style.ToString)?.Style1
-            If .Material IsNot Nothing Then .Material = db.Materials.FirstOrDefault(Function(m) m.Material1 = .Material.ToString)?.Material1
+            ' If no employee is provided, create a new employee with default values.
+            If .InspectedByNavigation IsNot Nothing AndAlso Not String.IsNullOrEmpty(.InspectedByNavigation.EmployeeName) Then
+                If Not QryEmployeeNameExists(db, FormatString(.InspectedByNavigation.EmployeeName)) Then
+                    db.Employees.Add(.InspectedByNavigation)
+                Else
+                    .InspectedByNavigation = db.Employees.FirstOrDefault(Function(u) u.EmployeeName = .InspectedByNavigation.EmployeeName.ToString)
+                End If
+            End If
+            ' If no manufacturer is provided, create a new manufacturer with default values.
+            If .Manufacturer IsNot Nothing AndAlso Not String.IsNullOrEmpty(.Manufacturer.ManufacturerName) Then
+                If Not QryManufacturerNameExists(db, FormatString(.Manufacturer.ManufacturerName)) Then
+                    ' If the manufacturer does not exist in the database, add it.
+                    db.Manufacturers.Add(.Manufacturer)
+                Else
+                    .Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = .Manufacturer.ManufacturerName.ToString)
+                End If
+            End If
+            ' Validate the job data before adding it to the database.
+            If .Blades IsNot Nothing AndAlso Not db.Blades.Any(Function(b) b.BladeCount = .Blades.ToString) Then .Blades = Nothing
+            If .Style IsNot Nothing AndAlso Not db.Styles.Any(Function(s) s.Style1 = .Style.ToString) Then .Style = Nothing
+            If .Material IsNot Nothing AndAlso Not db.Materials.Any(Function(m) m.Material1 = .Material.ToString) Then .Material = Nothing
             If .JobDetails IsNot Nothing Then
-                If .JobDetails(0).Cup IsNot Nothing Then .JobDetails(0).Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = .JobDetails(0).Cup.ToString)?.Cup1
-                If .JobDetails(0).Rotation IsNot Nothing Then .JobDetails(0).Rotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = .JobDetails(0).Rotation.ToString)?.Rotation1
-                If .JobDetails(0).LeExclusion IsNot Nothing Then .JobDetails(0).LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = .JobDetails(0).LeExclusion.ToString)?.Exclusion1
-                If .JobDetails(0).TeExclusion IsNot Nothing Then .JobDetails(0).TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = .JobDetails(0).LeExclusion.ToString)?.Exclusion1
-                If .JobDetails(0).ToleranceClass IsNot Nothing Then .JobDetails(0).ToleranceClass = db.Tolerances.FirstOrDefault()?.ToleranceClass
+                If .JobDetails(0).Cup IsNot Nothing AndAlso Not db.Cups.Any(Function(c) c.Cup1 = .JobDetails(0).Cup.ToString) Then
+                    .JobDetails(0).Cup = Nothing ' If the cup does not exist, set it to Nothing.
+                End If
+                If .JobDetails(0).Rotation IsNot Nothing AndAlso Not db.Rotations.Any(Function(r) r.Rotation1 = .JobDetails(0).Rotation.ToString) Then
+                    .JobDetails(0).Rotation = Nothing ' If the rotation does not exist, set it to Nothing.
+                End If
+                If .JobDetails(0).LeExclusion IsNot Nothing AndAlso Not db.Exclusions.Any(Function(e) e.Exclusion1 = .JobDetails(0).LeExclusion.ToString) Then
+                    .JobDetails(0).LeExclusion = Nothing ' If the left exclusion does not exist, set it to Nothing.
+                End If
+                If .JobDetails(0).TeExclusion IsNot Nothing AndAlso Not db.Exclusions.Any(Function(e) e.Exclusion1 = .JobDetails(0).TeExclusion.ToString) Then
+                    .JobDetails(0).TeExclusion = Nothing ' If the top exclusion does not exist, set it to Nothing.
+                End If
+                If .JobDetails(0).ToleranceClass IsNot Nothing AndAlso Not db.Tolerances.Any(Function(t) t.ToleranceClass = .JobDetails(0).ToleranceClass.ToString) Then
+                    .JobDetails(0).ToleranceClass = Nothing ' If the tolerance class does not exist, set it to Nothing.
+                End If
+            End If
+
+        End With
+    End Sub
+    Private Sub ScanDataAddJob(ByRef db As HaleMRIContext, ByRef sd As ScanData)
+        With sd
+            Dim jFromDb As Job = db.Jobs.FirstOrDefault(Function(u) u.JobNumber = .Job.JobNumber.ToString)
+            If jFromDb IsNot Nothing Then
+                .Job.JobDetails(0).Job = jFromDb
+                db.JobDetails.AddRange(.Job.JobDetails)
+                Exit Sub
+            Else
+                JobDataValidate(db, .Job)
+                Dim v As Vessel = ScanDataAddVessel(db, .Customer)
+                If db.ChangeTracker.HasChanges Then
+                    For Each entry As EntityEntry(Of Job) In db.ChangeTracker.Entries(Of Job)()
+                        If entry.State = EntityState.Added AndAlso entry.Entity.JobNumber = sd.Job.JobNumber Then
+                            Try
+                                db.SaveChanges()
+                            Catch ex As Exception
+                                MsgBox(ex.Message & vbCrLf & ex.InnerException.Message)
+                            End Try
+                        End If
+                    Next
+                    For Each entry As EntityEntry(Of Vessel) In db.ChangeTracker.Entries(Of Vessel)()
+                        If entry.State = EntityState.Added AndAlso entry.Entity.VesselName = v.VesselName Then
+                            Try
+                                db.SaveChanges()
+                            Catch ex As Exception
+                                MsgBox(ex.Message & vbCrLf & ex.InnerException.Message)
+                            End Try
+                        End If
+                    Next
+                    For Each entry As EntityEntry(Of Customer) In db.ChangeTracker.Entries(Of Customer)()
+                        If entry.State = EntityState.Added AndAlso entry.Entity.CustomerName = v.Customer.CustomerName Then
+                            Try
+                                db.SaveChanges()
+                            Catch ex As Exception
+                                MsgBox(ex.Message & vbCrLf & ex.InnerException.Message)
+                            End Try
+                        End If
+                    Next
+
+                End If
+                .Job.Vessel = v
+                'v.Jobs.Add(.Job) ' Associate the job with the vessel.
+                db.Jobs.Add(.Job)
             End If
         End With
     End Sub
@@ -155,11 +229,11 @@ Public Class FrmMeasurements
         If ofd.ShowDialog() = DialogResult.OK Then txtScanDataFile.Text = ofd.FileName
     End Sub
     Private Sub CmdImportScanData_Click(sender As Object, e As EventArgs) Handles cmdImportScanData.Click
-        Try
-            ImportFiles(txtScanDataFile.Text)
-        Catch ex As Exception
-            MsgBox("Error importing scan data: " & ex.Message, MsgBoxStyle.Critical, "Import Error")
-        End Try
+        'Try
+        ImportFiles(txtScanDataFile.Text)
+        'Catch ex As Exception
+        'MsgBox("Error importing scan data: " & ex.Message, MsgBoxStyle.Critical, "Import Error")
+        'End Try
     End Sub
 
     Private Sub TxtScanDataFile_TextChanged(sender As Object, e As EventArgs) Handles txtScanDataFile.TextChanged
@@ -176,5 +250,19 @@ Public Class FrmMeasurements
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
+    End Sub
+    Private Sub DebugTracking(ByVal dB As HaleMRIContext)
+        For Each entry As EntityEntry In dB.ChangeTracker.Entries
+            Select Case entry.Entity.GetType().Name
+                Case "Customer"
+                    Dim str As String = If(entry.Entity.Id IsNot Nothing, entry.Entity.Id.ToString(), "(New)")
+                    Debug.Print(entry.Entity.GetType().Name & ": " & entry.Entity.CustomerName & " " & str & " " & " = " & entry.State.ToString())
+                Case "Vessel"
+                    Dim str As String = If(entry.Entity.Id IsNot Nothing, entry.Entity.Id.ToString(), "(New)")
+                    Debug.Print(entry.Entity.GetType().Name & ": " & entry.Entity.VesselName & " " & str & " " & " = " & entry.State.ToString())
+                Case Else
+            End Select
+        Next
+        Debug.Print("------------------------------------------------")
     End Sub
 End Class

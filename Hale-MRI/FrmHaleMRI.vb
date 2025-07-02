@@ -40,11 +40,9 @@ Public Class FrmHaleMRI
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'Dim x = ImexFiles("C:\Hale MRI 4\ScanData*.txt")
-        'If x IsNot Nothing Then
-        'Each file As String In x
+        Using dbContext As New HaleMRIContext()
+            dbContext.Database.EnsureCreated()
 
-        '
-        'End If
+        End Using
     End Sub
 End Class
