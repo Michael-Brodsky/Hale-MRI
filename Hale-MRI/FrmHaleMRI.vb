@@ -6,13 +6,13 @@ Imports System.Threading
 Imports LibDatabase.Contexts
 Public Class FrmHaleMRI
     Private mWorkstationEncoders As New WorkstationEncoders()
+    ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobDetails As FrmJobDetails
     Private mFrmJobs As FrmJobs
     Private mFrmMeasurements As FrmMeasurements
     Private mFrmVessels As FrmVessels
-    'Git commit hash: 65eb0ef
     Private Sub CmdCalibrate_Click(sender As Object, e As EventArgs) Handles cmdCalibrate.Click
         ShowForm(mFrmCalibration)
         If mFrmCalibration.Hardware Is Nothing Then mFrmCalibration.Hardware = mWorkstationEncoders
@@ -30,7 +30,7 @@ Public Class FrmHaleMRI
     Private Sub CmdVessels_Click(sender As Object, e As EventArgs) Handles cmdVessels.Click
         ShowForm(mFrmVessels)
     End Sub
-    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+    Private Sub FrmHaleMRI_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         CloseForm(mFrmCalibration)
         CloseForm(mFrmCustomers)
         CloseForm(mFrmJobDetails)
@@ -39,7 +39,7 @@ Public Class FrmHaleMRI
         CloseForm(mFrmVessels)
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmHaleMRI_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Using dbContext As New HaleMRIContext()
             dbContext.Database.EnsureCreated()
 
