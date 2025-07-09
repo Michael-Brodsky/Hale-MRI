@@ -1,6 +1,8 @@
 ﻿Imports LibDatabase.Models
 Imports LibDatabase.Contexts
 Imports Microsoft.EntityFrameworkCore
+Imports System.Runtime.CompilerServices
+Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Public Module BindingSources
     Public Function BindDataSet(Of T As {DbSet(Of T), New})(ByRef dataSet As DbSet(Of T)) As System.ComponentModel.BindingList(Of T)
         dataSet.Load()

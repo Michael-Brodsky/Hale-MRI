@@ -1,5 +1,6 @@
 ﻿Imports System
 Imports System.Collections.Generic
+Imports System.Runtime.CompilerServices
 Imports Microsoft.VisualBasic
 
 Namespace Models
@@ -29,5 +30,6 @@ Namespace Models
         Public Overridable Property StateNavigation As StateCode
 
         Public Overridable Property Vessels As ICollection(Of Vessel) = New List(Of Vessel)()
+
     End Class
 End Namespace

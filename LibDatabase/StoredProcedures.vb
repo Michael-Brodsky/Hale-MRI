@@ -1,7 +1,9 @@
 ﻿Imports LibDatabase.Models
 Imports LibDatabase.Contexts
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Public Module StoredProcedures
+#Region "Miscellaneous Functions"
     Public Function FormatString(ByVal str As String) As FormattableString
         'Returns a FormattableString from the given string that can be
         'used in LINQ queries taking string variables as parameters.
@@ -9,10 +11,39 @@ Public Module StoredProcedures
         'they get mangled by the SQL translator and compiler and will
         'not work as expected or throw an exception. Ostensibly, this
         'is to prevent SQL injection attacks, but it also prevents 
-        'the use of string variables in LINQ queries.
+        'the use of plain string variables in LINQ queries.
         Return $"{str}"
     End Function
+    Public Sub Rollback(ByRef db As HaleMRIContext)
+        ' Undoes all changes made to the database context since the last SaveChanges().
+        Dim changedEntries = db.ChangeTracker.Entries().Where(Function(e) e.State <> EntityState.Unchanged).ToList()
+        RollbackImpl(changedEntries)
+    End Sub
 
+    Public Sub Rollback(Of T As Class)(ByRef db As HaleMRIContext)
+        ' Undoes all changes made to the specified DbSet since the last SaveChanges().
+        ' Example usage: Rollback(Of Customer)(db)
+        Dim changedEntries = db.ChangeTracker.Entries(Of T)().Where(Function(e) e.State <> EntityState.Unchanged).ToList()
+        RollbackImpl(changedEntries)
+    End Sub
+    Private Sub RollbackImpl(entries As IEnumerable(Of EntityEntry))
+        ' This subroutine undoes all changes made to the specified entries.
+        ' It is used internally by the Rollback methods.
+        If entries IsNot Nothing Then
+            For Each entry In entries
+                Select Case entry.State
+                    Case EntityState.Added
+                        entry.State = EntityState.Detached
+                    Case EntityState.Modified
+                        entry.CurrentValues.SetValues(entry.OriginalValues)
+                        entry.State = EntityState.Unchanged
+                    Case EntityState.Deleted
+                        entry.State = EntityState.Unchanged
+                End Select
+            Next
+        End If
+    End Sub
+    #End Region
 #Region "Customer Queries"
     Public Function QryCustomerNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
         'Returns TRUE if a customer with the specified name exists in the database,

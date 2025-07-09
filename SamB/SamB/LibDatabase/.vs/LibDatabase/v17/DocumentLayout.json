@@ -1,0 +1,69 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|c:\\users\\super\\source\\repos\\efcore\\libdatabase\\contexts\\halemricontext.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|solutionrelative:contexts\\halemricontext.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|c:\\users\\super\\source\\repos\\efcore\\libdatabase\\storedprocedures.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|solutionrelative:storedprocedures.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|c:\\users\\super\\source\\repos\\efcore\\libdatabase\\imex.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{629D91F9-3529-4BD0-B035-2F83325E7A3A}|LibDatabase.vbproj|solutionrelative:imex.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Imex.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\Imex.vb",
+              "RelativeDocumentMoniker": "Imex.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\Imex.vb",
+              "RelativeToolTip": "Imex.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAJYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-06-12T03:03:07.406Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StoredProcedures.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\StoredProcedures.vb",
+              "RelativeDocumentMoniker": "StoredProcedures.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\StoredProcedures.vb",
+              "RelativeToolTip": "StoredProcedures.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-06-12T00:25:01.545Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "HaleMRIContext.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\Contexts\\HaleMRIContext.vb",
+              "RelativeDocumentMoniker": "Contexts\\HaleMRIContext.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\EFCore\\LibDatabase\\Contexts\\HaleMRIContext.vb",
+              "RelativeToolTip": "Contexts\\HaleMRIContext.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-06-11T22:00:24.692Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

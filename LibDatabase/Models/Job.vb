@@ -6,9 +6,9 @@ Namespace Models
     Partial Public Class Job
         Public Property Id As Integer?
 
-        Public Property VesselId As Integer
+        Public Property VesselId As Integer?
 
-        Public Property JobNumber As Integer
+        Public Property JobNumber As Integer?
 
         Public Property StartDate As Date?
 
