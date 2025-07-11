@@ -26,6 +26,7 @@ Partial Class FrmCustomers
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmCustomers))
         dataGridCustomers = New DataGridView()
         CustomerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -386,7 +387,7 @@ Partial Class FrmCustomers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
-        RecordNavigationBar1.BoundControl = Nothing
+        RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
@@ -394,9 +395,7 @@ Partial Class FrmCustomers
         RecordNavigationBar1.Location = New Point(0, 0)
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
         RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Position = 0UI
-        'RecordNavigationBar1.RecordCount = 0UI
-        RecordNavigationBar1.RecordSource = Nothing
+        RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Size = New Size(729, 30)
         RecordNavigationBar1.TabIndex = 1
         ' 

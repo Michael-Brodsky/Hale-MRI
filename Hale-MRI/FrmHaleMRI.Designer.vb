@@ -30,7 +30,7 @@ Partial Class FrmHaleMRI
         cmdCustomers = New Button()
         CustomerBindingSource = New BindingSource(components)
         CustomerBindingSource1 = New BindingSource(components)
-        Button1 = New Button()
+        CmdJobDetails = New Button()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -49,7 +49,7 @@ Partial Class FrmHaleMRI
         ' cmdCalibrate
         ' 
         cmdCalibrate.ImageAlign = ContentAlignment.BottomCenter
-        cmdCalibrate.Location = New Point(330, 6)
+        cmdCalibrate.Location = New Point(413, 6)
         cmdCalibrate.Margin = New Padding(2, 1, 2, 1)
         cmdCalibrate.Name = "cmdCalibrate"
         cmdCalibrate.Size = New Size(78, 68)
@@ -71,7 +71,7 @@ Partial Class FrmHaleMRI
         ' cmdMeasure
         ' 
         cmdMeasure.ImageAlign = ContentAlignment.BottomCenter
-        cmdMeasure.Location = New Point(249, 6)
+        cmdMeasure.Location = New Point(331, 6)
         cmdMeasure.Margin = New Padding(2, 1, 2, 1)
         cmdMeasure.Name = "cmdMeasure"
         cmdMeasure.Size = New Size(78, 68)
@@ -98,21 +98,23 @@ Partial Class FrmHaleMRI
         ' 
         CustomerBindingSource1.DataSource = GetType(LibDatabase.Models.Customer)
         ' 
-        ' Button1
+        ' CmdJobDetails
         ' 
-        Button1.Location = New Point(546, 35)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(75, 23)
-        Button1.TabIndex = 7
-        Button1.Text = "Form 1"
-        Button1.UseVisualStyleBackColor = True
+        CmdJobDetails.ImageAlign = ContentAlignment.BottomCenter
+        CmdJobDetails.Location = New Point(250, 6)
+        CmdJobDetails.Margin = New Padding(2, 1, 2, 1)
+        CmdJobDetails.Name = "CmdJobDetails"
+        CmdJobDetails.Size = New Size(78, 68)
+        CmdJobDetails.TabIndex = 7
+        CmdJobDetails.Text = "Job Details"
+        CmdJobDetails.UseVisualStyleBackColor = True
         ' 
         ' FrmHaleMRI
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1036, 416)
-        Controls.Add(Button1)
+        Controls.Add(CmdJobDetails)
         Controls.Add(cmdCustomers)
         Controls.Add(cmdVessels)
         Controls.Add(cmdMeasure)
@@ -132,6 +134,6 @@ Partial Class FrmHaleMRI
     Friend WithEvents cmdCustomers As Button
     Friend WithEvents CustomerBindingSource As BindingSource
     Friend WithEvents CustomerBindingSource1 As BindingSource
-    Friend WithEvents Button1 As Button
+    Friend WithEvents CmdJobDetails As Button
 
 End Class

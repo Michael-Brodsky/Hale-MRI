@@ -4,73 +4,42 @@ Imports Microsoft.EntityFrameworkCore
 Imports LibDatabase.StoredProcedures
 Public Class FrmJobs
     Inherits FrmDatabaseForm
+    ' Define the DataGridView's double-clickable column indices.
     Private Const kJobsVesselColumnId As Short = 1
     Private Const kJobsManufacturerColumnId As Short = 5
     Private Const kJobsInspectedByColumnId As Short = 12
-
     ' Define all forms this form can open.
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mJobDetailsForm As FrmJobDetails
     Private mFrmVessels As FrmVessels
-    'Private mFormEmployees As FrmEmployees
     Private mFrmManufacturers As FrmManufacturers
-    Public Property CurrentJob As Job
-        ' Gets/sets the form's current Job record.
+    Public Property Current As Job
         Set(value As Job)
-            If value IsNot Nothing Then CurrentId = value.Id
+            Me.Find(value.Id)
         End Set
         Get
-            If JobBindingSource.Current IsNot Nothing Then
+            If Navigator.Current IsNot Nothing Then
                 Return CType(JobBindingSource.Current, Job)
             Else
                 Return Nothing
             End If
         End Get
     End Property
-    Public Property CurrentId As Integer
-        ' Gets/sets the form's current JobId.
-        Set(value As Integer)
-            If JobBindingSource.SupportsSearching Then
-                JobBindingSource.Find("Id", value)
-            Else
-                Dim index = Database.Jobs.Local.ToList().FindIndex(Function(v) v.Id = value)
-                If index <> kNoCurrentRecord Then JobBindingSource.Position = index
-            End If
-        End Set
-        Get
-            If JobBindingSource.Current IsNot Nothing Then
-                Return JobBindingSource.Current.Id
-            Else
-                Return kNoCurrentRecord
-            End If
-        End Get
-    End Property
-    Public Overrides Property Database As HaleMRIContext
-        Get
-            Return MyBase.Database
-        End Get
-        Set(value As HaleMRIContext)
-            MyBase.Database = value
-            If value IsNot Nothing Then BindDataSources()
-        End Set
-    End Property
-    Private Sub BindDataSources()
-        ' Bind the data tables to the respective BindingSources.
-        JobBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
-        VesselBindingSource.DataSource = Database.Vessels.Local.ToBindingList()
-        ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
-        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
-        BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList
-        MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
-        StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
-        BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
-    End Sub
+    Public Function Find(id As Integer) As Integer
+        If JobBindingSource.SupportsSearching Then
+            Return JobBindingSource.Find("Id", id)
+        Else
+            Dim index = Database.Vessels.Local.ToList().FindIndex(Function(v) v.Id = id)
+            If index <> kNoCurrentRecord Then JobBindingSource.Position = index
+            Return index
+        End If
+    End Function
     Private Sub CmdCancel_Click(sender As Object, e As EventArgs)
         ' Undo any pending database changes and refresh the form.
         If Database IsNot Nothing Then
             Try
                 Rollback(Of Job)(Database)   ' Only the Jobs table is editable on this form.
-                DataGridJobs.Refresh
+                DataGridJobs.Refresh()
             Catch ex As Exception
                 MessageBox.Show("Error undoing changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -80,8 +49,8 @@ Public Class FrmJobs
         ' Save changes to the database context.
         If Database IsNot Nothing Then
             Try
-                Database.SaveChanges
-                DataGridJobs.Refresh
+                Database.SaveChanges()
+                DataGridJobs.Refresh()
             Catch ex As Exception
                 MessageBox.Show("Error saving changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -104,12 +73,32 @@ Public Class FrmJobs
             MsgBox(ex.Message)
         End Try
     End Sub
-
-    Private Sub RecordNavigationBar1_Load(sender As Object, e As EventArgs) Handles RecordNavigationBar1.Load
+    Private Sub FrmJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Bind the form BindingSources to the respective context model local views.
+        JobBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
+        VesselBindingSource.DataSource = Database.Vessels.Local.ToBindingList()
+        ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
+        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
+        BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList
+        MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
+        StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
+        ' Bind the details BindingSources to the master BindingSources on the property of the master model.
+        BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
         ' Set the nav bar properties.
-        RecordNavigationBar1.Caption = "Jobs"                  ' Caption
-        RecordNavigationBar1.BoundControl = DataGridJobs       ' Bound control
-        RecordNavigationBar1.Database = MyBase.Database        ' HaleMRIContext
-        RecordNavigationBar1.RecordSource = JobBindingSource   ' BindingSource
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Jobs"                  ' Caption
+        Navigator.MasterControl = DataGridJobs       ' Bound control
+        Navigator.Database = MyBase.Database        ' HaleMRIContext
+        Navigator.MasterSource = JobBindingSource   ' BindingSource
+    End Sub
+
+    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
+        ' Open the Jobs form with the selected job as the current record.
+        Try
+            ShowForm(mJobDetailsForm, Database)
+            mJobDetailsForm.Find(JobDetailsBindingSource.Current.Id)
+        Catch ex As Exception
+            MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

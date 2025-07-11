@@ -13,18 +13,13 @@ Public Class RecordNavigationBar
     ' traversing), updates, and manages the appearance
     ' and functionality of it's own and the bound
     ' DataGridView controls.
-
-    Private mBindingSource As BindingSource = Nothing   ' The client's data BindingSource control we manage.
-    Private mBountControl As DataGridView = Nothing     ' The client's DataGridView control we manage.
+#Region "Private Members"
+    Private mMasterSource As BindingSource = Nothing   ' The client's data BindingSource we manage.
+    Private WithEvents mMasterControl As DataGridView = Nothing    ' The client's DataGridView control we manage.
     Private mFilter As String = ""                      ' The current BindingSource filter as a SQL Where clause, if any.
-    Public Property BoundControl As DataGridView
-        Set(value As DataGridView)
-            SetBoundControl(value)
-        End Set
-        Get
-            Return mBountControl
-        End Get
-    End Property
+
+#End Region
+#Region "Public Inteface"
     Public Property Caption As String
         Set(value As String)
             LabCaption.Text = value
@@ -35,10 +30,15 @@ Public Class RecordNavigationBar
     End Property
     Public ReadOnly Property Current As Object
         Get
-            Return mBindingSource.Current
+            Return mMasterSource.Current
         End Get
     End Property
     Public Property Database As HaleMRIContext
+    Public Function Find(propertyName As String, key As Object) As Integer
+        Dim index = MasterSource.Find(propertyName, key)
+        Position = index
+        Return index
+    End Function
     Public Property Filter As String
         Set(value As String)
             mFilter = value
@@ -50,51 +50,43 @@ Public Class RecordNavigationBar
     End Property
     Public Property FilterOn As Boolean
         Set(value As Boolean)
-            If mBindingSource IsNot Nothing Then ChkToggleFilter.Checked = value
+            If mMasterSource IsNot Nothing Then ChkToggleFilter.Checked = value
         End Set
         Get
             Return ChkToggleFilter.Checked
         End Get
     End Property
-    Public Function Find(propertyName As String, key As Object) As Integer
-        Dim index = RecordSource.Find(propertyName, key)
-        Position = index
-        Return index
-    End Function
+    Public Property MasterControl As DataGridView
+    Public Property MasterSource As BindingSource
+        Set(value As BindingSource)
+            SetBindingSource(value)
+        End Set
+        Get
+            Return mMasterSource
+        End Get
+    End Property
     Public Property Position As Integer
         Set(value As Integer)
             SetPosition(value)
         End Set
         Get
-            Return mBindingSource.Position
+            Return mMasterSource.Position
         End Get
     End Property
     Public ReadOnly Property RecordCount As UInt32
         Get
-            Return mBindingSource.Count
+            Return mMasterSource.Count
         End Get
     End Property
-    Public Property RecordSource As BindingSource
-        Set(value As BindingSource)
-            SetBindingSource(value)
-        End Set
-        Get
-            Return mBindingSource
-        End Get
-    End Property
-    Private Sub BoundControl_RowsRemoved(sender As Object, e As DataGridViewRowsRemovedEventArgs)
-        ' Confirm deletes before saving changes to dB.
-    End Sub
-    Private Sub BoundControl_RowsAdded(sender As Object, e As DataGridViewRowsAddedEventArgs)
-        ' Confirm additions before saving changes to dB.
-    End Sub
+#End Region
+#Region "Event Handlers"
     Private Sub ChkToggleFilter_CheckedChanged(sender As Object, e As EventArgs) Handles ChkToggleFilter.CheckedChanged
         ' Toggle the BindingSource.Filter according to the checkbox's state.
         Try
             If ChkToggleFilter.Checked AndAlso Not String.IsNullOrEmpty(mFilter) Then
-                RecordSource.Filter = mFilter
+                MasterSource.Filter = mFilter
             Else
-                RecordSource.RemoveFilter()
+                MasterSource.RemoveFilter()
             End If
         Catch ex As Exception
             MessageBox.Show("Error filtering records: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -102,9 +94,9 @@ Public Class RecordNavigationBar
     End Sub
     Private Sub CmdAddNew_Click(sender As Object, e As EventArgs) Handles CmdAddNew.Click
         ' Add a new empty row to the DatagridView control.
-        If RecordSource IsNot Nothing Then
+        If MasterSource IsNot Nothing Then
             Try
-                RecordSource.AddNew()
+                MasterSource.AddNew()
             Catch ex As Exception
                 MessageBox.Show("Error adding new record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
@@ -116,14 +108,14 @@ Public Class RecordNavigationBar
         Try
             RemoveSelectedRows()
         Catch ex As Exception
-            MessageBox.Show("Error deleting record(s): " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error deleting record(s): " & ex.InnerException.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
     Private Sub CmdGotoFirst_Click(sender As Object, e As EventArgs) Handles CmdGotoFirst.Click
         ' Move the cursor to the DataGridView control's first record.
         Try
-            RecordSource.Position = 0
+            MasterSource.Position = 0
         Catch ex As Exception
             MessageBox.Show(ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -132,7 +124,7 @@ Public Class RecordNavigationBar
     Private Sub CmdGotoLast_Click(sender As Object, e As EventArgs) Handles CmdGotoLast.Click
         ' Move the cursor to the DataGridView control's last record.
         Try
-            RecordSource.Position = RecordSource.Count - 1
+            MasterSource.Position = MasterSource.Count - 1
         Catch ex As Exception
             MessageBox.Show(ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -141,7 +133,7 @@ Public Class RecordNavigationBar
     Private Sub CmdGotoNext_Click(sender As Object, e As EventArgs) Handles CmdGotoNext.Click
         ' Move the cursor to the DataGridView control's next record.
         Try
-            If RecordSource.Position < RecordSource.Count - 1 Then RecordSource.Position += 1
+            If MasterSource.Position < MasterSource.Count - 1 Then MasterSource.Position += 1
         Catch ex As Exception
             MessageBox.Show(ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -149,7 +141,7 @@ Public Class RecordNavigationBar
     Private Sub CmdGotoPrevious_Click(sender As Object, e As EventArgs) Handles cmdGotoPrevious.Click
         ' Move the cursor to the DataGridView control's previous record.
         Try
-            If RecordSource.Position > 0 Then RecordSource.Position -= 1
+            If MasterSource.Position > 0 Then MasterSource.Position -= 1
         Catch ex As Exception
             MessageBox.Show(ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -162,18 +154,18 @@ Public Class RecordNavigationBar
             Catch ex As Exception
                 MessageBox.Show("Error saving changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-            If BoundControl IsNot Nothing Then BoundControl.Refresh()
+            If MasterControl IsNot Nothing Then MasterControl.Refresh()
         End If
     End Sub
     Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click
         ' Cancel any pending changes to the database.
         If Database IsNot Nothing Then
             Try
-                Rollback(Of Customer)(Database)   ' Only the Customer table is editable on this form.
+                Rollback(Database, MasterSource.DataSource)
+                If MasterControl IsNot Nothing Then MasterControl.Refresh()
             Catch ex As Exception
                 MessageBox.Show("Error undoing changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
             End Try
-            If BoundControl IsNot Nothing Then BoundControl.Refresh()
         End If
     End Sub
     Private Sub RecordSource_DataSourceChanged(sender As Object, e As EventArgs)
@@ -193,49 +185,46 @@ Public Class RecordNavigationBar
 
         End Try
     End Sub
-
+    Private Sub RecordSource_RowsRemoved(ByRef sender As Object, ByRef e As DataGridViewRowsRemovedEventArgs)
+        ' Update the currently displayed position when the BindingSource underlying data changes.
+    End Sub
+#End Region
+#Region "Private Interface"
     Private Sub RemoveSelectedRows()
         ' Remove the DataGridView control's curently selected rows.
-        Dim rows() = BoundControl.SelectedRows.Cast(Of DataGridViewRow)().Select(Function(dgvr) dgvr.DataBoundItem).ToArray
+        Dim rows() = MasterControl.SelectedRows.Cast(Of DataGridViewRow)().Select(Function(dgvr) dgvr.DataBoundItem).ToArray
         If rows.Length > 0 Then
-            If MessageBox.Show($"You are about to delete {rows.Length} record(s). Click OK to continue or Cancel to cancel the delete.", STR_TITLE_DEFAULT, MessageBoxButtons.OKCancel) = DialogResult.OK Then
+            If MessageBox.Show($"You are about to permanently delete {rows.Length} record(s). Click OK to continue or Cancel to cancel the delete.", STR_TITLE_DEFAULT, MessageBoxButtons.OKCancel) = DialogResult.OK Then
                 For Each row In rows
-                    RecordSource.Remove(row)
+                    MasterSource.Remove(row)
                 Next
-                RecordSource.EndEdit()
-                ' Only do this if confirmed by user.
-                'Database.SaveChanges()
-                'BoundControl.Refresh()
+                MasterSource.EndEdit()
+                Database.SaveChanges()
+                MasterControl.Refresh()
             End If
         End If
     End Sub
     Private Sub SetBindingSource(value As BindingSource)
         ' Add handlers for the BindingSource that may effect the DataGridView control's state/appearance.
-        mBindingSource = value
-        If mBindingSource IsNot Nothing Then
-            AddHandler mBindingSource.PositionChanged, AddressOf RecordSource_PositionChanged
-            AddHandler mBindingSource.DataSourceChanged, AddressOf RecordSource_DataSourceChanged
+        mMasterSource = value
+        If mMasterSource IsNot Nothing Then
+            AddHandler mMasterSource.PositionChanged, AddressOf RecordSource_PositionChanged
+            AddHandler mMasterSource.DataSourceChanged, AddressOf RecordSource_DataSourceChanged
             ShowPosition()
-        End If
-    End Sub
-    Private Sub SetBoundControl(value As DataGridView)
-        ' Add handlers for the DataGridView control that may effect it's state/appearance.
-        mBountControl = value
-        If mBountControl IsNot Nothing Then
-            AddHandler mBountControl.RowsRemoved, AddressOf BoundControl_RowsRemoved
-            AddHandler mBountControl.RowsAdded, AddressOf BoundControl_RowsAdded
         End If
     End Sub
     Private Sub SetPosition(value As Integer)
         ' Set the BindingSource.Position property only if it's valid.
-        If mBindingSource IsNot Nothing AndAlso value >= 0 Then mBindingSource.Position = value
+        If mMasterSource IsNot Nothing AndAlso value >= 0 Then mMasterSource.Position = value
     End Sub
     Private Sub ShowPosition()
         ' Show the current position and count on the control.
-        If mBindingSource.Count > 0 AndAlso mBindingSource.Position >= 0 Then
-            Me.TxtCurrentPosition.Text = $"{mBindingSource.Position + 1} of {mBindingSource.Count}".ToString
+        If mMasterSource.Count > 0 AndAlso mMasterSource.Position >= 0 Then
+            Me.TxtCurrentPosition.Text = $"{mMasterSource.Position + 1} of {mMasterSource.Count}".ToString
+
         Else
             Me.TxtCurrentPosition.Text = ""
         End If
     End Sub
+#End Region
 End Class

@@ -10,13 +10,15 @@ Public Class FrmHaleMRI
     Private mFrmJobs As FrmJobs
     Private mFrmMeasurements As FrmMeasurements
     Private mFrmVessels As FrmVessels
-    Private mForm1 As Form1
     Private Sub CmdCalibrate_Click(sender As Object, e As EventArgs) Handles cmdCalibrate.Click
         ShowForm(mFrmCalibration)
         If mFrmCalibration.Hardware Is Nothing Then mFrmCalibration.Hardware = mWorkstationEncoders
     End Sub
     Private Sub CmdCustomers_Click(sender As Object, e As EventArgs) Handles cmdCustomers.Click
         ShowForm(mFrmCustomers, mDatabase)
+    End Sub
+    Private Sub CmdJobDetails_Click(sender As Object, e As EventArgs) Handles CmdJobDetails.Click
+        ShowForm(mFrmJobDetails, mDatabase)
     End Sub
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles cmdJobs.Click
         ShowForm(mFrmJobs, mDatabase)
@@ -45,7 +47,7 @@ Public Class FrmHaleMRI
         mDatabase.Customers.Load()
         mDatabase.Vessels.Load()
         mDatabase.Jobs.Load()
-        mDatabase.JobDetails.Load()
+        mDatabase.JobDetails.Include(Function(j) j.Job).Load()
         mDatabase.Employees.Load()
         mDatabase.Manufacturers.Load()
         mDatabase.VesselServiceTypes.Load()
@@ -54,11 +56,8 @@ Public Class FrmHaleMRI
         mDatabase.Materials.Load()
         mDatabase.Blades.Load()
         mDatabase.Styles.Load()
-    End Sub
-
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        ShowForm(mForm1, mDatabase)
-        'mForm1.Find("CustomerName", "Point Judth")
-        'mForm1.Filter = "CustomerName = 'Jung'"
+        mDatabase.Tolerances.Load()
+        mDatabase.Rotations.Load
+        mDatabase.Exclusions.Load()
     End Sub
 End Class

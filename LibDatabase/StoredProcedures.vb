@@ -2,6 +2,11 @@
 Imports LibDatabase.Contexts
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking
+Imports System.Linq.Expressions
+Imports Microsoft.EntityFrameworkCore.Query.Internal
+Imports System.Reflection
+Imports System.ComponentModel
+
 Public Module StoredProcedures
 #Region "Miscellaneous Functions"
     Public Function FormatString(ByVal str As String) As FormattableString
@@ -26,6 +31,20 @@ Public Module StoredProcedures
         Dim changedEntries = db.ChangeTracker.Entries(Of T)().Where(Function(e) e.State <> EntityState.Unchanged).ToList()
         RollbackImpl(changedEntries)
     End Sub
+    Public Sub Rollback(Of T As Class)(ByRef db As HaleMRIContext, bs As BindingList(Of T))
+        ' Undoes all changes made to the specified BindingList since the last SaveChanges().
+        ' Example usage: Rollback(db, customerBindingList), where customerBindingList is a BindingList(Of Customer).
+        If bs IsNot Nothing AndAlso db IsNot Nothing Then
+            Dim changedEntries = db.ChangeTracker.Entries(Of T)().Where(Function(e) e.State <> EntityState.Unchanged).ToList()
+            RollbackImpl(changedEntries)
+        End If
+    End Sub
+    Public Sub Rollback(Of T As Class)(ByRef db As HaleMRIContext, bs As IEnumerable(Of T))
+        If bs IsNot Nothing AndAlso db IsNot Nothing Then
+            Dim changedEntries = db.ChangeTracker.Entries(Of T)().Where(Function(e) e.State <> EntityState.Unchanged).ToList()
+            RollbackImpl(changedEntries)
+        End If
+    End Sub
     Private Sub RollbackImpl(entries As IEnumerable(Of EntityEntry))
         ' This subroutine undoes all changes made to the specified entries.
         ' It is used internally by the Rollback methods.
@@ -43,7 +62,27 @@ Public Module StoredProcedures
             Next
         End If
     End Sub
-    #End Region
+#End Region
+    Public Function GetRelatedEntities(Of T As Class)(db As HaleMRIContext, propertyName As String, key As Object) As List(Of T)
+        ' Returns a list of entities of type T that match the specified property name and key.
+        ' This function is used to retrieve entities from the database context based on a specific property and key.
+        Dim qry = db.Set(Of T)().AsQueryable()
+        Dim param = Expression.Parameter(GetType(T), "x")
+        Dim propExp As MemberExpression = Expression.Property(param, propertyName)
+        Dim propExpression As Expression
+        If propExp.Type.IsGenericType AndAlso propExp.Type.GetGenericTypeDefinition() Is GetType(Nullable(Of)) Then
+            ' Handle nullable entity member types
+            Dim filter = Expression.Constant(Convert.ChangeType(key, propExp.Type.GetGenericArguments()(0)))
+            Dim typeFilter As Expression = Expression.Convert(filter, propExp.Type)
+            propExpression = Expression.Equal(propExp, typeFilter)
+        Else
+            ' Handle non-nullable entity member types
+            propExpression = Expression.Equal(propExp, Expression.Constant(key))
+        End If
+        Dim exp = Expression.Lambda(Of Func(Of T, Boolean))(propExpression, param)
+        Return qry.Where(exp).ToList()
+    End Function
+
 #Region "Customer Queries"
     Public Function QryCustomerNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
         'Returns TRUE if a customer with the specified name exists in the database,

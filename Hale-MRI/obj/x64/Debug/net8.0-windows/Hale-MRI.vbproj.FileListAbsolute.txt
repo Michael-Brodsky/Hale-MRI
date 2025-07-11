@@ -1,5 +1,4 @@
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.vbproj.AssemblyReference.cache
-C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.Form1.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmCalibration.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmCustomers.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmDatabaseForm.resources
@@ -162,3 +161,4 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\refin
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.pdb
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\ref\Hale-MRI.dll
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmJobDetails.resources

@@ -1,17 +1,21 @@
 ﻿Imports System.ComponentModel
 Imports System.Data
 Imports System.Runtime.CompilerServices
+Imports Microsoft.EntityFrameworkCore.Metadata
+Imports System.Security.Principal
+Imports System.Linq.Expressions
+Imports System.Reflection
 
 Public Module ModelExtensions
     <Extension()>
     Public Function Filter(Of T)(ByVal list As IEnumerable(Of T), ByVal filterParam As Func(Of T, Boolean)) As IEnumerable(Of T)
-        ' Returns an enumerable collection of Context.Entities(of T), 
+        ' Returns an enumerable collection, IEnumerable(Of DbSet(Of T)), 
         ' filtered according the filterParam expression.
         Return list.Where(filterParam)
     End Function
     <Extension()>
     Public Function ToDataTable(Of T)(ByVal data As IList(Of T)) As DataTable
-        ' Returns a List(Of) Context.Entities(of T) as a searchable DataTable.
+        ' Returns a BindingSource, List(Of DbSet(Of T)), converted to a searchable DataTable.
         Dim properties As PropertyDescriptorCollection = TypeDescriptor.GetProperties(GetType(T))
         Dim table As New DataTable()
 
@@ -29,4 +33,5 @@ Public Module ModelExtensions
 
         Return table
     End Function
+
 End Module
