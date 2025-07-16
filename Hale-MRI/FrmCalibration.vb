@@ -93,11 +93,11 @@ Public Class FrmCalibration
             .AngleCalibration = Double.Parse(txtAngleCalibration.Text)
             .DepthCalibration = Double.Parse(txtDepthCalibration.Text)
             .RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
-            .AngleResolution = Integer.Parse(txtAngleResolution.Text)
-            .DepthResolution = Integer.Parse(txtDepthResolution.Text)
-            .RadiusResolution = Integer.Parse(txtRadiusResolution.Text)
-            .RadiusOffset = Integer.Parse(txtRadiusOffsetR.Text)
-            .RadiusOffsetL = Integer.Parse(txtRadiusOffsetL.Text)
+            .AngleResolution = Integer.Parse(TxtAngleResolution.Text)
+            .DepthResolution = Integer.Parse(TxtDepthResolution.Text)
+            .RadiusResolution = Integer.Parse(TxtRadiusResolution.Text)
+            .RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
+            .RadiusOffsetL = Integer.Parse(TxtRadiusOffsetL.Text)
             .HalfProbeDiameter = Integer.Parse(txtHalfProbeDiameter.Text)
             .ScanIncrement = Integer.Parse(txtScanIncrement.Text)
             .FixedOffset = Integer.Parse(txtFixedOffset.Text)
@@ -147,7 +147,7 @@ Public Class FrmCalibration
             mHardware.Encoders.AngleCalibration = Double.Parse(txtAngleCalibration.Text)
             mHardware.Encoders.DepthCalibration = Double.Parse(txtDepthCalibration.Text)
             mHardware.Encoders.RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
-            mHardware.Encoders.RadiusOffset = Integer.Parse(txtRadiusOffsetR.Text)
+            mHardware.Encoders.RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
         End If
     End Sub
     Private Sub EncodersCalibrationShow()
@@ -155,7 +155,7 @@ Public Class FrmCalibration
         txtAngleCalibration.Text = mHardware.Encoders.AngleCalibration.ToString()
         txtDepthCalibration.Text = mHardware.Encoders.DepthCalibration.ToString()
         txtRadiusCalibration.Text = mHardware.Encoders.RadiusCalibration.ToString()
-        txtRadiusOffsetR.Text = mHardware.Encoders.RadiusOffset.ToString()
+        TxtRadiusOffsetR.Text = mHardware.Encoders.RadiusOffset.ToString()
     End Sub
     Private Sub EncodersErrorShow(prompt As String, msg As String)
         ' Display an error message and update the UI accordingly
@@ -195,11 +195,11 @@ Public Class FrmCalibration
         txtAngleCalibration.Text = ws.AngleCalibration.ToString()
         txtDepthCalibration.Text = ws.DepthCalibration.ToString()
         txtRadiusCalibration.Text = ws.RadiusCalibration.ToString()
-        txtAngleResolution.Text = ws.AngleResolution.ToString()
-        txtDepthResolution.Text = ws.DepthResolution.ToString()
-        txtRadiusResolution.Text = ws.RadiusResolution.ToString()
-        txtRadiusOffsetR.Text = ws.RadiusOffset.ToString()
-        txtRadiusOffsetL.Text = ws.RadiusOffsetL.ToString()
+        TxtAngleResolution.Text = ws.AngleResolution.ToString()
+        TxtDepthResolution.Text = ws.DepthResolution.ToString()
+        TxtRadiusResolution.Text = ws.RadiusResolution.ToString()
+        TxtRadiusOffsetR.Text = ws.RadiusOffset.ToString()
+        TxtRadiusOffsetL.Text = ws.RadiusOffsetL.ToString()
         txtHalfProbeDiameter.Text = ws.HalfProbeDiameter.ToString()
         txtScanIncrement.Text = ws.ScanIncrement.ToString()
         txtFixedOffset.Text = ws.FixedOffset.ToString()
@@ -315,7 +315,7 @@ Public Class FrmCalibration
     Private Sub TxtAngleCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtAngleCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtAngleResolution_TextChanged(sender As Object, e As EventArgs) Handles txtAngleResolution.TextChanged
+    Private Sub TxtAngleResolution_TextChanged(sender As Object, e As EventArgs)
         SaveCancelControlsEnabled(True)
     End Sub
     Private Sub TxtCalibrationFile_TextChanged(sender As Object, e As EventArgs) Handles txtCalibrationFile.TextChanged
@@ -324,7 +324,7 @@ Public Class FrmCalibration
     Private Sub TxtDepthCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtDepthCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtDepthResolution_TextChanged(sender As Object, e As EventArgs) Handles txtDepthResolution.TextChanged
+    Private Sub TxtDepthResolution_TextChanged(sender As Object, e As EventArgs)
         SaveCancelControlsEnabled(True)
     End Sub
     Private Sub TxtFixedOffset_TextChanged(sender As Object, e As EventArgs) Handles txtFixedOffset.TextChanged
@@ -336,13 +336,13 @@ Public Class FrmCalibration
     Private Sub TxtRadiusCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtRadiusCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtRadiusOffset_TextChanged(sender As Object, e As EventArgs) Handles txtRadiusOffsetR.TextChanged
+    Private Sub TxtRadiusOffset_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusOffsetR.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtRadiusOffsetL_TextChanged(sender As Object, e As EventArgs) Handles txtRadiusOffsetL.TextChanged
+    Private Sub TxtRadiusOffsetL_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusOffsetL.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtRadiusResolution_TextChanged(sender As Object, e As EventArgs) Handles txtRadiusResolution.TextChanged
+    Private Sub TxtRadiusResolution_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusResolution.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
     Private Sub txtScanIncrement_TextChanged(sender As Object, e As EventArgs) Handles txtScanIncrement.TextChanged

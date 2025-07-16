@@ -26,19 +26,9 @@ Partial Class FrmCustomers
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmCustomers))
         dataGridCustomers = New DataGridView()
-        CustomerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        CityDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        State = New DataGridViewComboBoxColumn()
         StateCodeBindingSource = New BindingSource(components)
-        PostalCodeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        CountryCode = New DataGridViewComboBoxColumn()
         CountryCodeBindingSource = New BindingSource(components)
-        TelephoneDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        EmailDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        WebsiteDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CustomerBindingSource = New BindingSource(components)
         VesselBindingSource = New BindingSource(components)
         JobBindingSource = New BindingSource(components)
@@ -57,6 +47,15 @@ Partial Class FrmCustomers
         labVesselJobsTitle = New Label()
         TableLayoutPanel3 = New TableLayoutPanel()
         RecordNavigationBar1 = New RecordNavigationBar()
+        CustomerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        CityDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        State = New DataGridViewComboBoxColumn()
+        PostalCodeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        CountryCode = New DataGridViewComboBoxColumn()
+        TelephoneDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        EmailDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        WebsiteDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CType(dataGridCustomers, ComponentModel.ISupportInitialize).BeginInit()
         CType(StateCodeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CountryCodeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -91,100 +90,13 @@ Partial Class FrmCustomers
         dataGridCustomers.Size = New Size(1826, 484)
         dataGridCustomers.TabIndex = 0
         ' 
-        ' CustomerNameDataGridViewTextBoxColumn
-        ' 
-        CustomerNameDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        CustomerNameDataGridViewTextBoxColumn.DataPropertyName = "CustomerName"
-        CustomerNameDataGridViewTextBoxColumn.HeaderText = "Customer Name"
-        CustomerNameDataGridViewTextBoxColumn.MinimumWidth = 120
-        CustomerNameDataGridViewTextBoxColumn.Name = "CustomerNameDataGridViewTextBoxColumn"
-        CustomerNameDataGridViewTextBoxColumn.Width = 120
-        ' 
-        ' AddressDataGridViewTextBoxColumn
-        ' 
-        AddressDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        AddressDataGridViewTextBoxColumn.DataPropertyName = "Address"
-        AddressDataGridViewTextBoxColumn.HeaderText = "Address"
-        AddressDataGridViewTextBoxColumn.MinimumWidth = 120
-        AddressDataGridViewTextBoxColumn.Name = "AddressDataGridViewTextBoxColumn"
-        AddressDataGridViewTextBoxColumn.Width = 120
-        ' 
-        ' CityDataGridViewTextBoxColumn
-        ' 
-        CityDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        CityDataGridViewTextBoxColumn.DataPropertyName = "City"
-        CityDataGridViewTextBoxColumn.HeaderText = "City"
-        CityDataGridViewTextBoxColumn.MinimumWidth = 120
-        CityDataGridViewTextBoxColumn.Name = "CityDataGridViewTextBoxColumn"
-        CityDataGridViewTextBoxColumn.Width = 120
-        ' 
-        ' State
-        ' 
-        State.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        State.DataPropertyName = "State"
-        State.DataSource = StateCodeBindingSource
-        State.DisplayMember = "StateCode1"
-        State.HeaderText = "State"
-        State.MinimumWidth = 60
-        State.Name = "State"
-        State.ValueMember = "StateCode1"
-        State.Width = 60
-        ' 
         ' StateCodeBindingSource
         ' 
         StateCodeBindingSource.DataSource = GetType(LibDatabase.Models.StateCode)
         ' 
-        ' PostalCodeDataGridViewTextBoxColumn
-        ' 
-        PostalCodeDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        PostalCodeDataGridViewTextBoxColumn.DataPropertyName = "PostalCode"
-        PostalCodeDataGridViewTextBoxColumn.HeaderText = "Postal Code"
-        PostalCodeDataGridViewTextBoxColumn.MinimumWidth = 120
-        PostalCodeDataGridViewTextBoxColumn.Name = "PostalCodeDataGridViewTextBoxColumn"
-        PostalCodeDataGridViewTextBoxColumn.Width = 120
-        ' 
-        ' CountryCode
-        ' 
-        CountryCode.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        CountryCode.DataPropertyName = "CountryCode"
-        CountryCode.DataSource = CountryCodeBindingSource
-        CountryCode.DisplayMember = "Country"
-        CountryCode.HeaderText = "Country Code"
-        CountryCode.MinimumWidth = 120
-        CountryCode.Name = "CountryCode"
-        CountryCode.ValueMember = "Alpha2Code"
-        CountryCode.Width = 120
-        ' 
         ' CountryCodeBindingSource
         ' 
         CountryCodeBindingSource.DataSource = GetType(LibDatabase.Models.CountryCode)
-        ' 
-        ' TelephoneDataGridViewTextBoxColumn
-        ' 
-        TelephoneDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        TelephoneDataGridViewTextBoxColumn.DataPropertyName = "Telephone"
-        TelephoneDataGridViewTextBoxColumn.HeaderText = "Telephone"
-        TelephoneDataGridViewTextBoxColumn.MinimumWidth = 160
-        TelephoneDataGridViewTextBoxColumn.Name = "TelephoneDataGridViewTextBoxColumn"
-        TelephoneDataGridViewTextBoxColumn.Width = 160
-        ' 
-        ' EmailDataGridViewTextBoxColumn
-        ' 
-        EmailDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        EmailDataGridViewTextBoxColumn.DataPropertyName = "Email"
-        EmailDataGridViewTextBoxColumn.HeaderText = "Email"
-        EmailDataGridViewTextBoxColumn.MinimumWidth = 120
-        EmailDataGridViewTextBoxColumn.Name = "EmailDataGridViewTextBoxColumn"
-        EmailDataGridViewTextBoxColumn.Width = 120
-        ' 
-        ' WebsiteDataGridViewTextBoxColumn
-        ' 
-        WebsiteDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        WebsiteDataGridViewTextBoxColumn.DataPropertyName = "Website"
-        WebsiteDataGridViewTextBoxColumn.HeaderText = "Website"
-        WebsiteDataGridViewTextBoxColumn.MinimumWidth = 120
-        WebsiteDataGridViewTextBoxColumn.Name = "WebsiteDataGridViewTextBoxColumn"
-        WebsiteDataGridViewTextBoxColumn.Width = 120
         ' 
         ' CustomerBindingSource
         ' 
@@ -387,17 +299,102 @@ Partial Class FrmCustomers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
-        RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(0, 0)
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
-        RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
+        RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)
         RecordNavigationBar1.TabIndex = 1
+        ' 
+        ' CustomerNameDataGridViewTextBoxColumn
+        ' 
+        CustomerNameDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        CustomerNameDataGridViewTextBoxColumn.DataPropertyName = "CustomerName"
+        CustomerNameDataGridViewTextBoxColumn.HeaderText = "Customer Name"
+        CustomerNameDataGridViewTextBoxColumn.MinimumWidth = 120
+        CustomerNameDataGridViewTextBoxColumn.Name = "CustomerNameDataGridViewTextBoxColumn"
+        CustomerNameDataGridViewTextBoxColumn.Width = 120
+        ' 
+        ' AddressDataGridViewTextBoxColumn
+        ' 
+        AddressDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        AddressDataGridViewTextBoxColumn.DataPropertyName = "Address"
+        AddressDataGridViewTextBoxColumn.HeaderText = "Address"
+        AddressDataGridViewTextBoxColumn.MinimumWidth = 120
+        AddressDataGridViewTextBoxColumn.Name = "AddressDataGridViewTextBoxColumn"
+        AddressDataGridViewTextBoxColumn.Width = 120
+        ' 
+        ' CityDataGridViewTextBoxColumn
+        ' 
+        CityDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        CityDataGridViewTextBoxColumn.DataPropertyName = "City"
+        CityDataGridViewTextBoxColumn.HeaderText = "City"
+        CityDataGridViewTextBoxColumn.MinimumWidth = 120
+        CityDataGridViewTextBoxColumn.Name = "CityDataGridViewTextBoxColumn"
+        CityDataGridViewTextBoxColumn.Width = 120
+        ' 
+        ' State
+        ' 
+        State.DataPropertyName = "State"
+        State.DataSource = StateCodeBindingSource
+        State.DisplayMember = "StateName"
+        State.HeaderText = "State"
+        State.MinimumWidth = 90
+        State.Name = "State"
+        State.ValueMember = "StateCode1"
+        State.Width = 90
+        ' 
+        ' PostalCodeDataGridViewTextBoxColumn
+        ' 
+        PostalCodeDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        PostalCodeDataGridViewTextBoxColumn.DataPropertyName = "PostalCode"
+        PostalCodeDataGridViewTextBoxColumn.HeaderText = "Postal Code"
+        PostalCodeDataGridViewTextBoxColumn.MinimumWidth = 120
+        PostalCodeDataGridViewTextBoxColumn.Name = "PostalCodeDataGridViewTextBoxColumn"
+        PostalCodeDataGridViewTextBoxColumn.Width = 120
+        ' 
+        ' CountryCode
+        ' 
+        CountryCode.DataPropertyName = "CountryCode"
+        CountryCode.DataSource = CountryCodeBindingSource
+        CountryCode.DisplayMember = "Country"
+        CountryCode.HeaderText = "Country Code"
+        CountryCode.MinimumWidth = 120
+        CountryCode.Name = "CountryCode"
+        CountryCode.ValueMember = "Alpha2Code"
+        CountryCode.Width = 120
+        ' 
+        ' TelephoneDataGridViewTextBoxColumn
+        ' 
+        TelephoneDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        TelephoneDataGridViewTextBoxColumn.DataPropertyName = "Telephone"
+        TelephoneDataGridViewTextBoxColumn.HeaderText = "Telephone"
+        TelephoneDataGridViewTextBoxColumn.MinimumWidth = 160
+        TelephoneDataGridViewTextBoxColumn.Name = "TelephoneDataGridViewTextBoxColumn"
+        TelephoneDataGridViewTextBoxColumn.Width = 160
+        ' 
+        ' EmailDataGridViewTextBoxColumn
+        ' 
+        EmailDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        EmailDataGridViewTextBoxColumn.DataPropertyName = "Email"
+        EmailDataGridViewTextBoxColumn.HeaderText = "Email"
+        EmailDataGridViewTextBoxColumn.MinimumWidth = 120
+        EmailDataGridViewTextBoxColumn.Name = "EmailDataGridViewTextBoxColumn"
+        EmailDataGridViewTextBoxColumn.Width = 120
+        ' 
+        ' WebsiteDataGridViewTextBoxColumn
+        ' 
+        WebsiteDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        WebsiteDataGridViewTextBoxColumn.DataPropertyName = "Website"
+        WebsiteDataGridViewTextBoxColumn.HeaderText = "Website"
+        WebsiteDataGridViewTextBoxColumn.MinimumWidth = 120
+        WebsiteDataGridViewTextBoxColumn.Name = "WebsiteDataGridViewTextBoxColumn"
+        WebsiteDataGridViewTextBoxColumn.Width = 120
         ' 
         ' FrmCustomers
         ' 
