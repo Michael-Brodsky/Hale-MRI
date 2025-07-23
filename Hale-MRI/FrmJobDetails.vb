@@ -2,6 +2,7 @@
 
 Public Class FrmJobDetails
     Inherits FrmDatabaseForm
+    Private mFrmMeasurements As FrmMeasurements
     Public Property Current As Customer
         Set(value As Customer)
             Me.Find(value.Id)
@@ -43,5 +44,15 @@ Public Class FrmJobDetails
         Navigator.Caption = "Job Details"
         Navigator.MasterSource = JobDetailBindingSource
         Navigator.MasterControl = DataGridJobDetails
+    End Sub
+
+    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
+        Try
+            ShowForm(mFrmMeasurements, Database)
+            mFrmMeasurements.JobDetails = CType(JobDetailBindingSource.Current, JobDetail)
+            mFrmMeasurements.Job = JobDetailBindingSource.Current.Job
+        Catch ex As Exception
+            MessageBox.Show("Error opening measurements form: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 End Class

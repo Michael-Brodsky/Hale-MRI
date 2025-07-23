@@ -59,5 +59,6 @@ Public Class FrmHaleMRI
         mDatabase.Tolerances.Load()
         mDatabase.Rotations.Load
         mDatabase.Exclusions.Load()
+        mDatabase.Workstations.Load()
     End Sub
 End Class

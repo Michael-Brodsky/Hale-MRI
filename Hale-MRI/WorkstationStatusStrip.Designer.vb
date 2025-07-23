@@ -22,7 +22,6 @@ Partial Class WorkstationStatusStrip
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(WorkstationStatusStrip))
         StatusStrip1 = New StatusStrip()
         WorkstationNameLabel = New ToolStripStatusLabel()
         EncoderButton = New ToolStripSplitButton()
@@ -39,9 +38,10 @@ Partial Class WorkstationStatusStrip
         ' 
         StatusStrip1.ImageScalingSize = New Size(32, 32)
         StatusStrip1.Items.AddRange(New ToolStripItem() {WorkstationNameLabel, EncoderButton, EncoderStatusLabel, OperationStatusLabel})
-        StatusStrip1.Location = New Point(0, 108)
+        StatusStrip1.Location = New Point(0, 32)
         StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Size = New Size(1642, 42)
+        StatusStrip1.Padding = New Padding(1, 0, 8, 0)
+        StatusStrip1.Size = New Size(884, 38)
         StatusStrip1.TabIndex = 0
         StatusStrip1.Text = "StatusStrip1"
         ' 
@@ -49,62 +49,60 @@ Partial Class WorkstationStatusStrip
         ' 
         WorkstationNameLabel.Margin = New Padding(30, 6, 26, 4)
         WorkstationNameLabel.Name = "WorkstationNameLabel"
-        WorkstationNameLabel.Size = New Size(261, 32)
-        WorkstationNameLabel.Text = "WorkstationNameLabel"
+        WorkstationNameLabel.Size = New Size(0, 28)
         ' 
         ' EncoderButton
         ' 
         EncoderButton.DisplayStyle = ToolStripItemDisplayStyle.Image
         EncoderButton.DropDownItems.AddRange(New ToolStripItem() {EncoderInitializeMenuItem, EncoderAngleResetMenuItem, EncoderDepthResetMenuItem, EncoderRadiusResetMenuItem})
-        EncoderButton.Image = CType(resources.GetObject("EncoderButton.Image"), Image)
+        EncoderButton.Image = My.Resources.Resources.Measure
         EncoderButton.ImageTransparentColor = Color.Magenta
         EncoderButton.Name = "EncoderButton"
-        EncoderButton.Size = New Size(59, 38)
+        EncoderButton.Size = New Size(48, 36)
         EncoderButton.Text = "Encoders"
         ' 
         ' EncoderInitializeMenuItem
         ' 
         EncoderInitializeMenuItem.Name = "EncoderInitializeMenuItem"
-        EncoderInitializeMenuItem.Size = New Size(281, 44)
+        EncoderInitializeMenuItem.Size = New Size(180, 22)
         EncoderInitializeMenuItem.Text = "Initialize"
         ' 
         ' EncoderAngleResetMenuItem
         ' 
         EncoderAngleResetMenuItem.Name = "EncoderAngleResetMenuItem"
-        EncoderAngleResetMenuItem.Size = New Size(281, 44)
+        EncoderAngleResetMenuItem.Size = New Size(180, 22)
         EncoderAngleResetMenuItem.Text = "Angle Reset"
         ' 
         ' EncoderDepthResetMenuItem
         ' 
         EncoderDepthResetMenuItem.Name = "EncoderDepthResetMenuItem"
-        EncoderDepthResetMenuItem.Size = New Size(281, 44)
+        EncoderDepthResetMenuItem.Size = New Size(180, 22)
         EncoderDepthResetMenuItem.Text = "Depth Reset"
         ' 
         ' EncoderRadiusResetMenuItem
         ' 
         EncoderRadiusResetMenuItem.Name = "EncoderRadiusResetMenuItem"
-        EncoderRadiusResetMenuItem.Size = New Size(281, 44)
+        EncoderRadiusResetMenuItem.Size = New Size(180, 22)
         EncoderRadiusResetMenuItem.Text = "Radius Reset"
         ' 
         ' EncoderStatusLabel
         ' 
         EncoderStatusLabel.Name = "EncoderStatusLabel"
-        EncoderStatusLabel.Size = New Size(220, 32)
-        EncoderStatusLabel.Text = "EncoderStatusLabel"
+        EncoderStatusLabel.Size = New Size(0, 33)
         ' 
         ' OperationStatusLabel
         ' 
         OperationStatusLabel.Name = "OperationStatusLabel"
-        OperationStatusLabel.Size = New Size(241, 32)
-        OperationStatusLabel.Text = "OperationStatusLabel"
+        OperationStatusLabel.Size = New Size(0, 33)
         ' 
         ' WorkstationStatusStrip
         ' 
-        AutoScaleDimensions = New SizeF(13F, 32F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         Controls.Add(StatusStrip1)
+        Margin = New Padding(2, 1, 2, 1)
         Name = "WorkstationStatusStrip"
-        Size = New Size(1642, 150)
+        Size = New Size(884, 70)
         StatusStrip1.ResumeLayout(False)
         StatusStrip1.PerformLayout()
         ResumeLayout(False)

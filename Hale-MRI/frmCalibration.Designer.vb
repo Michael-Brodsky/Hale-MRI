@@ -34,14 +34,6 @@ Partial Class FrmCalibration
         txtDepthCalibration = New TextBox()
         labRadiusOffsetR = New Label()
         TxtRadiusOffsetR = New TextBox()
-        StatusStrip1 = New StatusStrip()
-        WorkstationLabel = New ToolStripStatusLabel()
-        EncodersSplitButton = New ToolStripSplitButton()
-        InitializeToolStripMenuItem = New ToolStripMenuItem()
-        ResetAngleToolStripMenuItem = New ToolStripMenuItem()
-        ResetDepthToolStripMenuItem = New ToolStripMenuItem()
-        ResetRadiusToolStripMenuItem = New ToolStripMenuItem()
-        StatusLabel = New ToolStripStatusLabel()
         cmdSaveCalibration = New Button()
         cmdCancelCalibration = New Button()
         txtCalibrationFile = New TextBox()
@@ -68,7 +60,7 @@ Partial Class FrmCalibration
         ToolTipSave = New ToolTip(components)
         TxtAngleResolution = New TextBox()
         TxtDepthResolution = New TextBox()
-        StatusStrip1.SuspendLayout()
+        WorkstationStatusStrip1 = New WorkstationStatusStrip()
         SuspendLayout()
         ' 
         ' txtAngleCalibration
@@ -92,7 +84,6 @@ Partial Class FrmCalibration
         ' 
         ' cmdAngleCalibration
         ' 
-        cmdAngleCalibration.Enabled = False
         cmdAngleCalibration.Image = My.Resources.Resources.Measure
         cmdAngleCalibration.Location = New Point(345, 128)
         cmdAngleCalibration.Margin = New Padding(2, 1, 2, 1)
@@ -106,7 +97,6 @@ Partial Class FrmCalibration
         ' 
         ' cmdRadiusCalibration
         ' 
-        cmdRadiusCalibration.Enabled = False
         cmdRadiusCalibration.Image = My.Resources.Resources.Measure
         cmdRadiusCalibration.Location = New Point(345, 177)
         cmdRadiusCalibration.Margin = New Padding(2, 1, 2, 1)
@@ -139,7 +129,6 @@ Partial Class FrmCalibration
         ' 
         ' cmdDepthCalibration
         ' 
-        cmdDepthCalibration.Enabled = False
         cmdDepthCalibration.Image = My.Resources.Resources.Measure
         cmdDepthCalibration.Location = New Point(345, 152)
         cmdDepthCalibration.Margin = New Padding(2, 1, 2, 1)
@@ -187,66 +176,6 @@ Partial Class FrmCalibration
         TxtRadiusOffsetR.Name = "TxtRadiusOffsetR"
         TxtRadiusOffsetR.Size = New Size(188, 23)
         TxtRadiusOffsetR.TabIndex = 23
-        ' 
-        ' StatusStrip1
-        ' 
-        StatusStrip1.ImageScalingSize = New Size(32, 32)
-        StatusStrip1.Items.AddRange(New ToolStripItem() {WorkstationLabel, EncodersSplitButton, StatusLabel})
-        StatusStrip1.Location = New Point(0, 475)
-        StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Padding = New Padding(1, 0, 8, 0)
-        StatusStrip1.Size = New Size(795, 25)
-        StatusStrip1.TabIndex = 33
-        StatusStrip1.Text = "StatusStrip1"
-        ' 
-        ' WorkstationLabel
-        ' 
-        WorkstationLabel.Margin = New Padding(29, 6, 26, 4)
-        WorkstationLabel.Name = "WorkstationLabel"
-        WorkstationLabel.Size = New Size(71, 15)
-        WorkstationLabel.Text = "Workstation"
-        WorkstationLabel.ToolTipText = "Workstation Name"
-        ' 
-        ' EncodersSplitButton
-        ' 
-        EncodersSplitButton.DisplayStyle = ToolStripItemDisplayStyle.Image
-        EncodersSplitButton.DropDownItems.AddRange(New ToolStripItem() {InitializeToolStripMenuItem, ResetAngleToolStripMenuItem, ResetDepthToolStripMenuItem, ResetRadiusToolStripMenuItem})
-        EncodersSplitButton.ImageTransparentColor = Color.Magenta
-        EncodersSplitButton.Margin = New Padding(0, 4, 10, 0)
-        EncodersSplitButton.Name = "EncodersSplitButton"
-        EncodersSplitButton.Size = New Size(16, 21)
-        EncodersSplitButton.Text = "Encoders"
-        ' 
-        ' InitializeToolStripMenuItem
-        ' 
-        InitializeToolStripMenuItem.Name = "InitializeToolStripMenuItem"
-        InitializeToolStripMenuItem.Size = New Size(137, 22)
-        InitializeToolStripMenuItem.Text = "Initialize"
-        ' 
-        ' ResetAngleToolStripMenuItem
-        ' 
-        ResetAngleToolStripMenuItem.Name = "ResetAngleToolStripMenuItem"
-        ResetAngleToolStripMenuItem.Size = New Size(137, 22)
-        ResetAngleToolStripMenuItem.Text = "Reset Angle"
-        ' 
-        ' ResetDepthToolStripMenuItem
-        ' 
-        ResetDepthToolStripMenuItem.Name = "ResetDepthToolStripMenuItem"
-        ResetDepthToolStripMenuItem.Size = New Size(137, 22)
-        ResetDepthToolStripMenuItem.Text = "Reset Depth"
-        ' 
-        ' ResetRadiusToolStripMenuItem
-        ' 
-        ResetRadiusToolStripMenuItem.Name = "ResetRadiusToolStripMenuItem"
-        ResetRadiusToolStripMenuItem.Size = New Size(137, 22)
-        ResetRadiusToolStripMenuItem.Text = "ResetRadius"
-        ' 
-        ' StatusLabel
-        ' 
-        StatusLabel.Name = "StatusLabel"
-        StatusLabel.Size = New Size(39, 20)
-        StatusLabel.Text = "Status"
-        StatusLabel.ToolTipText = "Encoder Status"
         ' 
         ' cmdSaveCalibration
         ' 
@@ -317,7 +246,6 @@ Partial Class FrmCalibration
         ' chkCalibrateAll
         ' 
         chkCalibrateAll.Appearance = Appearance.Button
-        chkCalibrateAll.Enabled = False
         chkCalibrateAll.Image = My.Resources.Resources.Timer
         chkCalibrateAll.ImageAlign = ContentAlignment.MiddleRight
         chkCalibrateAll.Location = New Point(345, 104)
@@ -453,7 +381,6 @@ Partial Class FrmCalibration
         ' 
         ' cmdZeroCalibration
         ' 
-        cmdZeroCalibration.Enabled = False
         cmdZeroCalibration.Image = My.Resources.Resources.Home
         cmdZeroCalibration.Location = New Point(431, 104)
         cmdZeroCalibration.Margin = New Padding(2, 1, 2, 1)
@@ -498,11 +425,25 @@ Partial Class FrmCalibration
         TxtDepthResolution.Size = New Size(188, 23)
         TxtDepthResolution.TabIndex = 19
         ' 
+        ' WorkstationStatusStrip1
+        ' 
+        WorkstationStatusStrip1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        WorkstationStatusStrip1.Hardware = Nothing
+        WorkstationStatusStrip1.Location = New Point(0, 482)
+        WorkstationStatusStrip1.Margin = New Padding(2, 1, 2, 1)
+        WorkstationStatusStrip1.Name = "WorkstationStatusStrip1"
+        WorkstationStatusStrip1.Operation = ""
+        WorkstationStatusStrip1.Size = New Size(795, 39)
+        WorkstationStatusStrip1.Status = WorkstationStatusStrip.EncoderStatus.NoEncoders
+        WorkstationStatusStrip1.TabIndex = 33
+        WorkstationStatusStrip1.WorkstationName = ""
+        ' 
         ' FrmCalibration
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(795, 500)
+        ClientSize = New Size(795, 520)
+        Controls.Add(WorkstationStatusStrip1)
         Controls.Add(TxtDepthResolution)
         Controls.Add(TxtAngleResolution)
         Controls.Add(cmdDefaultCalibration)
@@ -527,7 +468,6 @@ Partial Class FrmCalibration
         Controls.Add(txtCalibrationFile)
         Controls.Add(cmdCancelCalibration)
         Controls.Add(cmdSaveCalibration)
-        Controls.Add(StatusStrip1)
         Controls.Add(labRadiusOffsetR)
         Controls.Add(TxtRadiusOffsetR)
         Controls.Add(cmdDepthCalibration)
@@ -543,8 +483,6 @@ Partial Class FrmCalibration
         Name = "FrmCalibration"
         Text = "Encoder Calibration"
         ToolTipSave.SetToolTip(Me, "Calibrate Angle" & vbCrLf)
-        StatusStrip1.ResumeLayout(False)
-        StatusStrip1.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -560,12 +498,6 @@ Partial Class FrmCalibration
     Friend WithEvents txtDepthCalibration As TextBox
     Friend WithEvents labRadiusOffsetR As Label
     Friend WithEvents TxtRadiusOffsetR As TextBox
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents WorkstationLabel As ToolStripStatusLabel
-    Friend WithEvents StatusLabel As ToolStripStatusLabel
-    Friend WithEvents EncodersSplitButton As ToolStripSplitButton
-    Friend WithEvents InitializeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetAngleToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents cmdSaveCalibration As Button
     Friend WithEvents cmdCancelCalibration As Button
     Friend WithEvents txtCalibrationFile As TextBox
@@ -590,8 +522,7 @@ Partial Class FrmCalibration
     Friend WithEvents cmdDefaultCalibration As Button
     Friend WithEvents timerCalibration As Timer
     Friend WithEvents ToolTipSave As ToolTip
-    Friend WithEvents ResetDepthToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetRadiusToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TxtAngleResolution As TextBox
     Friend WithEvents TxtDepthResolution As TextBox
+    Friend WithEvents WorkstationStatusStrip1 As WorkstationStatusStrip
 End Class

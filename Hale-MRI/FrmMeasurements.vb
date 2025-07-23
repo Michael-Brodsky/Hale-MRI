@@ -3,6 +3,7 @@ Imports LibDatabase.Models
 Imports LibDatabase.Imex
 Imports LibEncoder
 Imports LibEncoder.USDigital
+Imports Hale_MRI.WorkstationStatusStrip
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Constants"
@@ -53,6 +54,18 @@ Public Class FrmMeasurements
     End Property
 #End Region
 #Region "Private Interface"
+    Private Sub EncodersControlsEnabled(ByVal value As Boolean)
+
+    End Sub
+    Private Sub EncodersInitialize()
+        ' Initialize the encoder hardware and update the UI accordingly
+        'WorkstationStatusStrip1.Initialize()
+        EncodersControlsEnabled(True)
+    End Sub
+    Private Sub FormInitialize()
+        ' Initialize the form and controls
+        'WorkstationLabel.Text = My.Computer.Name
+    End Sub
     Private Sub HomeEncoders()
         'With mHardware.Encoders
         '    .ResetCount(USDigital.ANGLE_ENCODER)
@@ -141,6 +154,7 @@ Public Class FrmMeasurements
         Try
             timerMeasurements.Enabled = chkMeasurements.Checked
             cmdHome.Enabled = Not chkMeasurements.Checked
+            chkMeasurements.Text = If(chkMeasurements.Checked, "Stop", "Start")
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try

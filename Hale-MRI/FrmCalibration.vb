@@ -2,26 +2,13 @@
 Imports LibDatabase.Models
 Imports LibDatabase.Imex
 Imports LibEncoder
+Imports Hale_MRI.WorkstationStatusStrip
 Public Class FrmCalibration
-#Region "Constants"
-    Private Const STR_ERR_CALIBRATE As String = "Calibration failed"
-    Private Const STR_ERR_CALIBRATION_DEFAULT As String = "Default"
+#Region "Private Members"
     Private Const STR_ERR_CALIBRATION_READ As String = "Error retrieving calibration data from the database: "
     Private Const STR_ERR_CALIBRATION_WRITE As String = "Error saving calibration data to the database: "
     Private Const STR_ERR_EXPORT As String = "Error exporting calibration data: "
     Private Const STR_ERR_IMPORT As String = "Error importing calibration data: "
-    Private Const STR_ERR_INITIALIZATION As String = "Initialization failed"
-    Private Const STR_ERR_RESET As String = "Reset failed"
-    Private Const STR_STATUS_NOT_INITIALIZED As String = "Not Initialized"
-    Private Const STR_STATUS_ERROR As String = "Encoder Error"
-    Private Const STR_STATUS_NO_ENCODERS As String = "No encoders"
-    Private Const STR_STATUS_READY As String = "Ready"
-    Private Const STR_TITLE_APPLICATION_ERROR As String = "Application Error"
-    Private Const STR_TITLE_CALIBRATION_ERROR As String = "Calibration Data Error"
-    Private Const STR_TITLE_ENCODER_ERROR As String = "Encoder Error"
-#End Region
-#Region "Private Members"
-    Private mHardware As WorkstationEncoders
 #End Region
 #Region "Public Interface"
     Public Sub New()
@@ -35,22 +22,26 @@ Public Class FrmCalibration
     End Sub
     Public Property Hardware As WorkstationEncoders
         ' Property to get or set the EncoderHardware instance and Workstation calibration data
+        ' This property sets the Hardware property of the WorkstationStatusStrip1 control so
+        ' that its UI updates accordingly.
         Get
-            Return mHardware
+            Return WorkstationStatusStrip1.Hardware
         End Get
         Set(value As WorkstationEncoders)
-            mHardware = value
-            If mHardware IsNot Nothing Then
-                If mHardware.Encoders IsNot Nothing Then
-                    If Not mHardware.Encoders.Initialized Then EncodersInitialize()
-                    EncodersControlsEnabled(mHardware.Encoders.Initialized)
-                End If
-                If mHardware.Workstation IsNot Nothing Then WorkstationCalibrationShow()
+            WorkstationStatusStrip1.Hardware = value
+            If WorkstationStatusStrip1.Hardware IsNot Nothing Then
+                If WorkstationStatusStrip1.Hardware.Workstation IsNot Nothing Then WorkstationCalibrationShow()
                 SaveCancelControlsEnabled(False)   ' The text changed events will enable these, so disable them initially
+                If WorkstationStatusStrip1.Hardware.Encoders IsNot Nothing Then
+                    Try
+                        If Not WorkstationStatusStrip1.Hardware.Encoders.Initialized Then WorkstationStatusStrip1.Initialize()
+                    Catch ex As Exception
+                        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
+                    End Try
+                End If
             End If
         End Set
     End Property
-
 #End Region
 #Region "Private Interface"
     Private Sub SaveCancelControlsEnabled(ByVal value As Boolean)
@@ -72,7 +63,7 @@ Public Class FrmCalibration
     End Sub
     Private Sub CalibrationExport(ByRef outFile As String)
         ' Export the calibration data to a file
-        CalibrationDataExport(mHardware.Workstation, outFile)
+        CalibrationDataExport(WorkstationStatusStrip1.Hardware.Workstation, outFile)
     End Sub
     Private Sub CalibrationFilePick()
         ' Open a file dialog to select a calibration file
@@ -89,7 +80,7 @@ Public Class FrmCalibration
     End Sub
     Private Sub CalibrationParse()
         ' Parse the calibration data from UI components and update the Workstation instance
-        With mHardware.Workstation
+        With WorkstationStatusStrip1.Hardware.Workstation
             .AngleCalibration = Double.Parse(txtAngleCalibration.Text)
             .DepthCalibration = Double.Parse(txtDepthCalibration.Text)
             .RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
@@ -106,15 +97,15 @@ Public Class FrmCalibration
     Private Sub CalibrationSave()
         ' Save the calibration data from UI components to the encoder hardware and database
         Dim db As New HaleMRIContext()
-        If mHardware.Workstation Is Nothing Then
+        If WorkstationStatusStrip1.Hardware.Workstation Is Nothing Then
             ' If no workstation exists for the current machine, create a new one
-            mHardware.Workstation = New Workstation With {.Hostname = My.Computer.Name}
+            WorkstationStatusStrip1.Hardware.Workstation = New Workstation With {.Hostname = My.Computer.Name}
             CalibrationParse()
-            db.Workstations.Add(mHardware.Workstation)
+            db.Workstations.Add(WorkstationStatusStrip1.Hardware.Workstation)
         Else
             ' Update the existing workstation with new calibration data
             CalibrationParse()
-            db.Workstations.Update(mHardware.Workstation)
+            db.Workstations.Update(WorkstationStatusStrip1.Hardware.Workstation)
         End If
         db.SaveChanges()
         ' Update the encoder hardware with the new calibration values
@@ -134,64 +125,54 @@ Public Class FrmCalibration
         cmdRadiusCalibration.Enabled = value
         chkCalibrateAll.Enabled = value
         cmdZeroCalibration.Enabled = value
-        ResetAngleToolStripMenuItem.Enabled = value
     End Sub
     Private Sub EncodersCalibrationSet(Optional ByVal ws As Workstation = Nothing)
         ' Set the encoder calibration values from the workstation data or UI components
         If ws IsNot Nothing Then
-            If Not IsDBNull(ws.AngleCalibration) Then mHardware.Encoders.AngleCalibration = ws.AngleCalibration
-            If Not IsDBNull(ws.DepthCalibration) Then mHardware.Encoders.DepthCalibration = ws.DepthCalibration
-            If Not IsDBNull(ws.RadiusCalibration) Then mHardware.Encoders.RadiusCalibration = ws.RadiusCalibration
-            If Not IsDBNull(ws.RadiusOffset) Then mHardware.Encoders.RadiusOffset = ws.RadiusOffset
+            If Not IsDBNull(ws.AngleCalibration) Then WorkstationStatusStrip1.Hardware.Encoders.AngleCalibration = ws.AngleCalibration
+            If Not IsDBNull(ws.DepthCalibration) Then WorkstationStatusStrip1.Hardware.Encoders.DepthCalibration = ws.DepthCalibration
+            If Not IsDBNull(ws.RadiusCalibration) Then WorkstationStatusStrip1.Hardware.Encoders.RadiusCalibration = ws.RadiusCalibration
+            If Not IsDBNull(ws.RadiusOffset) Then WorkstationStatusStrip1.Hardware.Encoders.RadiusOffset = ws.RadiusOffset
         Else
-            mHardware.Encoders.AngleCalibration = Double.Parse(txtAngleCalibration.Text)
-            mHardware.Encoders.DepthCalibration = Double.Parse(txtDepthCalibration.Text)
-            mHardware.Encoders.RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
-            mHardware.Encoders.RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
+            WorkstationStatusStrip1.Hardware.Encoders.AngleCalibration = Double.Parse(txtAngleCalibration.Text)
+            WorkstationStatusStrip1.Hardware.Encoders.DepthCalibration = Double.Parse(txtDepthCalibration.Text)
+            WorkstationStatusStrip1.Hardware.Encoders.RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
+            WorkstationStatusStrip1.Hardware.Encoders.RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
         End If
     End Sub
     Private Sub EncodersCalibrationShow()
         ' Load encoder calibration data into UI components
-        txtAngleCalibration.Text = mHardware.Encoders.AngleCalibration.ToString()
-        txtDepthCalibration.Text = mHardware.Encoders.DepthCalibration.ToString()
-        txtRadiusCalibration.Text = mHardware.Encoders.RadiusCalibration.ToString()
-        TxtRadiusOffsetR.Text = mHardware.Encoders.RadiusOffset.ToString()
-    End Sub
-    Private Sub EncodersErrorShow(prompt As String, msg As String)
-        ' Display an error message and update the UI accordingly
-        MsgBox(prompt & ": " & msg, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
-        StatusLabel.Text = STR_STATUS_ERROR
-        EncodersControlsEnabled(False)
-    End Sub
-    Private Sub EncodersInitialize()
-        ' Initialize the encoder hardware and update the UI accordingly
-        mHardware.Encoders.Initialize()
-        StatusLabel.Text = STR_STATUS_READY
-        EncodersControlsEnabled(True)
-    End Sub
-    Private Sub FormInitialize()
-        ' Initialize the form and controls
-        WorkstationLabel.Text = My.Computer.Name
+        txtAngleCalibration.Text = WorkstationStatusStrip1.Hardware.Encoders.AngleCalibration.ToString()
+        txtDepthCalibration.Text = WorkstationStatusStrip1.Hardware.Encoders.DepthCalibration.ToString()
+        txtRadiusCalibration.Text = WorkstationStatusStrip1.Hardware.Encoders.RadiusCalibration.ToString()
+        TxtRadiusOffsetR.Text = WorkstationStatusStrip1.Hardware.Encoders.RadiusOffset.ToString()
     End Sub
     Private Sub ImexControlsEnabled(ByVal value As Boolean)
+        ' Enable or disable the Import and Export calibration controls based on the value parameter
         cmdImportCalibration.Enabled = value
         cmdExportCalibration.Enabled = value
     End Sub
     Private Sub GetAngleCalibration()
-        mHardware.Encoders.Calibrate(USDigital.ANGLE_ENCODER)
-        txtAngleCalibration.Text = mHardware.Encoders.AngleCalibration.ToString()
+        ' Get the angle calibration value from the encoder hardware and update the UI component
+        txtAngleCalibration.Text = WorkstationStatusStrip1.Calibrate(USDigital.ANGLE_ENCODER).ToString()
     End Sub
     Private Sub GetDepthCalibration()
-        mHardware.Encoders.Calibrate(USDigital.DEPTH_ENCODER)
-        txtDepthCalibration.Text = mHardware.Encoders.DepthCalibration.ToString()
+        ' Get the depth calibration value from the encoder hardware and update the UI component
+        txtDepthCalibration.Text = WorkstationStatusStrip1.Calibrate(USDigital.DEPTH_ENCODER).ToString()
     End Sub
     Private Sub GetRadiusCalibration()
-        mHardware.Encoders.Calibrate(USDigital.RADIUS_ENCODER)
-        txtRadiusCalibration.Text = mHardware.Encoders.RadiusCalibration.ToString()
+        ' Get the radius calibration value from the encoder hardware and update the UI component
+        txtRadiusCalibration.Text = WorkstationStatusStrip1.Calibrate(USDigital.RADIUS_ENCODER).ToString()
+    End Sub
+    Private Sub PollingEnable(ByVal enable As Boolean)
+        ' Enable or disable the encoder polling timer and update the UI accordingly
+        timerCalibration.Enabled = enable
+        chkCalibrateAll.Checked = enable
+        WorkstationStatusStrip1.Enabled = Not enable
     End Sub
     Private Sub WorkstationCalibrationShow(Optional ByVal ws As Workstation = Nothing)
         ' Display the calibration data from the workstation in the UI components
-        If ws Is Nothing Then ws = mHardware.Workstation
+        If ws Is Nothing Then ws = WorkstationStatusStrip1.Hardware.Workstation
         txtAngleCalibration.Text = ws.AngleCalibration.ToString()
         txtDepthCalibration.Text = ws.DepthCalibration.ToString()
         txtRadiusCalibration.Text = ws.RadiusCalibration.ToString()
@@ -203,15 +184,23 @@ Public Class FrmCalibration
         txtHalfProbeDiameter.Text = ws.HalfProbeDiameter.ToString()
         txtScanIncrement.Text = ws.ScanIncrement.ToString()
         txtFixedOffset.Text = ws.FixedOffset.ToString()
+        Me.Refresh()
     End Sub
 #End Region
 #Region "UI Event Handlers"
+    Private Sub ChkCalibrateAll_Click(sender As Object, e As EventArgs) Handles chkCalibrateAll.Click
+        Try
+            PollingEnable(chkCalibrateAll.Checked)
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+        End Try
+    End Sub
+
     Private Sub CmdAngleCalibration_Click(sender As Object, e As EventArgs) Handles cmdAngleCalibration.Click
-        ' Calibrate the angle encoder and update the UI with the new calibration value
         Try
             GetAngleCalibration()
         Catch ex As Exception
-            EncodersErrorShow(STR_ERR_CALIBRATE, ex.Message)
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
     Private Sub CmdCalibrationFile_Click(sender As Object, e As EventArgs) Handles cmdCalibrationFile.Click
@@ -235,36 +224,32 @@ Public Class FrmCalibration
         Try
             CalibrationExport(txtCalibrationFile.Text)
         Catch ex As Exception
-            MsgBox(STR_ERR_CALIBRATION_WRITE & ex.Message, MsgBoxStyle.Critical, STR_TITLE_CALIBRATION_ERROR)
+            MsgBox(STR_ERR_CALIBRATION_WRITE & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
     Private Sub CmdDepthCalibration_Click(sender As Object, e As EventArgs) Handles cmdDepthCalibration.Click
-        ' Calibrate the depth encoder and update the UI with the new calibration value
         Try
             GetDepthCalibration()
         Catch ex As Exception
-            EncodersErrorShow(STR_ERR_CALIBRATE, ex.Message)
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
     Private Sub CmdImportCalibration_Click(sender As Object, e As EventArgs) Handles cmdImportCalibration.Click
-        ' Import calibration data from a file and update the UI accordingly
         Try
             CalibrationImport(txtCalibrationFile.Text)
         Catch ex As Exception
-            MsgBox(STR_ERR_IMPORT & ex.Message, MsgBoxStyle.Critical, STR_TITLE_CALIBRATION_ERROR)
+            MsgBox(STR_ERR_IMPORT & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
     Private Sub CmdRadiusCalibration_Click(sender As Object, e As EventArgs) Handles cmdRadiusCalibration.Click
-        ' Calibrate the radius encoder and update the UI with the new calibration value
         Try
             GetRadiusCalibration()
         Catch ex As Exception
-            EncodersErrorShow(STR_ERR_CALIBRATE, ex.Message)
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
     Private Sub CmdSaveCalibration_Click(sender As Object, e As EventArgs) Handles cmdSaveCalibration.Click
         Try
-            ' Save the calibration data to the encoder hardware and database
             CalibrationSave()
         Catch ex As Exception
             MsgBox(STR_ERR_CALIBRATION_WRITE & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
@@ -277,41 +262,17 @@ Public Class FrmCalibration
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
-    Private Sub FrmHardware_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub TimerCalibration_Tick(sender As Object, e As EventArgs) Handles timerCalibration.Tick
         Try
-            FormInitialize()
+            GetAngleCalibration()
+            GetDepthCalibration()
+            GetRadiusCalibration()
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+            PollingEnable(False)
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
-    Private Sub InitializeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InitializeToolStripMenuItem.Click
-        Try
-            EncodersInitialize()
-        Catch ex As Exception
-            EncodersErrorShow(STR_ERR_INITIALIZATION, ex.Message)
-        End Try
-    End Sub
-    Private Sub ResetAngleToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetAngleToolStripMenuItem.Click
-        Try
-            mHardware.Encoders.ResetCount(USDigital.ANGLE_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(STR_ERR_RESET, ex.Message)
-        End Try
-    End Sub
-    Private Sub ResetDepthToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetDepthToolStripMenuItem.Click
-        Try
-            mHardware.Encoders.ResetCount(USDigital.DEPTH_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(STR_ERR_RESET, ex.Message)
-        End Try
-    End Sub
-    Private Sub ResetRadiusToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ResetRadiusToolStripMenuItem.Click
-        Try
-            mHardware.Encoders.ResetCount(USDigital.RADIUS_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(STR_ERR_RESET, ex.Message)
-        End Try
-    End Sub
+
     Private Sub TxtAngleCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtAngleCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
@@ -347,24 +308,6 @@ Public Class FrmCalibration
     End Sub
     Private Sub txtScanIncrement_TextChanged(sender As Object, e As EventArgs) Handles txtScanIncrement.TextChanged
         SaveCancelControlsEnabled(True)
-    End Sub
-
-    Private Sub TimerCalibration_Tick(sender As Object, e As EventArgs) Handles timerCalibration.Tick
-        Try
-            GetAngleCalibration()
-            GetDepthCalibration()
-            GetRadiusCalibration()
-        Catch ex As Exception
-            timerCalibration.Enabled = False
-            EncodersErrorShow(STR_ERR_CALIBRATE, ex.Message)
-        End Try
-    End Sub
-    Private Sub chkCalibrateAll_Click(sender As Object, e As EventArgs) Handles chkCalibrateAll.Click
-        Try
-            timerCalibration.Enabled = chkCalibrateAll.Checked
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
-        End Try
     End Sub
 #End Region
 End Class

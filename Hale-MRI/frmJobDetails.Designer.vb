@@ -26,23 +26,21 @@ Partial Class FrmJobDetails
         TableLayoutPanel1 = New TableLayoutPanel()
         RecordNavigationBar1 = New RecordNavigationBar()
         DataGridJobDetails = New DataGridView()
-        ToleranceBindingSource = New BindingSource(components)
-        RotationBindingSource = New BindingSource(components)
-        ExclusionBindingSource = New BindingSource(components)
-        JobDetailBindingSource = New BindingSource(components)
-        JobBindingSource = New BindingSource(components)
         FileNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         PerformedByDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ToleranceClass = New DataGridViewComboBoxColumn()
+        ToleranceBindingSource = New BindingSource(components)
         Rotation = New DataGridViewComboBoxColumn()
+        RotationBindingSource = New BindingSource(components)
         DiameterDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         BoreDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         MarkedPitchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         DesiredPitchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         WheelPitchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         LeExclusion = New DataGridViewComboBoxColumn()
+        ExclusionBindingSource = New BindingSource(components)
         TeExclusion = New DataGridViewComboBoxColumn()
         CupDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         DarDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -56,6 +54,8 @@ Partial Class FrmJobDetails
         RotationNavigationDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         TeExclusionNavigationDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ToleranceClassNavigationDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        JobDetailBindingSource = New BindingSource(components)
+        JobBindingSource = New BindingSource(components)
         TableLayoutPanel1.SuspendLayout()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -105,26 +105,6 @@ Partial Class FrmJobDetails
         DataGridJobDetails.Size = New Size(1478, 494)
         DataGridJobDetails.TabIndex = 1
         ' 
-        ' ToleranceBindingSource
-        ' 
-        ToleranceBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
-        ' 
-        ' RotationBindingSource
-        ' 
-        RotationBindingSource.DataSource = GetType(LibDatabase.Models.Rotation)
-        ' 
-        ' ExclusionBindingSource
-        ' 
-        ExclusionBindingSource.DataSource = GetType(LibDatabase.Models.Exclusion)
-        ' 
-        ' JobDetailBindingSource
-        ' 
-        JobDetailBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
-        ' 
-        ' JobBindingSource
-        ' 
-        JobBindingSource.DataSource = GetType(LibDatabase.Models.Job)
-        ' 
         ' FileNameDataGridViewTextBoxColumn
         ' 
         FileNameDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
@@ -164,6 +144,10 @@ Partial Class FrmJobDetails
         ToleranceClass.Name = "ToleranceClass"
         ToleranceClass.ValueMember = "ToleranceClass"
         ' 
+        ' ToleranceBindingSource
+        ' 
+        ToleranceBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
+        ' 
         ' Rotation
         ' 
         Rotation.DataPropertyName = "Rotation"
@@ -172,6 +156,10 @@ Partial Class FrmJobDetails
         Rotation.HeaderText = "Rotation"
         Rotation.Name = "Rotation"
         Rotation.ValueMember = "Rotation1"
+        ' 
+        ' RotationBindingSource
+        ' 
+        RotationBindingSource.DataSource = GetType(LibDatabase.Models.Rotation)
         ' 
         ' DiameterDataGridViewTextBoxColumn
         ' 
@@ -214,6 +202,10 @@ Partial Class FrmJobDetails
         LeExclusion.MinimumWidth = 100
         LeExclusion.Name = "LeExclusion"
         LeExclusion.ValueMember = "Exclusion1"
+        ' 
+        ' ExclusionBindingSource
+        ' 
+        ExclusionBindingSource.DataSource = GetType(LibDatabase.Models.Exclusion)
         ' 
         ' TeExclusion
         ' 
@@ -296,6 +288,14 @@ Partial Class FrmJobDetails
         ToleranceClassNavigationDataGridViewTextBoxColumn.DataPropertyName = "ToleranceClassNavigation"
         ToleranceClassNavigationDataGridViewTextBoxColumn.HeaderText = "ToleranceClassNavigation"
         ToleranceClassNavigationDataGridViewTextBoxColumn.Name = "ToleranceClassNavigationDataGridViewTextBoxColumn"
+        ' 
+        ' JobDetailBindingSource
+        ' 
+        JobDetailBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
+        ' 
+        ' JobBindingSource
+        ' 
+        JobBindingSource.DataSource = GetType(LibDatabase.Models.Job)
         ' 
         ' FrmJobDetails
         ' 
