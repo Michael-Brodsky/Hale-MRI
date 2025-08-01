@@ -6,6 +6,7 @@ Public Class FrmHaleMRI
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
+    Private mFrmSearch As FrmSearch
     Private mFrmJobDetails As FrmJobDetails
     Private mFrmJobs As FrmJobs
     Private mFrmMeasurements As FrmMeasurements
@@ -21,7 +22,8 @@ Public Class FrmHaleMRI
         ShowForm(mFrmJobDetails, mDatabase)
     End Sub
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles cmdJobs.Click
-        ShowForm(mFrmJobs, mDatabase)
+        'ShowForm(mFrmJobs, mDatabase)
+        ShowForm(mFrmSearch, mDatabase)
     End Sub
     'Private Sub CmdMeasure_Click(sender As Object, e As EventArgs) Handles cmdMeasure.Click
     '    ShowForm(mFrmMeasurements)
@@ -33,6 +35,7 @@ Public Class FrmHaleMRI
     Private Sub FrmHaleMRI_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         CloseForm(mFrmCalibration)
         CloseForm(mFrmCustomers)
+        CloseForm(mFrmSearch)
         CloseForm(mFrmJobDetails)
         CloseForm(mFrmJobs)
         CloseForm(mFrmMeasurements)

@@ -93,7 +93,7 @@ Public Class FrmJobs
     End Sub
 
     Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
-        ' Open the Jobs form with the selected job as the current record.
+        ' Open the JobDetails form with the selected job as the current record.
         Try
             ShowForm(mJobDetailsForm, Database)
             mJobDetailsForm.Find(JobDetailsBindingSource.Current.Id)
