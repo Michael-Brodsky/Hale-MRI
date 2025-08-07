@@ -6,7 +6,6 @@ Public Class FrmHaleMRI
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
-    Private mFrmSearch As FrmSearch
     Private mFrmJobDetails As FrmJobDetails
     Private mFrmJobs As FrmJobs
     Private mFrmMeasurements As FrmMeasurements
@@ -22,8 +21,7 @@ Public Class FrmHaleMRI
         ShowForm(mFrmJobDetails, mDatabase)
     End Sub
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles cmdJobs.Click
-        'ShowForm(mFrmJobs, mDatabase)
-        ShowForm(mFrmSearch, mDatabase)
+        ShowForm(mFrmJobs, mDatabase)
     End Sub
     'Private Sub CmdMeasure_Click(sender As Object, e As EventArgs) Handles cmdMeasure.Click
     '    ShowForm(mFrmMeasurements)
@@ -35,7 +33,6 @@ Public Class FrmHaleMRI
     Private Sub FrmHaleMRI_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         CloseForm(mFrmCalibration)
         CloseForm(mFrmCustomers)
-        CloseForm(mFrmSearch)
         CloseForm(mFrmJobDetails)
         CloseForm(mFrmJobs)
         CloseForm(mFrmMeasurements)
@@ -50,7 +47,8 @@ Public Class FrmHaleMRI
         mDatabase.Customers.Load()
         mDatabase.Vessels.Load()
         mDatabase.Jobs.Load()
-        mDatabase.JobDetails.Include(Function(j) j.Job).Load()
+        'mDatabase.JobDetails.Include(Function(j) j.Job).Load()
+        mDatabase.JobDetails.Load()
         mDatabase.Employees.Load()
         mDatabase.Manufacturers.Load()
         mDatabase.VesselServiceTypes.Load()

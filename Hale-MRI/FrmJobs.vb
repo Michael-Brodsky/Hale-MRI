@@ -1,104 +1,129 @@
-﻿Imports LibDatabase.Contexts
+﻿Imports System.ComponentModel
 Imports LibDatabase.Models
-Imports Microsoft.EntityFrameworkCore
 Imports LibDatabase.StoredProcedures
 Public Class FrmJobs
     Inherits FrmDatabaseForm
-    ' Define the DataGridView's double-clickable column indices.
-    Private Const kJobsVesselColumnId As Short = 1
-    Private Const kJobsManufacturerColumnId As Short = 5
-    Private Const kJobsInspectedByColumnId As Short = 12
-    ' Define all forms this form can open.
-    ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
-    Private mJobDetailsForm As FrmJobDetails
-    Private mFrmVessels As FrmVessels
-    Private mFrmManufacturers As FrmManufacturers
+#Region "Public Interface"
     Public Property Current As Job
+        Get
+            Return CType(JobBindingSource.Current, Job)
+        End Get
         Set(value As Job)
             Me.Find(value.Id)
         End Set
-        Get
-            If Navigator.Current IsNot Nothing Then
-                Return CType(JobBindingSource.Current, Job)
-            Else
-                Return Nothing
-            End If
-        End Get
     End Property
     Public Function Find(id As Integer) As Integer
+        Dim index As Integer
         If JobBindingSource.SupportsSearching Then
-            Return JobBindingSource.Find("Id", id)
+            index = JobBindingSource.Find("Id", id)
         Else
-            Dim index = Database.Vessels.Local.ToList().FindIndex(Function(v) v.Id = id)
-            If index <> kNoCurrentRecord Then JobBindingSource.Position = index
-            Return index
+            FilterByJob(id)
+            ComboJobs.Select()
+            index = ComboJobs.SelectedIndex
         End If
+        Return index
     End Function
-    Private Sub CmdCancel_Click(sender As Object, e As EventArgs)
-        ' Undo any pending database changes and refresh the form.
-        If Database IsNot Nothing Then
-            Try
-                Rollback(Of Job)(Database)   ' Only the Jobs table is editable on this form.
-                DataGridJobs.Refresh()
-            Catch ex As Exception
-                MessageBox.Show("Error undoing changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
+#End Region
+#Region "Private Interface"
+    Private Sub FilterByCustomer()
+        'Filter the vessels and jobs based on the selected customer.
+        VesselBindingSource.DataSource = New BindingList(Of Vessel)(Database.Vessels.Local.Where(Function(v) v.CustomerId = ComboCustomers.SelectedItem.Id).OrderBy(Function(v) v.VesselName).ToList())
+        JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Local.Where(Function(j) j.VesselId = ComboVessels.SelectedItem.Id).OrderBy(Function(j) j.JobNumber).ToList())
+        JobBindingSource.ResumeBinding()
+        If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
     End Sub
-    Private Sub CmdSave_Click(sender As Object, e As EventArgs)
-        ' Save changes to the database context.
-        If Database IsNot Nothing Then
-            Try
-                Database.SaveChanges()
-                DataGridJobs.Refresh()
-            Catch ex As Exception
-                MessageBox.Show("Error saving changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
-        End If
+    Private Sub FilterByJob(ByVal selectedValue As Integer)
+        'Display the selected job data and show the associated customer and vessel.
+        JobBindingSource.ResumeBinding()
+        ComboJobs.SelectedValue = selectedValue
+        ComboVessels.SelectedValue = ComboJobs.SelectedItem.VesselId
+        ComboCustomers.SelectedValue = ComboVessels.SelectedItem.CustomerId
+        If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
     End Sub
-    Private Sub DataGridJobs_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles DataGridJobs.CellDoubleClick
+    Private Sub FilterByVessel()
+        'Filter the jobs based on the selected vessel and show the customer.
+        JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Local.Where(Function(j) j.VesselId = ComboVessels.SelectedItem.Id).OrderBy(Function(j) j.JobNumber).ToList())
+        JobBindingSource.ResumeBinding()
+        ComboCustomers.SelectedValue = ComboVessels.SelectedItem.CustomerId
+        If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
+    End Sub
+    Private Sub FiltersClear()
+        'Clear the search criteria and reset the data sources.
+        DataGridJobDetails.DataSource = Nothing
+        CustomerBindingSource.DataSource = New BindingList(Of Customer)(Database.Customers.OrderBy(Function(c) c.CustomerName).ToList())
+        VesselBindingSource.DataSource = New BindingList(Of Vessel)(Database.Vessels.OrderBy(Function(v) v.VesselName).ToList())
+        JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.OrderBy(Function(j) j.JobNumber).ToList())
+        JobBindingSource.SuspendBinding()
+        ComboCustomers.SelectedIndex = kNoCurrentSelection
+        ComboVessels.SelectedIndex = kNoCurrentSelection
+        ComboJobs.SelectedIndex = kNoCurrentSelection
+    End Sub
+#End Region
+#Region "Event Handlers"
+    Private Sub CmdFiltersClear_Click(sender As Object, e As EventArgs) Handles CmdFiltersClear.Click
         Try
-            Select Case e.ColumnIndex
-                Case kJobsVesselColumnId
-                    ShowForm(mFrmVessels, Database)
-                    mFrmVessels.Find(JobBindingSource.Current.VesselId)
-                Case kJobsManufacturerColumnId
-                    ShowForm(mFrmManufacturers, Database)
-                    mFrmManufacturers.CurrentId = JobBindingSource.Current.ManufacturerId
-                Case kJobsInspectedByColumnId
-                    'ShowForm(mFormEmployees, Database)
-                    'mFormEmployees.CurrentRecord = TryCast(DataGridJobs.CurrentRow?.DataBoundItem, Employee)
-            End Select
+            FiltersClear()
         Catch ex As Exception
-            MsgBox(ex.Message)
+            MessageBox.Show("Error clearing filters: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
+        Try
+            JobBindingSource.EndEdit()
+            Database.SaveChanges()
+        Catch ex As Exception
+            MessageBox.Show("Error saving changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click
+        Try
+            JobBindingSource.CancelEdit()
+            Rollback(Database, JobBindingSource.DataSource)
+            JobBindingSource.ResetCurrentItem()
+        Catch ex As Exception
+            MessageBox.Show("Error undoing changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
+        Try
+            FilterByCustomer()
+        Catch ex As Exception
+            MessageBox.Show("Error selecting vessel: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub ComboJobs_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboJobs.SelectionChangeCommitted
+        Try
+            FilterByJob(ComboJobs.SelectedValue)
+        Catch ex As Exception
+            MessageBox.Show("Error selecting job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub ComboVessels_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboVessels.SelectionChangeCommitted
+        Try
+            FilterByVessel()
+        Catch ex As Exception
+            MessageBox.Show("Error selecting vessel: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
     Private Sub FrmJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Bind the form BindingSources to the respective context model local views.
-        JobBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
-        VesselBindingSource.DataSource = Database.Vessels.Local.ToBindingList()
+        DataGridJobDetails.AutoGenerateColumns = False
+        'Populate the drop down lists with the respective data.    
         ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
         EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
         BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList
         MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
+        RotationBindingSource.DataSource = Database.Rotations.Local.ToBindingList
         StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
-        ' Bind the details BindingSources to the master BindingSources on the property of the master model.
+        'Clear the search filters and bind the Jobs master to JobDetails.
+        FiltersClear()
         BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
-        ' Set the nav bar properties.
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = "Jobs"                  ' Caption
-        Navigator.MasterControl = DataGridJobs       ' Bound control
-        Navigator.Database = MyBase.Database        ' HaleMRIContext
-        Navigator.MasterSource = JobBindingSource   ' BindingSource
     End Sub
 
-    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
-        ' Open the JobDetails form with the selected job as the current record.
-        Try
-            ShowForm(mJobDetailsForm, Database)
-            mJobDetailsForm.Find(JobDetailsBindingSource.Current.Id)
-        Catch ex As Exception
-            MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+    Private Sub FrmJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        ' Clear the job details data source when the form is closing, otherwise an exception occurs.
+        DataGridJobDetails.DataSource = Nothing
     End Sub
+
+#End Region
 End Class

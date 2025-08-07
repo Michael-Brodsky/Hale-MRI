@@ -57,9 +57,5 @@ Namespace Models
         Public Overridable Property TeExclusionNavigation As Exclusion
 
         Public Overridable Property ToleranceClassNavigation As Tolerance
-
-        Public Overrides Function ToString() As String
-            Return Job.ToString()
-        End Function
     End Class
 End Namespace

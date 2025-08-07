@@ -31,6 +31,8 @@ Namespace Contexts
 
         Public Overridable Property ExtremeMeasurements As DbSet(Of ExtremeMeasurement)
 
+        Public Overridable Property FindDuplicatesForVessels As DbSet(Of FindDuplicatesForVessel)
+
         Public Overridable Property Jobs As DbSet(Of Job)
 
         Public Overridable Property JobDetails As DbSet(Of JobDetail)
@@ -58,9 +60,6 @@ Namespace Contexts
         Public Overridable Property VesselServiceTypes As DbSet(Of VesselServiceType)
 
         Public Overridable Property Workstations As DbSet(Of Workstation)
-        'Public Shared Function QryScanDataImport(ByVal filespec As String) As Integer
-        '    Throw New NotSupportedException()
-        'End Function
 
         Protected Overrides Sub OnConfiguring(optionsBuilder As DbContextOptionsBuilder)
             'TODO /!\ To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
@@ -68,7 +67,6 @@ Namespace Contexts
         End Sub
 
         Protected Overrides Sub OnModelCreating(modelBuilder As ModelBuilder)
-            'modelBuilder.HasDbFunction(GetType(HaleMRIContext).GetMethod(NameOf(QryScanDataImport), New Type() {GetType(String)})).HasName("imexImScanDataContext").HasParameter("filespec")
             modelBuilder.Entity(Of Blade)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.BladeCount).HasName("PrimaryKey")
@@ -216,6 +214,19 @@ Namespace Contexts
                         HasConstraintName("Job DetailsExtremeMeasurements")
                 End Sub)
 
+            modelBuilder.Entity(Of FindDuplicatesForVessel)(
+                Sub(entity)
+                    entity.
+                    HasNoKey().
+                    ToView("Find duplicates for Vessels")
+
+                    entity.Property(Function(e) e.CustomerId).HasColumnName("Customer ID")
+                    entity.Property(Function(e) e.Id).
+                        ValueGeneratedOnAdd().
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                End Sub)
+
             modelBuilder.Entity(Of Job)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
@@ -234,6 +245,7 @@ Namespace Contexts
                         HasColumnType("counter").
                         HasColumnName("ID")
                     entity.Property(Function(e) e.Description).HasMaxLength(80)
+                    entity.Property(Function(e) e.Diameter).HasDefaultValue(0.0)
                     entity.Property(Function(e) e.InspectedBy).HasColumnName("Inspected By")
                     entity.Property(Function(e) e.JobNumber).HasColumnName("Job Number")
                     entity.Property(Function(e) e.ManufacturerId).HasColumnName("Manufacturer ID")
@@ -244,6 +256,7 @@ Namespace Contexts
                     entity.Property(Function(e) e.PartNumber).
                         HasMaxLength(16).
                         HasColumnName("Part Number")
+                    entity.Property(Function(e) e.Rotation).HasMaxLength(255)
                     entity.Property(Function(e) e.SerialNumber).
                         HasMaxLength(32).
                         HasColumnName("Serial Number")

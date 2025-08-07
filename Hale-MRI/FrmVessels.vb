@@ -1,4 +1,5 @@
 ﻿Imports LibDatabase.Contexts
+Imports System.ComponentModel
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports LibDatabase.StoredProcedures
@@ -33,37 +34,37 @@ Public Class FrmVessels
         If VesselBindingSource.SupportsSearching Then
             Return VesselBindingSource.Find("Id", id)
         Else
-            Dim index = Database.Vessels.Local.ToList().FindIndex(Function(v) v.Id = id)
+            Dim index = Database.Vessels.Local.OrderBy(Function(v) v.VesselName).ToList().FindIndex(Function(v) v.Id = id)
             If index <> kNoCurrentRecord Then VesselBindingSource.Position = index
             Return index
         End If
     End Function
-    Private Sub BindDataSources()
-        ' Bind the data tables to the respective BindingSources.
-        ' Bind Vessels (master) to Jobs (details). This automatically updates
-        ' the Jobs list when a Vessel is selected.
-        ' Set the nav bar properties
-    End Sub
     Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
         ' Open the Jobs form with the selected job as the current record.
         Try
             ShowForm(mJobsForm, Database)
             mJobsForm.Find(JobsBindingSource.Current.Id)
+            'mJobsForm.Filter = JobsBindingSource.Current.Id
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
     Private Sub FrmVessels_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Bind the form BindingSources to the respective context model local views.
-        VesselBindingSource.DataSource = Database.Vessels.Local.ToBindingList()
-        JobsBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
+        ' Order the Vessels list by VesselName ...
+        Dim vessels = Database.Vessels.Include(Function(v) v.Jobs).OrderBy(Function(v) v.VesselName).ToList()
+        ' ... and each Vessel's Jobs list by JobNumber.
+        For Each v In vessels
+            v.Jobs = v.Jobs.OrderBy(Function(j) j.JobNumber).ToList()
+        Next
+        ' Bind the master BindingSource (Vessels) to the details BindingSource (Jobs).
+        VesselBindingSource.DataSource = New BindingList(Of Vessel)(vessels)
+        BindMasterDetails(VesselBindingSource, JobsBindingSource, "Jobs")
+        ' Order the dropdown lists alphabetically.
         CustomerBindingSource.DataSource = Database.Customers.Local.ToBindingList()
         CountryCodeBindingSource.DataSource = Database.CountryCodes.Local.ToBindingList()
         VesselServiceTypeBindingSource.DataSource = Database.VesselServiceTypes.Local.ToBindingList()
         ManufacturerBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList()
-        ' Bind the details BindingSources to the master BindingSources on the property of the master model.
-        BindMasterDetails(VesselBindingSource, JobsBindingSource, "Jobs")
         ' Set the nav bar properties.
         Navigator = RecordNavigationBar1
         Navigator.Caption = "Vessels"

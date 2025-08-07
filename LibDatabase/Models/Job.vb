@@ -6,9 +6,9 @@ Namespace Models
     Partial Public Class Job
         Public Property Id As Integer?
 
-        Public Property VesselId As Integer?
+        Public Property VesselId As Integer
 
-        Public Property JobNumber As Integer?
+        Public Property JobNumber As Integer
 
         Public Property StartDate As Date?
 
@@ -31,6 +31,10 @@ Namespace Models
         Public Property Style As String
 
         Public Property Blades As Short?
+
+        Public Property Rotation As String
+
+        Public Property Diameter As Double?
 
         Public Overridable Property BladesNavigation As Blade
 
