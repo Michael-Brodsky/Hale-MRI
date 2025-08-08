@@ -3,6 +3,10 @@ Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Public Class FrmJobs
     Inherits FrmDatabaseForm
+#Region "Private Members"
+    Private mFrmCustomers As FrmCustomers
+    Private mFrmVessels As FrmVessels
+#End Region
 #Region "Public Interface"
     Public Property Current As Job
         Get
@@ -124,6 +128,16 @@ Public Class FrmJobs
         ' Clear the job details data source when the form is closing, otherwise an exception occurs.
         DataGridJobDetails.DataSource = Nothing
     End Sub
-
+    Private Sub ComboVessels_MouseUp(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseUp
+        ' Handles the mousedouble click event on the ComboVessels control.
+        Try
+            If ComboDoubleClick() AndAlso ComboVessels.SelectedItem IsNot Nothing Then
+                ShowForm(Of FrmVessels)(mFrmVessels, Database)
+                mFrmVessels.Current = ComboVessels.SelectedItem
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error opening vessels form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
 #End Region
 End Class

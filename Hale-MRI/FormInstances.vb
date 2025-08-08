@@ -46,4 +46,17 @@ Module FormInstances
             frm = Nothing
         End If
     End Sub
+    Public Function ComboDoubleClick() As Boolean
+        Const kDblClickTime As Integer = 500 ' Maximum time between clicks for a double-click
+        Static lastClick As DateTime = DateTime.MinValue
+        Dim result As Boolean = False
+        If (DateTime.Now - lastClick).TotalMilliseconds <= kDblClickTime Then
+            ' If the time since the last click is within the double-click threshold, return true.
+            result = True
+            lastClick = DateTime.MinValue ' Reset lastClick to prevent further double-clicks
+        Else
+            lastClick = DateTime.Now
+        End If
+        Return result
+    End Function
 End Module

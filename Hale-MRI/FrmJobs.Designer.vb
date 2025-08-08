@@ -23,7 +23,7 @@ Partial Class FrmJobs
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         CustomerBindingSource = New BindingSource(components)
         VesselBindingSource = New BindingSource(components)
         JobDetailsBindingSource = New BindingSource(components)
@@ -185,7 +185,7 @@ Partial Class FrmJobs
         ' CmdSave
         ' 
         CmdSave.Image = My.Resources.Resources.Save
-        CmdSave.Location = New Point(415, 295)
+        CmdSave.Location = New Point(365, 295)
         CmdSave.Name = "CmdSave"
         CmdSave.Size = New Size(75, 23)
         CmdSave.TabIndex = 53
@@ -195,7 +195,7 @@ Partial Class FrmJobs
         ' CmdUndo
         ' 
         CmdUndo.Image = My.Resources.Resources.Cancel
-        CmdUndo.Location = New Point(506, 295)
+        CmdUndo.Location = New Point(460, 295)
         CmdUndo.Name = "CmdUndo"
         CmdUndo.Size = New Size(75, 23)
         CmdUndo.TabIndex = 54
@@ -245,14 +245,14 @@ Partial Class FrmJobs
         DataGridJobDetails.AllowUserToAddRows = False
         DataGridJobDetails.AllowUserToDeleteRows = False
         DataGridJobDetails.AutoGenerateColumns = False
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
-        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, PerformedBy, DescriptionDataGridViewTextBoxColumn})
         DataGridJobDetails.DataSource = JobBindingSource
@@ -303,7 +303,7 @@ Partial Class FrmJobs
         ComboManufacturer.DataSource = ManufacturersBindingSource
         ComboManufacturer.DisplayMember = "ManufacturerName"
         ComboManufacturer.FormattingEnabled = True
-        ComboManufacturer.Location = New Point(506, 40)
+        ComboManufacturer.Location = New Point(460, 40)
         ComboManufacturer.Name = "ComboManufacturer"
         ComboManufacturer.Size = New Size(190, 23)
         ComboManufacturer.TabIndex = 20
@@ -315,7 +315,7 @@ Partial Class FrmJobs
         ComboStyle.DataSource = StylesBindingSource
         ComboStyle.DisplayMember = "Style1"
         ComboStyle.FormattingEnabled = True
-        ComboStyle.Location = New Point(506, 98)
+        ComboStyle.Location = New Point(460, 98)
         ComboStyle.Name = "ComboStyle"
         ComboStyle.Size = New Size(190, 23)
         ComboStyle.TabIndex = 21
@@ -327,7 +327,7 @@ Partial Class FrmJobs
         ComboMaterial.DataSource = MaterialsBindingSource
         ComboMaterial.DisplayMember = "Material1"
         ComboMaterial.FormattingEnabled = True
-        ComboMaterial.Location = New Point(506, 127)
+        ComboMaterial.Location = New Point(460, 127)
         ComboMaterial.Name = "ComboMaterial"
         ComboMaterial.Size = New Size(190, 23)
         ComboMaterial.TabIndex = 22
@@ -336,7 +336,7 @@ Partial Class FrmJobs
         ' TxtDiameter
         ' 
         TxtDiameter.DataBindings.Add(New Binding("Text", JobBindingSource, "Diameter", True))
-        TxtDiameter.Location = New Point(506, 214)
+        TxtDiameter.Location = New Point(460, 214)
         TxtDiameter.Name = "TxtDiameter"
         TxtDiameter.Size = New Size(190, 23)
         TxtDiameter.TabIndex = 23
@@ -344,7 +344,7 @@ Partial Class FrmJobs
         ' ComboBore
         ' 
         ComboBore.FormattingEnabled = True
-        ComboBore.Location = New Point(900, 164)
+        ComboBore.Location = New Point(818, 164)
         ComboBore.Name = "ComboBore"
         ComboBore.Size = New Size(190, 23)
         ComboBore.TabIndex = 28
@@ -352,7 +352,7 @@ Partial Class FrmJobs
         ' ComboCup
         ' 
         ComboCup.FormattingEnabled = True
-        ComboCup.Location = New Point(900, 193)
+        ComboCup.Location = New Point(818, 193)
         ComboCup.Name = "ComboCup"
         ComboCup.Size = New Size(190, 23)
         ComboCup.TabIndex = 29
@@ -363,7 +363,7 @@ Partial Class FrmJobs
         ComboRotation.DataSource = RotationBindingSource
         ComboRotation.DisplayMember = "Rotation1"
         ComboRotation.FormattingEnabled = True
-        ComboRotation.Location = New Point(506, 156)
+        ComboRotation.Location = New Point(460, 156)
         ComboRotation.Name = "ComboRotation"
         ComboRotation.Size = New Size(190, 23)
         ComboRotation.TabIndex = 30
@@ -379,7 +379,7 @@ Partial Class FrmJobs
         ComboBlades.DataSource = BladesBindingSource
         ComboBlades.DisplayMember = "BladeCount"
         ComboBlades.FormattingEnabled = True
-        ComboBlades.Location = New Point(506, 185)
+        ComboBlades.Location = New Point(460, 185)
         ComboBlades.Name = "ComboBlades"
         ComboBlades.Size = New Size(190, 23)
         ComboBlades.TabIndex = 31
@@ -388,7 +388,7 @@ Partial Class FrmJobs
         ' ComboTeExclusion
         ' 
         ComboTeExclusion.FormattingEnabled = True
-        ComboTeExclusion.Location = New Point(900, 132)
+        ComboTeExclusion.Location = New Point(818, 132)
         ComboTeExclusion.Name = "ComboTeExclusion"
         ComboTeExclusion.Size = New Size(190, 23)
         ComboTeExclusion.TabIndex = 33
@@ -396,14 +396,14 @@ Partial Class FrmJobs
         ' ComboLEExclusion
         ' 
         ComboLEExclusion.FormattingEnabled = True
-        ComboLEExclusion.Location = New Point(900, 103)
+        ComboLEExclusion.Location = New Point(818, 103)
         ComboLEExclusion.Name = "ComboLEExclusion"
         ComboLEExclusion.Size = New Size(190, 23)
         ComboLEExclusion.TabIndex = 32
         ' 
         ' TxtDAR
         ' 
-        TxtDAR.Location = New Point(900, 222)
+        TxtDAR.Location = New Point(818, 222)
         TxtDAR.Name = "TxtDAR"
         TxtDAR.Size = New Size(190, 23)
         TxtDAR.TabIndex = 34
@@ -411,7 +411,7 @@ Partial Class FrmJobs
         ' LabPartNumber
         ' 
         LabPartNumber.AutoSize = True
-        LabPartNumber.Location = New Point(411, 73)
+        LabPartNumber.Location = New Point(365, 73)
         LabPartNumber.Name = "LabPartNumber"
         LabPartNumber.Size = New Size(75, 15)
         LabPartNumber.TabIndex = 35
@@ -419,7 +419,7 @@ Partial Class FrmJobs
         ' 
         ' TxtSerialNumber
         ' 
-        TxtSerialNumber.Location = New Point(900, 41)
+        TxtSerialNumber.Location = New Point(818, 41)
         TxtSerialNumber.Name = "TxtSerialNumber"
         TxtSerialNumber.Size = New Size(190, 23)
         TxtSerialNumber.TabIndex = 36
@@ -427,7 +427,7 @@ Partial Class FrmJobs
         ' LabManufacturer
         ' 
         LabManufacturer.AutoSize = True
-        LabManufacturer.Location = New Point(411, 44)
+        LabManufacturer.Location = New Point(365, 44)
         LabManufacturer.Name = "LabManufacturer"
         LabManufacturer.Size = New Size(79, 15)
         LabManufacturer.TabIndex = 37
@@ -436,7 +436,7 @@ Partial Class FrmJobs
         ' LabStyle
         ' 
         LabStyle.AutoSize = True
-        LabStyle.Location = New Point(411, 103)
+        LabStyle.Location = New Point(365, 103)
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(32, 15)
         LabStyle.TabIndex = 38
@@ -445,7 +445,7 @@ Partial Class FrmJobs
         ' LabMaterial
         ' 
         LabMaterial.AutoSize = True
-        LabMaterial.Location = New Point(411, 132)
+        LabMaterial.Location = New Point(365, 132)
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(50, 15)
         LabMaterial.TabIndex = 39
@@ -454,7 +454,7 @@ Partial Class FrmJobs
         ' LabRotation
         ' 
         LabRotation.AutoSize = True
-        LabRotation.Location = New Point(411, 162)
+        LabRotation.Location = New Point(365, 162)
         LabRotation.Name = "LabRotation"
         LabRotation.Size = New Size(52, 15)
         LabRotation.TabIndex = 40
@@ -463,7 +463,7 @@ Partial Class FrmJobs
         ' LabBlades
         ' 
         LabBlades.AutoSize = True
-        LabBlades.Location = New Point(411, 192)
+        LabBlades.Location = New Point(365, 192)
         LabBlades.Name = "LabBlades"
         LabBlades.Size = New Size(41, 15)
         LabBlades.TabIndex = 41
@@ -472,7 +472,7 @@ Partial Class FrmJobs
         ' LabDiameter
         ' 
         LabDiameter.AutoSize = True
-        LabDiameter.Location = New Point(411, 220)
+        LabDiameter.Location = New Point(365, 220)
         LabDiameter.Name = "LabDiameter"
         LabDiameter.Size = New Size(55, 15)
         LabDiameter.TabIndex = 42
@@ -481,7 +481,7 @@ Partial Class FrmJobs
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(411, 249)
+        Label1.Location = New Point(365, 249)
         Label1.Name = "Label1"
         Label1.Size = New Size(74, 15)
         Label1.TabIndex = 43
@@ -490,7 +490,7 @@ Partial Class FrmJobs
         ' LabSerialNumber
         ' 
         LabSerialNumber.AutoSize = True
-        LabSerialNumber.Location = New Point(790, 44)
+        LabSerialNumber.Location = New Point(708, 44)
         LabSerialNumber.Name = "LabSerialNumber"
         LabSerialNumber.Size = New Size(82, 15)
         LabSerialNumber.TabIndex = 44
@@ -499,7 +499,7 @@ Partial Class FrmJobs
         ' LabStampNumber
         ' 
         LabStampNumber.AutoSize = True
-        LabStampNumber.Location = New Point(790, 73)
+        LabStampNumber.Location = New Point(708, 73)
         LabStampNumber.Name = "LabStampNumber"
         LabStampNumber.Size = New Size(88, 15)
         LabStampNumber.TabIndex = 46
@@ -507,7 +507,7 @@ Partial Class FrmJobs
         ' 
         ' TxtStampNumber
         ' 
-        TxtStampNumber.Location = New Point(900, 70)
+        TxtStampNumber.Location = New Point(818, 70)
         TxtStampNumber.Name = "TxtStampNumber"
         TxtStampNumber.Size = New Size(190, 23)
         TxtStampNumber.TabIndex = 45
@@ -515,7 +515,7 @@ Partial Class FrmJobs
         ' TxtPartNumber
         ' 
         TxtPartNumber.DataBindings.Add(New Binding("Text", JobBindingSource, "PartNumber", True))
-        TxtPartNumber.Location = New Point(506, 69)
+        TxtPartNumber.Location = New Point(460, 69)
         TxtPartNumber.Name = "TxtPartNumber"
         TxtPartNumber.Size = New Size(190, 23)
         TxtPartNumber.TabIndex = 47
@@ -526,7 +526,7 @@ Partial Class FrmJobs
         ComboInspectedBy.DataSource = EmployeesBindingSource
         ComboInspectedBy.DisplayMember = "EmployeeName"
         ComboInspectedBy.FormattingEnabled = True
-        ComboInspectedBy.Location = New Point(506, 243)
+        ComboInspectedBy.Location = New Point(460, 243)
         ComboInspectedBy.Name = "ComboInspectedBy"
         ComboInspectedBy.Size = New Size(190, 23)
         ComboInspectedBy.TabIndex = 52
@@ -536,7 +536,7 @@ Partial Class FrmJobs
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1351, 718)
+        ClientSize = New Size(1052, 718)
         Controls.Add(CmdUndo)
         Controls.Add(CmdSave)
         Controls.Add(ComboInspectedBy)
