@@ -34,12 +34,14 @@ Public Class FrmJobs
         VesselBindingSource.DataSource = New BindingList(Of Vessel)(Database.Vessels.Local.Where(Function(v) v.CustomerId = ComboCustomers.SelectedItem.Id).OrderBy(Function(v) v.VesselName).ToList())
         JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Local.Where(Function(j) j.VesselId = ComboVessels.SelectedItem.Id).OrderBy(Function(j) j.JobNumber).ToList())
         JobBindingSource.ResumeBinding()
+        Navigator.Enabled = True
         If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
     End Sub
     Private Sub FilterByJob(ByVal selectedValue As Integer)
         'Display the selected job data and show the associated customer and vessel.
         JobBindingSource.ResumeBinding()
-        ComboJobs.SelectedValue = selectedValue
+        Navigator.Enabled = True
+        ComboJobs.SelectedValue = selectedValue ' This needs to be re-set to ensure the correct job is displayed.
         ComboVessels.SelectedValue = ComboJobs.SelectedItem.VesselId
         ComboCustomers.SelectedValue = ComboVessels.SelectedItem.CustomerId
         If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
@@ -48,6 +50,7 @@ Public Class FrmJobs
         'Filter the jobs based on the selected vessel and show the customer.
         JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Local.Where(Function(j) j.VesselId = ComboVessels.SelectedItem.Id).OrderBy(Function(j) j.JobNumber).ToList())
         JobBindingSource.ResumeBinding()
+        Navigator.Enabled = True
         ComboCustomers.SelectedValue = ComboVessels.SelectedItem.CustomerId
         If DataGridJobDetails.DataSource Is Nothing Then DataGridJobDetails.DataSource = JobDetailsBindingSource
     End Sub
@@ -58,6 +61,7 @@ Public Class FrmJobs
         VesselBindingSource.DataSource = New BindingList(Of Vessel)(Database.Vessels.OrderBy(Function(v) v.VesselName).ToList())
         JobBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.OrderBy(Function(j) j.JobNumber).ToList())
         JobBindingSource.SuspendBinding()
+        If Navigator IsNot Nothing Then Navigator.Enabled = False
         ComboCustomers.SelectedIndex = kNoCurrentSelection
         ComboVessels.SelectedIndex = kNoCurrentSelection
         ComboJobs.SelectedIndex = kNoCurrentSelection
@@ -71,20 +75,17 @@ Public Class FrmJobs
             MessageBox.Show("Error clearing filters: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-    Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
+    Private Sub CmdSave_Click(sender As Object, e As EventArgs)
         Try
-            JobBindingSource.EndEdit()
-            Database.SaveChanges()
+            BindingSourceSave(Database, JobBindingSource)
         Catch ex As Exception
             MessageBox.Show("Error saving changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
-    Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click
+    Private Sub CmdUndo_Click(sender As Object, e As EventArgs)
         Try
-            JobBindingSource.CancelEdit()
-            Rollback(Database, JobBindingSource.DataSource)
-            JobBindingSource.ResetCurrentItem()
+            BindingSourceUndo(Database, JobBindingSource)
         Catch ex As Exception
             MessageBox.Show("Error undoing changes: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -119,9 +120,35 @@ Public Class FrmJobs
         MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
         RotationBindingSource.DataSource = Database.Rotations.Local.ToBindingList
         StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
+        ExclusionsBindingSource.DataSource = Database.Exclusions.Local.ToBindingList
+        CupBindingSource.DataSource = Database.Cups.Local.ToBindingList
         'Clear the search filters and bind the Jobs master to JobDetails.
         FiltersClear()
         BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
+        ' Configure the RecordNavigator.
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = ""
+        Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
+        Navigator.MasterSource = JobBindingSource
+        Navigator.BoundControls = New List(Of Control) From {
+            ComboManufacturer,
+            ComboStyle,
+            ComboMaterial,
+            ComboRotation,
+            ComboBlades,
+            ComboBore,
+            ComboLEExclusion,
+            ComboTeExclusion,
+            ComboCup,
+            ComboInspectedBy,
+            TxtDAR,
+            TxtDiameter,
+            TxtPartNumber,
+            TxtSerialNumber,
+            TxtStampNumber,
+            DataGridJobDetails
+        }
+        Navigator.Enabled = False
     End Sub
 
     Private Sub FrmJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing

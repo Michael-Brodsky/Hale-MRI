@@ -1,4 +1,5 @@
 ﻿Imports LibDatabase.Contexts
+Imports System.ComponentModel
 Partial Public Class FrmDatabaseForm
     Private mDataBase As HaleMRIContext = Nothing
     Private mNavigator As RecordNavigationBar = Nothing
@@ -25,7 +26,9 @@ Partial Public Class FrmDatabaseForm
         End Get
         Set(value As RecordNavigationBar)
             mNavigator = value
-            If mNavigator IsNot Nothing Then mNavigator.Database = mDataBase
+            If mNavigator IsNot Nothing Then
+                mNavigator.Database = mDataBase
+            End If
         End Set
     End Property
     Private Sub FrmDatabaseForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing

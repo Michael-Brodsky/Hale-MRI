@@ -24,7 +24,7 @@ Partial Class RecordNavigationBar
     Private Sub InitializeComponent()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(RecordNavigationBar))
         CmdGotoFirst = New Button()
-        cmdGotoPrevious = New Button()
+        CmdGotoPrevious = New Button()
         TxtCurrentPosition = New TextBox()
         CmdGotoNext = New Button()
         CmdGotoLast = New Button()
@@ -51,15 +51,15 @@ Partial Class RecordNavigationBar
         CmdGotoFirst.TextImageRelation = TextImageRelation.ImageBeforeText
         CmdGotoFirst.UseVisualStyleBackColor = True
         ' 
-        ' cmdGotoPrevious
+        ' CmdGotoPrevious
         ' 
-        cmdGotoPrevious.Image = CType(resources.GetObject("cmdGotoPrevious.Image"), Image)
-        cmdGotoPrevious.Location = New Point(126, 3)
-        cmdGotoPrevious.Margin = New Padding(0, 3, 0, 3)
-        cmdGotoPrevious.Name = "cmdGotoPrevious"
-        cmdGotoPrevious.Size = New Size(38, 24)
-        cmdGotoPrevious.TabIndex = 1
-        cmdGotoPrevious.UseVisualStyleBackColor = True
+        CmdGotoPrevious.Image = CType(resources.GetObject("CmdGotoPrevious.Image"), Image)
+        CmdGotoPrevious.Location = New Point(126, 3)
+        CmdGotoPrevious.Margin = New Padding(0, 3, 0, 3)
+        CmdGotoPrevious.Name = "CmdGotoPrevious"
+        CmdGotoPrevious.Size = New Size(38, 24)
+        CmdGotoPrevious.TabIndex = 1
+        CmdGotoPrevious.UseVisualStyleBackColor = True
         ' 
         ' TxtCurrentPosition
         ' 
@@ -167,7 +167,7 @@ Partial Class RecordNavigationBar
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
         TableLayoutPanel1.Controls.Add(CmdGotoFirst, 1, 0)
         TableLayoutPanel1.Controls.Add(CmdUndo, 12, 0)
-        TableLayoutPanel1.Controls.Add(cmdGotoPrevious, 2, 0)
+        TableLayoutPanel1.Controls.Add(CmdGotoPrevious, 2, 0)
         TableLayoutPanel1.Controls.Add(CmdSave, 11, 0)
         TableLayoutPanel1.Controls.Add(TxtCurrentPosition, 3, 0)
         TableLayoutPanel1.Controls.Add(TxtFind, 10, 0)
@@ -229,7 +229,7 @@ Partial Class RecordNavigationBar
     End Sub
 
     Friend WithEvents CmdGotoFirst As Button
-    Friend WithEvents cmdGotoPrevious As Button
+    Friend WithEvents CmdGotoPrevious As Button
     Friend WithEvents TxtCurrentPosition As TextBox
     Friend WithEvents CmdGotoNext As Button
     Friend WithEvents CmdGotoLast As Button

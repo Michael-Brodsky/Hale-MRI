@@ -47,6 +47,8 @@ Module FormInstances
         End If
     End Sub
     Public Function ComboDoubleClick() As Boolean
+        ' This function handles intervals between clicks to determine if a double-click has occurred.
+        ' Controls that don't raise the MouseDoubleClick event can use this function to detect double-clicks.
         Const kDblClickTime As Integer = 500 ' Maximum time between clicks for a double-click
         Static lastClick As DateTime = DateTime.MinValue
         Dim result As Boolean = False

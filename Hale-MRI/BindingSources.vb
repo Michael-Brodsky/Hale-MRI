@@ -6,8 +6,19 @@ Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports System.Linq.Expressions
 Imports System.Reflection
 Imports System.ComponentModel
-
+Imports LibDatabase.StoredProcedures
 Public Module BindingSources
+    Public Sub BindingSourceSave(db As HaleMRIContext, ByRef bs As BindingSource)
+        ' Saves the current record in the BindingSource to the database.
+        bs.EndEdit()
+        db.SaveChanges()
+    End Sub
+    Public Sub BindingSourceUndo(db As HaleMRIContext, ByRef bs As BindingSource)
+        ' Undoes changes made to the current record in the BindingSource.
+        bs.CancelEdit()
+        Rollback(db, bs.DataSource)
+        bs.ResetCurrentItem()
+    End Sub
     Public Sub BindMasterDetails(ByRef masterSource As BindingSource, ByRef detailsSource As BindingSource, masterPropertyName As String)
         ' Binds a master BindingSource to a details BindingSource using the specified property name.
         ' Call this once after instantiating the master and details BindingSources.
