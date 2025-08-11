@@ -7,9 +7,12 @@ Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports LibDatabase
 Public Class FrmVessels
     Inherits FrmDatabaseForm
+#Region "Private Members"
     ' Define all forms this form can open.
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mJobsForm As FrmJobs
+#End Region
+#Region "Public Interface"
     Public Property Current As Vessel
         Set(value As Vessel)
             Me.Find(value.Id)
@@ -21,6 +24,15 @@ Public Class FrmVessels
                 Return Nothing
             End If
         End Get
+    End Property
+    Public Overrides Property Database As HaleMRIContext
+        Get
+            Return MyBase.Database
+        End Get
+        Set(value As HaleMRIContext)
+            MyBase.Database = value
+            If value IsNot Nothing Then BindDataSources()
+        End Set
     End Property
     Public Property Filter As String
         Set(value As String)
@@ -39,18 +51,9 @@ Public Class FrmVessels
             Return index
         End If
     End Function
-    Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
-        ' Open the Jobs form with the selected job as the current record.
-        Try
-            ShowForm(mJobsForm, Database)
-            mJobsForm.Find(JobsBindingSource.Current.Id)
-            'mJobsForm.Filter = JobsBindingSource.Current.Id
-        Catch ex As Exception
-            MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub FrmVessels_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+#End Region
+#Region "Private Interface"
+    Private Sub BindDataSources()
         ' Order the Vessels list by VesselName ...
         Dim vessels = Database.Vessels.Include(Function(v) v.Jobs).OrderBy(Function(v) v.VesselName).ToList()
         ' ... and each Vessel's Jobs list by JobNumber.
@@ -71,4 +74,17 @@ Public Class FrmVessels
         Navigator.MasterControl = DataGridVessels
         Navigator.MasterSource = VesselBindingSource
     End Sub
+#End Region
+#Region "Event Handlers"
+    Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
+        ' Open the Jobs form with the selected job as the current record.
+        Try
+            ShowForm(mJobsForm, Database)
+            mJobsForm.Find(JobsBindingSource.Current.Id)
+            'mJobsForm.Filter = JobsBindingSource.Current.Id
+        Catch ex As Exception
+            MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+#End Region
 End Class

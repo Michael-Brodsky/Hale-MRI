@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Public Class FrmJobs
@@ -16,6 +17,14 @@ Public Class FrmJobs
             Me.Find(value.Id)
         End Set
     End Property
+    Public Property Filter As String
+        Set(value As String)
+            Navigator.Filter = value
+        End Set
+        Get
+            Return Navigator.Filter
+        End Get
+    End Property
     Public Function Find(id As Integer) As Integer
         Dim index As Integer
         If JobBindingSource.SupportsSearching Then
@@ -27,8 +36,56 @@ Public Class FrmJobs
         End If
         Return index
     End Function
+    Public Overrides Property Database As HaleMRIContext
+        Get
+            Return MyBase.Database
+        End Get
+        Set(value As HaleMRIContext)
+            MyBase.Database = value
+            If value IsNot Nothing Then BindDataSources()
+        End Set
+    End Property
 #End Region
 #Region "Private Interface"
+    Private Sub BindDataSources()
+        DataGridJobDetails.AutoGenerateColumns = False
+        'Populate the drop down lists with the respective data.    
+        ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
+        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
+        BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList
+        MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
+        RotationBindingSource.DataSource = Database.Rotations.Local.ToBindingList
+        StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
+        ExclusionsBindingSource.DataSource = Database.Exclusions.Local.ToBindingList
+        CupBindingSource.DataSource = Database.Cups.Local.ToBindingList
+        'Clear the search filters and bind the Jobs master to JobDetails.
+        FiltersClear()
+        BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
+        ' Configure the RecordNavigator.
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = ""
+        Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
+        Navigator.MasterSource = JobBindingSource
+        Navigator.BoundControls = New List(Of Control) From {
+            ComboManufacturer,
+            ComboStyle,
+            ComboMaterial,
+            ComboRotation,
+            ComboBlades,
+            ComboBore,
+            ComboLEExclusion,
+            ComboTeExclusion,
+            ComboCup,
+            ComboInspectedBy,
+            TxtDAR,
+            TxtDiameter,
+            TxtPartNumber,
+            TxtSerialNumber,
+            TxtStampNumber,
+            DataGridJobDetails
+        }
+        Navigator.Enabled = False
+    End Sub
     Private Sub FilterByCustomer()
         'Filter the vessels and jobs based on the selected customer.
         VesselBindingSource.DataSource = New BindingList(Of Vessel)(Database.Vessels.Local.Where(Function(v) v.CustomerId = ComboCustomers.SelectedItem.Id).OrderBy(Function(v) v.VesselName).ToList())
@@ -111,46 +168,6 @@ Public Class FrmJobs
             MessageBox.Show("Error selecting vessel: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-    Private Sub FrmJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        DataGridJobDetails.AutoGenerateColumns = False
-        'Populate the drop down lists with the respective data.    
-        ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
-        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
-        BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList
-        MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList
-        RotationBindingSource.DataSource = Database.Rotations.Local.ToBindingList
-        StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList
-        ExclusionsBindingSource.DataSource = Database.Exclusions.Local.ToBindingList
-        CupBindingSource.DataSource = Database.Cups.Local.ToBindingList
-        'Clear the search filters and bind the Jobs master to JobDetails.
-        FiltersClear()
-        BindMasterDetails(JobBindingSource, JobDetailsBindingSource, "JobDetails")
-        ' Configure the RecordNavigator.
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = ""
-        Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
-        Navigator.MasterSource = JobBindingSource
-        Navigator.BoundControls = New List(Of Control) From {
-            ComboManufacturer,
-            ComboStyle,
-            ComboMaterial,
-            ComboRotation,
-            ComboBlades,
-            ComboBore,
-            ComboLEExclusion,
-            ComboTeExclusion,
-            ComboCup,
-            ComboInspectedBy,
-            TxtDAR,
-            TxtDiameter,
-            TxtPartNumber,
-            TxtSerialNumber,
-            TxtStampNumber,
-            DataGridJobDetails
-        }
-        Navigator.Enabled = False
-    End Sub
-
     Private Sub FrmJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' Clear the job details data source when the form is closing, otherwise an exception occurs.
         DataGridJobDetails.DataSource = Nothing

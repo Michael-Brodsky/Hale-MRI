@@ -23,72 +23,30 @@ Partial Class FrmHaleMRI
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        cmdJobs = New Button()
-        CmdWorkstation = New Button()
-        cmdVessels = New Button()
-        cmdCustomers = New Button()
         CustomerBindingSource = New BindingSource(components)
         CustomerBindingSource1 = New BindingSource(components)
-        CmdSettings = New Button()
         PanelLogin = New Panel()
         LabLogin = New Label()
-        CmdCancel = New Button()
-        CmdOK = New Button()
+        CmdLoginCancel = New Button()
+        CmdLoginOK = New Button()
         LabPassword = New Label()
         LabUser = New Label()
         TxtPassword = New TextBox()
         TxtUser = New TextBox()
+        PanelMenuButtons = New TableLayoutPanel()
+        CmdSettings = New Button()
+        CmdWorkstation = New Button()
+        CmdReports = New Button()
+        CmdJobs = New Button()
+        CmdPropellers = New Button()
+        CmdManufacturers = New Button()
+        CmdVessels = New Button()
+        CmdCustomers = New Button()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).BeginInit()
         PanelLogin.SuspendLayout()
+        PanelMenuButtons.SuspendLayout()
         SuspendLayout()
-        ' 
-        ' cmdJobs
-        ' 
-        cmdJobs.Image = My.Resources.Resources.DocumentGroup
-        cmdJobs.ImageAlign = ContentAlignment.BottomCenter
-        cmdJobs.Location = New Point(178, 6)
-        cmdJobs.Margin = New Padding(2, 1, 2, 1)
-        cmdJobs.Name = "cmdJobs"
-        cmdJobs.Size = New Size(82, 82)
-        cmdJobs.TabIndex = 2
-        cmdJobs.Text = "Jobs"
-        cmdJobs.UseVisualStyleBackColor = True
-        ' 
-        ' CmdWorkstation
-        ' 
-        CmdWorkstation.Image = My.Resources.Resources.Measure
-        CmdWorkstation.ImageAlign = ContentAlignment.BottomCenter
-        CmdWorkstation.Location = New Point(264, 6)
-        CmdWorkstation.Margin = New Padding(2, 1, 2, 1)
-        CmdWorkstation.Name = "CmdWorkstation"
-        CmdWorkstation.Size = New Size(82, 82)
-        CmdWorkstation.TabIndex = 3
-        CmdWorkstation.Text = "Workstation"
-        CmdWorkstation.UseVisualStyleBackColor = True
-        ' 
-        ' cmdVessels
-        ' 
-        cmdVessels.ImageAlign = ContentAlignment.BottomCenter
-        cmdVessels.Location = New Point(92, 6)
-        cmdVessels.Margin = New Padding(2, 1, 2, 1)
-        cmdVessels.Name = "cmdVessels"
-        cmdVessels.Size = New Size(82, 82)
-        cmdVessels.TabIndex = 5
-        cmdVessels.Text = "Vessels"
-        cmdVessels.UseVisualStyleBackColor = True
-        ' 
-        ' cmdCustomers
-        ' 
-        cmdCustomers.Image = My.Resources.Resources.ContactCard
-        cmdCustomers.ImageAlign = ContentAlignment.BottomCenter
-        cmdCustomers.Location = New Point(6, 6)
-        cmdCustomers.Margin = New Padding(2, 1, 2, 1)
-        cmdCustomers.Name = "cmdCustomers"
-        cmdCustomers.Size = New Size(82, 82)
-        cmdCustomers.TabIndex = 6
-        cmdCustomers.Text = "Customers"
-        cmdCustomers.UseVisualStyleBackColor = True
         ' 
         ' CustomerBindingSource
         ' 
@@ -98,24 +56,12 @@ Partial Class FrmHaleMRI
         ' 
         CustomerBindingSource1.DataSource = GetType(LibDatabase.Models.Customer)
         ' 
-        ' CmdSettings
-        ' 
-        CmdSettings.Image = My.Resources.Resources.Settings
-        CmdSettings.ImageAlign = ContentAlignment.BottomCenter
-        CmdSettings.Location = New Point(350, 6)
-        CmdSettings.Margin = New Padding(2, 1, 2, 1)
-        CmdSettings.Name = "CmdSettings"
-        CmdSettings.Size = New Size(82, 82)
-        CmdSettings.TabIndex = 7
-        CmdSettings.Text = "Settings"
-        CmdSettings.UseVisualStyleBackColor = True
-        ' 
         ' PanelLogin
         ' 
         PanelLogin.BorderStyle = BorderStyle.FixedSingle
         PanelLogin.Controls.Add(LabLogin)
-        PanelLogin.Controls.Add(CmdCancel)
-        PanelLogin.Controls.Add(CmdOK)
+        PanelLogin.Controls.Add(CmdLoginCancel)
+        PanelLogin.Controls.Add(CmdLoginOK)
         PanelLogin.Controls.Add(LabPassword)
         PanelLogin.Controls.Add(LabUser)
         PanelLogin.Controls.Add(TxtPassword)
@@ -135,25 +81,25 @@ Partial Class FrmHaleMRI
         LabLogin.TabIndex = 6
         LabLogin.Text = "Application Login"
         ' 
-        ' CmdCancel
+        ' CmdLoginCancel
         ' 
-        CmdCancel.Enabled = False
-        CmdCancel.Image = My.Resources.Resources.Cancel
-        CmdCancel.Location = New Point(118, 95)
-        CmdCancel.Name = "CmdCancel"
-        CmdCancel.Size = New Size(38, 24)
-        CmdCancel.TabIndex = 5
-        CmdCancel.UseVisualStyleBackColor = True
+        CmdLoginCancel.Enabled = False
+        CmdLoginCancel.Image = My.Resources.Resources.Cancel
+        CmdLoginCancel.Location = New Point(118, 95)
+        CmdLoginCancel.Name = "CmdLoginCancel"
+        CmdLoginCancel.Size = New Size(38, 24)
+        CmdLoginCancel.TabIndex = 5
+        CmdLoginCancel.UseVisualStyleBackColor = True
         ' 
-        ' CmdOK
+        ' CmdLoginOK
         ' 
-        CmdOK.Enabled = False
-        CmdOK.Image = My.Resources.Resources.Checkmark
-        CmdOK.Location = New Point(79, 95)
-        CmdOK.Name = "CmdOK"
-        CmdOK.Size = New Size(38, 24)
-        CmdOK.TabIndex = 4
-        CmdOK.UseVisualStyleBackColor = True
+        CmdLoginOK.Enabled = False
+        CmdLoginOK.Image = My.Resources.Resources.StatusOK_18_18
+        CmdLoginOK.Location = New Point(79, 95)
+        CmdLoginOK.Name = "CmdLoginOK"
+        CmdLoginOK.Size = New Size(38, 24)
+        CmdLoginOK.TabIndex = 4
+        CmdLoginOK.UseVisualStyleBackColor = True
         ' 
         ' LabPassword
         ' 
@@ -188,17 +134,139 @@ Partial Class FrmHaleMRI
         TxtUser.Size = New Size(172, 23)
         TxtUser.TabIndex = 0
         ' 
+        ' PanelMenuButtons
+        ' 
+        PanelMenuButtons.Anchor = AnchorStyles.Top Or AnchorStyles.Left Or AnchorStyles.Right
+        PanelMenuButtons.AutoSize = True
+        PanelMenuButtons.ColumnCount = 8
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.ColumnStyles.Add(New ColumnStyle())
+        PanelMenuButtons.Controls.Add(CmdSettings, 7, 0)
+        PanelMenuButtons.Controls.Add(CmdWorkstation, 6, 0)
+        PanelMenuButtons.Controls.Add(CmdReports, 5, 0)
+        PanelMenuButtons.Controls.Add(CmdJobs, 4, 0)
+        PanelMenuButtons.Controls.Add(CmdPropellers, 3, 0)
+        PanelMenuButtons.Controls.Add(CmdManufacturers, 2, 0)
+        PanelMenuButtons.Controls.Add(CmdVessels, 1, 0)
+        PanelMenuButtons.Controls.Add(CmdCustomers, 0, 0)
+        PanelMenuButtons.Location = New Point(124, 12)
+        PanelMenuButtons.Name = "PanelMenuButtons"
+        PanelMenuButtons.Padding = New Padding(3)
+        PanelMenuButtons.RowCount = 1
+        PanelMenuButtons.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
+        PanelMenuButtons.Size = New Size(792, 102)
+        PanelMenuButtons.TabIndex = 12
+        PanelMenuButtons.Visible = False
+        ' 
+        ' CmdSettings
+        ' 
+        CmdSettings.Image = My.Resources.Resources.Settings
+        CmdSettings.ImageAlign = ContentAlignment.BottomCenter
+        CmdSettings.Location = New Point(691, 4)
+        CmdSettings.Margin = New Padding(2, 1, 2, 1)
+        CmdSettings.Name = "CmdSettings"
+        CmdSettings.Size = New Size(94, 94)
+        CmdSettings.TabIndex = 16
+        CmdSettings.Text = "Settings"
+        CmdSettings.UseVisualStyleBackColor = True
+        ' 
+        ' CmdWorkstation
+        ' 
+        CmdWorkstation.Image = My.Resources.Resources.Computer
+        CmdWorkstation.ImageAlign = ContentAlignment.BottomCenter
+        CmdWorkstation.Location = New Point(593, 4)
+        CmdWorkstation.Margin = New Padding(2, 1, 2, 1)
+        CmdWorkstation.Name = "CmdWorkstation"
+        CmdWorkstation.Size = New Size(94, 94)
+        CmdWorkstation.TabIndex = 15
+        CmdWorkstation.Text = "Workstation"
+        CmdWorkstation.UseVisualStyleBackColor = True
+        ' 
+        ' CmdReports
+        ' 
+        CmdReports.Image = My.Resources.Resources.DocumentGroup
+        CmdReports.ImageAlign = ContentAlignment.BottomCenter
+        CmdReports.Location = New Point(495, 4)
+        CmdReports.Margin = New Padding(2, 1, 2, 1)
+        CmdReports.Name = "CmdReports"
+        CmdReports.Size = New Size(94, 94)
+        CmdReports.TabIndex = 14
+        CmdReports.Text = "Reports"
+        CmdReports.UseVisualStyleBackColor = True
+        ' 
+        ' CmdJobs
+        ' 
+        CmdJobs.Image = My.Resources.Resources._Property
+        CmdJobs.ImageAlign = ContentAlignment.BottomCenter
+        CmdJobs.Location = New Point(397, 4)
+        CmdJobs.Margin = New Padding(2, 1, 2, 1)
+        CmdJobs.Name = "CmdJobs"
+        CmdJobs.Size = New Size(94, 94)
+        CmdJobs.TabIndex = 13
+        CmdJobs.Text = "Jobs"
+        CmdJobs.UseVisualStyleBackColor = True
+        ' 
+        ' CmdPropellers
+        ' 
+        CmdPropellers.Image = My.Resources.Resources.Propeller18
+        CmdPropellers.ImageAlign = ContentAlignment.BottomCenter
+        CmdPropellers.Location = New Point(299, 4)
+        CmdPropellers.Margin = New Padding(2, 1, 2, 1)
+        CmdPropellers.Name = "CmdPropellers"
+        CmdPropellers.Size = New Size(94, 94)
+        CmdPropellers.TabIndex = 12
+        CmdPropellers.Text = "Propellers"
+        CmdPropellers.UseVisualStyleBackColor = True
+        ' 
+        ' CmdManufacturers
+        ' 
+        CmdManufacturers.Image = My.Resources.Resources.Factory_icon16
+        CmdManufacturers.ImageAlign = ContentAlignment.BottomCenter
+        CmdManufacturers.Location = New Point(201, 4)
+        CmdManufacturers.Margin = New Padding(2, 1, 2, 1)
+        CmdManufacturers.Name = "CmdManufacturers"
+        CmdManufacturers.Size = New Size(94, 94)
+        CmdManufacturers.TabIndex = 11
+        CmdManufacturers.Text = "Manufacturers"
+        CmdManufacturers.UseVisualStyleBackColor = True
+        ' 
+        ' CmdVessels
+        ' 
+        CmdVessels.Image = My.Resources.Resources.FluidLayout
+        CmdVessels.ImageAlign = ContentAlignment.BottomCenter
+        CmdVessels.Location = New Point(103, 4)
+        CmdVessels.Margin = New Padding(2, 1, 2, 1)
+        CmdVessels.Name = "CmdVessels"
+        CmdVessels.Size = New Size(94, 94)
+        CmdVessels.TabIndex = 8
+        CmdVessels.Text = "Vessels"
+        CmdVessels.UseVisualStyleBackColor = True
+        ' 
+        ' CmdCustomers
+        ' 
+        CmdCustomers.Image = My.Resources.Resources.ContactCard
+        CmdCustomers.ImageAlign = ContentAlignment.BottomCenter
+        CmdCustomers.Location = New Point(5, 4)
+        CmdCustomers.Margin = New Padding(2, 1, 2, 1)
+        CmdCustomers.Name = "CmdCustomers"
+        CmdCustomers.Size = New Size(94, 94)
+        CmdCustomers.TabIndex = 7
+        CmdCustomers.Text = "Customers"
+        CmdCustomers.UseVisualStyleBackColor = True
+        ' 
         ' FrmHaleMRI
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1036, 416)
+        Controls.Add(PanelMenuButtons)
         Controls.Add(PanelLogin)
-        Controls.Add(CmdSettings)
-        Controls.Add(cmdCustomers)
-        Controls.Add(cmdVessels)
-        Controls.Add(CmdWorkstation)
-        Controls.Add(cmdJobs)
         Margin = New Padding(2, 1, 2, 1)
         Name = "FrmHaleMRI"
         Text = "Hale-MRI"
@@ -206,22 +274,28 @@ Partial Class FrmHaleMRI
         CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).EndInit()
         PanelLogin.ResumeLayout(False)
         PanelLogin.PerformLayout()
+        PanelMenuButtons.ResumeLayout(False)
         ResumeLayout(False)
+        PerformLayout()
     End Sub
-    Friend WithEvents cmdJobs As Button
-    Friend WithEvents CmdWorkstation As Button
-    Friend WithEvents cmdVessels As Button
-    Friend WithEvents cmdCustomers As Button
     Friend WithEvents CustomerBindingSource As BindingSource
     Friend WithEvents CustomerBindingSource1 As BindingSource
-    Friend WithEvents CmdSettings As Button
     Friend WithEvents PanelLogin As Panel
     Friend WithEvents LabPassword As Label
     Friend WithEvents LabUser As Label
     Friend WithEvents TxtPassword As TextBox
     Friend WithEvents TxtUser As TextBox
-    Friend WithEvents CmdCancel As Button
-    Friend WithEvents CmdOK As Button
+    Friend WithEvents CmdLoginCancel As Button
+    Friend WithEvents CmdLoginOK As Button
     Friend WithEvents LabLogin As Label
+    Friend WithEvents PanelMenuButtons As TableLayoutPanel
+    Friend WithEvents CmdSettings As Button
+    Friend WithEvents CmdWorkstation As Button
+    Friend WithEvents CmdReports As Button
+    Friend WithEvents CmdJobs As Button
+    Friend WithEvents CmdPropellers As Button
+    Friend WithEvents CmdManufacturers As Button
+    Friend WithEvents CmdVessels As Button
+    Friend WithEvents CmdCustomers As Button
 
 End Class

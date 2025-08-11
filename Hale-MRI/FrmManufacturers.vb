@@ -1,36 +1,21 @@
 ﻿Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-
 Public Class FrmManufacturers
     Inherits FrmDatabaseForm
-    Public Property CurrentManufacturer As Manufacturer
+#Region "Private Members"
+    Private mFrmPropellers As FrmPropellers
+#End Region
+#Region "Public Interface"
+    Public Property Current As Manufacturer
         ' Gets/sets the form's current Manufacturer record.
         Set(value As Manufacturer)
-            If value IsNot Nothing Then CurrentId = value.Id
+            If value IsNot Nothing Then Me.Find(value.Id)
         End Set
         Get
             If ManufacturersBindingSource.Current IsNot Nothing Then
                 Return CType(ManufacturersBindingSource.Current, Manufacturer)
             Else
                 Return Nothing
-            End If
-        End Get
-    End Property
-    Public Property CurrentId As Integer
-        ' Gets/sets the form's current ManufacturerId.
-        Set(value As Integer)
-            If ManufacturersBindingSource.SupportsSearching Then
-                ManufacturersBindingSource.Find("Id", value)
-            Else
-                Dim index = Database.Manufacturers.Local.ToList().FindIndex(Function(v) v.Id = value)
-                If index <> kNoCurrentRecord Then ManufacturersBindingSource.Position = index
-            End If
-        End Set
-        Get
-            If ManufacturersBindingSource.Current IsNot Nothing Then
-                Return ManufacturersBindingSource.Current.Id
-            Else
-                Return kNoCurrentRecord
             End If
         End Get
     End Property
@@ -43,9 +28,48 @@ Public Class FrmManufacturers
             If value IsNot Nothing Then BindDataSources()
         End Set
     End Property
+    Public Property Filter As String
+        Set(value As String)
+            Navigator.Filter = value
+        End Set
+        Get
+            Return Navigator.Filter
+        End Get
+    End Property
+    Public Function Find(id As Integer) As Integer
+        If Navigator.MasterSource.SupportsSearching Then
+            Return Navigator.MasterSource.Find("Id", id)
+        Else
+            Dim index = Database.Manufacturers.Local.OrderBy(Function(c) c.ManufacturerName).ToList().FindIndex(Function(v) v.Id = id)
+            If index <> kNoCurrentRecord Then Navigator.MasterSource.Position = index
+            Return index
+        End If
+    End Function
+#End Region
+#Region "Private Interface"
     Private Sub BindDataSources()
         ManufacturersBindingSource.DataSource = Database.Manufacturers.Local.ToBindingList
+        PropellersBindingSource.DataSource = Database.Propellers.Local.ToBindingList
         StatesBindingSource.DataSource = Database.StateCodes.Local.ToBindingList
         CountryCodesBindingSource.DataSource = Database.CountryCodes.Local.ToBindingList
+        BindMasterDetails(ManufacturersBindingSource, PropellersBindingSource, "Propellers")
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Manufacturers"
+        Navigator.MasterSource = ManufacturersBindingSource
+        Navigator.MasterControl = DataGridManufacturers
     End Sub
+#End Region
+#Region "Event Handlers"
+    Private Sub DataGridPropeller_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridPropellers.CellMouseDoubleClick
+        Try
+            ShowForm(mFrmPropellers, Database)
+            mFrmPropellers.Find(PropellersBindingSource.Current.Id)
+        Catch ex As Exception
+            MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+    Private Sub FrmManufacturers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    End Sub
+#End Region
 End Class

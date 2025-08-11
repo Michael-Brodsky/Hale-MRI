@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking.Internal
@@ -20,6 +21,15 @@ Public Class FrmCustomers
             End If
         End Get
     End Property
+    Public Overrides Property Database As HaleMRIContext
+        Get
+            Return MyBase.Database
+        End Get
+        Set(value As HaleMRIContext)
+            MyBase.Database = value
+            If value IsNot Nothing Then BindDataSources()
+        End Set
+    End Property
     Public Property Filter As String
         Set(value As String)
             Navigator.Filter = value
@@ -37,6 +47,30 @@ Public Class FrmCustomers
             Return index
         End If
     End Function
+    Private Sub BindDataSources()
+        ' Order the Customers list by CustomerName, Vessels list by VesselName ...
+        Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
+        Dim vessels = Database.Vessels.Include(Function(v) v.Jobs).OrderBy(Function(v) v.VesselName).ToList()
+        For Each c In customers
+            ' ... and each Customer's Vessels list by VesselName.
+            c.Vessels = c.Vessels.OrderBy(Function(v) v.VesselName).ToList()
+        Next
+        For Each v In vessels
+            ' ... and each Vessel's Jobs list by JobNumber.
+            v.Jobs = v.Jobs.OrderBy(Function(j) j.JobNumber).ToList()
+        Next
+        CustomerBindingSource.DataSource = New BindingList(Of Customer)(customers)
+        ' Bind the details BindingSources to the master BindingSources on the property of the master model.
+        BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
+        BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
+        StateCodeBindingSource.DataSource = Database.StateCodes.Local.ToBindingList()
+        CountryCodeBindingSource.DataSource = Database.CountryCodes.Local.ToBindingList()
+        ' Set the navigation bar properties.
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Customers"
+        Navigator.MasterSource = CustomerBindingSource
+        Navigator.MasterControl = dataGridCustomers
+    End Sub
     Private Sub DatagridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles datagridCustomerVessels.CellMouseDoubleClick
         ' Open the Vessels form with the selected vessel as the current record.
         Try
@@ -54,29 +88,5 @@ Public Class FrmCustomers
         Catch ex As Exception
             MessageBox.Show("Error opening job details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-    Private Sub FrmCustomers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ' Order the Customers list by CustomerName, Vessels list by VesselName ...
-        Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
-        Dim vessels = Database.Vessels.Include(Function(v) v.Jobs).OrderBy(Function(v) v.VesselName).ToList()
-        For Each c In customers
-            ' ... and each Customer's Vessels list by VesselName.
-            c.Vessels = c.Vessels.OrderBy(Function(v) v.VesselName).ToList()
-        Next
-        For Each v In vessels
-            ' ... and each Vessel's Jobs list by JobNumber.
-            v.Jobs = v.Jobs.OrderBy(Function(j) j.JobNumber).ToList()
-        Next
-        CustomerBindingSource.DataSource = New BindingList(Of Customer)(customers) 'Database.Customers.Local.ToBindingList()
-        ' Bind the details BindingSources to the master BindingSources on the property of the master model.
-        BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
-        BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
-        StateCodeBindingSource.DataSource = Database.StateCodes.Local.ToBindingList()
-        CountryCodeBindingSource.DataSource = Database.CountryCodes.Local.ToBindingList()
-        ' Set the navigation bar properties.
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = "Customers"
-        Navigator.MasterSource = CustomerBindingSource
-        Navigator.MasterControl = dataGridCustomers
     End Sub
 End Class

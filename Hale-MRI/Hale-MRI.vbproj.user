@@ -25,6 +25,15 @@
     <Compile Update="FrmMeasurements.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="FrmPropellers.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmReports.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmSettings.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="FrmVessels.vb">
       <SubType>Form</SubType>
     </Compile>

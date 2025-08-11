@@ -36,6 +36,8 @@ Namespace Models
 
         Public Property Diameter As Double?
 
+        Public Property Bore As Double?
+
         Public Overridable Property BladesNavigation As Blade
 
         Public Overridable Property InspectedByNavigation As Employee

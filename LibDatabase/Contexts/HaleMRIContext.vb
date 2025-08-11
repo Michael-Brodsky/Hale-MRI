@@ -31,8 +31,6 @@ Namespace Contexts
 
         Public Overridable Property ExtremeMeasurements As DbSet(Of ExtremeMeasurement)
 
-        Public Overridable Property FindDuplicatesForVessels As DbSet(Of FindDuplicatesForVessel)
-
         Public Overridable Property Jobs As DbSet(Of Job)
 
         Public Overridable Property JobDetails As DbSet(Of JobDetail)
@@ -54,6 +52,8 @@ Namespace Contexts
         Public Overridable Property Styles As DbSet(Of Style)
 
         Public Overridable Property Tolerances As DbSet(Of Tolerance)
+
+        Public Overridable Property UsysApplicationLogs As DbSet(Of UsysApplicationLog)
 
         Public Overridable Property Vessels As DbSet(Of Vessel)
 
@@ -178,6 +178,9 @@ Namespace Contexts
                         IsRequired().
                         HasMaxLength(64).
                         HasColumnName("Employee Name")
+                    entity.Property(Function(e) e.Password).
+                        IsRequired().
+                        HasMaxLength(32)
                 End Sub)
 
             modelBuilder.Entity(Of Exclusion)(
@@ -212,19 +215,6 @@ Namespace Contexts
                     entity.HasOne(Function(d) d.JobDetails).WithMany(Function(p) p.ExtremeMeasurements).
                         HasForeignKey(Function(d) d.JobDetailsId).
                         HasConstraintName("Job DetailsExtremeMeasurements")
-                End Sub)
-
-            modelBuilder.Entity(Of FindDuplicatesForVessel)(
-                Sub(entity)
-                    entity.
-                    HasNoKey().
-                    ToView("Find duplicates for Vessels")
-
-                    entity.Property(Function(e) e.CustomerId).HasColumnName("Customer ID")
-                    entity.Property(Function(e) e.Id).
-                        ValueGeneratedOnAdd().
-                        HasColumnType("counter").
-                        HasColumnName("ID")
                 End Sub)
 
             modelBuilder.Entity(Of Job)(
@@ -417,6 +407,8 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.ManufacturerId, "Manufacturer ID")
 
+                    entity.HasIndex(Function(e) New With {e.ManufacturerId, e.PartNumber}, "Manufacturer Part Number").IsUnique()
+
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
@@ -424,10 +416,12 @@ Namespace Contexts
                     entity.Property(Function(e) e.BladeWidth).HasColumnName("Blade Width")
                     entity.Property(Function(e) e.Description).HasMaxLength(64)
                     entity.Property(Function(e) e.ManufacturerId).HasColumnName("Manufacturer ID")
+                    entity.Property(Function(e) e.Material).HasMaxLength(16)
                     entity.Property(Function(e) e.PartNumber).
                         HasMaxLength(32).
                         HasColumnName("Part Number")
-                    entity.Property(Function(e) e.RotationlInertia).HasColumnName("Rotationl Inertia")
+                    entity.Property(Function(e) e.Rotation).HasMaxLength(1)
+                    entity.Property(Function(e) e.RotationalInertia).HasColumnName("Rotational Inertia")
                     entity.Property(Function(e) e.Style).HasMaxLength(16)
 
                     entity.HasOne(Function(d) d.BladesNavigation).WithMany(Function(p) p.Propellers).
@@ -438,6 +432,14 @@ Namespace Contexts
                         HasForeignKey(Function(d) d.ManufacturerId).
                         OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("ManufacturersProducts")
+
+                    entity.HasOne(Function(d) d.MaterialNavigation).WithMany(Function(p) p.Propellers).
+                        HasForeignKey(Function(d) d.Material).
+                        HasConstraintName("~MaterialsPropellers")
+
+                    entity.HasOne(Function(d) d.RotationNavigation).WithMany(Function(p) p.Propellers).
+                        HasForeignKey(Function(d) d.Rotation).
+                        HasConstraintName("~RotationsPropellers1")
 
                     entity.HasOne(Function(d) d.StyleNavigation).WithMany(Function(p) p.Propellers).
                         HasForeignKey(Function(d) d.Style).
@@ -544,6 +546,27 @@ Namespace Contexts
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
                         HasColumnName("Tolerance Class")
+                End Sub)
+
+            modelBuilder.Entity(Of UsysApplicationLog)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.ToTable("USysApplicationLog")
+
+                    entity.Property(Function(e) e.Id).
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.Category).HasMaxLength(255)
+                    entity.Property(Function(e) e.Context).HasMaxLength(255)
+                    entity.Property(Function(e) e.DataMacroInstanceId).
+                        HasMaxLength(255).
+                        HasColumnName("Data Macro Instance ID")
+                    entity.Property(Function(e) e.ErrorNumber).HasColumnName("Error Number")
+                    entity.Property(Function(e) e.ObjectType).
+                        HasMaxLength(255).
+                        HasColumnName("Object Type")
+                    entity.Property(Function(e) e.SourceObject).HasMaxLength(255)
                 End Sub)
 
             modelBuilder.Entity(Of Vessel)(

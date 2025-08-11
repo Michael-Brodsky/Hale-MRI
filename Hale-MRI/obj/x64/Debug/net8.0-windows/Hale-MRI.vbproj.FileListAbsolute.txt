@@ -162,3 +162,6 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\ref\Hale-MRI.dll
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmJobDetails.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmReports.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmSettings.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmPropellers.resources
