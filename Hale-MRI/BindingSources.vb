@@ -1,13 +1,29 @@
-﻿Imports LibDatabase.Models
-Imports LibDatabase.Contexts
-Imports Microsoft.EntityFrameworkCore
+﻿Imports LibDatabase.Contexts
 Imports System.Runtime.CompilerServices
-Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports System.Linq.Expressions
 Imports System.Reflection
 Imports System.ComponentModel
 Imports LibDatabase.StoredProcedures
 Public Module BindingSources
+    Public Function BindingSourceCurrent(bs As BindingSource) As Object
+        ' Returns the current object in the BindingSource, or Nothing if there is no current object.
+        Return If(bs IsNot Nothing AndAlso bs.Position <> kNoCurrentRecord, bs.Current, Nothing)
+    End Function
+    Public Function BindingSourceFind(ByVal id As Integer, bs As BindingSource) As Integer
+        ' Returns the position of a record in a BindingSource whose Id field matches the given id.
+        Dim result As Integer = kNoCurrentRecord
+        Dim list As IList = bs.List
+        For Each item In list
+            Dim t As Type = item.GetType()
+            Dim pi As PropertyInfo = t.GetProperty("Id")
+            Dim itemId As Integer = CInt(pi.GetValue(item, Nothing))
+            If itemId = id Then
+                result = list.IndexOf(item)
+                Exit For
+            End If
+        Next
+        Return result
+    End Function
     Public Sub BindingSourceSave(db As HaleMRIContext, ByRef bs As BindingSource)
         ' Saves the current record in the BindingSource to the database.
         bs.EndEdit()
@@ -31,7 +47,6 @@ Public Module BindingSources
         ' binding sources are based on types not compatible with BindMasterDetails(), e.g.
         ' (DataTable, DataView, other searchable/filterable types.) This function must be
         ' called each time the current record changes in the master control.
-        '
         Dim result As New List(Of T)
         If key IsNot Nothing AndAlso relatedSource IsNot Nothing AndAlso Not IsDBNull(key) Then
             ' It uses LINQ to query a DbSet of type T.
