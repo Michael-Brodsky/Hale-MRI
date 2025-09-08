@@ -37,6 +37,7 @@ Partial Public Class FrmDatabaseForm
             If mNavigator IsNot Nothing Then mNavigator.Database = mDataBase
         End Set
     End Property
+    Protected Property EntityClass As Object
     Protected Overridable Property Navigator As RecordNavigationBar
         Get
             Return mNavigator
@@ -48,6 +49,9 @@ Partial Public Class FrmDatabaseForm
             End If
         End Set
     End Property
+    Public Shared Function FindEntity(Of T As Class)(entity As DbSet(Of T), id As Integer) As T
+        Return entity.Find(id)
+    End Function
     Private Sub FrmDatabaseForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' Derived forms with a DataGridView.SelectionChanged event will fire
         ' after the FormClosing event, resulting in an error. So, we set the
@@ -55,10 +59,4 @@ Partial Public Class FrmDatabaseForm
         ' Is Nothing in the SelectionChanged events to avoid errors.
         Database = Nothing
     End Sub
-
-    Public Shared Function FindEntity(Of T As Class)(entity As DbSet(Of T), id As Integer) As T
-        Return entity.Find(id)
-    End Function
-
-    Protected Property EntityClass As Object
 End Class
