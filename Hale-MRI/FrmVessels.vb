@@ -2,29 +2,15 @@
 Imports System.ComponentModel
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
-Imports LibDatabase.StoredProcedures
-Imports Microsoft.EntityFrameworkCore.ChangeTracking
-Imports LibDatabase
+Imports Hale_MRI.RecordNavigationBar
 Public Class FrmVessels
     Inherits FrmDatabaseForm
 #Region "Private Members"
     ' Define all forms this form can open.
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
-    Private mJobsForm As FrmJobs
+    Private mFrmJobs As FrmJobs
 #End Region
 #Region "Public Interface"
-    Public Property Current As Vessel
-        Set(value As Vessel)
-            Me.Find(value.Id)
-        End Set
-        Get
-            If Navigator.Current IsNot Nothing Then
-                Return CType(VesselBindingSource.Current, Vessel)
-            Else
-                Return Nothing
-            End If
-        End Get
-    End Property
     Public Overrides Property Database As HaleMRIContext
         Get
             Return MyBase.Database
@@ -36,20 +22,14 @@ Public Class FrmVessels
     End Property
     Public Property Filter As String
         Set(value As String)
-            Navigator.Filter = value
+            'Navigator.Filter = value
         End Set
         Get
-            Return Navigator.Filter
+            Return Nothing
         End Get
     End Property
     Public Function Find(id As Integer) As Integer
-        If VesselBindingSource.SupportsSearching Then
-            Return VesselBindingSource.Find("Id", id)
-        Else
-            Dim index = Database.Vessels.Local.OrderBy(Function(v) v.VesselName).ToList().FindIndex(Function(v) v.Id = id)
-            If index <> kNoCurrentRecord Then VesselBindingSource.Position = index
-            Return index
-        End If
+        Return Nothing
     End Function
 #End Region
 #Region "Private Interface"
@@ -71,20 +51,55 @@ Public Class FrmVessels
         ' Set the nav bar properties.
         Navigator = RecordNavigationBar1
         Navigator.Caption = "Vessels"
-        Navigator.MasterControl = DataGridVessels
-        Navigator.MasterSource = VesselBindingSource
+        'Navigator.MasterControl = DataGridVessels
+        DataSource = VesselBindingSource
     End Sub
 #End Region
 #Region "Event Handlers"
     Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
         ' Open the Jobs form with the selected job as the current record.
         Try
-            ShowForm(mJobsForm, Database)
-            mJobsForm.Find(JobsBindingSource.Current.Id)
-            'mJobsForm.Filter = JobsBindingSource.Current.Id
+            ShowForm(mFrmJobs, Database)
+            mFrmJobs.Filter = Nothing
+            mFrmJobs.Find(JobsBindingSource.Current)
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub Navigator_Event(sender As Object, e As NavigationEventArgs) Handles mNavigator.NavigationEvent
+        Select Case e.EventName
+            Case "Delete"
+
+            Case "FilterOff"
+
+            Case "FilterOn"
+
+            Case "GotoFirst"
+                VesselBindingSource.Position = 0
+            Case "GotoLast"
+                VesselBindingSource.Position = VesselBindingSource.Count - 1
+            Case "GotoNext"
+                If VesselBindingSource.Position < VesselBindingSource.Count - 1 Then VesselBindingSource.Position += 1
+            Case "GotoPrev"
+                If VesselBindingSource.Position > 0 Then VesselBindingSource.Position -= 1
+            Case "Save"
+                If VesselBindingSource.Current.Id Is Nothing Then
+                    ' If the current job is new, add it to the databese.
+                    'JobAddNew()
+                Else
+                    ' If the current job is not new, save changes to the current job.
+                    BindingSourceSave(Database, VesselBindingSource)
+                End If
+            Case "Undo"
+                BindingSourceUndo(Database, VesselBindingSource)
+                'If JobBindingSource.Current Is Nothing Then
+                'FiltersClear()
+                'ComboJobs.Enabled = True
+                'End If
+            Case Else
+
+        End Select
     End Sub
 #End Region
 End Class

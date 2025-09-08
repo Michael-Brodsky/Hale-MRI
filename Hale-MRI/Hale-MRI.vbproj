@@ -11,6 +11,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Form3.Designer.vb" />
+    <Compile Remove="Form3.vb" />
+    <Compile Remove="FrmJobs_old.Designer.vb" />
+    <Compile Remove="FrmJobs_old.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Form3.resx" />
+    <EmbeddedResource Remove="FrmJobs_old.resx" />
+  </ItemGroup>
+
+  <!--<ItemGroup>
+    <Compile Remove="FrmJobs.Designer.vb" />
+    <Compile Remove="FrmJobs.vb" />
+    <Compile Remove="FrmJobs_old.Designer.vb" />
+    <Compile Remove="FrmJobs_old.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="FrmJobs.resx" />
+    <EmbeddedResource Remove="FrmJobs_old.resx" />
+  </ItemGroup>-->
+
+  <ItemGroup>
     <Import Include="System.Data" />
     <Import Include="System.Drawing" />
     <Import Include="System.Windows.Forms" />

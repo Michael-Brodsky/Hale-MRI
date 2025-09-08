@@ -42,6 +42,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdGotoFirst
         ' 
+        CmdGotoFirst.Enabled = False
         CmdGotoFirst.Image = CType(resources.GetObject("CmdGotoFirst.Image"), Image)
         CmdGotoFirst.Location = New Point(88, 3)
         CmdGotoFirst.Margin = New Padding(3, 3, 0, 3)
@@ -53,6 +54,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdGotoPrevious
         ' 
+        CmdGotoPrevious.Enabled = False
         CmdGotoPrevious.Image = CType(resources.GetObject("CmdGotoPrevious.Image"), Image)
         CmdGotoPrevious.Location = New Point(126, 3)
         CmdGotoPrevious.Margin = New Padding(0, 3, 0, 3)
@@ -63,6 +65,7 @@ Partial Class RecordNavigationBar
         ' 
         ' TxtCurrentPosition
         ' 
+        TxtCurrentPosition.Enabled = False
         TxtCurrentPosition.Location = New Point(164, 3)
         TxtCurrentPosition.Margin = New Padding(0, 3, 0, 3)
         TxtCurrentPosition.Name = "TxtCurrentPosition"
@@ -72,6 +75,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdGotoNext
         ' 
+        CmdGotoNext.Enabled = False
         CmdGotoNext.Image = CType(resources.GetObject("CmdGotoNext.Image"), Image)
         CmdGotoNext.Location = New Point(264, 3)
         CmdGotoNext.Margin = New Padding(0, 3, 0, 3)
@@ -82,6 +86,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdGotoLast
         ' 
+        CmdGotoLast.Enabled = False
         CmdGotoLast.Image = CType(resources.GetObject("CmdGotoLast.Image"), Image)
         CmdGotoLast.Location = New Point(302, 3)
         CmdGotoLast.Margin = New Padding(0, 3, 3, 3)
@@ -92,6 +97,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdAddNew
         ' 
+        CmdAddNew.Enabled = False
         CmdAddNew.Image = CType(resources.GetObject("CmdAddNew.Image"), Image)
         CmdAddNew.Location = New Point(346, 3)
         CmdAddNew.Margin = New Padding(3, 3, 0, 3)
@@ -102,6 +108,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdDelete
         ' 
+        CmdDelete.Enabled = False
         CmdDelete.Image = CType(resources.GetObject("CmdDelete.Image"), Image)
         CmdDelete.Location = New Point(384, 3)
         CmdDelete.Margin = New Padding(0, 3, 3, 3)
@@ -112,6 +119,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdFind
         ' 
+        CmdFind.Enabled = False
         CmdFind.Image = CType(resources.GetObject("CmdFind.Image"), Image)
         CmdFind.Location = New Point(468, 3)
         CmdFind.Margin = New Padding(0, 3, 0, 3)
@@ -122,6 +130,7 @@ Partial Class RecordNavigationBar
         ' 
         ' TxtFind
         ' 
+        TxtFind.Enabled = False
         TxtFind.Location = New Point(506, 3)
         TxtFind.Margin = New Padding(0, 3, 3, 3)
         TxtFind.Name = "TxtFind"
@@ -130,6 +139,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdSave
         ' 
+        CmdSave.Enabled = False
         CmdSave.Image = CType(resources.GetObject("CmdSave.Image"), Image)
         CmdSave.Location = New Point(653, 3)
         CmdSave.Margin = New Padding(3, 3, 0, 3)
@@ -140,6 +150,7 @@ Partial Class RecordNavigationBar
         ' 
         ' CmdUndo
         ' 
+        CmdUndo.Enabled = False
         CmdUndo.Image = CType(resources.GetObject("CmdUndo.Image"), Image)
         CmdUndo.Location = New Point(691, 3)
         CmdUndo.Margin = New Padding(0, 3, 0, 3)
@@ -202,6 +213,7 @@ Partial Class RecordNavigationBar
         ' ChkToggleFilter
         ' 
         ChkToggleFilter.Appearance = Appearance.Button
+        ChkToggleFilter.Enabled = False
         ChkToggleFilter.Image = My.Resources.Resources.Filter
         ChkToggleFilter.ImageAlign = ContentAlignment.TopLeft
         ChkToggleFilter.Location = New Point(427, 3)

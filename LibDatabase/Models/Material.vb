@@ -7,7 +7,5 @@ Namespace Models
         Public Property Material1 As String
 
         Public Overridable Property Jobs As ICollection(Of Job) = New List(Of Job)()
-
-        Public Overridable Property Propellers As ICollection(Of Propeller) = New List(Of Propeller)()
     End Class
 End Namespace

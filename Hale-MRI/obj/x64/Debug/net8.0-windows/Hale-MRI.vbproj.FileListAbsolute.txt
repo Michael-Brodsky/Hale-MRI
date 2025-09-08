@@ -3,7 +3,6 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmCustomers.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmDatabaseForm.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmHaleMRI.resources
-C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmJobs.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmManufacturers.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmMeasurements.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmVessels.resources
@@ -165,3 +164,5 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmReports.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmSettings.resources
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmPropellers.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.Form4.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.FrmJobs.resources

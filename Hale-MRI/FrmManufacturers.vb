@@ -6,19 +6,6 @@ Public Class FrmManufacturers
     Private mFrmPropellers As FrmPropellers
 #End Region
 #Region "Public Interface"
-    Public Property Current As Manufacturer
-        ' Gets/sets the form's current Manufacturer record.
-        Set(value As Manufacturer)
-            If value IsNot Nothing Then Me.Find(value.Id)
-        End Set
-        Get
-            If ManufacturersBindingSource.Current IsNot Nothing Then
-                Return CType(ManufacturersBindingSource.Current, Manufacturer)
-            Else
-                Return Nothing
-            End If
-        End Get
-    End Property
     Public Overrides Property Database As HaleMRIContext
         Get
             Return MyBase.Database
@@ -30,10 +17,10 @@ Public Class FrmManufacturers
     End Property
     Public Property Filter As String
         Set(value As String)
-            Navigator.Filter = value
+            'Navigator.Filter = value
         End Set
         Get
-            Return Navigator.Filter
+            Return Nothing
         End Get
     End Property
     Public Function Find(id As Integer) As Integer
@@ -54,9 +41,9 @@ Public Class FrmManufacturers
         CountryCodesBindingSource.DataSource = Database.CountryCodes.Local.ToBindingList
         BindMasterDetails(ManufacturersBindingSource, PropellersBindingSource, "Propellers")
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Manufacturers"
-        Navigator.MasterSource = ManufacturersBindingSource
-        Navigator.MasterControl = DataGridManufacturers
+        Caption = "Manufacturers"
+        DataSource = ManufacturersBindingSource
+        'Navigator.MasterControl = DataGridManufacturers
     End Sub
 #End Region
 #Region "Event Handlers"

@@ -8,47 +8,71 @@ Namespace Models
 
         Public Property VesselId As Integer
 
+        Public Property PropellerId As Integer?
+
+        Public Property InspectedBy As Integer?
+
         Public Property JobNumber As Integer
 
         Public Property StartDate As Date?
 
         Public Property Description As String
 
-        Public Property InspectedBy As Integer?
-
-        Public Property ManufacturerId As Integer?
-
-        Public Property PartNumber As String
-
-        Public Property PartDescription As String
-
         Public Property SerialNumber As String
 
         Public Property StampNumber As String
 
-        Public Property Material As String
+        Public Property DesiredPitch As Double?
 
-        Public Property Style As String
+        Public Property MarkedPitch As Double?
 
-        Public Property Blades As Short?
+        Public Property WheelPitch As Double?
 
-        Public Property Rotation As String
+        Public Property LeExclusion As Double?
 
-        Public Property Diameter As Double?
+        Public Property TeExclusion As Double?
 
-        Public Property Bore As Double?
+        Public Property Cup As Double?
 
-        Public Overridable Property BladesNavigation As Blade
+        Public Property Dar As Double?
+
+        Public Property PropellerManufacturerId As Integer?
+
+        Public Property PropellerPartNumber As String
+
+        Public Property PropellerDescription As String
+
+        Public Property PropellerStyle As String
+
+        Public Property PropellerMaterial As String
+
+        Public Property PropellerBlades As Short?
+
+        Public Property PropellerDiameter As Double?
+
+        Public Property PropellerRotation As String
+
+        Public Property PropellerBore As Double?
+
+        Public Overridable Property CupNavigation As Cup
 
         Public Overridable Property InspectedByNavigation As Employee
 
         Public Overridable Property JobDetails As ICollection(Of JobDetail) = New List(Of JobDetail)()
 
-        Public Overridable Property Manufacturer As Manufacturer
+        Public Overridable Property LeExclusionNavigation As Exclusion
 
-        Public Overridable Property MaterialNavigation As Material
+        Public Overridable Property PropellerBladesNavigation As Blade
 
-        Public Overridable Property StyleNavigation As Style
+        Public Overridable Property PropellerManufacturer As Manufacturer
+
+        Public Overridable Property PropellerMaterialNavigation As Material
+
+        Public Overridable Property PropellerRotationNavigation As Rotation
+
+        Public Overridable Property PropellerStyleNavigation As Style
+
+        Public Overridable Property TeExclusionNavigation As Exclusion
 
         Public Overridable Property Vessel As Vessel
     End Class

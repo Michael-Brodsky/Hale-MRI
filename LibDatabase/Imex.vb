@@ -52,6 +52,7 @@ Public Module Imex
         idRadiusLast = 34
         idBladeCount = 35
     End Enum
+    Private Const ScanDataEofMarker As String = "102" ' End of file marker for scan data text files.    
     Private Structure Exclusions    ' Type that aggregates exclusion values.
         Public LeExclusion As Double
         Public TeExclusion As Double
@@ -217,19 +218,61 @@ Public Module Imex
         istream.Close()
         Return ws
     End Function
-
+    Public Function ScanDataAdd(newJob As Job, db As HaleMRIContext) As Job
+        ' Adds a new scan data entry to the database.
+        Dim result As Job = Nothing
+        If newJob IsNot Nothing Then
+            Dim existingJob As Job = db.Jobs.FirstOrDefault(Function(j) j.JobNumber = newJob.JobNumber.ToString())
+            If existingJob Is Nothing Then
+                If String.IsNullOrWhiteSpace(newJob.Vessel.VesselName) Then newJob.Vessel.VesselName = "(New Vessel " & db.Vessels.Count + 1 & ")"
+                Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = newJob.Vessel.VesselName.ToString())
+                If existingVessel IsNot Nothing Then
+                    newJob.Vessel = existingVessel
+                Else
+                    If String.IsNullOrEmpty(newJob.Vessel.Customer.CustomerName) Then
+                        newJob.Vessel.Customer = New Customer With {.CustomerName = "(New Customer " & db.Customers.Count + 1 & ")"}
+                    Else
+                        Dim existingCustomer As Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = newJob.Vessel.Customer.CustomerName.ToString())
+                        If existingCustomer IsNot Nothing Then
+                            newJob.Vessel.Customer = existingCustomer
+                        End If
+                    End If
+                End If
+                If newJob.PropellerManufacturer IsNot Nothing Then
+                    Dim existingManufacturer As Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = newJob.PropellerManufacturer.ManufacturerName.ToString())
+                    If existingManufacturer IsNot Nothing Then newJob.PropellerManufacturer = existingManufacturer
+                End If
+                If newJob.LeExclusion IsNot Nothing Then newJob.LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = newJob.LeExclusion)?.Exclusion1
+                If newJob.TeExclusion IsNot Nothing Then newJob.TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = newJob.TeExclusion)?.Exclusion1
+                If newJob.Cup IsNot Nothing Then newJob.Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = newJob.Cup)?.Cup1
+                If newJob.PropellerStyle IsNot Nothing Then newJob.PropellerStyle = db.Styles.FirstOrDefault(Function(s) s.Style1 = newJob.PropellerStyle.ToString())?.Style1
+                If newJob.PropellerMaterial IsNot Nothing Then newJob.PropellerMaterial = db.Materials.FirstOrDefault(Function(m) m.Material1 = newJob.PropellerMaterial.ToString())?.Material1
+                If newJob.PropellerBlades IsNot Nothing Then newJob.PropellerBlades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = newJob.PropellerBlades.ToString())?.BladeCount
+                If newJob.PropellerRotation IsNot Nothing Then newJob.PropellerRotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = newJob.PropellerRotation.ToString())?.Rotation1
+                If newJob.JobDetails(0).PerformedByNavigation IsNot Nothing Then
+                    Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = newJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
+                    If existingEmployee IsNot Nothing Then newJob.JobDetails(0).PerformedByNavigation = existingEmployee
+                End If
+                result = newJob
+                db.Jobs.Add(newJob)
+            Else
+                existingJob.JobDetails.Add(newJob.JobDetails.FirstOrDefault())
+                result = existingJob
+            End If
+        End If
+        Return result
+    End Function
     Public Sub ScanDataExport(ByVal sd As ScanData, ByVal outFile As String)
         If File.Exists(outFile) Then Throw New IOException("Scan data file already exists: " & outFile)
         Dim ostream As New StreamWriter(outFile, True)
     End Sub
-    Public Function ScanDataImport(ByVal inFile As String) As ScanData
+    Public Function ScanDataImport(ByVal inFile As String) As Job
         ' Imports scan data from a text file and returns a ScanData object.
         If Not File.Exists(inFile) Then Throw New FileNotFoundException("Scan data file not found.", inFile)
         Dim istream As New StreamReader(inFile)
-        Dim sd As New ScanData()
-        ReadScanData(sd, istream, File.ReadAllLines(inFile).Length)
+        Dim j As Job = ReadScanData2(istream, File.ReadAllLines(inFile).Length)
         istream.Close()
-        Return sd
+        Return j
     End Function
 #End Region
 #Region "Private Interface"
@@ -274,9 +317,7 @@ SkipLine:
             lineId += 1
         Loop
     End Sub
-    Private Sub ReadScanData(ByRef sd As ScanData, ByVal istream As StreamReader, ByVal lineCount As Integer)
-        ' Reads scan data from a text file and populates the ScanData object
-        ' according to the line number.
+    Private Function ReadScanData2(ByVal istream As StreamReader, ByVal lineCount As Integer) As Job
         Dim line As String
         Dim lineId As ScanDataLineId = ScanDataLineId.idFileType
         Dim skipped As Integer = 0
@@ -284,10 +325,136 @@ SkipLine:
         Dim radii As New Radius()
         Dim cells As New Cell()
         Dim extremes As New Extremes()
+        Dim c As Customer = Nothing
+        Dim v As Vessel = Nothing
+        Dim j As Job = Nothing
+        Dim tempD As Double
         On Error Resume Next
         Do While Not istream.EndOfStream
             line = TrimReplace(regex, istream.ReadLine())
-            If lineId > ScanDataLineId.idJobNumber And String.IsNullOrWhiteSpace(line) Then GoTo SkipLine
+            If String.IsNullOrWhiteSpace(line) Then
+                ' If the line is empty, skip it.
+                skipped += 1
+                GoTo Skip_Line
+            End If
+            Select Case lineId
+                Case ScanDataLineId.idFileType
+                    ' Skip this line
+                    skipped = 1
+                Case ScanDataLineId.idCustomer
+                    c = New Customer With {.CustomerName = line}
+                Case ScanDataLineId.idVessel
+                    v = New Vessel With {
+                        .VesselName = line,
+                        .Customer = If(c, New Customer With {.CustomerName = String.Empty})
+                    }
+                Case ScanDataLineId.idJobNumber
+                    Dim jobNumber As Integer = 0
+                    Int32.TryParse(line, jobNumber)
+                    j = New Job With {
+                        .JobNumber = jobNumber,
+                        .Vessel = If(v, New Vessel With {
+                            .VesselName = String.Empty,
+                            .Customer = If(c, New Customer With {.CustomerName = String.Empty})
+                        })
+                    }
+                    If j IsNot Nothing Then
+                        j.JobDetails = New List(Of JobDetail) From {
+                        New JobDetail()
+                    }
+                    End If
+                Case ScanDataLineId.idDiameter
+                    j.PropellerDiameter = Convert.ToDouble(line)
+                Case ScanDataLineId.idMarkedPitch
+                    j.MarkedPitch = Convert.ToDouble(line)
+                Case ScanDataLineId.idRotation
+                    j.PropellerRotation = line
+                Case ScanDataLineId.idClass
+                    j.JobDetails(0).ToleranceClass = line
+                Case ScanDataLineId.idStage
+                    j.JobDetails(0).Description = line
+                Case ScanDataLineId.idFileName
+                    j.JobDetails(0).FileName = line
+                Case ScanDataLineId.idDateTime
+                    j.JobDetails(0).StartDate = DateTime.Parse(line)
+                Case ScanDataLineId.idExclusions
+                    If InStr(line, kMRIDummyText) > 0 Then
+                        Dim exclusions As String() = line.Split("~"c)
+                        Dim ex As New Exclusions With {
+                                .LeExclusion = Convert.ToDouble(exclusions(0))
+                            }
+                        If exclusions.Length = 2 Then ex.TeExclusion = Convert.ToDouble(exclusions(1))
+                        j.LeExclusion = ex.LeExclusion
+                        j.TeExclusion = ex.TeExclusion
+                    End If
+                Case ScanDataLineId.idPartNumber
+                    j.PropellerPartNumber = line
+                Case ScanDataLineId.idSerialNumber
+                    j.SerialNumber = line
+                Case ScanDataLineId.idStampNumber
+                    j.StampNumber = line
+                Case ScanDataLineId.idInspectedBy
+                    j.JobDetails(0).PerformedByNavigation = New Employee With {.EmployeeName = line}
+                Case ScanDataLineId.idDesiredPitch
+                    j.DesiredPitch = Convert.ToDouble(line)
+                Case ScanDataLineId.idDAR
+                    j.Dar = Convert.ToDouble(line)
+                Case ScanDataLineId.idBore
+                    j.PropellerBore = line
+                Case ScanDataLineId.idCup
+                    j.Cup = Convert.ToDouble(line)
+                Case ScanDataLineId.idManufacturer
+                    j.PropellerManufacturer = New Manufacturer With {.ManufacturerName = line}
+                Case ScanDataLineId.idStyle
+                    j.PropellerStyle = line
+                Case ScanDataLineId.idMaterial
+                    j.PropellerMaterial = line
+                Case ScanDataLineId.idRadiusFirst To ScanDataLineId.idRadiusLast
+                    ' Read blade measurement counts
+                    radii.BladeCount = Convert.ToInt32(line)
+                Case ScanDataLineId.idBladeCount
+                    j.PropellerBlades = Convert.ToInt32(line)
+                Case ScanDataLineId.idBladeCount + 1 To ScanDataLineId.idBladeCount + radii.LineCount
+                    ' Read radius measurements
+                    radii.Value = line
+                Case ScanDataLineId.idBladeCount + radii.LineCount + 1 To lineCount - j.PropellerBlades - skipped + 1
+                    ' Read cell measurements
+                    cells.Value = line
+                Case Is > lineCount - j.PropellerBlades - skipped + 1
+                    If line = ScanDataEofMarker Then
+                        ' End of file marker, save measurements
+                        SaveMeasurements(j, radii, extremes, cells)
+                    Else
+                        extremes.Value = line
+                    End If
+                Case Is > lineCount
+                    Exit Do
+                Case Else
+                    skipped += 1
+            End Select
+Skip_Line:
+            If lineId >= ScanDataLineId.idJobNumber AndAlso j Is Nothing Then
+                ' If we reach the job number line and no job has been created, exit the loop.
+                Exit Do
+            End If
+            lineId += 1
+        Loop
+        Return j
+    End Function
+    Private Sub ReadScanData(ByRef sd As ScanData, ByVal istream As StreamReader, ByVal lineCount As Integer)
+        ' Reads scan data from a text file and populates the ScanData object
+        ' according to the line number.
+        Dim line As String
+        Dim lineId As ScanDataLineId = ScanDataLineId.idFileType
+        Dim skipped As Integer = 0
+        Dim regex As New Regex("[^A-Za-z0-9\,\.\/\-\~\: ]+")    ' Matches anything that is not a letter, digit, comma, period, slash, hyphen, tilde, colon, or space.
+        '        Dim radii As New Radius()
+        '        Dim cells As New Cell()
+        '        Dim extremes As New Extremes()
+        '        On Error Resume Next
+        Do While Not istream.EndOfStream
+            line = TrimReplace(regex, istream.ReadLine())
+            '            If lineId > ScanDataLineId.idJobNumber And String.IsNullOrWhiteSpace(line) Then GoTo SkipLine
             Select Case lineId
                 Case ScanDataLineId.idFileType
                     ' Skip this line
@@ -299,125 +466,125 @@ SkipLine:
                     sd.Customer.Vessels = New List(Of Vessel) From {
                         New Vessel With {.VesselName = line}
                     }
-                Case ScanDataLineId.idJobNumber
+                    'Case ScanDataLineId.idJobNumber
                     ' If we don't get a valid job number, exit the loop.
-                    Dim jobNumber As Integer = Convert.ToInt32(line)
-                    If jobNumber = 0 Then Exit Do
-                    sd.Job = New Job With {
-                        .JobNumber = jobNumber,
-                        .JobDetails = New List(Of JobDetail) From {
-                            New JobDetail With {.Diameter = Nothing}
-                        }
-                    }
-                Case ScanDataLineId.idDiameter
-                    sd.Job.JobDetails(0).Diameter = Convert.ToDouble(line)
-                Case ScanDataLineId.idMarkedPitch
-                    sd.Job.JobDetails(0).MarkedPitch = Convert.ToDouble(line)
-                Case ScanDataLineId.idRotation
-                    sd.Job.JobDetails(0).Rotation = line
-                Case ScanDataLineId.idClass
-                    sd.Job.JobDetails(0).ToleranceClass = line
-                Case ScanDataLineId.idStage
-                    sd.Job.JobDetails(0).Description = line
-                Case ScanDataLineId.idFileName
-                    sd.Job.JobDetails(0).FileName = line
-                Case ScanDataLineId.idDateTime
-                    sd.Job.JobDetails(0).StartDate = DateTime.Parse(line)
-                Case ScanDataLineId.idExclusions
-                    If InStr(line, kMRIDummyText) > 0 Then
-                        Dim exclusions As String() = line.Split("~"c)
-                        Dim ex As New Exclusions With {
-                                .LeExclusion = Convert.ToDouble(exclusions(0))
-                            }
-                        If exclusions.Length = 2 Then ex.TeExclusion = Convert.ToDouble(exclusions(1))
-                        sd.Job.JobDetails(0).LeExclusion = ex.LeExclusion
-                        sd.Job.JobDetails(0).TeExclusion = ex.TeExclusion
-                    End If
-                Case ScanDataLineId.idPartNumber
-                    sd.Job.PartNumber = line
-                Case ScanDataLineId.idSerialNumber
-                    sd.Job.SerialNumber = line
-                Case ScanDataLineId.idStampNumber
-                    sd.Job.StampNumber = line
-                Case ScanDataLineId.idInspectedBy
-                    sd.Job.InspectedByNavigation = New Employee With {.EmployeeName = line}
-                Case ScanDataLineId.idDesiredPitch
-                    sd.Job.JobDetails(0).DesiredPitch = Convert.ToDouble(line)
-                Case ScanDataLineId.idDAR
-                    sd.Job.JobDetails(0).Dar = Convert.ToDouble(line)
-                Case ScanDataLineId.idBore
-                    sd.Job.JobDetails(0).Bore = line
-                Case ScanDataLineId.idCup
-                    sd.Job.JobDetails(0).Cup = Convert.ToDouble(line)
-                Case ScanDataLineId.idManufacturer
-                    sd.Job.Manufacturer = New Manufacturer With {.ManufacturerName = line}
-                Case ScanDataLineId.idStyle
-                    sd.Job.Style = line
-                Case ScanDataLineId.idMaterial
-                    sd.Job.Material = line
-                Case ScanDataLineId.idRadiusFirst To ScanDataLineId.idRadiusLast
-                    ' Read blade measurement counts
-                    radii.BladeCount = Convert.ToInt32(line)
-                Case ScanDataLineId.idBladeCount
-                    sd.Job.Blades = Convert.ToInt32(line)
-                Case ScanDataLineId.idBladeCount + 1 To ScanDataLineId.idBladeCount + radii.LineCount
-                    ' Read radius measurements
-                    radii.Value = line
-                Case ScanDataLineId.idBladeCount + radii.LineCount + 1 To lineCount - sd.Job.Blades - skipped + 1
-                    ' Read cell measurements
-                    cells.Value = line
-                Case Is > lineCount - sd.Job.Blades - skipped + 1
-                    If line = "102" Then
-                        ' End of file marker, save measurements
-                        SaveMeasurements(sd, radii, extremes, cells)
-                    Else
-                        extremes.Value = line
-                    End If
-                Case Is > lineCount
-                    Exit Do
-                Case Else
-                    skipped += 1
+                    'Dim jobNumber As Integer = Convert.ToInt32(line)
+                    'If jobNumber = 0 Then Exit Do
+                    '                    sd.Job = New Job With {
+                    '                        .JobNumber = jobNumber,
+                    '                        .JobDetails = New List(Of JobDetail) From {
+                    '                            New JobDetail With {.Diameter = Nothing}
+                    '                        }
+                    '                    }
+                    '                Case ScanDataLineId.idDiameter
+                    '                    sd.Job.JobDetails(0).Diameter = Convert.ToDouble(line)
+                    '                Case ScanDataLineId.idMarkedPitch
+                    '                    sd.Job.JobDetails(0).MarkedPitch = Convert.ToDouble(line)
+                    '                Case ScanDataLineId.idRotation
+                    '                    sd.Job.JobDetails(0).Rotation = line
+                    '                Case ScanDataLineId.idClass
+                    '                    sd.Job.JobDetails(0).ToleranceClass = line
+                    '                Case ScanDataLineId.idStage
+                    '                    sd.Job.JobDetails(0).Description = line
+                    '                Case ScanDataLineId.idFileName
+                    '                    sd.Job.JobDetails(0).FileName = line
+                    '                Case ScanDataLineId.idDateTime
+                    '                    sd.Job.JobDetails(0).StartDate = DateTime.Parse(line)
+                    '                Case ScanDataLineId.idExclusions
+                    '                    If InStr(line, kMRIDummyText) > 0 Then
+                    '                        Dim exclusions As String() = line.Split("~"c)
+                    '                        Dim ex As New Exclusions With {
+                    '                                .LeExclusion = Convert.ToDouble(exclusions(0))
+                    '                            }
+                    '                        If exclusions.Length = 2 Then ex.TeExclusion = Convert.ToDouble(exclusions(1))
+                    '                        sd.Job.JobDetails(0).LeExclusion = ex.LeExclusion
+                    '                        sd.Job.JobDetails(0).TeExclusion = ex.TeExclusion
+                    '                    End If
+                    '                Case ScanDataLineId.idPartNumber
+                    '                    sd.Job.PartNumber = line
+                    '                Case ScanDataLineId.idSerialNumber
+                    '                    sd.Job.SerialNumber = line
+                    '                Case ScanDataLineId.idStampNumber
+                    '                    sd.Job.StampNumber = line
+                    '                Case ScanDataLineId.idInspectedBy
+                    '                    sd.Job.InspectedByNavigation = New Employee With {.EmployeeName = line}
+                    '                Case ScanDataLineId.idDesiredPitch
+                    '                    sd.Job.JobDetails(0).DesiredPitch = Convert.ToDouble(line)
+                    '                Case ScanDataLineId.idDAR
+                    '                    sd.Job.JobDetails(0).Dar = Convert.ToDouble(line)
+                    '                Case ScanDataLineId.idBore
+                    '                    sd.Job.JobDetails(0).Bore = line
+                    '                Case ScanDataLineId.idCup
+                    '                    sd.Job.JobDetails(0).Cup = Convert.ToDouble(line)
+                    '                Case ScanDataLineId.idManufacturer
+                    '                    sd.Job.Manufacturer = New Manufacturer With {.ManufacturerName = line}
+                    '                Case ScanDataLineId.idStyle
+                    '                    sd.Job.Style = line
+                    '                Case ScanDataLineId.idMaterial
+                    '                    sd.Job.Material = line
+                    '                Case ScanDataLineId.idRadiusFirst To ScanDataLineId.idRadiusLast
+                    '                    ' Read blade measurement counts
+                    '                    radii.BladeCount = Convert.ToInt32(line)
+                    '                Case ScanDataLineId.idBladeCount
+                    '                    sd.Job.Blades = Convert.ToInt32(line)
+                    '                Case ScanDataLineId.idBladeCount + 1 To ScanDataLineId.idBladeCount + radii.LineCount
+                    '                    ' Read radius measurements
+                    '                    radii.Value = line
+                    '                Case ScanDataLineId.idBladeCount + radii.LineCount + 1 To lineCount - sd.Job.Blades - skipped + 1
+                    '                    ' Read cell measurements
+                    '                    cells.Value = line
+                    '                Case Is > lineCount - sd.Job.Blades - skipped + 1
+                    '                    If line = "102" Then
+                    '                        ' End of file marker, save measurements
+                    '                        SaveMeasurements(sd, radii, extremes, cells)
+                    '                    Else
+                    '                        extremes.Value = line
+                    '                    End If
+                    '                Case Is > lineCount
+                    '                    Exit Do
+                    '                Case Else
+                    '                    skipped += 1
             End Select
-SkipLine:
+            'SkipLine:
             lineId += 1
-            'If lineId > ScanDataLineId.idJobNumber And sd.Job Is Nothing Then Exit Do
+            '            'If lineId > ScanDataLineId.idJobNumber And sd.Job Is Nothing Then Exit Do
         Loop
     End Sub
     Private Sub WriteScanData(ByVal sd As ScanData, ByVal ostream As StreamWriter)
         ' Writes the scan data to a text file in the expected order.
     End Sub
-    Private Sub SaveMeasurements(ByRef sd As ScanData, ByVal radii As Radius, ByVal extremes As Extremes, ByVal cells As Cell)
-        ' Saves the collected measurements into the ScanData object.
-        SaveRadiusMeasurements(sd, radii)
-        SaveCellMeasurements(sd, cells)
-        SaveExtremeMeasurements(sd, extremes)
+    Private Sub SaveMeasurements(ByRef j As Job, ByVal radii As Radius, ByVal extremes As Extremes, ByVal cells As Cell)
+        ' Saves the collected measurements into the JobDetails.
+        SaveRadiusMeasurements(j, radii)
+        SaveCellMeasurements(j, cells)
+        SaveExtremeMeasurements(j, extremes)
     End Sub
-    Private Sub SaveCellMeasurements(ByRef sd As ScanData, ByVal cells As Cell)
-        ' Saves cell measurements into the ScanData object.
+    Private Sub SaveCellMeasurements(ByRef j As Job, ByVal cells As Cell)
+        ' Saves cell measurements into the JobDetails.
         For Each cm As CellMeasurement In cells.Measurements
-            sd.Job.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
-                .Angle = cm.Angle,
-                .Depth = cm.Depth
+            j.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
+            .Angle = cm.Angle,
+            .Depth = cm.Depth
             })
         Next
     End Sub
-    Private Sub SaveExtremeMeasurements(ByRef sd As ScanData, ByVal extremes As Extremes)
-        ' Saves extreme measurements into the ScanData object.
+    Private Sub SaveExtremeMeasurements(ByRef j As Job, ByVal extremes As Extremes)
+        ' Saves extreme measurements into the JobDetails.
         Dim b As Integer = 1
         For Each em As Double In extremes.Measurements
-            sd.Job.JobDetails(0).ExtremeMeasurements.Add(New Models.ExtremeMeasurement With {
-                .BladeId = b,
-                .Extreme = em
+            j.JobDetails(0).ExtremeMeasurements.Add(New Models.ExtremeMeasurement With {
+            .BladeId = b,
+            .Extreme = em
             })
             b += 1
         Next
     End Sub
-    Private Sub SaveRadiusMeasurements(ByRef sd As ScanData, ByVal radii As Radius)
+    Private Sub SaveRadiusMeasurements(ByRef j As Job, ByVal radii As Radius)
         ' Saves radius measurements into the ScanData object.
         Dim b As Integer = 1
         Dim m As Integer = 0
         For Each rm As RadiusMeasurement In radii.Measurements
-            sd.Job.JobDetails(0).RadiusMeasurements.Add(New Models.RadiusMeasurement With {
+            j.JobDetails(0).RadiusMeasurements.Add(New Models.RadiusMeasurement With {
                 .BladeId = b,
                 .Radius = rm.Radius,
                 .LeCell = rm.LeCell,

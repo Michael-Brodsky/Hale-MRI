@@ -24,6 +24,7 @@ Module FormInstances
                 ' Show the form as a modal dialog
                 frm.ShowDialog()
             Else
+                ' Show the form in the given window state
                 frm.WindowState = windowState
                 frm.Show()
             End If

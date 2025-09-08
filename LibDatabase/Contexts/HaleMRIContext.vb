@@ -148,10 +148,10 @@ Namespace Contexts
                         HasColumnName("Customer Name")
                     entity.Property(Function(e) e.Email).HasMaxLength(255)
                     entity.Property(Function(e) e.PostalCode).
-                        HasMaxLength(255).
+                        HasMaxLength(16).
                         HasColumnName("Postal Code")
                     entity.Property(Function(e) e.State).HasMaxLength(2)
-                    entity.Property(Function(e) e.Telephone).HasMaxLength(255)
+                    entity.Property(Function(e) e.Telephone).HasMaxLength(16)
                     entity.Property(Function(e) e.Website).HasMaxLength(64)
 
                     entity.HasOne(Function(d) d.CountryCodeNavigation).WithMany(Function(p) p.Customers).
@@ -167,7 +167,7 @@ Namespace Contexts
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
 
-                    entity.HasIndex(Function(e) e.EmployeeName, "Employee Name")
+                    entity.HasIndex(Function(e) e.EmployeeName, "Employee Name").IsUnique()
 
                     entity.HasIndex(Function(e) e.Id, "ID")
 
@@ -178,9 +178,7 @@ Namespace Contexts
                         IsRequired().
                         HasMaxLength(64).
                         HasColumnName("Employee Name")
-                    entity.Property(Function(e) e.Password).
-                        IsRequired().
-                        HasMaxLength(32)
+                    entity.Property(Function(e) e.Password).HasMaxLength(32)
                 End Sub)
 
             modelBuilder.Entity(Of Exclusion)(
@@ -225,28 +223,47 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.JobNumber, "Job Number").IsUnique()
 
-                    entity.HasIndex(Function(e) e.ManufacturerId, "Manufacturer ID")
+                    entity.HasIndex(Function(e) e.PropellerManufacturerId, "Manufacturer ID")
 
-                    entity.HasIndex(Function(e) e.Material, "Prop Material ID")
+                    entity.HasIndex(Function(e) e.PropellerId, "Propeller ID")
 
                     entity.HasIndex(Function(e) e.VesselId, "Vessel ID")
 
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
+                    entity.Property(Function(e) e.Cup).HasDefaultValue(0.0)
+                    entity.Property(Function(e) e.Dar).
+                        HasDefaultValue(0.0).
+                        HasColumnName("DAR")
                     entity.Property(Function(e) e.Description).HasMaxLength(80)
-                    entity.Property(Function(e) e.Diameter).HasDefaultValue(0.0)
+                    entity.Property(Function(e) e.DesiredPitch).HasColumnName("Desired Pitch")
                     entity.Property(Function(e) e.InspectedBy).HasColumnName("Inspected By")
                     entity.Property(Function(e) e.JobNumber).HasColumnName("Job Number")
-                    entity.Property(Function(e) e.ManufacturerId).HasColumnName("Manufacturer ID")
-                    entity.Property(Function(e) e.Material).HasMaxLength(16)
-                    entity.Property(Function(e) e.PartDescription).
-                        HasMaxLength(40).
-                        HasColumnName("Part Description")
-                    entity.Property(Function(e) e.PartNumber).
+                    entity.Property(Function(e) e.LeExclusion).
+                        HasDefaultValue(0.0).
+                        HasColumnName("LE Exclusion")
+                    entity.Property(Function(e) e.MarkedPitch).HasColumnName("Marked Pitch")
+                    entity.Property(Function(e) e.PropellerBlades).HasColumnName("Propeller Blades")
+                    entity.Property(Function(e) e.PropellerBore).HasColumnName("Propeller Bore")
+                    entity.Property(Function(e) e.PropellerDescription).
+                        HasMaxLength(64).
+                        HasColumnName("Propeller Description")
+                    entity.Property(Function(e) e.PropellerDiameter).HasColumnName("Propeller Diameter")
+                    entity.Property(Function(e) e.PropellerId).HasColumnName("Propeller ID")
+                    entity.Property(Function(e) e.PropellerManufacturerId).HasColumnName("Propeller Manufacturer ID")
+                    entity.Property(Function(e) e.PropellerMaterial).
                         HasMaxLength(16).
-                        HasColumnName("Part Number")
-                    entity.Property(Function(e) e.Rotation).HasMaxLength(255)
+                        HasColumnName("Propeller Material")
+                    entity.Property(Function(e) e.PropellerPartNumber).
+                        HasMaxLength(32).
+                        HasColumnName("Propeller Part Number")
+                    entity.Property(Function(e) e.PropellerRotation).
+                        HasMaxLength(1).
+                        HasColumnName("Propeller Rotation")
+                    entity.Property(Function(e) e.PropellerStyle).
+                        HasMaxLength(16).
+                        HasColumnName("Propeller Style")
                     entity.Property(Function(e) e.SerialNumber).
                         HasMaxLength(32).
                         HasColumnName("Serial Number")
@@ -254,32 +271,52 @@ Namespace Contexts
                         HasMaxLength(32).
                         HasColumnName("Stamp Number")
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
-                    entity.Property(Function(e) e.Style).HasMaxLength(255)
+                    entity.Property(Function(e) e.TeExclusion).
+                        HasDefaultValue(0.0).
+                        HasColumnName("TE Exclusion")
                     entity.Property(Function(e) e.VesselId).HasColumnName("Vessel ID")
+                    entity.Property(Function(e) e.WheelPitch).
+                        HasDefaultValue(0.0).
+                        HasColumnName("Wheel Pitch")
 
-                    entity.HasOne(Function(d) d.BladesNavigation).WithMany(Function(p) p.Jobs).
-                        HasForeignKey(Function(d) d.Blades).
-                        HasConstraintName("~BladesJobs")
+                    entity.HasOne(Function(d) d.CupNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.Cup).
+                        HasConstraintName("~CupsJobs")
 
                     entity.HasOne(Function(d) d.InspectedByNavigation).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.InspectedBy).
                         HasConstraintName("EmployeesJobs")
 
-                    entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Jobs).
-                        HasForeignKey(Function(d) d.ManufacturerId).
+                    entity.HasOne(Function(d) d.LeExclusionNavigation).WithMany(Function(p) p.JobLeExclusionNavigations).
+                        HasForeignKey(Function(d) d.LeExclusion).
+                        HasConstraintName("~ExclusionsJobs")
+
+                    entity.HasOne(Function(d) d.PropellerBladesNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.PropellerBlades).
+                        HasConstraintName("~BladesJobs")
+
+                    entity.HasOne(Function(d) d.PropellerManufacturer).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.PropellerManufacturerId).
                         HasConstraintName("ManufacturersJobs")
 
-                    entity.HasOne(Function(d) d.MaterialNavigation).WithMany(Function(p) p.Jobs).
-                        HasForeignKey(Function(d) d.Material).
+                    entity.HasOne(Function(d) d.PropellerMaterialNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.PropellerMaterial).
                         HasConstraintName("~MaterialsJobs")
 
-                    entity.HasOne(Function(d) d.StyleNavigation).WithMany(Function(p) p.Jobs).
-                        HasForeignKey(Function(d) d.Style).
+                    entity.HasOne(Function(d) d.PropellerRotationNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.PropellerRotation).
+                        HasConstraintName("~RotationsJobs")
+
+                    entity.HasOne(Function(d) d.PropellerStyleNavigation).WithMany(Function(p) p.Jobs).
+                        HasForeignKey(Function(d) d.PropellerStyle).
                         HasConstraintName("~StylesJobs")
+
+                    entity.HasOne(Function(d) d.TeExclusionNavigation).WithMany(Function(p) p.JobTeExclusionNavigations).
+                        HasForeignKey(Function(d) d.TeExclusion).
+                        HasConstraintName("~ExclusionsJobs1")
 
                     entity.HasOne(Function(d) d.Vessel).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.VesselId).
-                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("VesselsJobs")
                 End Sub)
 
@@ -293,59 +330,31 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.JobId, "Job ID")
 
-                    entity.HasIndex(Function(e) e.LeExclusion, "LE Exclusion")
-
-                    entity.HasIndex(Function(e) e.TeExclusion, "TE Exclusion")
-
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
-                    entity.Property(Function(e) e.Bore).HasMaxLength(9)
-                    entity.Property(Function(e) e.Dar).HasColumnName("DAR")
                     entity.Property(Function(e) e.Description).HasMaxLength(16)
-                    entity.Property(Function(e) e.DesiredPitch).HasColumnName("Desired Pitch")
                     entity.Property(Function(e) e.FileName).
                         HasMaxLength(255).
                         HasColumnName("File Name")
                     entity.Property(Function(e) e.JobId).HasColumnName("Job ID")
-                    entity.Property(Function(e) e.LeExclusion).HasColumnName("LE Exclusion")
-                    entity.Property(Function(e) e.MarkedPitch).HasColumnName("Marked Pitch")
                     entity.Property(Function(e) e.PerformedBy).HasColumnName("Performed By")
-                    entity.Property(Function(e) e.Rotation).HasMaxLength(1)
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
-                    entity.Property(Function(e) e.TeExclusion).HasColumnName("TE Exclusion")
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
                         HasColumnName("Tolerance Class")
-                    entity.Property(Function(e) e.WheelPitch).HasColumnName("Wheel Pitch")
-
-                    entity.HasOne(Function(d) d.CupNavigation).WithMany(Function(p) p.JobDetails).
-                        HasForeignKey(Function(d) d.Cup).
-                        HasConstraintName("~CupsPropellers")
 
                     entity.HasOne(Function(d) d.Job).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.JobId).
                         HasConstraintName("JobsJob Details")
 
-                    entity.HasOne(Function(d) d.LeExclusionNavigation).WithMany(Function(p) p.JobDetailLeExclusionNavigations).
-                        HasForeignKey(Function(d) d.LeExclusion).
-                        HasConstraintName("~ExclusionsPropellers")
-
                     entity.HasOne(Function(d) d.PerformedByNavigation).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.PerformedBy).
                         HasConstraintName("EmployeesPropellers")
 
-                    entity.HasOne(Function(d) d.RotationNavigation).WithMany(Function(p) p.JobDetails).
-                        HasForeignKey(Function(d) d.Rotation).
-                        HasConstraintName("~RotationsPropellers")
-
-                    entity.HasOne(Function(d) d.TeExclusionNavigation).WithMany(Function(p) p.JobDetailTeExclusionNavigations).
-                        HasForeignKey(Function(d) d.TeExclusion).
-                        HasConstraintName("~ExclusionsPropellers1")
-
                     entity.HasOne(Function(d) d.ToleranceClassNavigation).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.ToleranceClass).
-                        HasConstraintName("~ClassesPropellers")
+                        HasConstraintName("~TolerancesJob Details")
                 End Sub)
 
             modelBuilder.Entity(Of Manufacturer)(
@@ -354,7 +363,7 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.Id, "ID")
 
-                    entity.HasIndex(Function(e) e.ManufacturerName, "Manufacturer Name")
+                    entity.HasIndex(Function(e) e.ManufacturerName, "Manufacturer Name").IsUnique()
 
                     entity.HasIndex(Function(e) e.PostalCode, "Postal Code")
 
@@ -368,6 +377,7 @@ Namespace Contexts
                         HasColumnName("Country Code")
                     entity.Property(Function(e) e.Email).HasMaxLength(64)
                     entity.Property(Function(e) e.ManufacturerName).
+                        IsRequired().
                         HasMaxLength(64).
                         HasColumnName("Manufacturer Name")
                     entity.Property(Function(e) e.PostalCode).
@@ -423,27 +433,6 @@ Namespace Contexts
                     entity.Property(Function(e) e.Rotation).HasMaxLength(1)
                     entity.Property(Function(e) e.RotationalInertia).HasColumnName("Rotational Inertia")
                     entity.Property(Function(e) e.Style).HasMaxLength(16)
-
-                    entity.HasOne(Function(d) d.BladesNavigation).WithMany(Function(p) p.Propellers).
-                        HasForeignKey(Function(d) d.Blades).
-                        HasConstraintName("~BladesProducts")
-
-                    entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Propellers).
-                        HasForeignKey(Function(d) d.ManufacturerId).
-                        OnDelete(DeleteBehavior.ClientSetNull).
-                        HasConstraintName("ManufacturersProducts")
-
-                    entity.HasOne(Function(d) d.MaterialNavigation).WithMany(Function(p) p.Propellers).
-                        HasForeignKey(Function(d) d.Material).
-                        HasConstraintName("~MaterialsPropellers")
-
-                    entity.HasOne(Function(d) d.RotationNavigation).WithMany(Function(p) p.Propellers).
-                        HasForeignKey(Function(d) d.Rotation).
-                        HasConstraintName("~RotationsPropellers1")
-
-                    entity.HasOne(Function(d) d.StyleNavigation).WithMany(Function(p) p.Propellers).
-                        HasForeignKey(Function(d) d.Style).
-                        HasConstraintName("~StylesProducts")
                 End Sub)
 
             modelBuilder.Entity(Of RadiusMeasurement)(
@@ -602,7 +591,6 @@ Namespace Contexts
 
                     entity.HasOne(Function(d) d.Customer).WithMany(Function(p) p.Vessels).
                         HasForeignKey(Function(d) d.CustomerId).
-                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("CustomersVessels")
 
                     entity.HasOne(Function(d) d.ServiceType).WithMany(Function(p) p.Vessels).

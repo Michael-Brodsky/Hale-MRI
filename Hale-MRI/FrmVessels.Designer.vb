@@ -23,40 +23,41 @@ Partial Class FrmVessels
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmVessels))
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         DataGridVessels = New DataGridView()
-        CustomerBindingSource = New BindingSource(components)
-        CountryCodeBindingSource = New BindingSource(components)
-        VesselServiceTypeBindingSource = New BindingSource(components)
-        VesselBindingSource = New BindingSource(components)
-        TableLayoutPanel2 = New TableLayoutPanel()
-        labVesselJobsTitle = New Label()
-        DataGridVesselJobs = New DataGridView()
-        JobNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        JobsBindingSource = New BindingSource(components)
-        ManufacturerBindingSource = New BindingSource(components)
-        TableLayoutPanel1 = New TableLayoutPanel()
-        RecordNavigationBar1 = New RecordNavigationBar()
         VesselNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CustomerId = New DataGridViewComboBoxColumn()
+        CustomerBindingSource = New BindingSource(components)
         PrimaryVesselNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         HullIdNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CallSignDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         BuildYearDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         Flag = New DataGridViewComboBoxColumn()
+        CountryCodeBindingSource = New BindingSource(components)
         ServiceTypeId = New DataGridViewComboBoxColumn()
+        VesselServiceTypeBindingSource = New BindingSource(components)
+        VesselBindingSource = New BindingSource(components)
+        JobsBindingSource = New BindingSource(components)
+        ManufacturerBindingSource = New BindingSource(components)
+        TableLayoutPanel1 = New TableLayoutPanel()
+        RecordNavigationBar1 = New RecordNavigationBar()
+        DataGridVesselJobs = New DataGridView()
+        DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        JobNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        labVesselJobsTitle = New Label()
+        TableLayoutPanel2 = New TableLayoutPanel()
         CType(DataGridVessels, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CountryCodeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(VesselServiceTypeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        TableLayoutPanel2.SuspendLayout()
-        CType(DataGridVesselJobs, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         TableLayoutPanel1.SuspendLayout()
+        CType(DataGridVesselJobs, ComponentModel.ISupportInitialize).BeginInit()
+        TableLayoutPanel2.SuspendLayout()
         SuspendLayout()
         ' 
         ' DataGridVessels
@@ -71,136 +72,6 @@ Partial Class FrmVessels
         DataGridVessels.RowHeadersWidth = 82
         DataGridVessels.Size = New Size(1480, 498)
         DataGridVessels.TabIndex = 0
-        ' 
-        ' CustomerBindingSource
-        ' 
-        CustomerBindingSource.DataSource = GetType(LibDatabase.Models.Customer)
-        ' 
-        ' CountryCodeBindingSource
-        ' 
-        CountryCodeBindingSource.DataSource = GetType(LibDatabase.Models.CountryCode)
-        ' 
-        ' VesselServiceTypeBindingSource
-        ' 
-        VesselServiceTypeBindingSource.DataSource = GetType(LibDatabase.Models.VesselServiceType)
-        ' 
-        ' VesselBindingSource
-        ' 
-        VesselBindingSource.DataSource = GetType(LibDatabase.Models.Vessel)
-        ' 
-        ' TableLayoutPanel2
-        ' 
-        TableLayoutPanel2.AutoSize = True
-        TableLayoutPanel2.ColumnCount = 1
-        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
-        TableLayoutPanel2.Controls.Add(labVesselJobsTitle, 0, 0)
-        TableLayoutPanel2.Controls.Add(DataGridVesselJobs, 0, 1)
-        TableLayoutPanel2.Location = New Point(16, 576)
-        TableLayoutPanel2.Margin = New Padding(0)
-        TableLayoutPanel2.Name = "TableLayoutPanel2"
-        TableLayoutPanel2.RowCount = 2
-        TableLayoutPanel2.RowStyles.Add(New RowStyle())
-        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
-        TableLayoutPanel2.Size = New Size(927, 223)
-        TableLayoutPanel2.TabIndex = 5
-        ' 
-        ' labVesselJobsTitle
-        ' 
-        labVesselJobsTitle.AutoSize = True
-        labVesselJobsTitle.Font = New Font("Segoe UI", 11.0F, FontStyle.Bold)
-        labVesselJobsTitle.Location = New Point(0, 0)
-        labVesselJobsTitle.Margin = New Padding(0, 0, 2, 1)
-        labVesselJobsTitle.Name = "labVesselJobsTitle"
-        labVesselJobsTitle.Size = New Size(41, 20)
-        labVesselJobsTitle.TabIndex = 0
-        labVesselJobsTitle.Text = "Jobs"
-        ' 
-        ' DataGridVesselJobs
-        ' 
-        DataGridVesselJobs.AllowUserToAddRows = False
-        DataGridVesselJobs.AllowUserToDeleteRows = False
-        DataGridVesselJobs.AutoGenerateColumns = False
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        DataGridVesselJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
-        DataGridVesselJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridVesselJobs.Columns.AddRange(New DataGridViewColumn() {JobNumberDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn})
-        DataGridVesselJobs.DataSource = JobsBindingSource
-        DataGridVesselJobs.Location = New Point(0, 21)
-        DataGridVesselJobs.Margin = New Padding(0)
-        DataGridVesselJobs.Name = "DataGridVesselJobs"
-        DataGridVesselJobs.ReadOnly = True
-        DataGridVesselJobs.RowHeadersWidth = 82
-        DataGridVesselJobs.Size = New Size(926, 202)
-        DataGridVesselJobs.TabIndex = 3
-        ' 
-        ' JobNumberDataGridViewTextBoxColumn
-        ' 
-        JobNumberDataGridViewTextBoxColumn.DataPropertyName = "JobNumber"
-        JobNumberDataGridViewTextBoxColumn.HeaderText = "Job Number"
-        JobNumberDataGridViewTextBoxColumn.MinimumWidth = 100
-        JobNumberDataGridViewTextBoxColumn.Name = "JobNumberDataGridViewTextBoxColumn"
-        JobNumberDataGridViewTextBoxColumn.ReadOnly = True
-        ' 
-        ' StartDateDataGridViewTextBoxColumn
-        ' 
-        StartDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate"
-        StartDateDataGridViewTextBoxColumn.HeaderText = "Start Date"
-        StartDateDataGridViewTextBoxColumn.MinimumWidth = 200
-        StartDateDataGridViewTextBoxColumn.Name = "StartDateDataGridViewTextBoxColumn"
-        StartDateDataGridViewTextBoxColumn.ReadOnly = True
-        StartDateDataGridViewTextBoxColumn.Width = 200
-        ' 
-        ' DescriptionDataGridViewTextBoxColumn
-        ' 
-        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
-        DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
-        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 542
-        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
-        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
-        DescriptionDataGridViewTextBoxColumn.Width = 542
-        ' 
-        ' JobsBindingSource
-        ' 
-        JobsBindingSource.DataSource = GetType(LibDatabase.Models.Job)
-        ' 
-        ' ManufacturerBindingSource
-        ' 
-        ManufacturerBindingSource.DataSource = GetType(LibDatabase.Models.Manufacturer)
-        ' 
-        ' TableLayoutPanel1
-        ' 
-        TableLayoutPanel1.ColumnCount = 1
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
-        TableLayoutPanel1.Controls.Add(RecordNavigationBar1, 0, 0)
-        TableLayoutPanel1.Controls.Add(DataGridVessels, 0, 1)
-        TableLayoutPanel1.Location = New Point(16, 12)
-        TableLayoutPanel1.Name = "TableLayoutPanel1"
-        TableLayoutPanel1.RowCount = 2
-        TableLayoutPanel1.RowStyles.Add(New RowStyle())
-        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
-        TableLayoutPanel1.Size = New Size(1484, 542)
-        TableLayoutPanel1.TabIndex = 6
-        ' 
-        ' RecordNavigationBar1
-        ' 
-        RecordNavigationBar1.AutoSize = True
-        RecordNavigationBar1.Caption = "Caption"
-        RecordNavigationBar1.Database = Nothing
-        RecordNavigationBar1.Filter = ""
-        RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(0, 0)
-        RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
-        RecordNavigationBar1.MasterControl = Nothing
-        RecordNavigationBar1.MasterSource = Nothing
-        RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Size = New Size(729, 30)
-        RecordNavigationBar1.TabIndex = 0
         ' 
         ' VesselNameDataGridViewTextBoxColumn
         ' 
@@ -221,6 +92,10 @@ Partial Class FrmVessels
         CustomerId.Name = "CustomerId"
         CustomerId.ValueMember = "Id"
         CustomerId.Width = 200
+        ' 
+        ' CustomerBindingSource
+        ' 
+        CustomerBindingSource.DataSource = GetType(LibDatabase.Models.Customer)
         ' 
         ' PrimaryVesselNumberDataGridViewTextBoxColumn
         ' 
@@ -264,6 +139,10 @@ Partial Class FrmVessels
         Flag.Name = "Flag"
         Flag.ValueMember = "Alpha2Code"
         ' 
+        ' CountryCodeBindingSource
+        ' 
+        CountryCodeBindingSource.DataSource = GetType(LibDatabase.Models.CountryCode)
+        ' 
         ' ServiceTypeId
         ' 
         ServiceTypeId.DataPropertyName = "ServiceTypeId"
@@ -275,9 +154,132 @@ Partial Class FrmVessels
         ServiceTypeId.ValueMember = "Id"
         ServiceTypeId.Width = 180
         ' 
+        ' VesselServiceTypeBindingSource
+        ' 
+        VesselServiceTypeBindingSource.DataSource = GetType(LibDatabase.Models.VesselServiceType)
+        ' 
+        ' VesselBindingSource
+        ' 
+        VesselBindingSource.DataSource = GetType(LibDatabase.Models.Vessel)
+        ' 
+        ' JobsBindingSource
+        ' 
+        JobsBindingSource.DataSource = GetType(LibDatabase.Models.Job)
+        ' 
+        ' ManufacturerBindingSource
+        ' 
+        ManufacturerBindingSource.DataSource = GetType(LibDatabase.Models.Manufacturer)
+        ' 
+        ' TableLayoutPanel1
+        ' 
+        TableLayoutPanel1.ColumnCount = 1
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        TableLayoutPanel1.Controls.Add(RecordNavigationBar1, 0, 0)
+        TableLayoutPanel1.Controls.Add(DataGridVessels, 0, 1)
+        TableLayoutPanel1.Location = New Point(16, 12)
+        TableLayoutPanel1.Name = "TableLayoutPanel1"
+        TableLayoutPanel1.RowCount = 2
+        TableLayoutPanel1.RowStyles.Add(New RowStyle())
+        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
+        TableLayoutPanel1.Size = New Size(1484, 542)
+        TableLayoutPanel1.TabIndex = 6
+        ' 
+        ' RecordNavigationBar1
+        ' 
+        RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.Caption = "Caption"
+        RecordNavigationBar1.Database = Nothing
+        'RecordNavigationBar1.EditMode = False
+        'RecordNavigationBar1.Filter = Nothing
+        'RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Location = New Point(0, 0)
+        RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
+        'RecordNavigationBar1.MasterControl = Nothing
+        RecordNavigationBar1.MasterSource = Nothing
+        RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.Size = New Size(729, 30)
+        RecordNavigationBar1.TabIndex = 0
+        ' 
+        ' DataGridVesselJobs
+        ' 
+        DataGridVesselJobs.AllowUserToAddRows = False
+        DataGridVesselJobs.AllowUserToDeleteRows = False
+        DataGridVesselJobs.AutoGenerateColumns = False
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridVesselJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridVesselJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridVesselJobs.Columns.AddRange(New DataGridViewColumn() {JobNumberDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn})
+        DataGridVesselJobs.DataSource = JobsBindingSource
+        DataGridVesselJobs.Location = New Point(0, 21)
+        DataGridVesselJobs.Margin = New Padding(0)
+        DataGridVesselJobs.Name = "DataGridVesselJobs"
+        DataGridVesselJobs.ReadOnly = True
+        DataGridVesselJobs.RowHeadersWidth = 82
+        DataGridVesselJobs.Size = New Size(926, 202)
+        DataGridVesselJobs.TabIndex = 3
+        ' 
+        ' DescriptionDataGridViewTextBoxColumn
+        ' 
+        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
+        DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
+        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 542
+        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
+        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
+        DescriptionDataGridViewTextBoxColumn.Width = 542
+        ' 
+        ' StartDateDataGridViewTextBoxColumn
+        ' 
+        StartDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate"
+        StartDateDataGridViewTextBoxColumn.HeaderText = "Start Date"
+        StartDateDataGridViewTextBoxColumn.MinimumWidth = 200
+        StartDateDataGridViewTextBoxColumn.Name = "StartDateDataGridViewTextBoxColumn"
+        StartDateDataGridViewTextBoxColumn.ReadOnly = True
+        StartDateDataGridViewTextBoxColumn.Width = 200
+        ' 
+        ' JobNumberDataGridViewTextBoxColumn
+        ' 
+        JobNumberDataGridViewTextBoxColumn.DataPropertyName = "JobNumber"
+        JobNumberDataGridViewTextBoxColumn.HeaderText = "Job Number"
+        JobNumberDataGridViewTextBoxColumn.MinimumWidth = 100
+        JobNumberDataGridViewTextBoxColumn.Name = "JobNumberDataGridViewTextBoxColumn"
+        JobNumberDataGridViewTextBoxColumn.ReadOnly = True
+        ' 
+        ' labVesselJobsTitle
+        ' 
+        labVesselJobsTitle.AutoSize = True
+        labVesselJobsTitle.Font = New Font("Segoe UI", 11F, FontStyle.Bold)
+        labVesselJobsTitle.Location = New Point(0, 0)
+        labVesselJobsTitle.Margin = New Padding(0, 0, 2, 1)
+        labVesselJobsTitle.Name = "labVesselJobsTitle"
+        labVesselJobsTitle.Size = New Size(41, 20)
+        labVesselJobsTitle.TabIndex = 0
+        labVesselJobsTitle.Text = "Jobs"
+        ' 
+        ' TableLayoutPanel2
+        ' 
+        TableLayoutPanel2.AutoSize = True
+        TableLayoutPanel2.ColumnCount = 1
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        TableLayoutPanel2.Controls.Add(labVesselJobsTitle, 0, 0)
+        TableLayoutPanel2.Controls.Add(DataGridVesselJobs, 0, 1)
+        TableLayoutPanel2.Location = New Point(16, 576)
+        TableLayoutPanel2.Margin = New Padding(0)
+        TableLayoutPanel2.Name = "TableLayoutPanel2"
+        TableLayoutPanel2.RowCount = 2
+        TableLayoutPanel2.RowStyles.Add(New RowStyle())
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
+        TableLayoutPanel2.Size = New Size(927, 223)
+        TableLayoutPanel2.TabIndex = 5
+        ' 
         ' FrmVessels
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1512, 808)
         Controls.Add(TableLayoutPanel1)
@@ -290,13 +292,13 @@ Partial Class FrmVessels
         CType(CountryCodeBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(VesselServiceTypeBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        TableLayoutPanel2.ResumeLayout(False)
-        TableLayoutPanel2.PerformLayout()
-        CType(DataGridVesselJobs, ComponentModel.ISupportInitialize).EndInit()
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).EndInit()
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
+        CType(DataGridVesselJobs, ComponentModel.ISupportInitialize).EndInit()
+        TableLayoutPanel2.ResumeLayout(False)
+        TableLayoutPanel2.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -306,14 +308,8 @@ Partial Class FrmVessels
     Friend WithEvents CountryCodeBindingSource As BindingSource
     Friend WithEvents VesselServiceTypeBindingSource As BindingSource
     Friend WithEvents CustomerBindingSource As BindingSource
-    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
-    Friend WithEvents DataGridVesselJobs As DataGridView
-    Friend WithEvents labVesselJobsTitle As Label
     Friend WithEvents JobsBindingSource As BindingSource
     Friend WithEvents ManufacturerBindingSource As BindingSource
-    Friend WithEvents JobNumberDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
     Friend WithEvents VesselNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
@@ -324,4 +320,10 @@ Partial Class FrmVessels
     Friend WithEvents BuildYearDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents Flag As DataGridViewComboBoxColumn
     Friend WithEvents ServiceTypeId As DataGridViewComboBoxColumn
+    Friend WithEvents DataGridVesselJobs As DataGridView
+    Friend WithEvents JobNumberDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents labVesselJobsTitle As Label
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
 End Class

@@ -8,7 +8,7 @@ Module USB4
         pulVal = v
         v = v + 1
         Thread.Sleep(50) ' Simulate a delay for hardware interaction
-        Return -1
+        Return USB4_SUCCESS
     End Function
     Public Function USB4_Initialize(ByRef iDeviceCount As Integer) As Long
         iDeviceCount = 1

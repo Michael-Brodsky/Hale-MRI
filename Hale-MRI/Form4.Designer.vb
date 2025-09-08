@@ -709,9 +709,9 @@ Partial Class Form4
         PanelMeasurement.Controls.Add(ChkScan)
         PanelMeasurement.Controls.Add(ComboMeasurementType)
         PanelMeasurement.Controls.Add(ComboSelectedBlade)
-        PanelMeasurement.Location = New Point(327, 195)
+        PanelMeasurement.Location = New Point(327, 193)
         PanelMeasurement.Name = "PanelMeasurement"
-        PanelMeasurement.Size = New Size(291, 130)
+        PanelMeasurement.Size = New Size(291, 132)
         PanelMeasurement.TabIndex = 280
         ' 
         ' LabMeasurementType

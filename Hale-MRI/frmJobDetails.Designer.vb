@@ -84,11 +84,11 @@ Partial Class FrmJobDetails
         RecordNavigationBar1.AutoSize = True
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        RecordNavigationBar1.Filter = ""
-        RecordNavigationBar1.FilterOn = False
+        'RecordNavigationBar1.Filter = ""
+        'RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(0, 0)
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
-        RecordNavigationBar1.MasterControl = Nothing
+        'RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)

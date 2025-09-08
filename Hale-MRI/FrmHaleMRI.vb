@@ -1,4 +1,5 @@
 ﻿Imports LibDatabase.Contexts
+Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 'Imports Admin
 Public Class FrmHaleMRI
@@ -9,6 +10,7 @@ Public Class FrmHaleMRI
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobDetails As FrmJobDetails
+    'Private mFrmJobs As Form3
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
     Private mFrmMeasurements As FrmMeasurements
@@ -16,6 +18,7 @@ Public Class FrmHaleMRI
     Private mFrmPropellers As FrmPropellers
     Private mFrmSettings As FrmSettings
     Private mFrmVessels As FrmVessels
+    Private mFrmFour As Form4
 #End Region
 #Region "Private Interface"
     Private Sub Login(ByVal userName As String, ByVal password As String)
@@ -64,6 +67,7 @@ Public Class FrmHaleMRI
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles CmdJobs.Click
         Try
             ShowForm(mFrmJobs, mDatabase)
+            'mFrmJobs.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening jobs form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -113,7 +117,7 @@ Public Class FrmHaleMRI
     Private Sub CmdWorkstation_Click(sender As Object, e As EventArgs) Handles CmdWorkstation.Click
         Try
             ShowForm(mFrmCalibration)
-            If mFrmCalibration.Hardware Is Nothing Then mFrmCalibration.Hardware = mWorkstationEncoders
+            mFrmCalibration.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening calibration form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -173,6 +177,16 @@ Public Class FrmHaleMRI
             CmdLoginCancel.Enabled = CmdLoginOK.Enabled
         Catch ex As Exception
 
+        End Try
+    End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+        Try
+            ShowForm(mFrmFour, mDatabase)
+            mFrmFour.Job = mDatabase.Jobs.Where(Function(j) j.JobNumber = 14087).FirstOrDefault()
+            'mFrmFour.JobDetail = mDatabase.JobDetails.Where(Function(jd) jd.Job.JobNumber = 14087).FirstOrDefault()
+        Catch ex As Exception
+            MessageBox.Show("Error opening measurements form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 

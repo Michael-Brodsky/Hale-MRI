@@ -59,11 +59,11 @@ Partial Class FrmPropellers
         RecordNavigationBar1.AutoSize = True
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        RecordNavigationBar1.EditMode = False
-        RecordNavigationBar1.Filter = ""
-        RecordNavigationBar1.FilterOn = False
+        'RecordNavigationBar1.EditMode = False
+        'RecordNavigationBar1.Filter = ""
+        ' RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(12, 12)
-        RecordNavigationBar1.MasterControl = Nothing
+        'RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)

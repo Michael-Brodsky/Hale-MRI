@@ -1,10 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.Data
 Imports System.Runtime.CompilerServices
-Imports Microsoft.EntityFrameworkCore.Metadata
-Imports System.Security.Principal
-Imports System.Linq.Expressions
-Imports System.Reflection
 
 Public Module ModelExtensions
     <Extension()>
@@ -33,5 +29,4 @@ Public Module ModelExtensions
 
         Return table
     End Function
-
 End Module

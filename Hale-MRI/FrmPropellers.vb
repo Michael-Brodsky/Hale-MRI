@@ -2,18 +2,6 @@
 Imports LibDatabase.Models
 Public Class FrmPropellers
     Inherits FrmDatabaseForm
-    Public Property Current As Propeller
-        Get
-            If PropellerBindingSource.Current IsNot Nothing Then
-                Return CType(PropellerBindingSource.Current, Propeller)
-            Else
-                Return Nothing
-            End If
-        End Get
-        Set(value As Propeller)
-            If value IsNot Nothing Then Find(value.Id)
-        End Set
-    End Property
     Public Overrides Property Database As HaleMRIContext
         Get
             Return MyBase.Database
@@ -25,10 +13,10 @@ Public Class FrmPropellers
     End Property
     Public Property Filter As String
         Set(value As String)
-            Navigator.Filter = value
+            'Navigator.Filter = value
         End Set
         Get
-            Return Navigator.Filter
+            Return Nothing
         End Get
     End Property
     Public Function Find(id As Integer) As Integer
@@ -50,8 +38,8 @@ Public Class FrmPropellers
         RotationsBindingSource.DataSource = Database.Rotations.Local.ToBindingList()
         ' Configure the RecordNavigator.
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Propellers"
-        Navigator.MasterSource = PropellerBindingSource
-        Navigator.MasterControl = DataGridPropellers
+        Caption = "Propellers"
+        DataSource = PropellerBindingSource
+        'Navigator.MasterControl = DataGridPropellers
     End Sub
 End Class
