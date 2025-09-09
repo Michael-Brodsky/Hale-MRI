@@ -33,5 +33,7 @@ Namespace Models
         Public Property Weight As Double?
 
         Public Property RotationalInertia As Double?
+
+        Public Overridable Property Manufacturer As Manufacturer
     End Class
 End Namespace

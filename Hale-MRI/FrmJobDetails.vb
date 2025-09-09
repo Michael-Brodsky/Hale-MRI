@@ -1,24 +1,76 @@
-﻿Imports LibDatabase.Models
+﻿Imports LibDatabase.Contexts
+Imports LibDatabase.Models
 
 Public Class FrmJobDetails
     Inherits FrmDatabaseForm
-    Public Property Filter As String
-        Set(value As String)
-            'Navigator.Filter = value
-        End Set
+
+    Private mFilter As Object = Nothing                 ' The current form filter object, if any.
+    Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
+    Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
+    Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
+
+    Public ReadOnly Property Current
         Get
-            Return Nothing
+            Return BindingSourceCurrent(mMasterSource)
         End Get
     End Property
-    Public Function Find(id As Integer) As Integer
-        If Navigator.MasterSource.SupportsSearching Then
-            Return Navigator.MasterSource.Find("Id", id)
-        Else
-            Dim index = Database.JobDetails.Local.ToList().FindIndex(Function(v) v.Id = id)
-            If index <> kNoCurrentRecord Then Navigator.MasterSource.Position = index
-            Return index
+
+    Public Overrides Property Database As HaleMRIContext
+
+    Public Property Filter As Object
+        Get
+            Return mFilter
+        End Get
+        Set(value As Object)
+            mFilter = value
+            If mNavigator IsNot Nothing Then mNavigator.Filter = mFilter
+            FilterOn = mFilter IsNot Nothing
+        End Set
+    End Property
+
+    Public Property FilterOn As Boolean
+        Get
+            Return mFilterOn
+        End Get
+        Set(value As Boolean)
+            mFilterOn = value
+            If mNavigator IsNot Nothing Then mNavigator.FilterOn = mFilterOn
+        End Set
+    End Property
+
+    Public Function Find(item As JobDetail) As JobDetail
+        Dim result As JobDetail = Nothing
+        Dim pos As Integer = BindingSourceFind(MasterSource, item)
+        If pos <> kNoCurrentRecord Then
+            MasterSource.Position = pos
+            result = MasterSource.Current
         End If
+        Return result
     End Function
+
+    Protected Overrides Sub BindDataSources()
+
+    End Sub
+
+    Private Property MasterSource As BindingSource
+        Get
+            Return mMasterSource
+        End Get
+        Set(value As BindingSource)
+            mMasterSource = value
+            If Navigator IsNot Nothing Then Navigator.MasterSource = mMasterSource
+        End Set
+    End Property
+
+    Private Property Navigator As RecordNavigationBar
+        Get
+            Return mNavigator
+        End Get
+        Set(value As RecordNavigationBar)
+            mNavigator = value
+            If mNavigator IsNot Nothing Then mNavigator.Database = Database
+        End Set
+    End Property
 
     Private Sub FrmJobDetails_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Bind the form BindingSources to the respective context model local views.
@@ -28,8 +80,8 @@ Public Class FrmJobDetails
         ExclusionBindingSource.DataSource = Database.Exclusions.Local.ToBindingList()
         ' Set the navigation bar properties.
         Navigator = RecordNavigationBar1
-        Caption = "Job Details"
-        DataSource = JobDetailBindingSource
+        Navigator.Caption = "Job Details"
+        MasterSource = JobDetailBindingSource
         'Navigator.MasterControl = DataGridJobDetails
     End Sub
 

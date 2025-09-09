@@ -592,7 +592,6 @@ Partial Class FrmJobs
         RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        RecordNavigationBar1.DataSource = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(364, 12)

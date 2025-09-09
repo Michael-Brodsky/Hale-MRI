@@ -4,34 +4,39 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking.Internal
-Public Class FrmCustomers
+Partial Public Class FrmCustomers
     Inherits FrmDatabaseForm
+
+    Private mFilter As Object = Nothing                 ' The current form filter object, if any.
+    Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
+    Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
+    Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
     ' Define all forms this form can open.
-    ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
+    ' Do not create new instances of forms directly;
+    ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmVessels As FrmVessels
     Private mFrmJobs As FrmJobs
 
+    Public ReadOnly Property Current
+        Get
+            Return BindingSourceCurrent(mMasterSource)
+        End Get
+    End Property
+
+
     Public Overrides Property Database As HaleMRIContext
-        Get
-            Return MyBase.Database
-        End Get
-        Set(value As HaleMRIContext)
-            MyBase.Database = value
-            If value IsNot Nothing Then BindDataSources()
-        End Set
-    End Property
-    Public Property Filter As String
-        Set(value As String)
-            'Navigator.Filter = value
-        End Set
-        Get
-            Return Nothing
-        End Get
-    End Property
-    Public Function Find(id As Integer) As Integer
-        Return Nothing
+
+    Public Function Find(item As Customer) As Customer
+        Dim result As Customer = Nothing
+        Dim pos As Integer = BindingSourceFind(MasterSource, item)
+        If pos <> kNoCurrentRecord Then
+            MasterSource.Position = pos
+            result = MasterSource.Current
+        End If
+        Return result
     End Function
-    Private Sub BindDataSources()
+
+    Protected Overrides Sub BindDataSources()
         ' Master list is Customers sorted by CustomerName.
         Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
         ' Each customer's Vessels list is sorted by VesselName.
@@ -39,7 +44,7 @@ Public Class FrmCustomers
             c.Vessels = c.Vessels.OrderBy(Function(v) v.VesselName).ToList()
             ' Each vessel's Jobs list is sorted by StartDate.
             For Each v In c.Vessels
-                v.Jobs = v.Jobs.OrderBy(Function(j) j.StartDate).ToList()
+                v.Jobs = v.Jobs.OrderBy(Function(j) j.JobNumber).ToList()
             Next
         Next
         CustomerBindingSource.DataSource = New BindingList(Of Customer)(customers)
@@ -47,19 +52,34 @@ Public Class FrmCustomers
         StateCodeBindingSource.DataSource = Database.StateCodes.Local.ToBindingList()
         ' Bind: Customers (master) -> Vessels (details), Vessels (master) -> Jobs (details)).
         BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
-        BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
-        ' Set the navigation bar properties.
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = "Customers"
-        DataSource = CustomerBindingSource
-        'Navigator.MasterControl = dataGridCustomers
+        If VesselBindingSource.Count > 0 Then BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
     End Sub
+
+    Private Property MasterSource As BindingSource
+        Get
+            Return mMasterSource
+        End Get
+        Set(value As BindingSource)
+            mMasterSource = value
+            If mNavigator IsNot Nothing Then mNavigator.MasterSource = mMasterSource
+        End Set
+    End Property
+
+    Private Property Navigator As RecordNavigationBar
+        Get
+            Return mNavigator
+        End Get
+        Set(value As RecordNavigationBar)
+            mNavigator = value
+            If mNavigator IsNot Nothing Then mNavigator.Database = Database
+        End Set
+    End Property
+
     Private Sub DatagridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
         ' Open the Vessels form with the selected vessel as the current record.
         Try
             ShowForm(mFrmVessels, Database)
-            mFrmVessels.Filter = Nothing
-            'mFrmVessels.Current = VesselBindingSource.Current
+            mFrmVessels.Find(BindingSourceCurrent(VesselBindingSource))
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -68,44 +88,33 @@ Public Class FrmCustomers
         ' Open the Jobs form with the selected job as the current record.
         Try
             ShowForm(mFrmJobs, Database)
-            mFrmJobs.Filter = Nothing
+            'mFrmJobs.Filter = Nothing
             mFrmJobs.Find(JobBindingSource.Current)
         Catch ex As Exception
             MessageBox.Show("Error opening job details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
-    Private Sub Navigator_Event(sender As Object, e As NavigationEventArgs) Handles mNavigator.NavigationEvent
+    Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
-
             Case "FilterOff"
-
             Case "FilterOn"
-
             Case "GotoFirst"
-                CustomerBindingSource.Position = 0
             Case "GotoLast"
-                CustomerBindingSource.Position = CustomerBindingSource.Count - 1
             Case "GotoNext"
-                If CustomerBindingSource.Position < CustomerBindingSource.Count - 1 Then CustomerBindingSource.Position += 1
             Case "GotoPrev"
-                If CustomerBindingSource.Position > 0 Then CustomerBindingSource.Position -= 1
             Case "Save"
-                If CustomerBindingSource.Current.Id Is Nothing Then
-                    ' If the current job is new, add it to the databese.
-                    'JobAddNew()
-                Else
-                    ' If the current job is not new, save changes to the current job.
-                    BindingSourceSave(Database, CustomerBindingSource)
-                End If
             Case "Undo"
-                BindingSourceUndo(Database, CustomerBindingSource)
-                'If JobBindingSource.Current Is Nothing Then
-                'FiltersClear()
-                'ComboJobs.Enabled = True
-                'End If
             Case Else
-
         End Select
+    End Sub
+
+    Private Sub FrmCustomers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Customers"
+        Navigator.BoundControls = New List(Of Control) From {
+           DataGridCustomers
+       }
+        MasterSource = CustomerBindingSource
     End Sub
 End Class

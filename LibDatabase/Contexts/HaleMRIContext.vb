@@ -275,9 +275,6 @@ Namespace Contexts
                         HasDefaultValue(0.0).
                         HasColumnName("TE Exclusion")
                     entity.Property(Function(e) e.VesselId).HasColumnName("Vessel ID")
-                    entity.Property(Function(e) e.WheelPitch).
-                        HasDefaultValue(0.0).
-                        HasColumnName("Wheel Pitch")
 
                     entity.HasOne(Function(d) d.CupNavigation).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.Cup).
@@ -343,6 +340,7 @@ Namespace Contexts
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
                         HasColumnName("Tolerance Class")
+                    entity.Property(Function(e) e.WheelPitch).HasColumnName("Wheel Pitch")
 
                     entity.HasOne(Function(d) d.Job).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.JobId).
@@ -433,6 +431,11 @@ Namespace Contexts
                     entity.Property(Function(e) e.Rotation).HasMaxLength(1)
                     entity.Property(Function(e) e.RotationalInertia).HasColumnName("Rotational Inertia")
                     entity.Property(Function(e) e.Style).HasMaxLength(16)
+
+                    entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Propellers).
+                        HasForeignKey(Function(d) d.ManufacturerId).
+                        OnDelete(DeleteBehavior.ClientSetNull).
+                        HasConstraintName("ManufacturersPropellers")
                 End Sub)
 
             modelBuilder.Entity(Of RadiusMeasurement)(

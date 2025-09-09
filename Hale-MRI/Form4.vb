@@ -2,7 +2,7 @@
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports LibDatabase.ModelExtensions
-Public Class Form4
+Partial Public Class Form4
     Inherits FrmDatabaseForm
 #Region "Private Members"
     Private mJob As Job

@@ -26,8 +26,6 @@ Namespace Models
 
         Public Property MarkedPitch As Double?
 
-        Public Property WheelPitch As Double?
-
         Public Property LeExclusion As Double?
 
         Public Property TeExclusion As Double?

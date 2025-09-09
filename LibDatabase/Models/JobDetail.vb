@@ -18,6 +18,8 @@ Namespace Models
 
         Public Property ToleranceClass As String
 
+        Public Property WheelPitch As Double?
+
         Public Overridable Property CellMeasurements As ICollection(Of CellMeasurement) = New List(Of CellMeasurement)()
 
         Public Overridable Property ExtremeMeasurements As ICollection(Of ExtremeMeasurement) = New List(Of ExtremeMeasurement)()

@@ -25,8 +25,7 @@ Partial Class FrmCustomers
         components = New ComponentModel.Container()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmCustomers))
-        dataGridCustomers = New DataGridView()
+        DataGridCustomers = New DataGridView()
         CustomerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CityDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -56,7 +55,7 @@ Partial Class FrmCustomers
         JobNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        CType(dataGridCustomers, ComponentModel.ISupportInitialize).BeginInit()
+        CType(DataGridCustomers, ComponentModel.ISupportInitialize).BeginInit()
         CType(StateCodeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CountryCodeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -69,9 +68,9 @@ Partial Class FrmCustomers
         CType(DataGridVesselJobs, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
-        ' dataGridCustomers
+        ' DataGridCustomers
         ' 
-        dataGridCustomers.AutoGenerateColumns = False
+        DataGridCustomers.AutoGenerateColumns = False
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle1.BackColor = SystemColors.Control
         DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
@@ -79,16 +78,16 @@ Partial Class FrmCustomers
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
         DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        dataGridCustomers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
-        dataGridCustomers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        dataGridCustomers.Columns.AddRange(New DataGridViewColumn() {CustomerNameDataGridViewTextBoxColumn, AddressDataGridViewTextBoxColumn, CityDataGridViewTextBoxColumn, State, PostalCodeDataGridViewTextBoxColumn, CountryCode, TelephoneDataGridViewTextBoxColumn, EmailDataGridViewTextBoxColumn, WebsiteDataGridViewTextBoxColumn})
-        dataGridCustomers.DataSource = CustomerBindingSource
-        dataGridCustomers.Location = New Point(0, 42)
-        dataGridCustomers.Margin = New Padding(0)
-        dataGridCustomers.Name = "dataGridCustomers"
-        dataGridCustomers.RowHeadersWidth = 82
-        dataGridCustomers.Size = New Size(1545, 484)
-        dataGridCustomers.TabIndex = 0
+        DataGridCustomers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridCustomers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridCustomers.Columns.AddRange(New DataGridViewColumn() {CustomerNameDataGridViewTextBoxColumn, AddressDataGridViewTextBoxColumn, CityDataGridViewTextBoxColumn, State, PostalCodeDataGridViewTextBoxColumn, CountryCode, TelephoneDataGridViewTextBoxColumn, EmailDataGridViewTextBoxColumn, WebsiteDataGridViewTextBoxColumn})
+        DataGridCustomers.DataSource = CustomerBindingSource
+        DataGridCustomers.Location = New Point(0, 42)
+        DataGridCustomers.Margin = New Padding(0)
+        DataGridCustomers.Name = "DataGridCustomers"
+        DataGridCustomers.RowHeadersWidth = 82
+        DataGridCustomers.Size = New Size(1545, 484)
+        DataGridCustomers.TabIndex = 0
         ' 
         ' CustomerNameDataGridViewTextBoxColumn
         ' 
@@ -284,7 +283,7 @@ Partial Class FrmCustomers
         TableLayoutPanel3.AutoSize = True
         TableLayoutPanel3.ColumnCount = 1
         TableLayoutPanel3.ColumnStyles.Add(New ColumnStyle())
-        TableLayoutPanel3.Controls.Add(dataGridCustomers, 0, 1)
+        TableLayoutPanel3.Controls.Add(DataGridCustomers, 0, 1)
         TableLayoutPanel3.Controls.Add(RecordNavigationBar1, 0, 0)
         TableLayoutPanel3.Location = New Point(12, 12)
         TableLayoutPanel3.Margin = New Padding(0)
@@ -299,16 +298,14 @@ Partial Class FrmCustomers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        'RecordNavigationBar1.EditMode = False
         RecordNavigationBar1.Enabled = False
-        'RecordNavigationBar1.Filter = Nothing
-        'RecordNavigationBar1.FilterEnabled = False
-        'RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Filter = Nothing
+        RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(0, 0)
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
-        'RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)
@@ -389,7 +386,7 @@ Partial Class FrmCustomers
         Margin = New Padding(1, 0, 1, 0)
         Name = "FrmCustomers"
         Text = "Customers"
-        CType(dataGridCustomers, ComponentModel.ISupportInitialize).EndInit()
+        CType(DataGridCustomers, ComponentModel.ISupportInitialize).EndInit()
         CType(StateCodeBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(CountryCodeBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).EndInit()
@@ -407,7 +404,7 @@ Partial Class FrmCustomers
         PerformLayout()
     End Sub
 
-    Friend WithEvents dataGridCustomers As DataGridView
+    Friend WithEvents DataGridCustomers As DataGridView
     Friend WithEvents CustomerBindingSource As BindingSource
     Friend WithEvents VesselBindingSource As BindingSource
     Friend WithEvents JobBindingSource As BindingSource

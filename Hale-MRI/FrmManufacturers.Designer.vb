@@ -23,7 +23,6 @@ Partial Class FrmManufacturers
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmManufacturers))
         DataGridManufacturers = New DataGridView()
         ManufacturerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -163,13 +162,12 @@ Partial Class FrmManufacturers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        'RecordNavigationBar1.EditMode = False
-        'RecordNavigationBar1.Filter = ""
-        'RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Filter = Nothing
+        RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(12, 12)
-        'RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)
@@ -209,12 +207,16 @@ Partial Class FrmManufacturers
         ' 
         ' DataGridPropellers
         ' 
+        DataGridPropellers.AllowUserToAddRows = False
+        DataGridPropellers.AllowUserToDeleteRows = False
         DataGridPropellers.AutoGenerateColumns = False
         DataGridPropellers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridPropellers.Columns.AddRange(New DataGridViewColumn() {PartNumberDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, StyleDataGridViewTextBoxColumn, MaterialDataGridViewTextBoxColumn, BladesDataGridViewTextBoxColumn, DiameterDataGridViewTextBoxColumn, HubDataGridViewTextBoxColumn, RotationDataGridViewTextBoxColumn, BoreDataGridViewTextBoxColumn, BladeWidthDataGridViewTextBoxColumn, BladeAreaDataGridViewTextBoxColumn, WeightDataGridViewTextBoxColumn})
         DataGridPropellers.DataSource = PropellersBindingSource
         DataGridPropellers.Location = New Point(3, 24)
+        DataGridPropellers.MultiSelect = False
         DataGridPropellers.Name = "DataGridPropellers"
+        DataGridPropellers.ReadOnly = True
         DataGridPropellers.Size = New Size(1481, 246)
         DataGridPropellers.TabIndex = 3
         ' 
@@ -223,6 +225,7 @@ Partial Class FrmManufacturers
         PartNumberDataGridViewTextBoxColumn.DataPropertyName = "PartNumber"
         PartNumberDataGridViewTextBoxColumn.HeaderText = "PartNumber"
         PartNumberDataGridViewTextBoxColumn.Name = "PartNumberDataGridViewTextBoxColumn"
+        PartNumberDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' DescriptionDataGridViewTextBoxColumn
         ' 
@@ -230,6 +233,7 @@ Partial Class FrmManufacturers
         DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
         DescriptionDataGridViewTextBoxColumn.MinimumWidth = 220
         DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
+        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
         DescriptionDataGridViewTextBoxColumn.Width = 220
         ' 
         ' StyleDataGridViewTextBoxColumn
@@ -237,60 +241,70 @@ Partial Class FrmManufacturers
         StyleDataGridViewTextBoxColumn.DataPropertyName = "Style"
         StyleDataGridViewTextBoxColumn.HeaderText = "Style"
         StyleDataGridViewTextBoxColumn.Name = "StyleDataGridViewTextBoxColumn"
+        StyleDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' MaterialDataGridViewTextBoxColumn
         ' 
         MaterialDataGridViewTextBoxColumn.DataPropertyName = "Material"
         MaterialDataGridViewTextBoxColumn.HeaderText = "Material"
         MaterialDataGridViewTextBoxColumn.Name = "MaterialDataGridViewTextBoxColumn"
+        MaterialDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' BladesDataGridViewTextBoxColumn
         ' 
         BladesDataGridViewTextBoxColumn.DataPropertyName = "Blades"
         BladesDataGridViewTextBoxColumn.HeaderText = "Blades"
         BladesDataGridViewTextBoxColumn.Name = "BladesDataGridViewTextBoxColumn"
+        BladesDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' DiameterDataGridViewTextBoxColumn
         ' 
         DiameterDataGridViewTextBoxColumn.DataPropertyName = "Diameter"
         DiameterDataGridViewTextBoxColumn.HeaderText = "Diameter"
         DiameterDataGridViewTextBoxColumn.Name = "DiameterDataGridViewTextBoxColumn"
+        DiameterDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' HubDataGridViewTextBoxColumn
         ' 
         HubDataGridViewTextBoxColumn.DataPropertyName = "Hub"
         HubDataGridViewTextBoxColumn.HeaderText = "Hub"
         HubDataGridViewTextBoxColumn.Name = "HubDataGridViewTextBoxColumn"
+        HubDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' RotationDataGridViewTextBoxColumn
         ' 
         RotationDataGridViewTextBoxColumn.DataPropertyName = "Rotation"
         RotationDataGridViewTextBoxColumn.HeaderText = "Rotation"
         RotationDataGridViewTextBoxColumn.Name = "RotationDataGridViewTextBoxColumn"
+        RotationDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' BoreDataGridViewTextBoxColumn
         ' 
         BoreDataGridViewTextBoxColumn.DataPropertyName = "Bore"
         BoreDataGridViewTextBoxColumn.HeaderText = "Bore"
         BoreDataGridViewTextBoxColumn.Name = "BoreDataGridViewTextBoxColumn"
+        BoreDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' BladeWidthDataGridViewTextBoxColumn
         ' 
         BladeWidthDataGridViewTextBoxColumn.DataPropertyName = "BladeWidth"
         BladeWidthDataGridViewTextBoxColumn.HeaderText = "BladeWidth"
         BladeWidthDataGridViewTextBoxColumn.Name = "BladeWidthDataGridViewTextBoxColumn"
+        BladeWidthDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' BladeAreaDataGridViewTextBoxColumn
         ' 
         BladeAreaDataGridViewTextBoxColumn.DataPropertyName = "BladeArea"
         BladeAreaDataGridViewTextBoxColumn.HeaderText = "BladeArea"
         BladeAreaDataGridViewTextBoxColumn.Name = "BladeAreaDataGridViewTextBoxColumn"
+        BladeAreaDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' WeightDataGridViewTextBoxColumn
         ' 
         WeightDataGridViewTextBoxColumn.DataPropertyName = "Weight"
         WeightDataGridViewTextBoxColumn.HeaderText = "Weight"
         WeightDataGridViewTextBoxColumn.Name = "WeightDataGridViewTextBoxColumn"
+        WeightDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' FrmManufacturers
         ' 

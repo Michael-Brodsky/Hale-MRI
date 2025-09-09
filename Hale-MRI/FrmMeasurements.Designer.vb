@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmMeasurements
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -467,16 +467,16 @@ Partial Class FrmMeasurements
         ' tloPlotGraph
         ' 
         tloPlotGraph.ColumnCount = 2
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30F))
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30.0F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70.0F))
         tloPlotGraph.Controls.Add(PlotGraph, 1, 0)
         tloPlotGraph.Dock = DockStyle.Fill
         tloPlotGraph.Location = New Point(3, 19)
         tloPlotGraph.Margin = New Padding(0)
         tloPlotGraph.Name = "tloPlotGraph"
         tloPlotGraph.RowCount = 2
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85F))
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15F))
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85.0F))
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15.0F))
         tloPlotGraph.Size = New Size(339, 206)
         tloPlotGraph.TabIndex = 0
         ' 
@@ -486,17 +486,17 @@ Partial Class FrmMeasurements
         ChartArea1.AxisX.LabelStyle.Enabled = False
         ChartArea1.AxisX.MajorGrid.Enabled = False
         ChartArea1.AxisX.MajorTickMark.Enabled = False
-        ChartArea1.AxisX.Maximum = 1R
-        ChartArea1.AxisX.MaximumAutoSize = 100F
-        ChartArea1.AxisX.Minimum = -1R
+        ChartArea1.AxisX.Maximum = 1.0R
+        ChartArea1.AxisX.MaximumAutoSize = 100.0F
+        ChartArea1.AxisX.Minimum = -1.0R
         ChartArea1.AxisX2.Enabled = DataVisualization.Charting.AxisEnabled.False
-        ChartArea1.AxisY.Interval = 10R
+        ChartArea1.AxisY.Interval = 10.0R
         ChartArea1.AxisY.IsStartedFromZero = False
         ChartArea1.AxisY.LabelStyle.Enabled = False
         ChartArea1.AxisY.MajorGrid.Enabled = False
-        ChartArea1.AxisY.Maximum = 1R
-        ChartArea1.AxisY.MaximumAutoSize = 100F
-        ChartArea1.AxisY.Minimum = -1R
+        ChartArea1.AxisY.Maximum = 1.0R
+        ChartArea1.AxisY.MaximumAutoSize = 100.0F
+        ChartArea1.AxisY.Minimum = -1.0R
         ChartArea1.AxisY2.Enabled = DataVisualization.Charting.AxisEnabled.False
         ChartArea1.Name = "ChartArea1"
         PlotGraph.ChartAreas.Add(ChartArea1)
@@ -724,7 +724,7 @@ Partial Class FrmMeasurements
         ' TloLocalPitchDetails
         ' 
         TloLocalPitchDetails.ColumnCount = 14
-        TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 15F))
+        TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 15.0F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
@@ -793,7 +793,7 @@ Partial Class FrmMeasurements
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
-        TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 10F))
+        TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 10.0F))
         TloLocalPitchDetails.Size = New Size(471, 290)
         TloLocalPitchDetails.TabIndex = 0
         ' 
@@ -1314,8 +1314,8 @@ Partial Class FrmMeasurements
         ' Tlo
         ' 
         Tlo.ColumnCount = 1
-        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
         Tlo.Controls.Add(RadSysImperical, 0, 0)
         Tlo.Controls.Add(RadSysMetric, 0, 1)
         Tlo.Dock = DockStyle.Fill
@@ -1323,8 +1323,8 @@ Partial Class FrmMeasurements
         Tlo.Margin = New Padding(0)
         Tlo.Name = "Tlo"
         Tlo.RowCount = 2
-        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
         Tlo.Size = New Size(131, 51)
         Tlo.TabIndex = 0
         ' 
@@ -1391,7 +1391,7 @@ Partial Class FrmMeasurements
         ' 
         ' FrmMeasurements
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1104, 571)
         Controls.Add(tloMeasurements)

@@ -1,51 +1,57 @@
 ﻿Imports LibDatabase.Contexts
+Imports LibDatabase.StoredProcedures
+Imports Microsoft.EntityFrameworkCore
 Imports System.Runtime.CompilerServices
 Imports System.Linq.Expressions
 Imports System.Reflection
 Imports System.ComponentModel
-Imports LibDatabase.StoredProcedures
+
 Public Module BindingSources
     Public Function BindingSourceCurrent(bs As BindingSource) As Object
-        ' Returns the current object in the BindingSource, or Nothing if there is no current object.
+        ' Returns the current record in the BindingSource, or Nothing if there is no current record.
         Return If(bs IsNot Nothing AndAlso bs.Position <> kNoCurrentRecord, bs.Current, Nothing)
     End Function
-    Public Function BindingSourceFind(ByVal id As Integer, bs As BindingSource) As Integer
-        ' Returns the position of a record in a BindingSource whose Id field matches the given id.
-        Dim result As Integer = kNoCurrentRecord
-        Dim list As IList = bs.List
-        For Each item In list
-            Dim t As Type = item.GetType()
-            Dim pi As PropertyInfo = t.GetProperty("Id")
-            Dim itemId As Integer = CInt(pi.GetValue(item, Nothing))
-            If itemId = id Then
-                result = list.IndexOf(item)
-                Exit For
-            End If
-        Next
-        Return result
+
+    Public Function BindingSourceFind(bs As BindingSource, key As Object) As Integer
+        ' Returns the BindingSource index of the record matching the given key.
+        Return bs.IndexOf(key)
     End Function
+
+    Public Sub BindingSourceRemove(ByRef bs As BindingSource)
+        ' Removes the current record from the BindingSource.
+        bs.RemoveCurrent()
+        bs.EndEdit()
+    End Sub
+
+    Public Sub BindingSourceRemove(Of T As Class)(db As HaleMRIContext, ByRef bs As BindingSource, entity As DbSet(Of T))
+        ' Removes the current record from the BindingSource and Database.
+        entity.Remove(BindingSourceCurrent(bs))
+        BindingSourceRemove(bs)
+        db.SaveChanges()
+    End Sub
+
     Public Sub BindingSourceSave(db As HaleMRIContext, ByRef bs As BindingSource)
-        ' Saves the current record in the BindingSource to the database.
+        ' Saves the current BindingSource record to the Database.
         bs.EndEdit()
         db.SaveChanges()
     End Sub
+
     Public Sub BindingSourceUndo(db As HaleMRIContext, ByRef bs As BindingSource)
-        ' Undoes changes made to the current record in the BindingSource.
+        ' Undoes changes made to the current BindingSource record and
+        ' rollsback any associated pending Database changes.
         bs.CancelEdit()
         Rollback(db, bs.DataSource)
         bs.ResetCurrentItem()
     End Sub
+
     Public Sub BindMasterDetails(ByRef masterSource As BindingSource, ByRef detailsSource As BindingSource, masterPropertyName As String)
         ' Binds a master BindingSource to a details BindingSource using the specified property name.
         detailsSource.DataSource = masterSource
         detailsSource.DataMember = masterPropertyName
     End Sub
-    Public Sub GetRelatedEntities(Of T As Class)(db As HaleMRIContext, ByRef sourceList As BindingList(Of T), propertyName As String, key As Object)
-        ' Returns a list of entities of type T that match the specified property name and key.
-        ' This function is used to "bind" a master control with a details control when their
-        ' binding sources are based on types not compatible with BindMasterDetails(), e.g.
-        ' (DataTable, DataView, other searchable/filterable types.) This function must be
-        ' called each time the current record changes in the master control.
+
+    Public Sub BindingListFilter(Of T As Class)(db As HaleMRIContext, ByRef sourceList As BindingList(Of T), propertyName As String, key As Object)
+        ' Filters a BindingList(Of T) to records matching the specified property name and key.
         Dim result As New List(Of T)
         If key IsNot Nothing AndAlso sourceList IsNot Nothing AndAlso Not IsDBNull(key) Then
             ' It uses LINQ to query a DbSet of type T.
@@ -69,8 +75,10 @@ Public Module BindingSources
         End If
         sourceList = New BindingList(Of T)(result)  ' Convert the result to a BindingList(Of T) for data binding.
     End Sub
+
     <Extension()>
     Public Function EntityType(bs As BindingSource) As Type
+        ' Returns a BindingSource's underlying entity type.
         Dim fi = GetType(BindingSource).GetField("_itemType", BindingFlags.NonPublic Or BindingFlags.Instance)
         Return TryCast(fi?.GetValue(bs), Type)
     End Function

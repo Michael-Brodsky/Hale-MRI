@@ -28,6 +28,8 @@ Namespace Models
 
         Public Overridable Property Jobs As ICollection(Of Job) = New List(Of Job)()
 
+        Public Overridable Property Propellers As ICollection(Of Propeller) = New List(Of Propeller)()
+
         Public Overridable Property StateNavigation As StateCode
     End Class
 End Namespace

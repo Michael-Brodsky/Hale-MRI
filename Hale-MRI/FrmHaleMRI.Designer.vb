@@ -42,7 +42,6 @@ Partial Class FrmHaleMRI
         CmdManufacturers = New Button()
         CmdVessels = New Button()
         CmdCustomers = New Button()
-        Button1 = New Button()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource1, ComponentModel.ISupportInitialize).BeginInit()
         PanelLogin.SuspendLayout()
@@ -67,7 +66,7 @@ Partial Class FrmHaleMRI
         PanelLogin.Controls.Add(LabUser)
         PanelLogin.Controls.Add(TxtPassword)
         PanelLogin.Controls.Add(TxtUser)
-        PanelLogin.Location = New Point(407, 149)
+        PanelLogin.Location = New Point(380, 149)
         PanelLogin.Name = "PanelLogin"
         PanelLogin.Size = New Size(275, 134)
         PanelLogin.TabIndex = 8
@@ -261,21 +260,11 @@ Partial Class FrmHaleMRI
         CmdCustomers.Text = "Customers"
         CmdCustomers.UseVisualStyleBackColor = True
         ' 
-        ' Button1
-        ' 
-        Button1.Location = New Point(780, 217)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(75, 23)
-        Button1.TabIndex = 13
-        Button1.Text = "Button1"
-        Button1.UseVisualStyleBackColor = True
-        ' 
         ' FrmHaleMRI
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1036, 416)
-        Controls.Add(Button1)
         Controls.Add(PanelMenuButtons)
         Controls.Add(PanelLogin)
         Margin = New Padding(2, 1, 2, 1)
@@ -308,6 +297,5 @@ Partial Class FrmHaleMRI
     Friend WithEvents CmdManufacturers As Button
     Friend WithEvents CmdVessels As Button
     Friend WithEvents CmdCustomers As Button
-    Friend WithEvents Button1 As Button
 
 End Class

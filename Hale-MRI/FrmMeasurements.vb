@@ -19,6 +19,14 @@ Public Class FrmMeasurements
     Private Scanning As Boolean
 #End Region
 #Region "Public Interface"
+    Public ReadOnly Property Current
+        Get
+            Return mJobDetails
+        End Get
+    End Property
+
+    Public Overrides Property Database As HaleMRIContext
+
     Public Property Hardware As WorkstationEncoders
         Get
             Return mHardware
@@ -35,6 +43,7 @@ Public Class FrmMeasurements
             mJob = value
         End Set
     End Property
+
     Public Property JobDetails As JobDetail
         Get
             Return mJobDetails
@@ -48,10 +57,6 @@ Public Class FrmMeasurements
                     BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
                     BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
                     BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementBindingSource, "RadiusMeasurements")
-                    'RadiusMeasurementBindingSource.DataSource = Database.RadiusMeasurements.Where(Function(j) j.JobDetailsId = mJobDetails.Id).ToList()
-                    'RadiusMeasurementBindingSource.DataSource = Database.RadiusMeasurements.Where(Function(j) j.JobDetailsId = mJobDetails.Id).ToList()
-                    'CellMeasurementsBindingSource.DataSource = Database.CellMeasurements.Where(Function(j) j.JobDetailsId = mJobDetails.Id).ToList()
-                    'ExtremeMeasurementsBindingSource.DataSource = Database.ExtremeMeasurements.Where(Function(j) j.JobDetailsId = mJobDetails.Id).ToList()
                 End If
             End If
         End Set

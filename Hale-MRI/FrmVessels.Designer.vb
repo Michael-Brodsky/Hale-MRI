@@ -23,7 +23,6 @@ Partial Class FrmVessels
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmVessels))
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         DataGridVessels = New DataGridView()
         VesselNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -43,9 +42,9 @@ Partial Class FrmVessels
         TableLayoutPanel1 = New TableLayoutPanel()
         RecordNavigationBar1 = New RecordNavigationBar()
         DataGridVesselJobs = New DataGridView()
-        DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         JobNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         labVesselJobsTitle = New Label()
         TableLayoutPanel2 = New TableLayoutPanel()
         CType(DataGridVessels, ComponentModel.ISupportInitialize).BeginInit()
@@ -187,14 +186,13 @@ Partial Class FrmVessels
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
-        'RecordNavigationBar1.EditMode = False
-        'RecordNavigationBar1.Filter = Nothing
-        'RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Filter = Nothing
+        RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(0, 0)
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
-        'RecordNavigationBar1.MasterControl = Nothing
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.Size = New Size(729, 30)
@@ -224,14 +222,13 @@ Partial Class FrmVessels
         DataGridVesselJobs.Size = New Size(926, 202)
         DataGridVesselJobs.TabIndex = 3
         ' 
-        ' DescriptionDataGridViewTextBoxColumn
+        ' JobNumberDataGridViewTextBoxColumn
         ' 
-        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
-        DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
-        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 542
-        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
-        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
-        DescriptionDataGridViewTextBoxColumn.Width = 542
+        JobNumberDataGridViewTextBoxColumn.DataPropertyName = "JobNumber"
+        JobNumberDataGridViewTextBoxColumn.HeaderText = "Job Number"
+        JobNumberDataGridViewTextBoxColumn.MinimumWidth = 100
+        JobNumberDataGridViewTextBoxColumn.Name = "JobNumberDataGridViewTextBoxColumn"
+        JobNumberDataGridViewTextBoxColumn.ReadOnly = True
         ' 
         ' StartDateDataGridViewTextBoxColumn
         ' 
@@ -242,13 +239,14 @@ Partial Class FrmVessels
         StartDateDataGridViewTextBoxColumn.ReadOnly = True
         StartDateDataGridViewTextBoxColumn.Width = 200
         ' 
-        ' JobNumberDataGridViewTextBoxColumn
+        ' DescriptionDataGridViewTextBoxColumn
         ' 
-        JobNumberDataGridViewTextBoxColumn.DataPropertyName = "JobNumber"
-        JobNumberDataGridViewTextBoxColumn.HeaderText = "Job Number"
-        JobNumberDataGridViewTextBoxColumn.MinimumWidth = 100
-        JobNumberDataGridViewTextBoxColumn.Name = "JobNumberDataGridViewTextBoxColumn"
-        JobNumberDataGridViewTextBoxColumn.ReadOnly = True
+        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
+        DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
+        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 542
+        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
+        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
+        DescriptionDataGridViewTextBoxColumn.Width = 542
         ' 
         ' labVesselJobsTitle
         ' 

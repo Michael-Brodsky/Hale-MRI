@@ -18,7 +18,7 @@ Public Class FrmHaleMRI
     Private mFrmPropellers As FrmPropellers
     Private mFrmSettings As FrmSettings
     Private mFrmVessels As FrmVessels
-    Private mFrmFour As Form4
+    'Private mFrmFour As Form4
 #End Region
 #Region "Private Interface"
     Private Sub Login(ByVal userName As String, ByVal password As String)
@@ -180,14 +180,14 @@ Public Class FrmHaleMRI
         End Try
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        Try
-            ShowForm(mFrmFour, mDatabase)
-            mFrmFour.Job = mDatabase.Jobs.Where(Function(j) j.JobNumber = 14087).FirstOrDefault()
-            'mFrmFour.JobDetail = mDatabase.JobDetails.Where(Function(jd) jd.Job.JobNumber = 14087).FirstOrDefault()
-        Catch ex As Exception
-            MessageBox.Show("Error opening measurements form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+        'Try
+        '    ShowForm(mFrmFour, mDatabase)
+        '    mFrmFour.Job = mDatabase.Jobs.Where(Function(j) j.JobNumber = 14087).FirstOrDefault()
+        '    'mFrmFour.JobDetail = mDatabase.JobDetails.Where(Function(jd) jd.Job.JobNumber = 14087).FirstOrDefault()
+        'Catch ex As Exception
+        '    MessageBox.Show("Error opening measurements form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        'End Try
     End Sub
 
 #End Region

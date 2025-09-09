@@ -13,12 +13,15 @@
   <ItemGroup>
     <Compile Remove="Form3.Designer.vb" />
     <Compile Remove="Form3.vb" />
+    <Compile Remove="Form4.Designer.vb" />
+    <Compile Remove="Form4.vb" />
     <Compile Remove="FrmJobs_old.Designer.vb" />
     <Compile Remove="FrmJobs_old.vb" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Remove="Form3.resx" />
+    <EmbeddedResource Remove="Form4.resx" />
     <EmbeddedResource Remove="FrmJobs_old.resx" />
   </ItemGroup>
 
