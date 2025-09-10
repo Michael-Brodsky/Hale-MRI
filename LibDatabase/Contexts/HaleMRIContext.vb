@@ -434,7 +434,6 @@ Namespace Contexts
 
                     entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Propellers).
                         HasForeignKey(Function(d) d.ManufacturerId).
-                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("ManufacturersPropellers")
                 End Sub)
 
