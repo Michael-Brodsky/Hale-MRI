@@ -436,8 +436,10 @@ Partial Public Class FrmJobs
                 ' that can be used to search the JobsBindingSource.
             Case "GotoFirst", "GotoNext", "GotoPrev"
                 If JobsBindingSource.IsBindingSuspended Then SelectJob(JobPosition.First)
+                Navigator.ControlsEnable()
             Case "GotoLast"
                 If JobsBindingSource.IsBindingSuspended Then SelectJob(JobPosition.Last)
+                Navigator.ControlsEnable()
             Case "Save"
                 SaveChanges()
             Case "Undo"

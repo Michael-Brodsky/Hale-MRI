@@ -3,7 +3,20 @@
   "WorkspaceRootPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{CD7B1E9D-D8CD-8D2A-8149-94C3F19CDAD8}|..\\LibDatabase\\LibDatabase.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\libdatabase\\contexts\\halemricontext.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
+      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\recordnavigationbar.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:recordnavigationbar.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmhalemri.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
+      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmhalemri.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\bindingsources.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
@@ -29,20 +42,8 @@
       "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:workstationstatusstrip.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form",
-      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmjobs.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}|Form"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmdatabaseform.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
       "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmdatabaseform.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\recordnavigationbar.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:recordnavigationbar.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmcustomers.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
@@ -95,10 +96,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmdatabaseform.designer.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
       "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmdatabaseform.designer.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmhalemri.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
-      "RelativeMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|solutionrelative:frmhalemri.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{2C064271-685B-476E-97E8-9A622813CB5C}|Hale-MRI.vbproj|c:\\users\\super\\source\\repos\\hale-mri\\hale-mri\\frmmeasurements.designer.vb||{2C015C70-C72C-11D0-88C3-00A0C9110049}",
@@ -164,7 +161,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 10,
           "Children": [
             {
               "$type": "Bookmark",
@@ -172,32 +169,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "HaleMRIContext.vb",
-              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Contexts\\HaleMRIContext.vb",
-              "RelativeDocumentMoniker": "..\\LibDatabase\\Contexts\\HaleMRIContext.vb",
-              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Contexts\\HaleMRIContext.vb",
-              "RelativeToolTip": "..\\LibDatabase\\Contexts\\HaleMRIContext.vb",
-              "ViewState": "AgIAABICAAAAAAAAAAAAABoCAAA4AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-10T15:37:58.067Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 24,
-              "Title": "FrmHaleMRI.vb",
-              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmHaleMRI.vb",
-              "RelativeDocumentMoniker": "FrmHaleMRI.vb",
-              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmHaleMRI.vb",
-              "RelativeToolTip": "FrmHaleMRI.vb",
-              "ViewState": "AgIAAKYAAAAAAAAAAADgv7gAAAAqAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-08-22T04:42:48.655Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "FrmDatabaseForm.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmDatabaseForm.vb",
               "RelativeDocumentMoniker": "FrmDatabaseForm.vb",
@@ -209,19 +181,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 2,
               "Title": "RecordNavigationBar.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\RecordNavigationBar.vb",
               "RelativeDocumentMoniker": "RecordNavigationBar.vb",
               "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\RecordNavigationBar.vb",
               "RelativeToolTip": "RecordNavigationBar.vb",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAEAAAAAAAAAA==",
+              "ViewState": "AgIAAAsAAAAAAAAAAAAAAOsAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-02T18:00:29.978Z"
+              "WhenOpened": "2025-09-02T18:00:29.978Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
               "Title": "WorkstationStatusStrip.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\WorkstationStatusStrip.vb",
               "RelativeDocumentMoniker": "WorkstationStatusStrip.vb",
@@ -233,7 +206,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 4,
               "Title": "BindingSources.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\BindingSources.vb",
               "RelativeDocumentMoniker": "BindingSources.vb",
@@ -241,12 +214,11 @@
               "RelativeToolTip": "BindingSources.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-08T08:58:08.725Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-08T08:58:08.725Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 8,
               "Title": "FrmCalibration.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmCalibration.vb",
               "RelativeDocumentMoniker": "FrmCalibration.vb",
@@ -258,7 +230,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
               "Title": "Constants.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Constants.vb",
               "RelativeDocumentMoniker": "Constants.vb",
@@ -270,7 +242,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 6,
               "Title": "FrmPropellers.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmPropellers.vb",
               "RelativeDocumentMoniker": "FrmPropellers.vb",
@@ -282,7 +254,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 5,
               "Title": "Imex.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Imex.vb",
               "RelativeDocumentMoniker": "..\\LibDatabase\\Imex.vb",
@@ -290,24 +262,24 @@
               "RelativeToolTip": "..\\LibDatabase\\Imex.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAG8CAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-08-18T09:41:58.35Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-18T09:41:58.35Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 1,
               "Title": "FrmJobs.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmJobs.vb",
               "RelativeDocumentMoniker": "FrmJobs.vb",
               "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmJobs.vb",
               "RelativeToolTip": "FrmJobs.vb",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFEAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAKABAAAAAAAAAAAAALEBAAAXAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T08:46:34.309Z"
+              "WhenOpened": "2025-09-09T08:46:34.309Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
               "Title": "FrmJobs.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmJobs.vb",
               "RelativeDocumentMoniker": "FrmJobs.vb",
@@ -316,6 +288,19 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-09-09T09:11:01.276Z",
               "EditorCaption": " [Design]"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "FrmHaleMRI.vb",
+              "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmHaleMRI.vb",
+              "RelativeDocumentMoniker": "FrmHaleMRI.vb",
+              "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmHaleMRI.vb",
+              "RelativeToolTip": "FrmHaleMRI.vb",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
+              "WhenOpened": "2025-08-22T04:42:48.655Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -475,7 +460,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 24,
               "Title": "FrmMeasurements.Designer.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmMeasurements.Designer.vb",
               "RelativeDocumentMoniker": "FrmMeasurements.Designer.vb",
@@ -487,7 +472,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 26,
               "Title": "frmJobDetails.Designer.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\frmJobDetails.Designer.vb",
               "RelativeDocumentMoniker": "frmJobDetails.Designer.vb",
@@ -499,7 +484,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 25,
               "Title": "FrmJobs.Designer.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmJobs.Designer.vb",
               "RelativeDocumentMoniker": "FrmJobs.Designer.vb",
@@ -507,11 +492,12 @@
               "RelativeToolTip": "FrmJobs.Designer.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAEAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-05T20:58:01.231Z"
+              "WhenOpened": "2025-09-05T20:58:01.231Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 38,
+              "DocumentIndex": 37,
               "Title": "Form4.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Form4.vb",
               "RelativeDocumentMoniker": "Form4.vb",
@@ -523,7 +509,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 37,
+              "DocumentIndex": 36,
               "Title": "Form3.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Form3.vb",
               "RelativeDocumentMoniker": "Form3.vb",
@@ -535,7 +521,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 39,
+              "DocumentIndex": 38,
               "Title": "Form4.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Form4.vb",
               "RelativeDocumentMoniker": "Form4.vb",
@@ -547,7 +533,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 27,
               "Title": "Job.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Models\\Job.vb",
               "RelativeDocumentMoniker": "..\\LibDatabase\\Models\\Job.vb",
@@ -559,7 +545,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 28,
               "Title": "Vessel.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Models\\Vessel.vb",
               "RelativeDocumentMoniker": "..\\LibDatabase\\Models\\Vessel.vb",
@@ -571,7 +557,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 29,
               "Title": "FrmMeasurements.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmMeasurements.vb",
               "RelativeDocumentMoniker": "FrmMeasurements.vb",
@@ -583,7 +569,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 31,
+              "DocumentIndex": 30,
               "Title": "JobDetail.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Models\\JobDetail.vb",
               "RelativeDocumentMoniker": "..\\LibDatabase\\Models\\JobDetail.vb",
@@ -595,7 +581,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 32,
+              "DocumentIndex": 31,
               "Title": "FrmManufacturers.Designer.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmManufacturers.Designer.vb",
               "RelativeDocumentMoniker": "FrmManufacturers.Designer.vb",
@@ -607,7 +593,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 33,
+              "DocumentIndex": 32,
               "Title": "FrmVessels.Designer.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmVessels.Designer.vb",
               "RelativeDocumentMoniker": "FrmVessels.Designer.vb",
@@ -619,7 +605,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 34,
+              "DocumentIndex": 33,
               "Title": "FrmSettings.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmSettings.vb",
               "RelativeDocumentMoniker": "FrmSettings.vb",
@@ -631,7 +617,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 35,
+              "DocumentIndex": 34,
               "Title": "WorkstationStatusStrip.vb [Design]",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\WorkstationStatusStrip.vb",
               "RelativeDocumentMoniker": "WorkstationStatusStrip.vb",
@@ -643,7 +629,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 36,
+              "DocumentIndex": 35,
               "Title": "CellMeasurement.vb",
               "DocumentMoniker": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\Models\\CellMeasurement.vb",
               "RelativeDocumentMoniker": "..\\LibDatabase\\Models\\CellMeasurement.vb",

@@ -77,6 +77,7 @@ Partial Class FrmJobs
         labCalibrationFile = New Label()
         TxtScanDataFile = New TextBox()
         RecordNavigationBar1 = New RecordNavigationBar()
+        LabMeasurements = New Label()
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
@@ -600,11 +601,22 @@ Partial Class FrmJobs
         RecordNavigationBar1.Size = New Size(729, 30)
         RecordNavigationBar1.TabIndex = 266
         ' 
+        ' LabMeasurements
+        ' 
+        LabMeasurements.AutoSize = True
+        LabMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMeasurements.Location = New Point(451, 364)
+        LabMeasurements.Name = "LabMeasurements"
+        LabMeasurements.Size = New Size(90, 15)
+        LabMeasurements.TabIndex = 267
+        LabMeasurements.Text = "Measurements"
+        ' 
         ' FrmJobs
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1128, 708)
+        Controls.Add(LabMeasurements)
         Controls.Add(RecordNavigationBar1)
         Controls.Add(CmdScanDataPick)
         Controls.Add(CmdScanDataExport)
@@ -715,4 +727,5 @@ Partial Class FrmJobs
     Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
     Friend WithEvents Description As DataGridViewTextBoxColumn
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
+    Friend WithEvents LabMeasurements As Label
 End Class

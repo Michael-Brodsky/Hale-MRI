@@ -239,7 +239,7 @@ Public Class RecordNavigationBar
         End Set
     End Property
 
-    Private Sub ControlsEnable()
+    Public Sub ControlsEnable()
         ' Enables our Controls according to the master BindingSource's
         ' current state.
         CmdGotoFirst.Enabled = Not CmdUndo.Enabled AndAlso Me.Count > 0                 ' Navigation allowed only if MasterSource has records.
