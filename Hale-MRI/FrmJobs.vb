@@ -423,8 +423,9 @@ Partial Public Class FrmJobs
         Select Case e.EventName
             Case "Delete"
                 If DeleteConfirm() Then
-                    'Database.Jobs.Remove(BindingSourceCurrent(JobsBindingSource))
+                    Dim v As Vessel = CurrentVessel ' Save the current Vessel in case this is it's only Job, which would blank it after deleting the Job.
                     BindingSourceRemove(Database, JobsBindingSource, Database.Jobs)
+                    If JobsBindingSource.Count = 0 Then CurrentVessel = v   ' If no Jobs remain for the current Vessel, restore it.
                 End If
             Case "FilterOff"
                 FilterOn = False
