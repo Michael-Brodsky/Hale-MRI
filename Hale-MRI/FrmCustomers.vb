@@ -4,9 +4,16 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking.Internal
+
+''' <summary>
+''' This form provides a user inteface for editing 
+''' Customer records and accessing related Vessel and
+''' Job records.
+''' </summary>
+
 Partial Public Class FrmCustomers
     Inherits FrmDatabaseForm
-
+#Region "Private Members"
     Private mFilter As Object = Nothing                 ' The current form filter object, if any.
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
@@ -16,13 +23,13 @@ Partial Public Class FrmCustomers
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmVessels As FrmVessels
     Private mFrmJobs As FrmJobs
-
+#End Region
+#Region "Public Interface"
     Public ReadOnly Property Current
         Get
             Return BindingSourceCurrent(mMasterSource)
         End Get
     End Property
-
 
     Public Overrides Property Database As HaleMRIContext
 
@@ -35,7 +42,8 @@ Partial Public Class FrmCustomers
         End If
         Return result
     End Function
-
+#End Region
+#Region "Private Interface"
     Protected Overrides Sub BindDataSources()
         ' Master list is Customers sorted by CustomerName.
         Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
@@ -74,7 +82,8 @@ Partial Public Class FrmCustomers
             If mNavigator IsNot Nothing Then mNavigator.Database = Database
         End Set
     End Property
-
+#End Region
+#Region "Event Handlers"
     Private Sub DatagridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
         ' Open the Vessels form with the selected vessel as the current record.
         Try
@@ -84,6 +93,7 @@ Partial Public Class FrmCustomers
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
         ' Open the Jobs form with the selected job as the current record.
         Try
@@ -94,6 +104,16 @@ Partial Public Class FrmCustomers
             MessageBox.Show("Error opening job details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub FrmCustomers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Customers"
+        Navigator.BoundControls = New List(Of Control) From {
+           DataGridCustomers
+       }
+        MasterSource = CustomerBindingSource
+    End Sub
+
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
@@ -108,13 +128,5 @@ Partial Public Class FrmCustomers
             Case Else
         End Select
     End Sub
-
-    Private Sub FrmCustomers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = "Customers"
-        Navigator.BoundControls = New List(Of Control) From {
-           DataGridCustomers
-       }
-        MasterSource = CustomerBindingSource
-    End Sub
+#End Region
 End Class

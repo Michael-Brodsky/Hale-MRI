@@ -1,13 +1,13 @@
 ﻿Imports LibEncoder
+
+''' <summary>
+''' Form Control that can be used by clients that access
+''' workstation encoder hardware to visually manipulate 
+''' and provide real time status of the encoders. 
+''' </summary>
+''' 
 Public Class WorkstationStatusStrip
-    Public Enum EncoderStatus
-        NotInitialized
-        EncoderError
-        NoEncoders
-        Ready
-        Busy
-    End Enum
-    Public Const STR_ERR_CALIBRATION_DEFAULT As String = "Default"
+#Region "Private Members"
     Private Const STR_STATUS_BUSY As String = "Busy"
     Private Const STR_STATUS_NOT_INITIALIZED As String = "Not Initialized"
     Private Const STR_STATUS_ERROR As String = "Encoder Error"
@@ -15,44 +15,16 @@ Public Class WorkstationStatusStrip
     Private Const STR_STATUS_READY As String = "Ready"
     Private mHardware As WorkstationEncoders
     Private mStatus As EncoderStatus = EncoderStatus.NoEncoders
-    Private Sub EncoderAngleResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderAngleResetMenuItem.Click
-        Try
-            Reset(USDigital.ANGLE_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(ex.Message)
-        End Try
-    End Sub
-    Private Sub EncoderDepthResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderDepthResetMenuItem.Click
-        Try
-            Reset(USDigital.DEPTH_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(ex.Message)
-        End Try
-    End Sub
-    Private Sub EncoderInitializeMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderInitializeMenuItem.Click
-        Try
-            Initialize()
-        Catch ex As Exception
-            EncodersErrorShow(ex.Message)
-        End Try
-    End Sub
-    Private Sub EncoderMenuItemsEnable(ByVal enabled As Boolean)
-        EncoderAngleResetMenuItem.Enabled = enabled
-        EncoderDepthResetMenuItem.Enabled = enabled
-        EncoderRadiusResetMenuItem.Enabled = enabled
-    End Sub
-    Private Sub EncoderRadiusResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderRadiusResetMenuItem.Click
-        Try
-            Reset(USDigital.RADIUS_ENCODER)
-        Catch ex As Exception
-            EncodersErrorShow(ex.Message)
-        End Try
-    End Sub
-    Private Sub EncodersErrorShow(msg As String)
-        ' Display an error message and update the UI accordingly
-        Status = EncoderStatus.EncoderError
-        MsgBox(msg, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
-    End Sub
+#End Region
+#Region "Public Interface"
+    Public Enum EncoderStatus
+        NotInitialized
+        EncoderError
+        NoEncoders
+        Ready
+        Busy
+    End Enum
+
     Public Property Hardware As WorkstationEncoders
         Get
             Return mHardware
@@ -74,6 +46,7 @@ Public Class WorkstationStatusStrip
             End If
         End Set
     End Property
+
     Public Property Operation As String
         Get
             Return OperationStatusLabel.Text
@@ -82,6 +55,7 @@ Public Class WorkstationStatusStrip
             OperationStatusLabel.Text = value
         End Set
     End Property
+
     Public Property Status As EncoderStatus
         Get
             Return mStatus
@@ -117,6 +91,7 @@ Public Class WorkstationStatusStrip
             Me.Refresh()
         End Set
     End Property
+
     Public Property WorkstationName As String
         Get
             Return WorkstationNameLabel.Text
@@ -125,6 +100,7 @@ Public Class WorkstationStatusStrip
             WorkstationNameLabel.Text = value
         End Set
     End Property
+
     Public Function Angle() As Double
         Dim result As Double = 0.0
         Try
@@ -137,6 +113,7 @@ Public Class WorkstationStatusStrip
         End Try
         Return result
     End Function
+
     Public Function Calibrate(ByVal encoderNo As Integer) As Double
         Dim result As Double = 0.0
         Try
@@ -149,6 +126,7 @@ Public Class WorkstationStatusStrip
         End Try
         Return result
     End Function
+
     Public Function Depth() As Double
         Dim result As Double = 0.0
         Try
@@ -161,6 +139,7 @@ Public Class WorkstationStatusStrip
         End Try
         Return result
     End Function
+
     Public Sub Initialize()
         Try
             Status = EncoderStatus.Busy
@@ -171,6 +150,7 @@ Public Class WorkstationStatusStrip
             Throw
         End Try
     End Sub
+
     Public Function Radius(ByVal diameter As Double) As IEncoderHardware.RadiusMeasurement
         Dim result As IEncoderHardware.RadiusMeasurement
         Try
@@ -183,6 +163,7 @@ Public Class WorkstationStatusStrip
         End Try
         Return result
     End Function
+
     Public Sub Reset(ByVal encoderNo As Integer)
         Try
             Status = EncoderStatus.Busy
@@ -193,4 +174,47 @@ Public Class WorkstationStatusStrip
             Throw
         End Try
     End Sub
+#End Region
+#Region "Private Interface"
+    Private Sub EncoderMenuItemsEnable(ByVal enabled As Boolean)
+        EncoderAngleResetMenuItem.Enabled = enabled
+        EncoderDepthResetMenuItem.Enabled = enabled
+        EncoderRadiusResetMenuItem.Enabled = enabled
+    End Sub
+    Private Sub EncodersErrorShow(msg As String)
+        ' Display an error message and update the UI accordingly
+        Status = EncoderStatus.EncoderError
+        MsgBox(msg, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
+    End Sub
+#End Region
+#Region "Event Handlers"
+    Private Sub EncoderAngleResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderAngleResetMenuItem.Click
+        Try
+            Reset(USDigital.ANGLE_ENCODER)
+        Catch ex As Exception
+            EncodersErrorShow(ex.Message)
+        End Try
+    End Sub
+    Private Sub EncoderDepthResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderDepthResetMenuItem.Click
+        Try
+            Reset(USDigital.DEPTH_ENCODER)
+        Catch ex As Exception
+            EncodersErrorShow(ex.Message)
+        End Try
+    End Sub
+    Private Sub EncoderRadiusResetMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderRadiusResetMenuItem.Click
+        Try
+            Reset(USDigital.RADIUS_ENCODER)
+        Catch ex As Exception
+            EncodersErrorShow(ex.Message)
+        End Try
+    End Sub
+    Private Sub EncoderInitializeMenuItem_Click(sender As Object, e As EventArgs) Handles EncoderInitializeMenuItem.Click
+        Try
+            Initialize()
+        Catch ex As Exception
+            EncodersErrorShow(ex.Message)
+        End Try
+    End Sub
+#End Region
 End Class

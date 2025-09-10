@@ -1,11 +1,15 @@
 ﻿Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-Imports LibDatabase.Imex
 Imports LibEncoder
 Imports LibEncoder.USDigital
 Imports Microsoft.EntityFrameworkCore
-Imports System.Collections.Immutable
 Imports System.ComponentModel
+
+''' <summary>
+''' This form provides a user inteface for taking
+''' and inserting measurements into JobDetail records.
+''' </summary>
+
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Constants"

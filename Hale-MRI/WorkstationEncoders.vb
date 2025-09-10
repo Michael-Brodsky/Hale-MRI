@@ -2,11 +2,19 @@
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
+
+''' <summary>
+''' Encapsulates the encoder hardware and workstation calibration data,
+''' and performs routine initialization.
+''' </summary>
+''' 
+
 Public Class WorkstationEncoders
-    ' This class encapsulates the encoder hardware and workstation calibration data
-    ' and performs routine initialization.
+#Region "Private Members"
     Private mWorkstation As Workstation             ' Workstation calibration data from database 
     Private mEncoders As EncoderHardware            ' Encoder hardware instance
+#End Region
+#Region "Public Interface"
     Public Property PollingInterval As Long = 200   ' Encoder polling interval in milliseconds
     Public Property Encoders As EncoderHardware     ' Gets or sets the encoder hardware instance.
         Get
@@ -34,6 +42,8 @@ Public Class WorkstationEncoders
             Me.PollingInterval = dbContext.Settings.FirstOrDefault().EncoderCalibrationSampleRate
         End Using
     End Sub
+#End Region
+#Region "Private Interface"
     Private Sub InitializeEncoders()
         ' Copy the workstation calibration data to the encoder calibration properties.
         If mWorkstation IsNot Nothing AndAlso mEncoders IsNot Nothing Then
@@ -42,4 +52,5 @@ Public Class WorkstationEncoders
             mEncoders.RadiusCalibration = mWorkstation.RadiusCalibration
         End If
     End Sub
+#End Region
 End Class

@@ -1,4 +1,8 @@
-﻿' This module manages creating, showing and disposing of application forms.
+﻿''' <summary>
+''' Defines methods for managing application form instances
+''' and certain custom event handlers.
+''' </summary>
+''' 
 Imports LibDatabase.Contexts
 Module FormInstances
     Public Sub ShowForm(Of F As {Form, New})(ByRef frm As F)
@@ -13,6 +17,7 @@ Module FormInstances
             frm.BringToFront()
         End If
     End Sub
+
     Public Sub ShowForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, Optional ByVal windowState As FormWindowState = FormWindowState.Normal, Optional ByVal modal As Boolean = False)
         frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
         If frm Is Nothing OrElse Not frm.IsHandleCreated Then

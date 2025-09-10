@@ -1,14 +1,21 @@
 ﻿Imports System.ComponentModel
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
+
+''' <summary>
+''' This form provides a user inteface for editing
+''' Propeller records.
+''' </summary>
+
 Public Class FrmPropellers
     Inherits FrmDatabaseForm
-
+#Region "Private Members"
     Private mFilter As Object = Nothing                 ' The current form filter object, if any.
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
-
+#End Region
+#Region "Public Interface"
     Public ReadOnly Property Current
         Get
             Return BindingSourceCurrent(mMasterSource)
@@ -47,7 +54,8 @@ Public Class FrmPropellers
         End If
         Return result
     End Function
-
+#End Region
+#Region "Private Interface"
     Protected Overrides Sub BindDataSources()
         ' These DataSources query the database, as they may change while
         ' the application is open.
@@ -84,5 +92,15 @@ Public Class FrmPropellers
             If mNavigator IsNot Nothing Then mNavigator.Database = Database
         End Set
     End Property
-
+#End Region
+#Region "Event Handlers"
+    Private Sub FrmPropellers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Navigator = RecordNavigationBar1
+        Navigator.Caption = "Customers"
+        Navigator.BoundControls = New List(Of Control) From {
+           DataGridPropellers
+       }
+        MasterSource = PropellerBindingSource
+    End Sub
+#End Region
 End Class

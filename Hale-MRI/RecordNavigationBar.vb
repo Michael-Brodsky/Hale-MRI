@@ -4,8 +4,9 @@ Imports System.ComponentModel
 ''' <summary>
 ''' Form Control that can be used by data consumers (forms
 ''' that derive from FrmDatabaseForm) to visually navigate
-''' and manipulate data in the form's master BindingSource, 
-''' and handle certain events for controls bound to it.
+''' and manipulate data in the parent form's master  
+''' BindingSource, and handle certain events for controls 
+''' bound to it.
 ''' </summary>
 ''' 
 Public Class RecordNavigationBar

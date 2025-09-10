@@ -3,6 +3,13 @@ Imports LibDatabase.Models
 Imports LibDatabase.Imex
 Imports LibEncoder
 Imports Hale_MRI.WorkstationStatusStrip
+
+''' <summary>
+''' This form provides a user inteface for importing and editing
+''' Workstation calibration data.
+''' </summary>
+''' 
+
 Public Class FrmCalibration
 #Region "Private Members"
     Private Const STR_ERR_CALIBRATION_READ As String = "Error retrieving calibration data from the database: "

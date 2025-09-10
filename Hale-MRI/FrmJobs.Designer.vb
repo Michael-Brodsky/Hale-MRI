@@ -94,7 +94,7 @@ Partial Class FrmJobs
         ' LabJob
         ' 
         LabJob.AutoSize = True
-        LabJob.Font = New Font("Segoe UI", 9.0F)
+        LabJob.Font = New Font("Segoe UI", 9F)
         LabJob.Location = New Point(29, 137)
         LabJob.Name = "LabJob"
         LabJob.Size = New Size(25, 15)
@@ -125,7 +125,7 @@ Partial Class FrmJobs
         ComboJobs.AutoCompleteSource = AutoCompleteSource.ListItems
         ComboJobs.DataSource = JobsBindingSource
         ComboJobs.DisplayMember = "JobNumber"
-        ComboJobs.Font = New Font("Segoe UI", 9.0F)
+        ComboJobs.Font = New Font("Segoe UI", 9F)
         ComboJobs.FormattingEnabled = True
         ComboJobs.Location = New Point(94, 134)
         ComboJobs.Name = "ComboJobs"
@@ -163,7 +163,7 @@ Partial Class FrmJobs
         DataGridJobDetails.AllowUserToDeleteRows = False
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
@@ -325,7 +325,7 @@ Partial Class FrmJobs
         ComboInspectedBy.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "InspectedBy", True))
         ComboInspectedBy.DataSource = EmployeesBindingSource
         ComboInspectedBy.DisplayMember = "EmployeeName"
-        ComboInspectedBy.Font = New Font("Segoe UI", 9.0F)
+        ComboInspectedBy.Font = New Font("Segoe UI", 9F)
         ComboInspectedBy.FormattingEnabled = True
         ComboInspectedBy.Location = New Point(903, 309)
         ComboInspectedBy.Name = "ComboInspectedBy"
@@ -362,7 +362,7 @@ Partial Class FrmJobs
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9.0F)
+        Label1.Font = New Font("Segoe UI", 9F)
         Label1.Location = New Point(793, 312)
         Label1.Name = "Label1"
         Label1.Size = New Size(74, 15)
@@ -602,7 +602,7 @@ Partial Class FrmJobs
         ' 
         ' FrmJobs
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1128, 708)
         Controls.Add(RecordNavigationBar1)

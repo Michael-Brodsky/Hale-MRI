@@ -5,8 +5,8 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
 ''' <summary>
-''' This form provides a user inteface for accessing and 
-''' manipulating Job and associated JobDetail records.
+''' This form provides a user inteface for editing Job
+''' records and accessing related JobDetail records.
 ''' </summary>
 
 Partial Public Class FrmJobs
@@ -393,6 +393,26 @@ Partial Public Class FrmJobs
         SelectedJob = CurrentJob
         HandleSelectionChanges = True
         CurrentVessel = SelectedJob?.Vessel
+    End Sub
+
+    Private Sub ComboJobs_MouseClick(sender As Object, e As EventArgs) Handles ComboJobs.MouseClick
+        If ComboDoubleClick() Then
+            Dim j As Job = BindingSourceCurrent(JobsBindingSource)
+            If j IsNot Nothing Then
+                ShowForm(mFrmMeasurements, Database)
+                mFrmMeasurements.Job = j
+            End If
+        End If
+    End Sub
+
+    Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
+        If ComboDoubleClick() Then
+            Dim v As Vessel = CurrentVessel
+            If v IsNot Nothing Then
+                ShowForm(mFrmVessels, Database)
+                mFrmVessels.Find(v)
+            End If
+        End If
     End Sub
 
     Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs)

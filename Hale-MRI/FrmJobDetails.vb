@@ -1,14 +1,20 @@
 ﻿Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
+''' <summary>
+''' This form provides a user inteface for editing
+''' JobDetial records.
+''' </summary>
+
 Public Class FrmJobDetails
     Inherits FrmDatabaseForm
-
+#Region "Private Members"
     Private mFilter As Object = Nothing                 ' The current form filter object, if any.
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
-
+#End Region
+#Region "Public Interface"
     Public ReadOnly Property Current
         Get
             Return BindingSourceCurrent(mMasterSource)
@@ -47,11 +53,8 @@ Public Class FrmJobDetails
         End If
         Return result
     End Function
-
-    Protected Overrides Sub BindDataSources()
-
-    End Sub
-
+#End Region
+#Region "Private Interface"
     Private Property MasterSource As BindingSource
         Get
             Return mMasterSource
@@ -71,6 +74,17 @@ Public Class FrmJobDetails
             If mNavigator IsNot Nothing Then mNavigator.Database = Database
         End Set
     End Property
+#End Region
+#Region "Event Handlers"
+    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
+        Try
+            'ShowForm(mFrmMeasurements, Database)
+            'mFrmMeasurements.JobDetails = CType(JobDetailBindingSource.Current, JobDetail)
+            'mFrmMeasurements.Job = JobDetailBindingSource.Current.Job
+        Catch ex As Exception
+            MessageBox.Show("Error opening measurements form: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
 
     Private Sub FrmJobDetails_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Bind the form BindingSources to the respective context model local views.
@@ -84,14 +98,5 @@ Public Class FrmJobDetails
         MasterSource = JobDetailBindingSource
         'Navigator.MasterControl = DataGridJobDetails
     End Sub
-
-    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
-        Try
-            'ShowForm(mFrmMeasurements, Database)
-            'mFrmMeasurements.JobDetails = CType(JobDetailBindingSource.Current, JobDetail)
-            'mFrmMeasurements.Job = JobDetailBindingSource.Current.Job
-        Catch ex As Exception
-            MessageBox.Show("Error opening measurements form: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
+#End Region
 End Class

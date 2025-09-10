@@ -1,6 +1,13 @@
 ﻿Imports System.ComponentModel
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
+
+''' <summary>
+''' This form provides a user inteface for editing 
+''' Manufacturer records and accessing related 
+''' Propeller records.
+''' </summary>
+
 Public Class FrmManufacturers
     Inherits FrmDatabaseForm
 #Region "Private Members"
