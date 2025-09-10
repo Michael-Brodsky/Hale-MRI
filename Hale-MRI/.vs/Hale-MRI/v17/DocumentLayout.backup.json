@@ -190,7 +190,7 @@
               "RelativeDocumentMoniker": "FrmJobs.vb",
               "ToolTip": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\FrmJobs.vb",
               "RelativeToolTip": "FrmJobs.vb",
-              "ViewState": "AgIAAIMBAAAAAAAAAAAAAIsBAAALAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
               "WhenOpened": "2025-09-09T08:46:34.309Z",
               "EditorCaption": ""
@@ -217,8 +217,7 @@
               "RelativeToolTip": "FrmDatabaseForm.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-08-21T21:31:32.236Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-08-21T21:31:32.236Z"
             },
             {
               "$type": "Document",
@@ -230,8 +229,7 @@
               "RelativeToolTip": "RecordNavigationBar.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-02T18:00:29.978Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-02T18:00:29.978Z"
             },
             {
               "$type": "Document",
@@ -243,8 +241,7 @@
               "RelativeToolTip": "WorkstationStatusStrip.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAL0AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-10T12:00:46.705Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T12:00:46.705Z"
             },
             {
               "$type": "Document",
@@ -256,8 +253,7 @@
               "RelativeToolTip": "BindingSources.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-08T08:58:08.725Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-08T08:58:08.725Z"
             },
             {
               "$type": "Document",
@@ -269,8 +265,7 @@
               "RelativeToolTip": "FrmCalibration.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-10T11:08:53.438Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T11:08:53.438Z"
             },
             {
               "$type": "Document",
@@ -282,8 +277,7 @@
               "RelativeToolTip": "Constants.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAEAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T01:01:03.239Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T01:01:03.239Z"
             },
             {
               "$type": "Document",
@@ -295,8 +289,7 @@
               "RelativeToolTip": "FrmPropellers.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T01:22:01.465Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T01:22:01.465Z"
             },
             {
               "$type": "Document",
@@ -308,8 +301,7 @@
               "RelativeToolTip": "FrmCustomers.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-10T11:13:39.106Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-10T11:13:39.106Z"
             },
             {
               "$type": "Document",
@@ -321,8 +313,7 @@
               "RelativeToolTip": "FrmMeasurements.vb",
               "ViewState": "AgIAAMwBAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T08:27:10.605Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T08:27:10.605Z"
             },
             {
               "$type": "Document",
@@ -334,8 +325,7 @@
               "RelativeToolTip": "FrmReports.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T09:22:21.434Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T09:22:21.434Z"
             },
             {
               "$type": "Document",
@@ -359,8 +349,7 @@
               "RelativeToolTip": "FrmJobDetails.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T05:20:42.686Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T05:20:42.686Z"
             },
             {
               "$type": "Document",
@@ -372,8 +361,7 @@
               "RelativeToolTip": "FrmManufacturers.vb",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003361|",
-              "WhenOpened": "2025-09-09T09:22:01.711Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-09-09T09:22:01.711Z"
             },
             {
               "$type": "Document",

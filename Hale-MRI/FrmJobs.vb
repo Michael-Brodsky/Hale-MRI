@@ -374,55 +374,6 @@ Partial Public Class FrmJobs
         ScanDataPick()
     End Sub
 
-    Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
-        If ComboDoubleClick() Then
-            Dim c As Customer = CurrentCustomer
-            If c IsNot Nothing Then
-                ShowForm(mFrmCustomers, Database)
-                mFrmCustomers.Find(c)
-            End If
-        End If
-    End Sub
-
-    Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
-        Filter = CurrentCustomer
-    End Sub
-
-    Private Sub ComboJobs_SelectedIndexChanged(sender As Object, e As EventArgs)
-        HandleSelectionChanges = False
-        SelectedJob = CurrentJob
-        HandleSelectionChanges = True
-        CurrentVessel = SelectedJob?.Vessel
-    End Sub
-
-    Private Sub ComboJobs_MouseClick(sender As Object, e As EventArgs) Handles ComboJobs.MouseClick
-        If ComboDoubleClick() Then
-            Dim j As Job = BindingSourceCurrent(JobsBindingSource)
-            If j IsNot Nothing Then
-                ShowForm(mFrmMeasurements, Database)
-                mFrmMeasurements.Job = j
-            End If
-        End If
-    End Sub
-
-    Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
-        If ComboDoubleClick() Then
-            Dim v As Vessel = CurrentVessel
-            If v IsNot Nothing Then
-                ShowForm(mFrmVessels, Database)
-                mFrmVessels.Find(v)
-            End If
-        End If
-    End Sub
-
-    Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs)
-        CurrentCustomer = CurrentVessel?.Customer
-    End Sub
-
-    Private Sub ComboVessels_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboVessels.SelectionChangeCommitted
-        Filter = CurrentVessel
-    End Sub
-
     Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
         ShowForm(mFrmMeasurements, Database)
         mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
@@ -496,6 +447,88 @@ Partial Public Class FrmJobs
 
     Private Sub TxtScanDataFile_TextChanged(sender As Object, e As EventArgs) Handles TxtScanDataFile.TextChanged
         ScanDataEnabled = (TxtScanDataFile.Text.Length > 0)
+    End Sub
+#End Region
+    ''' <summary>
+    ''' Event handlers for the Customers, Vessels and Jobs combo boxes.
+    ''' These handle auto-completes, selection changes and double-clicks 
+    ''' and apply the appropriate filters and to open the associated form
+    ''' for the selected record.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+#Region "ComboCustomers Event Handlers"
+    Private Sub ComboCustomers_Enter(sender As Object, e As EventArgs) Handles ComboCustomers.Enter
+        AddHandler ComboCustomers.SelectedValueChanged, AddressOf ComboCustomers_SelectedValueChanged
+    End Sub
+    Private Sub ComboCustomers_Leave(sender As Object, e As EventArgs) Handles ComboCustomers.Leave
+        RemoveHandler ComboCustomers.SelectedValueChanged, AddressOf ComboCustomers_SelectedValueChanged
+    End Sub
+
+    Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
+        If ComboDoubleClick() Then
+            Dim c As Customer = CurrentCustomer
+            If c IsNot Nothing Then
+                ShowForm(mFrmCustomers, Database)
+                mFrmCustomers.Find(c)
+            End If
+        End If
+    End Sub
+
+    Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
+        Filter = CurrentCustomer
+    End Sub
+
+    Private Sub ComboCustomers_SelectedValueChanged(sender As Object, e As EventArgs)
+        Filter = CurrentCustomer
+    End Sub
+#End Region
+#Region "ComboJobs Event Handlers"
+    Private Sub ComboJobs_MouseClick(sender As Object, e As EventArgs) Handles ComboJobs.MouseClick
+        If ComboDoubleClick() Then
+            Dim j As Job = BindingSourceCurrent(JobsBindingSource)
+            If j IsNot Nothing Then
+                ShowForm(mFrmMeasurements, Database)
+                mFrmMeasurements.Job = j
+            End If
+        End If
+    End Sub
+    Private Sub ComboJobs_SelectedIndexChanged(sender As Object, e As EventArgs)
+        HandleSelectionChanges = False
+        SelectedJob = CurrentJob
+        HandleSelectionChanges = True
+        CurrentVessel = SelectedJob?.Vessel
+    End Sub
+#End Region
+#Region "ComboVessels Event Handlers"
+    Private Sub ComboVessels_Enter(sender As Object, e As EventArgs) Handles ComboVessels.Enter
+        AddHandler ComboVessels.SelectedValueChanged, AddressOf ComboVessels_SelectedValueChanged
+    End Sub
+
+    Private Sub ComboVessels_Leave(sender As Object, e As EventArgs) Handles ComboVessels.Leave
+        RemoveHandler ComboVessels.SelectedValueChanged, AddressOf ComboVessels_SelectedValueChanged
+    End Sub
+
+    Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
+        If ComboDoubleClick() Then
+            Dim v As Vessel = CurrentVessel
+            If v IsNot Nothing Then
+                ShowForm(mFrmVessels, Database)
+                mFrmVessels.Find(v)
+            End If
+        End If
+    End Sub
+
+    Private Sub ComboVessels_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboVessels.SelectionChangeCommitted
+        Filter = CurrentVessel
+    End Sub
+
+    Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs)
+        CurrentCustomer = CurrentVessel?.Customer
+    End Sub
+
+    Private Sub ComboVessels_SelectedValueChanged(sender As Object, e As EventArgs)
+        Filter = CurrentVessel
     End Sub
 #End Region
 End Class
