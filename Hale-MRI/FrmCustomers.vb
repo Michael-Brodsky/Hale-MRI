@@ -25,6 +25,12 @@ Partial Public Class FrmCustomers
     Private mFrmJobs As FrmJobs
 #End Region
 #Region "Public Interface"
+    Public Function AddNew(ByVal c As Customer) As Customer
+        Dim newCustomer As Customer = BindingSourceAddNew(MasterSource, c)
+        Navigator.CmdSave.Enabled = True
+        Return newCustomer
+    End Function
+
     Public ReadOnly Property Current
         Get
             Return BindingSourceCurrent(mMasterSource)
@@ -44,6 +50,12 @@ Partial Public Class FrmCustomers
     End Function
 #End Region
 #Region "Private Interface"
+    Private Property AddingNew As Boolean = False
+
+    Private Sub AddNewCustomer()
+        Database.Customers.Add(BindingSourceCurrent(CustomerBindingSource))
+        AddingNew = False
+    End Sub
     Protected Overrides Sub BindDataSources()
         ' Master list is Customers sorted by CustomerName.
         Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
@@ -112,6 +124,7 @@ Partial Public Class FrmCustomers
            DataGridCustomers
        }
         MasterSource = CustomerBindingSource
+        AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
@@ -124,9 +137,14 @@ Partial Public Class FrmCustomers
             Case "GotoNext"
             Case "GotoPrev"
             Case "Save"
+                If AddingNew Then AddNewCustomer()
             Case "Undo"
             Case Else
         End Select
+    End Sub
+
+    Private Sub CustomerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles CustomerBindingSource.AddingNew
+        AddingNew = True
     End Sub
 #End Region
 End Class

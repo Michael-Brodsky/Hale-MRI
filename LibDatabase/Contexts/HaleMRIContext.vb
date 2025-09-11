@@ -1,8 +1,5 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports LibDatabase.Models
+﻿Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
-Imports Microsoft.VisualBasic
 
 Namespace Contexts
     Partial Public Class HaleMRIContext
@@ -52,8 +49,6 @@ Namespace Contexts
         Public Overridable Property Styles As DbSet(Of Style)
 
         Public Overridable Property Tolerances As DbSet(Of Tolerance)
-
-        Public Overridable Property UsysApplicationLogs As DbSet(Of UsysApplicationLog)
 
         Public Overridable Property Vessels As DbSet(Of Vessel)
 
@@ -484,14 +479,36 @@ Namespace Contexts
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
+                    entity.Property(Function(e) e.ApplicationConnectionString).
+                        HasMaxLength(255).
+                        HasColumnName("Application Connection String")
+                    entity.Property(Function(e) e.ApplicationDatabaseFile).
+                        HasMaxLength(255).
+                        HasColumnName("Application Database File")
+                    entity.Property(Function(e) e.ApplicationDefaultFolder).
+                        HasMaxLength(255).
+                        HasColumnName("Application Default Folder")
+                    entity.Property(Function(e) e.CompanyAddress).
+                        HasMaxLength(100).
+                        HasColumnName("Company Address")
+                    entity.Property(Function(e) e.CompanyContact).
+                        HasMaxLength(80).
+                        HasColumnName("Company Contact")
+                    entity.Property(Function(e) e.CompanyEmail).
+                        HasMaxLength(255).
+                        HasColumnName("Company Email")
+                    entity.Property(Function(e) e.CompanyName).
+                        HasMaxLength(80).
+                        HasColumnName("Company Name")
+                    entity.Property(Function(e) e.CompanyPhone).
+                        HasMaxLength(16).
+                        HasColumnName("Company Phone")
+                    entity.Property(Function(e) e.CompanyWebsite).HasMaxLength(255)
                     entity.Property(Function(e) e.EncoderCalibrationSampleRate).HasColumnName("Encoder Calibration Sample Rate")
                     entity.Property(Function(e) e.EncoderDataInitialDirectory).
                         HasMaxLength(255).
                         HasColumnName("Encoder Data Initial Directory")
                     entity.Property(Function(e) e.JobNumberMin).HasColumnName("Job Number Min")
-                    entity.Property(Function(e) e.ShopName).
-                        HasMaxLength(40).
-                        HasColumnName("Shop Name")
                 End Sub)
 
             modelBuilder.Entity(Of StateCode)(
@@ -537,27 +554,6 @@ Namespace Contexts
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
                         HasColumnName("Tolerance Class")
-                End Sub)
-
-            modelBuilder.Entity(Of UsysApplicationLog)(
-                Sub(entity)
-                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
-
-                    entity.ToTable("USysApplicationLog")
-
-                    entity.Property(Function(e) e.Id).
-                        HasColumnType("counter").
-                        HasColumnName("ID")
-                    entity.Property(Function(e) e.Category).HasMaxLength(255)
-                    entity.Property(Function(e) e.Context).HasMaxLength(255)
-                    entity.Property(Function(e) e.DataMacroInstanceId).
-                        HasMaxLength(255).
-                        HasColumnName("Data Macro Instance ID")
-                    entity.Property(Function(e) e.ErrorNumber).HasColumnName("Error Number")
-                    entity.Property(Function(e) e.ObjectType).
-                        HasMaxLength(255).
-                        HasColumnName("Object Type")
-                    entity.Property(Function(e) e.SourceObject).HasMaxLength(255)
                 End Sub)
 
             modelBuilder.Entity(Of Vessel)(

@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Models\UsysApplicationLog.vb" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="EntityFrameworkCore.Jet" Version="8.0.0" />
     <PackageReference Include="EntityFrameworkCore.Jet.Data" Version="8.0.0" />
     <PackageReference Include="EntityFrameworkCore.Jet.Odbc" Version="8.0.0" />

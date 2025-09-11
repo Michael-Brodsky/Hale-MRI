@@ -56,6 +56,13 @@ Public Class FrmVessels
     End Function
 #End Region
 #Region "Private Interface"
+    Private Property AddingNew As Boolean = False
+
+    Private Sub AddNewVessel()
+        Database.Vessels.Add(BindingSourceCurrent(VesselBindingSource))
+        AddingNew = False
+    End Sub
+
     Protected Overrides Sub BindDataSources()
         ' These DataSources use LocalViews, which are loaded on application
         ' startup, and not expected to change.
@@ -111,35 +118,16 @@ Public Class FrmVessels
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
-
             Case "FilterOff"
-
             Case "FilterOn"
-
             Case "GotoFirst"
-                VesselBindingSource.Position = 0
             Case "GotoLast"
-                VesselBindingSource.Position = VesselBindingSource.Count - 1
             Case "GotoNext"
-                If VesselBindingSource.Position < VesselBindingSource.Count - 1 Then VesselBindingSource.Position += 1
             Case "GotoPrev"
-                If VesselBindingSource.Position > 0 Then VesselBindingSource.Position -= 1
             Case "Save"
-                If VesselBindingSource.Current.Id Is Nothing Then
-                    ' If the current job is new, add it to the databese.
-                    'JobAddNew()
-                Else
-                    ' If the current job is not new, save changes to the current job.
-                    BindingSourceSave(Database, VesselBindingSource)
-                End If
+                If AddingNew Then AddNewVessel()
             Case "Undo"
-                BindingSourceUndo(Database, VesselBindingSource)
-                'If JobBindingSource.Current Is Nothing Then
-                'FiltersClear()
-                'ComboJobs.Enabled = True
-                'End If
             Case Else
-
         End Select
     End Sub
 
@@ -150,6 +138,15 @@ Public Class FrmVessels
            DataGridVessels
        }
         MasterSource = VesselBindingSource
+        AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+    End Sub
+
+    Private Sub VesselBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles VesselBindingSource.AddingNew
+        AddingNew = True
+    End Sub
+
+    Private Sub DataGridVessels_DefaultValuesNeeded(sender As Object, e As DataGridViewRowEventArgs)
+        e.Row.Cells("CustomerId").Value = VesselBindingSource.Current?.Customer.Id
     End Sub
 #End Region
 End Class

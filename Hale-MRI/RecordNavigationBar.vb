@@ -1,4 +1,5 @@
 ﻿Imports LibDatabase.Contexts
+Imports LibDatabase.Models
 Imports System.ComponentModel
 
 ''' <summary>
@@ -119,9 +120,11 @@ Public Class RecordNavigationBar
         ' Custom event arguments for navigation events.
         ' When raised, clients can inspect the properties.
         Public Property EventName As String
+        Public Property Key As Object
         Public Property Value As Object
-        Public Sub New(eventName As String, Optional value As Object = Nothing)
+        Public Sub New(eventName As String, Optional key As Object = Nothing, Optional value As Object = Nothing)
             Me.EventName = eventName
+            Me.Key = key
             Me.Value = value
         End Sub
     End Class
@@ -176,6 +179,8 @@ Public Class RecordNavigationBar
     End Sub
 
     Private Sub CmdAddNew_Click(sender As Object, e As EventArgs) Handles CmdAddNew.Click
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("AddNew"))
+        If MasterSource.IsBindingSuspended Then MasterSource.ResumeBinding()
         MasterSource.AddNew()
     End Sub
 
@@ -212,6 +217,7 @@ Public Class RecordNavigationBar
     Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
         RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Save"))
         BindingSourceSave(Database, MasterSource)
+        MasterSource.ResetBindings(False)
         SaveUndoControlsEnabled = False
     End Sub
     Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click
@@ -289,6 +295,7 @@ Public Class RecordNavigationBar
             CmdGotoNext.Enabled = CmdGotoFirst.Enabled
             CmdGotoPrevious.Enabled = CmdGotoFirst.Enabled
             CmdDelete.Enabled = CmdAddNew.Enabled
+            RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Editing",, value))
         End Set
     End Property
 #End Region

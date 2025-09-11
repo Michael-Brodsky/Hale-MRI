@@ -18,7 +18,6 @@ Public Class FrmHaleMRI
     Private mFrmPropellers As FrmPropellers
     Private mFrmSettings As FrmSettings
     Private mFrmVessels As FrmVessels
-    'Private mFrmFour As Form4
 #End Region
 #Region "Private Interface"
     Private Sub Login(ByVal userName As String, ByVal password As String)
@@ -50,6 +49,7 @@ Public Class FrmHaleMRI
 
         End Try
     End Sub
+
     Private Sub CmdCustomers_Click(sender As Object, e As EventArgs) Handles CmdCustomers.Click
         Try
             ShowForm(mFrmCustomers, mDatabase)
@@ -57,6 +57,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening customers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdJobDetails_Click(sender As Object, e As EventArgs)
         Try
             ShowForm(mFrmJobDetails, mDatabase)
@@ -64,6 +65,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening job details form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles CmdJobs.Click
         Try
             ShowForm(mFrmJobs, mDatabase)
@@ -72,6 +74,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening jobs form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdManufacturers_Click(sender As Object, e As EventArgs) Handles CmdManufacturers.Click
         Try
             ShowForm(mFrmManufacturers, mDatabase)
@@ -79,6 +82,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening manufacturers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdOK_Click(sender As Object, e As EventArgs) Handles CmdLoginOK.Click
         Try
             Login(TxtUser.Text, TxtPassword.Text)
@@ -86,6 +90,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error during login: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdPropellers_Click(sender As Object, e As EventArgs) Handles CmdPropellers.Click
         Try
             ShowForm(mFrmPropellers, mDatabase)
@@ -93,6 +98,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening propellers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdReports_Click(sender As Object, e As EventArgs) Handles CmdReports.Click
         Try
             ShowForm(mFrmReports)
@@ -102,11 +108,12 @@ Public Class FrmHaleMRI
     End Sub
     Private Sub CmdSettings_Click(sender As Object, e As EventArgs) Handles CmdSettings.Click
         Try
-            ShowForm(mFrmSettings)
+            ShowForm(mFrmSettings, mDatabase)
         Catch ex As Exception
             MessageBox.Show("Error opening settings form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdVessels_Click(sender As Object, e As EventArgs) Handles CmdVessels.Click
         Try
             ShowForm(mFrmVessels, mDatabase)
@@ -114,6 +121,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening vessels form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub CmdWorkstation_Click(sender As Object, e As EventArgs) Handles CmdWorkstation.Click
         Try
             ShowForm(mFrmCalibration)
@@ -122,6 +130,7 @@ Public Class FrmHaleMRI
             MessageBox.Show("Error opening calibration form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub FrmHaleMRI_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' Dispose of any resources we created.
         CloseForm(mFrmCalibration)
@@ -159,10 +168,12 @@ Public Class FrmHaleMRI
             mDatabase.Exclusions.Load()
             mDatabase.Cups.Load()
             mDatabase.Workstations.Load()
+            mDatabase.Settings.Load()
         Catch ex As Exception
             MessageBox.Show("Error loading database: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
     Private Sub TxtUser_TextChanged(sender As Object, e As EventArgs) Handles TxtUser.TextChanged
         Try
             CmdLoginOK.Enabled = Not String.IsNullOrWhiteSpace(TxtUser.Text) AndAlso Not String.IsNullOrWhiteSpace(TxtPassword.Text)
@@ -171,6 +182,7 @@ Public Class FrmHaleMRI
 
         End Try
     End Sub
+
     Private Sub TxtPassword_TextChanged(sender As Object, e As EventArgs) Handles TxtPassword.TextChanged
         Try
             CmdLoginOK.Enabled = Not String.IsNullOrWhiteSpace(TxtUser.Text) AndAlso Not String.IsNullOrWhiteSpace(TxtPassword.Text)
@@ -179,16 +191,5 @@ Public Class FrmHaleMRI
 
         End Try
     End Sub
-
-    Private Sub Button1_Click(sender As Object, e As EventArgs)
-        'Try
-        '    ShowForm(mFrmFour, mDatabase)
-        '    mFrmFour.Job = mDatabase.Jobs.Where(Function(j) j.JobNumber = 14087).FirstOrDefault()
-        '    'mFrmFour.JobDetail = mDatabase.JobDetails.Where(Function(jd) jd.Job.JobNumber = 14087).FirstOrDefault()
-        'Catch ex As Exception
-        '    MessageBox.Show("Error opening measurements form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-        'End Try
-    End Sub
-
 #End Region
 End Class

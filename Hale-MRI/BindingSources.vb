@@ -11,6 +11,26 @@ Imports System.ComponentModel
 ''' </summary>
 ''' 
 Public Module BindingSources
+    Public Function BindingSourceAdd(ByRef bs As BindingSource, item As Object) As Integer
+        ' Adds a new record to the BindingSource and returns its position.
+        Dim result As Integer = kNoCurrentRecord
+        If bs IsNot Nothing AndAlso item IsNot Nothing Then
+            result = bs.Add(item)
+        End If
+        Return result
+    End Function
+
+    Public Function BindingSourceAddNew(ByRef bs As BindingSource, item As Object) As Object
+        ' Adds a new record to the BindingSource by raising the AddNew event, setting
+        ' the new record to the given item. Returns the added item.
+        Dim result As Object = Nothing
+        If bs IsNot Nothing AndAlso item IsNot Nothing Then
+            bs.AddNew()
+            result = bs.Item(bs.Count - 1) = item
+        End If
+        Return result
+    End Function
+
     Public Function BindingSourceCurrent(bs As BindingSource) As Object
         ' Returns the current record in the BindingSource, or Nothing if there is no current record.
         Return If(bs IsNot Nothing AndAlso bs.Position <> kNoCurrentRecord, bs.Current, Nothing)
@@ -18,7 +38,7 @@ Public Module BindingSources
 
     Public Function BindingSourceFind(bs As BindingSource, key As Object) As Integer
         ' Returns the BindingSource index of the record matching the given key.
-        Return bs.IndexOf(key)
+        Return If(bs IsNot Nothing AndAlso key IsNot Nothing, bs.IndexOf(key), kNoCurrentRecord)
     End Function
 
     Public Sub BindingSourceRemove(ByRef bs As BindingSource)
@@ -32,7 +52,7 @@ Public Module BindingSources
         entity.Remove(BindingSourceCurrent(bs))
         BindingSourceRemove(bs)
         db.SaveChanges()
-        bs.ResetCurrentItem()
+        If BindingSourceCurrent(bs) IsNot Nothing Then bs.ResetCurrentItem()
     End Sub
 
     Public Sub BindingSourceSave(db As HaleMRIContext, ByRef bs As BindingSource)
@@ -46,7 +66,7 @@ Public Module BindingSources
         ' rollsback any associated pending Database changes.
         bs.CancelEdit()
         Rollback(db, bs.DataSource)
-        bs.ResetCurrentItem()
+        If BindingSourceCurrent(bs) IsNot Nothing Then bs.ResetCurrentItem()
     End Sub
 
     Public Sub BindMasterDetails(ByRef masterSource As BindingSource, ByRef detailsSource As BindingSource, masterPropertyName As String)
