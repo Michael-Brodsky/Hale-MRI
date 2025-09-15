@@ -165,3 +165,5 @@ C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\refin
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.pdb
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale-MRI.genruntimeconfig.cache
 C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\ref\Hale-MRI.dll
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.EncoderStatusStrip.resources
+C:\Users\super\source\repos\Hale-MRI\Hale-MRI\obj\x64\Debug\net8.0-windows\Hale_MRI.Form1.resources

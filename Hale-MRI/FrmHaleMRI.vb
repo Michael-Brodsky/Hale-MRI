@@ -10,8 +10,9 @@ Public Class FrmHaleMRI
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobDetails As FrmJobDetails
-    'Private mFrmJobs As Form3
+    'Private mFrmJobs As Form1
     Private mFrmJobs As FrmJobs
+    'Private mFrmOne As Form1
     Private mFrmManufacturers As FrmManufacturers
     Private mFrmMeasurements As FrmMeasurements
     Private mFrmReports As FrmReports
@@ -69,7 +70,7 @@ Public Class FrmHaleMRI
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles CmdJobs.Click
         Try
             ShowForm(mFrmJobs, mDatabase)
-            'mFrmJobs.Hardware = mWorkstationEncoders
+            mFrmJobs.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening jobs form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -191,5 +192,10 @@ Public Class FrmHaleMRI
 
         End Try
     End Sub
+
+    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
+
+    End Sub
+
 #End Region
 End Class

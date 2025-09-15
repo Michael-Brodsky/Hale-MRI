@@ -1,10 +1,15 @@
-﻿Public Interface IEncoderHardware
-    ' Type that aggregates the radius value and its percentage of the diameter.
+﻿''' <summary>
+''' Defines the application programming interface (API) for calibrating and acquiring data from the hardware sensors.
+''' </summary>
+Public Interface IEncoderHardware
+    ''' <summary>
+    ''' Aggregates the radius value and its percentage of the diameter.
+    ''' </summary>
     Structure RadiusMeasurement
         Public Value As Double
         Public Percent As Double
     End Structure
-    ' Defines the application programming interface (API) for calibrating and acquiring data from the hardware sensors.
+
     ReadOnly Property Initialized As Boolean
     Property AngleCalibration As Double
     Property DepthCalibration As Double

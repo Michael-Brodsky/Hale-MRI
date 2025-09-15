@@ -1,7 +1,21 @@
-﻿Public Class EncoderHardware
-    ' This class is responsible for calibrating and acquiring data from the hardware sensors
-    ' and exposing the IEncoderHardware API.
+﻿''' <summary>
+''' Calibrates and acquires data from the hardware sensors.
+''' Exposes the IEncoderHardware API.
+''' </summary>
+Public Class EncoderHardware
+    ''' <summary>
+    ''' Enumerates valid encoder states.
+    ''' </summary>
+    Public Enum EncoderStatus
+        Busy
+        EncoderError
+        NoEncoders
+        NotInitialized
+        Ready
+    End Enum
+
     Private mEncoder As IEncoderHardware
+
     Public Sub New(aHardware As IEncoderHardware)
         ' Create and intialize a new instance of the EncoderHardware class
         mEncoder = aHardware

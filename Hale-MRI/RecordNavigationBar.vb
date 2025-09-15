@@ -1,7 +1,5 @@
 ﻿Imports LibDatabase.Contexts
-Imports LibDatabase.Models
 Imports System.ComponentModel
-
 ''' <summary>
 ''' Form Control that can be used by data consumers (forms
 ''' that derive from FrmDatabaseForm) to visually navigate
@@ -9,13 +7,12 @@ Imports System.ComponentModel
 ''' BindingSource, and handle certain events for controls 
 ''' bound to it.
 ''' </summary>
-''' 
 Public Class RecordNavigationBar
 #Region "Private Members"
     Private mBoundControls As List(Of Control) = Nothing    ' List of Controls bound to the MasterSource.
     Private mDatabase As HaleMRIContext = Nothing           ' The current database context.
-    Private mMasterSource As BindingSource = Nothing        ' The current master BindingSource.
     Private mFilter As Object = Nothing                     ' The current filter object, if any.
+    Private mMasterSource As BindingSource = Nothing        ' The current master BindingSource.
 #End Region
 #Region "Public Inteface"
     Public Property BoundControls As List(Of Control)
@@ -43,15 +40,6 @@ Public Class RecordNavigationBar
             End If
             mBoundControls = controls
         End Set
-    End Property
-
-    Public Property Caption As String
-        Set(value As String)
-            LabCaption.Text = value
-        End Set
-        Get
-            Return LabCaption.Text
-        End Get
     End Property
 
     Public ReadOnly Property Count As Integer
@@ -142,6 +130,12 @@ Public Class RecordNavigationBar
         End Get
     End Property
 
+    Public Overrides Sub Refresh()
+        ShowPosition()
+        ControlsEnable()
+        MyBase.Refresh()
+    End Sub
+
     Public Sub ShowPosition()
         TxtCurrentPosition.Text = $"{Me.Position + 1} of {Me.Count}".ToString
     End Sub
@@ -179,9 +173,9 @@ Public Class RecordNavigationBar
     End Sub
 
     Private Sub CmdAddNew_Click(sender As Object, e As EventArgs) Handles CmdAddNew.Click
-        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("AddNew"))
-        If MasterSource.IsBindingSuspended Then MasterSource.ResumeBinding()
+        'If MasterSource.IsBindingSuspended Then MasterSource.ResumeBinding()
         MasterSource.AddNew()
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("AddNew"))
     End Sub
 
     Private Sub CmdDelete_Click(sender As Object, e As EventArgs) Handles CmdDelete.Click
@@ -203,35 +197,35 @@ Public Class RecordNavigationBar
     End Sub
 
     Private Sub CmdGotoNext_Click(sender As Object, e As EventArgs) Handles CmdGotoNext.Click
-        If Me.Position + 1 < Me.Count Then
-            MasterSource.MoveNext()
-            RaiseEvent NavigationEvent(Me, New NavigationEventArgs("GotoNext"))
-        End If
+        If Me.Position + 1 < Me.Count Then MasterSource.MoveNext()
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("GotoNext"))
     End Sub
+
     Private Sub CmdGotoPrevious_Click(sender As Object, e As EventArgs) Handles CmdGotoPrevious.Click
-        If Me.Position > 0 Then
-            MasterSource.MovePrevious()
-            RaiseEvent NavigationEvent(Me, New NavigationEventArgs("GotoNext"))
-        End If
+        If Me.Position > 0 Then MasterSource.MovePrevious()
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("GotoNext"))
     End Sub
+
     Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
-        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Save"))
         BindingSourceSave(Database, MasterSource)
-        MasterSource.ResetBindings(False)
         SaveUndoControlsEnabled = False
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Save"))
     End Sub
+
     Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click
-        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Undo"))
         BindingSourceUndo(Database, MasterSource)
         SaveUndoControlsEnabled = False
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Undo"))
     End Sub
+
     Private Sub DataSource_AddingNew(sender As Object, e As AddingNewEventArgs)
         CmdUndo.Enabled = True
     End Sub
 
     Private Sub DataSource_PositionChanged(sender As Object, e As EventArgs)
-        ShowPosition()
-        ControlsEnable()
+        Me.Refresh()
+        'ShowPosition()
+        ' ControlsEnable()
     End Sub
 #End Region
 #Region "Private Interface"

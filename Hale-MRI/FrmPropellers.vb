@@ -69,7 +69,6 @@ Public Class FrmPropellers
         RotationsBindingSource.DataSource = Database.Rotations.Local.ToBindingList()
         ' Configure the RecordNavigator.
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Propellers"
         MasterSource = PropellerBindingSource
     End Sub
 
@@ -96,7 +95,6 @@ Public Class FrmPropellers
 #Region "Event Handlers"
     Private Sub FrmPropellers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Customers"
         Navigator.BoundControls = New List(Of Control) From {
            DataGridPropellers
        }

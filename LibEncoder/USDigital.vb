@@ -1,7 +1,9 @@
-﻿Public Class USDigital
-    ' Concrete implementation of the IEncoderHardware interface for the USDigital hardware.
+﻿''' <summary>
+''' Concrete implementation of the IEncoderHardware interface for the USDigital hardware.
+''' </summary>
+Public Class USDigital
     Implements IEncoderHardware
-    ' Constants for USDigital encoder hardware
+#Region "USDigital encoder hardware constants"
     Public Const ANGLE_ENCODER As Integer = 0
     Public Const RADIUS_ENCODER As Integer = 1
     Public Const DEPTH_ENCODER As Integer = 2
@@ -25,15 +27,19 @@
     Private Const STR_ERR_NO_DEVICES As String = "No devices found."
     Private Const STR_ERR_COUNT As String = "Encoder count error."
     Private Const STR_ERR_ENCODER_INVALID As String = "Invalid encoder number."
-    ' Private members
-    Private mDeviceCount As Integer = 0                         ' Device count from USB4_Initialize(), non-zero if board initialized successfully
-    Private mAngleCalibration As Double = CALIBRATION_DEFAULT   ' Current angle calibration value
+#End Region
+#Region "Private Members"
+    Private mDeviceCount As Integer = 0                         ' Device count from USB4_Initialize(), non-zero if board initialized successfully 
+    Private mAngleCalibration As Double = CALIBRATION_DEFAULT   ' Current angle calibration value 
     Private mDepthCalibration As Double = CALIBRATION_DEFAULT   ' Current depth calibration value
     Private mRadiusCalibration As Double = CALIBRATION_DEFAULT  ' Current radius calibration value
     Private mRadiusOffset As Integer = 0                        ' Current radius offset value
+#End Region
+#Region "Public Interface"
     Public Sub New()
         ' Create a new defualt instance of the USDigital encoder hardware class
     End Sub
+
     Public Sub New(ByVal angleCal As Double, ByVal depthCal As Double, radiusCal As Double, radiusOff As Integer)
         ' Create a new instance of the USDigital encoder hardware class
         ' with specified calibration values
@@ -42,6 +48,7 @@
         RadiusCalibration = radiusCal
         RadiusOffset = radiusOff
     End Sub
+
     Public Property AngleCalibration() As Double Implements IEncoderHardware.AngleCalibration
         Get
             ' Return the angle calibration value
@@ -53,6 +60,7 @@
             mAngleCalibration = value
         End Set
     End Property
+
     Public Property DepthCalibration() As Double Implements IEncoderHardware.DepthCalibration
         Get
             ' Return the depth calibration value
@@ -64,12 +72,14 @@
             mDepthCalibration = value
         End Set
     End Property
+
     Public ReadOnly Property Initialized As Boolean Implements IEncoderHardware.Initialized
         Get
             ' Return true if the hardware was initialized successfully
             Return mDeviceCount > 0
         End Get
     End Property
+
     Public Property RadiusCalibration() As Double Implements IEncoderHardware.RadiusCalibration
         Get
             ' Return the radius calibration value
@@ -81,6 +91,7 @@
             mRadiusCalibration = value
         End Set
     End Property
+
     Public Property RadiusOffset() As Integer Implements IEncoderHardware.RadiusOffset
         Get
             ' Return the radius offset value
@@ -91,10 +102,12 @@
             mRadiusOffset = value
         End Set
     End Property
+
     Public Function Angle() As Double Implements IEncoderHardware.Angle
         ' Return the angle value
         Return IPropellerData_Angle()
     End Function
+
     Public Function Calibrate(ByVal encoderNo As Integer) As Double Implements IEncoderHardware.Calibrate
         ' Calibrate the specified encoder and return the calibration value
         ResetCountSafely(0, encoderNo)
@@ -116,14 +129,17 @@
                 Throw New NotImplementedException(STR_ERR_ENCODER_INVALID)
         End Select
     End Function
+
     Public Function Depth() As Double Implements IEncoderHardware.Depth
         ' Return the depth value
         Return IPropellerData_Depth()
     End Function
+
     Public Function Radius(ByVal diameter As Double) As IEncoderHardware.RadiusMeasurement Implements IEncoderHardware.Radius
         ' Return the radius and percent values
         Return IPropellerData_Radius(diameter)
     End Function
+
     Private Shared Function AdjustedCount(ByVal encoderNo As Integer) As Long
         ' Get the adjusted count for the specified encoder
         Dim count As Long
@@ -132,6 +148,7 @@
         If count >= ENCODER_UNREACHABLE_COUNT Then count -= ENCODER_MAX_COUNT
         Return count
     End Function
+
     Public Sub Initialize() Implements IEncoderHardware.Initialize
         ' Hardware specific initialization code
         mDeviceCount = DevInit()
@@ -153,9 +170,12 @@
         SetForward(0, DEPTH_ENCODER, USB4_FALSE)
         SetCounterEnabled(0, RADIUS_ENCODER, USB4_TRUE)
     End Sub
+
     Public Sub ResetCount(ByVal encoderNo As Integer) Implements IEncoderHardware.ResetCount
         ResetCountSafely(0, encoderNo)
     End Sub
+#End Region
+#Region "Private Interface"
     Private Function IPropellerData_Angle() As Double
         ' Returns the angle measurement in degrees
         Return GetCountSafely(0, ANGLE_ENCODER) / AngleCalibration
@@ -165,6 +185,7 @@
         ' Hardware specific code to get the depth value
         Return AdjustedCount(DEPTH_ENCODER) / DepthCalibration
     End Function
+
     Private Function IPropellerData_Radius(ByVal diameter As Double) As IEncoderHardware.RadiusMeasurement
         ' Hardware specific code to get the radius measurement and calculate the percent.
         ' Currently throws an exception for invalid diameter values, but can be modified
@@ -186,6 +207,7 @@
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_COUNT)
         Return count
     End Function
+
     Private Shared Function DevInit() As Long
         ' Initialize the hardware board
         Dim deviceCount As Long, result As Long
@@ -195,40 +217,48 @@
         If deviceCount = 0 Then Throw New Exception(STR_ERR_NO_DEVICES)
         Return deviceCount
     End Function
+
     Private Shared Sub ResetCountSafely(ByVal deviceNo As Integer, ByVal encoderNo As Integer)
         ' Safely reset the encoder count
         Dim result As Long = USB4_ResetCount(deviceNo, ValidEncoder(encoderNo))
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_COUNT)
     End Sub
+
     Private Shared Sub SetCounterMode(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal iVal As Integer)
         ' Set the counter mode for the specified encoder
         Dim result As Long = USB4_SetCounterMode(iDeviceNo, ValidEncoder(iEncoder), iVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
+
     Private Shared Sub SetCounterEnabled(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal bVal As Long)
         ' Sets the counter enabled state for the specified encoder
         Dim result As Long = USB4_SetCounterEnabled(iDeviceNo, ValidEncoder(iEncoder), bVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
+
     Private Shared Sub SetForward(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal bVal As Long)
         ' Sets the count direction for the specified encoder
         Dim result As Long = USB4_SetForward(iDeviceNo, ValidEncoder(iEncoder), bVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
+
     Private Shared Sub SetMultipler(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal iVal As Integer)
         ' Sets the quadrature counter multiplier mode for the specified encoder
         Dim result As Long = USB4_SetMultiplier(iDeviceNo, ValidEncoder(iEncoder), iVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
+
     Private Shared Sub SetPresetValue(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal ulVal As Long)
         ' Set the preset register value for the specified encoder
         Dim result As Long = USB4_SetPresetValue(iDeviceNo, ValidEncoder(iEncoder), ulVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
+
     Private Shared Function ValidEncoder(ByVal encoderNo As Integer) As Boolean
         ' Check if the specified encoder number is valid
         ArgumentOutOfRangeException.ThrowIfLessThan(Of Integer)(encoderNo, ANGLE_ENCODER, NameOf(encoderNo))
         ArgumentOutOfRangeException.ThrowIfGreaterThan(Of Integer)(encoderNo, DEPTH_ENCODER, NameOf(encoderNo))
         Return encoderNo
     End Function
+#End Region
 End Class

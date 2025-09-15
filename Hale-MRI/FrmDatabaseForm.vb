@@ -1,4 +1,5 @@
-﻿Imports LibDatabase.Contexts
+﻿Imports System.ComponentModel
+Imports LibDatabase.Contexts
 Imports Microsoft.EntityFrameworkCore
 
 ''' <summary>
@@ -6,7 +7,9 @@ Imports Microsoft.EntityFrameworkCore
 ''' from the database.
 ''' </summary>
 ''' 
+
 Partial Public Class FrmDatabaseForm
+    Inherits Form
     Public Overridable Property Database As HaleMRIContext
 
     Protected Overridable Sub BindDataSources()

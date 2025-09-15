@@ -38,7 +38,7 @@ Partial Class WorkstationStatusStrip
         ' 
         StatusStrip1.ImageScalingSize = New Size(32, 32)
         StatusStrip1.Items.AddRange(New ToolStripItem() {WorkstationNameLabel, EncoderButton, EncoderStatusLabel, OperationStatusLabel})
-        StatusStrip1.Location = New Point(0, 32)
+        StatusStrip1.Location = New Point(0, 2)
         StatusStrip1.Name = "StatusStrip1"
         StatusStrip1.Padding = New Padding(1, 0, 8, 0)
         StatusStrip1.Size = New Size(884, 38)
@@ -102,7 +102,7 @@ Partial Class WorkstationStatusStrip
         Controls.Add(StatusStrip1)
         Margin = New Padding(2, 1, 2, 1)
         Name = "WorkstationStatusStrip"
-        Size = New Size(884, 70)
+        Size = New Size(884, 40)
         StatusStrip1.ResumeLayout(False)
         StatusStrip1.PerformLayout()
         ResumeLayout(False)

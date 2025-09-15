@@ -94,7 +94,6 @@ Public Class FrmJobDetails
         ExclusionBindingSource.DataSource = Database.Exclusions.Local.ToBindingList()
         ' Set the navigation bar properties.
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Job Details"
         MasterSource = JobDetailBindingSource
         'Navigator.MasterControl = DataGridJobDetails
     End Sub

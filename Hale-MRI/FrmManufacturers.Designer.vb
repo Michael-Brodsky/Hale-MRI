@@ -163,7 +163,6 @@ Partial Class FrmManufacturers
         ' 
         RecordNavigationBar1.AutoSize = True
         RecordNavigationBar1.BoundControls = Nothing
-        RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False

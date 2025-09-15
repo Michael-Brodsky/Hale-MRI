@@ -1,5 +1,5 @@
 ﻿Imports LibEncoder
-
+Imports LibEncoder.EncoderHardware
 ''' <summary>
 ''' Form Control that can be used by clients that access
 ''' workstation encoder hardware to visually manipulate 
@@ -8,6 +8,7 @@
 ''' 
 Public Class WorkstationStatusStrip
 #Region "Private Members"
+
     Private Const STR_STATUS_BUSY As String = "Busy"
     Private Const STR_STATUS_NOT_INITIALIZED As String = "Not Initialized"
     Private Const STR_STATUS_ERROR As String = "Encoder Error"
@@ -17,21 +18,14 @@ Public Class WorkstationStatusStrip
     Private mStatus As EncoderStatus = EncoderStatus.NoEncoders
 #End Region
 #Region "Public Interface"
-    Public Enum EncoderStatus
-        NotInitialized
-        EncoderError
-        NoEncoders
-        Ready
-        Busy
-    End Enum
 
     Public Property Hardware As WorkstationEncoders
         Get
             Return mHardware
         End Get
         Set(value As WorkstationEncoders)
-            EncoderButton.Enabled = False
             mHardware = value
+            EncoderButton.Enabled = False
             If mHardware IsNot Nothing Then
                 If mHardware.Workstation IsNot Nothing Then WorkstationName = mHardware.Workstation.StationName
                 If mHardware.Encoders IsNot Nothing Then

@@ -82,7 +82,6 @@ Partial Class FrmJobDetails
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
-        RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
         'RecordNavigationBar1.Filter = ""
         'RecordNavigationBar1.FilterOn = False

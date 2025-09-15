@@ -49,14 +49,6 @@ Partial Class FrmMeasurements
         cmdSetTip = New Button()
         cmdHome = New Button()
         cmdZero = New Button()
-        StatusStrip1 = New StatusStrip()
-        WorkstationLabel = New ToolStripStatusLabel()
-        EncodersSplitButton = New ToolStripSplitButton()
-        InitializeToolStripMenuItem = New ToolStripMenuItem()
-        ResetAngleToolStripMenuItem = New ToolStripMenuItem()
-        ResetDepthToolStripMenuItem = New ToolStripMenuItem()
-        ResetRadiusToolStripMenuItem = New ToolStripMenuItem()
-        StatusLabel = New ToolStripStatusLabel()
         GridBladebyRadius = New DataGridView()
         BladeID = New DataGridViewTextBoxColumn()
         tloMeasurements = New TableLayoutPanel()
@@ -128,12 +120,12 @@ Partial Class FrmMeasurements
         RadSysMetric = New RadioButton()
         chkMeasurements = New CheckBox()
         txtBlade = New TextBox()
+        EncoderStatusStrip1 = New EncoderStatusStrip()
         CellMeasurementsBindingSource = New BindingSource(components)
         ExtremeMeasurementsBindingSource = New BindingSource(components)
         timerMeasurements = New Timer(components)
         JobDetailsBindingSource = New BindingSource(components)
         CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        StatusStrip1.SuspendLayout()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).BeginInit()
         tloMeasurements.SuspendLayout()
         gBoxPlotGraph.SuspendLayout()
@@ -156,7 +148,7 @@ Partial Class FrmMeasurements
         ' 
         labBlade.AutoSize = True
         labBlade.Dock = DockStyle.Bottom
-        labBlade.Location = New Point(140, 23)
+        labBlade.Location = New Point(140, 24)
         labBlade.Margin = New Padding(2, 0, 2, 0)
         labBlade.Name = "labBlade"
         labBlade.Size = New Size(65, 15)
@@ -167,7 +159,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(txtAngle, 2)
         txtAngle.Dock = DockStyle.Top
-        txtAngle.Location = New Point(2, 39)
+        txtAngle.Location = New Point(2, 40)
         txtAngle.Margin = New Padding(2, 1, 0, 1)
         txtAngle.Name = "txtAngle"
         txtAngle.Size = New Size(136, 23)
@@ -177,7 +169,7 @@ Partial Class FrmMeasurements
         ' 
         labAngle.AutoSize = True
         labAngle.Dock = DockStyle.Bottom
-        labAngle.Location = New Point(2, 23)
+        labAngle.Location = New Point(2, 24)
         labAngle.Margin = New Padding(2, 0, 2, 0)
         labAngle.Name = "labAngle"
         labAngle.Size = New Size(65, 15)
@@ -188,7 +180,7 @@ Partial Class FrmMeasurements
         ' 
         labDepth.AutoSize = True
         labDepth.Dock = DockStyle.Bottom
-        labDepth.Location = New Point(416, 23)
+        labDepth.Location = New Point(416, 24)
         labDepth.Margin = New Padding(2, 0, 2, 0)
         labDepth.Name = "labDepth"
         labDepth.Size = New Size(65, 15)
@@ -199,7 +191,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(txtDepth, 3)
         txtDepth.Dock = DockStyle.Top
-        txtDepth.Location = New Point(416, 39)
+        txtDepth.Location = New Point(416, 40)
         txtDepth.Margin = New Padding(2, 1, 2, 1)
         txtDepth.Name = "txtDepth"
         txtDepth.Size = New Size(203, 23)
@@ -209,7 +201,7 @@ Partial Class FrmMeasurements
         ' 
         labRadius.AutoSize = True
         labRadius.Dock = DockStyle.Bottom
-        labRadius.Location = New Point(209, 23)
+        labRadius.Location = New Point(209, 24)
         labRadius.Margin = New Padding(2, 0, 2, 0)
         labRadius.Name = "labRadius"
         labRadius.Size = New Size(65, 15)
@@ -220,7 +212,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(txtRadius, 3)
         txtRadius.Dock = DockStyle.Top
-        txtRadius.Location = New Point(209, 39)
+        txtRadius.Location = New Point(209, 40)
         txtRadius.Margin = New Padding(2, 1, 2, 1)
         txtRadius.Name = "txtRadius"
         txtRadius.Size = New Size(203, 23)
@@ -235,7 +227,7 @@ Partial Class FrmMeasurements
         labRadiusPercent.AutoSize = True
         tloMeasurements.SetColumnSpan(labRadiusPercent, 2)
         labRadiusPercent.Dock = DockStyle.Bottom
-        labRadiusPercent.Location = New Point(209, 99)
+        labRadiusPercent.Location = New Point(209, 102)
         labRadiusPercent.Margin = New Padding(2, 0, 2, 0)
         labRadiusPercent.Name = "labRadiusPercent"
         labRadiusPercent.Size = New Size(134, 15)
@@ -246,7 +238,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(txtRadiusPercent, 3)
         txtRadiusPercent.Dock = DockStyle.Top
-        txtRadiusPercent.Location = New Point(209, 115)
+        txtRadiusPercent.Location = New Point(209, 118)
         txtRadiusPercent.Margin = New Padding(2, 1, 2, 1)
         txtRadiusPercent.Name = "txtRadiusPercent"
         txtRadiusPercent.Size = New Size(203, 23)
@@ -257,7 +249,7 @@ Partial Class FrmMeasurements
         labWheelPitch.AutoSize = True
         tloMeasurements.SetColumnSpan(labWheelPitch, 2)
         labWheelPitch.Dock = DockStyle.Bottom
-        labWheelPitch.Location = New Point(416, 99)
+        labWheelPitch.Location = New Point(416, 102)
         labWheelPitch.Margin = New Padding(2, 0, 2, 0)
         labWheelPitch.Name = "labWheelPitch"
         labWheelPitch.Size = New Size(134, 15)
@@ -268,7 +260,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(txtWheelPitch, 3)
         txtWheelPitch.Dock = DockStyle.Top
-        txtWheelPitch.Location = New Point(416, 115)
+        txtWheelPitch.Location = New Point(416, 118)
         txtWheelPitch.Margin = New Padding(2, 1, 2, 1)
         txtWheelPitch.Name = "txtWheelPitch"
         txtWheelPitch.Size = New Size(203, 23)
@@ -276,7 +268,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdSetTip
         ' 
-        cmdSetTip.Location = New Point(485, 191)
+        cmdSetTip.Location = New Point(485, 196)
         cmdSetTip.Margin = New Padding(2, 1, 2, 1)
         cmdSetTip.Name = "cmdSetTip"
         cmdSetTip.Size = New Size(65, 21)
@@ -286,7 +278,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdHome
         ' 
-        cmdHome.Location = New Point(416, 191)
+        cmdHome.Location = New Point(416, 196)
         cmdHome.Margin = New Padding(2, 1, 2, 1)
         cmdHome.Name = "cmdHome"
         cmdHome.Size = New Size(65, 23)
@@ -296,7 +288,7 @@ Partial Class FrmMeasurements
         ' 
         ' cmdZero
         ' 
-        cmdZero.Location = New Point(554, 191)
+        cmdZero.Location = New Point(554, 196)
         cmdZero.Margin = New Padding(2, 1, 2, 1)
         cmdZero.Name = "cmdZero"
         cmdZero.Size = New Size(65, 22)
@@ -304,80 +296,20 @@ Partial Class FrmMeasurements
         cmdZero.Text = "Zero"
         cmdZero.UseVisualStyleBackColor = True
         ' 
-        ' StatusStrip1
-        ' 
-        StatusStrip1.ImageScalingSize = New Size(32, 32)
-        StatusStrip1.Items.AddRange(New ToolStripItem() {WorkstationLabel, EncodersSplitButton, StatusLabel})
-        StatusStrip1.Location = New Point(0, 546)
-        StatusStrip1.Name = "StatusStrip1"
-        StatusStrip1.Padding = New Padding(1, 0, 8, 0)
-        StatusStrip1.Size = New Size(1104, 25)
-        StatusStrip1.TabIndex = 19
-        StatusStrip1.Text = "StatusStrip1"
-        ' 
-        ' WorkstationLabel
-        ' 
-        WorkstationLabel.Margin = New Padding(29, 6, 26, 4)
-        WorkstationLabel.Name = "WorkstationLabel"
-        WorkstationLabel.Size = New Size(71, 15)
-        WorkstationLabel.Text = "Workstation"
-        WorkstationLabel.ToolTipText = "Workstation Name"
-        ' 
-        ' EncodersSplitButton
-        ' 
-        EncodersSplitButton.DisplayStyle = ToolStripItemDisplayStyle.Image
-        EncodersSplitButton.DropDownItems.AddRange(New ToolStripItem() {InitializeToolStripMenuItem, ResetAngleToolStripMenuItem, ResetDepthToolStripMenuItem, ResetRadiusToolStripMenuItem})
-        EncodersSplitButton.ImageTransparentColor = Color.Magenta
-        EncodersSplitButton.Margin = New Padding(0, 4, 10, 0)
-        EncodersSplitButton.Name = "EncodersSplitButton"
-        EncodersSplitButton.Size = New Size(16, 21)
-        EncodersSplitButton.Text = "Encoders"
-        ' 
-        ' InitializeToolStripMenuItem
-        ' 
-        InitializeToolStripMenuItem.Name = "InitializeToolStripMenuItem"
-        InitializeToolStripMenuItem.Size = New Size(137, 22)
-        InitializeToolStripMenuItem.Text = "Initialize"
-        ' 
-        ' ResetAngleToolStripMenuItem
-        ' 
-        ResetAngleToolStripMenuItem.Name = "ResetAngleToolStripMenuItem"
-        ResetAngleToolStripMenuItem.Size = New Size(137, 22)
-        ResetAngleToolStripMenuItem.Text = "Reset Angle"
-        ' 
-        ' ResetDepthToolStripMenuItem
-        ' 
-        ResetDepthToolStripMenuItem.Name = "ResetDepthToolStripMenuItem"
-        ResetDepthToolStripMenuItem.Size = New Size(137, 22)
-        ResetDepthToolStripMenuItem.Text = "Reset Depth"
-        ' 
-        ' ResetRadiusToolStripMenuItem
-        ' 
-        ResetRadiusToolStripMenuItem.Name = "ResetRadiusToolStripMenuItem"
-        ResetRadiusToolStripMenuItem.Size = New Size(137, 22)
-        ResetRadiusToolStripMenuItem.Text = "ResetRadius"
-        ' 
-        ' StatusLabel
-        ' 
-        StatusLabel.Name = "StatusLabel"
-        StatusLabel.Size = New Size(39, 20)
-        StatusLabel.Text = "Status"
-        StatusLabel.ToolTipText = "Encoder Status"
-        ' 
         ' GridBladebyRadius
         ' 
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GridBladebyRadius.Columns.AddRange(New DataGridViewColumn() {BladeID})
         tloMeasurements.SetColumnSpan(GridBladebyRadius, 9)
         GridBladebyRadius.Dock = DockStyle.Fill
-        GridBladebyRadius.Location = New Point(0, 228)
+        GridBladebyRadius.Location = New Point(0, 234)
         GridBladebyRadius.Margin = New Padding(0)
         GridBladebyRadius.Name = "GridBladebyRadius"
         GridBladebyRadius.RowHeadersVisible = False
         GridBladebyRadius.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
         tloMeasurements.SetRowSpan(GridBladebyRadius, 4)
         GridBladebyRadius.SelectionMode = DataGridViewSelectionMode.CellSelect
-        GridBladebyRadius.Size = New Size(621, 152)
+        GridBladebyRadius.Size = New Size(621, 156)
         GridBladebyRadius.TabIndex = 21
         ' 
         ' BladeID
@@ -404,50 +336,57 @@ Partial Class FrmMeasurements
         tloMeasurements.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 6.25F))
         tloMeasurements.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 6.25F))
         tloMeasurements.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 6.25F))
-        tloMeasurements.Controls.Add(labAngle, 0, 0)
-        tloMeasurements.Controls.Add(txtAngle, 0, 1)
-        tloMeasurements.Controls.Add(labBlade, 2, 0)
-        tloMeasurements.Controls.Add(txtRadius, 3, 1)
-        tloMeasurements.Controls.Add(labRadius, 3, 0)
-        tloMeasurements.Controls.Add(txtDepth, 6, 1)
-        tloMeasurements.Controls.Add(labDepth, 6, 0)
-        tloMeasurements.Controls.Add(labWheelPitch, 6, 2)
-        tloMeasurements.Controls.Add(labRadiusPercent, 3, 2)
-        tloMeasurements.Controls.Add(txtWheelPitch, 6, 3)
-        tloMeasurements.Controls.Add(txtRadiusPercent, 3, 3)
-        tloMeasurements.Controls.Add(GridBladebyRadius, 0, 6)
-        tloMeasurements.Controls.Add(gBoxPlotGraph, 11, 0)
-        tloMeasurements.Controls.Add(GrpTrack, 0, 10)
-        tloMeasurements.Controls.Add(GrpLocalPitch, 9, 6)
-        tloMeasurements.Controls.Add(LblOffsetToHub, 0, 2)
-        tloMeasurements.Controls.Add(CboxOffsetToHub, 0, 3)
-        tloMeasurements.Controls.Add(LblStatus, 0, 4)
-        tloMeasurements.Controls.Add(TxtStatus, 0, 5)
-        tloMeasurements.Controls.Add(cmdHome, 6, 5)
-        tloMeasurements.Controls.Add(cmdSetTip, 7, 5)
-        tloMeasurements.Controls.Add(cmdZero, 8, 5)
-        tloMeasurements.Controls.Add(GrpSystem, 9, 0)
-        tloMeasurements.Controls.Add(chkMeasurements, 3, 5)
-        tloMeasurements.Controls.Add(txtBlade, 2, 1)
+        tloMeasurements.Controls.Add(labAngle, 0, 1)
+        tloMeasurements.Controls.Add(txtAngle, 0, 2)
+        tloMeasurements.Controls.Add(labBlade, 2, 1)
+        tloMeasurements.Controls.Add(txtRadius, 3, 2)
+        tloMeasurements.Controls.Add(labRadius, 3, 1)
+        tloMeasurements.Controls.Add(txtDepth, 6, 2)
+        tloMeasurements.Controls.Add(labDepth, 6, 1)
+        tloMeasurements.Controls.Add(labWheelPitch, 6, 3)
+        tloMeasurements.Controls.Add(labRadiusPercent, 3, 3)
+        tloMeasurements.Controls.Add(txtWheelPitch, 6, 4)
+        tloMeasurements.Controls.Add(txtRadiusPercent, 3, 4)
+        tloMeasurements.Controls.Add(GridBladebyRadius, 0, 7)
+        tloMeasurements.Controls.Add(gBoxPlotGraph, 11, 1)
+        tloMeasurements.Controls.Add(GrpTrack, 0, 11)
+        tloMeasurements.Controls.Add(GrpLocalPitch, 9, 7)
+        tloMeasurements.Controls.Add(LblOffsetToHub, 0, 3)
+        tloMeasurements.Controls.Add(CboxOffsetToHub, 0, 4)
+        tloMeasurements.Controls.Add(LblStatus, 0, 5)
+        tloMeasurements.Controls.Add(TxtStatus, 0, 6)
+        tloMeasurements.Controls.Add(cmdHome, 6, 6)
+        tloMeasurements.Controls.Add(cmdSetTip, 7, 6)
+        tloMeasurements.Controls.Add(GrpSystem, 9, 1)
+        tloMeasurements.Controls.Add(chkMeasurements, 3, 6)
+        tloMeasurements.Controls.Add(txtBlade, 2, 2)
+        tloMeasurements.Controls.Add(EncoderStatusStrip1, 9, 15)
+        tloMeasurements.Controls.Add(cmdZero, 8, 6)
         tloMeasurements.Dock = DockStyle.Fill
         tloMeasurements.Location = New Point(0, 0)
         tloMeasurements.Name = "tloMeasurements"
-        tloMeasurements.RowCount = 14
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142857F))
-        tloMeasurements.Size = New Size(1104, 546)
+        tloMeasurements.RowCount = 16
+        tloMeasurements.RowStyles.Add(New RowStyle())
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.142856F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
+        tloMeasurements.RowStyles.Add(New RowStyle())
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.Size = New Size(1104, 571)
         tloMeasurements.TabIndex = 22
         ' 
         ' gBoxPlotGraph
@@ -459,7 +398,7 @@ Partial Class FrmMeasurements
         gBoxPlotGraph.Margin = New Padding(0)
         gBoxPlotGraph.Name = "gBoxPlotGraph"
         tloMeasurements.SetRowSpan(gBoxPlotGraph, 6)
-        gBoxPlotGraph.Size = New Size(345, 228)
+        gBoxPlotGraph.Size = New Size(345, 234)
         gBoxPlotGraph.TabIndex = 22
         gBoxPlotGraph.TabStop = False
         gBoxPlotGraph.Text = "Plot"
@@ -467,17 +406,17 @@ Partial Class FrmMeasurements
         ' tloPlotGraph
         ' 
         tloPlotGraph.ColumnCount = 2
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30.0F))
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70.0F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70F))
         tloPlotGraph.Controls.Add(PlotGraph, 1, 0)
         tloPlotGraph.Dock = DockStyle.Fill
         tloPlotGraph.Location = New Point(3, 19)
         tloPlotGraph.Margin = New Padding(0)
         tloPlotGraph.Name = "tloPlotGraph"
         tloPlotGraph.RowCount = 2
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85.0F))
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15.0F))
-        tloPlotGraph.Size = New Size(339, 206)
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85F))
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15F))
+        tloPlotGraph.Size = New Size(339, 212)
         tloPlotGraph.TabIndex = 0
         ' 
         ' PlotGraph
@@ -486,17 +425,17 @@ Partial Class FrmMeasurements
         ChartArea1.AxisX.LabelStyle.Enabled = False
         ChartArea1.AxisX.MajorGrid.Enabled = False
         ChartArea1.AxisX.MajorTickMark.Enabled = False
-        ChartArea1.AxisX.Maximum = 1.0R
-        ChartArea1.AxisX.MaximumAutoSize = 100.0F
-        ChartArea1.AxisX.Minimum = -1.0R
+        ChartArea1.AxisX.Maximum = 1R
+        ChartArea1.AxisX.MaximumAutoSize = 100F
+        ChartArea1.AxisX.Minimum = -1R
         ChartArea1.AxisX2.Enabled = DataVisualization.Charting.AxisEnabled.False
-        ChartArea1.AxisY.Interval = 10.0R
+        ChartArea1.AxisY.Interval = 10R
         ChartArea1.AxisY.IsStartedFromZero = False
         ChartArea1.AxisY.LabelStyle.Enabled = False
         ChartArea1.AxisY.MajorGrid.Enabled = False
-        ChartArea1.AxisY.Maximum = 1.0R
-        ChartArea1.AxisY.MaximumAutoSize = 100.0F
-        ChartArea1.AxisY.Minimum = -1.0R
+        ChartArea1.AxisY.Maximum = 1R
+        ChartArea1.AxisY.MaximumAutoSize = 100F
+        ChartArea1.AxisY.Minimum = -1R
         ChartArea1.AxisY2.Enabled = DataVisualization.Charting.AxisEnabled.False
         ChartArea1.Name = "ChartArea1"
         PlotGraph.ChartAreas.Add(ChartArea1)
@@ -527,7 +466,7 @@ Partial Class FrmMeasurements
         PlotGraph.Series.Add(Series1)
         PlotGraph.Series.Add(Series2)
         PlotGraph.Series.Add(Series3)
-        PlotGraph.Size = New Size(232, 169)
+        PlotGraph.Size = New Size(232, 174)
         PlotGraph.TabIndex = 23
         PlotGraph.Text = "Chart1"
         ' 
@@ -536,12 +475,12 @@ Partial Class FrmMeasurements
         tloMeasurements.SetColumnSpan(GrpTrack, 9)
         GrpTrack.Controls.Add(tloTrack)
         GrpTrack.Dock = DockStyle.Fill
-        GrpTrack.Location = New Point(0, 380)
+        GrpTrack.Location = New Point(0, 390)
         GrpTrack.Margin = New Padding(0)
         GrpTrack.Name = "GrpTrack"
         GrpTrack.Padding = New Padding(1, 2, 1, 1)
         tloMeasurements.SetRowSpan(GrpTrack, 4)
-        GrpTrack.Size = New Size(621, 166)
+        GrpTrack.Size = New Size(621, 156)
         GrpTrack.TabIndex = 24
         GrpTrack.TabStop = False
         GrpTrack.Text = "Track"
@@ -574,7 +513,7 @@ Partial Class FrmMeasurements
         tloTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 16.6666679F))
         tloTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 16.6666679F))
         tloTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 16.6666679F))
-        tloTrack.Size = New Size(619, 147)
+        tloTrack.Size = New Size(619, 137)
         tloTrack.TabIndex = 0
         ' 
         ' GraphTrack
@@ -591,7 +530,7 @@ Partial Class FrmMeasurements
         Series4.Legend = "Legend1"
         Series4.Name = "Series1"
         GraphTrack.Series.Add(Series4)
-        GraphTrack.Size = New Size(226, 141)
+        GraphTrack.Size = New Size(226, 131)
         GraphTrack.TabIndex = 23
         GraphTrack.Text = "Chart2"
         ' 
@@ -609,7 +548,7 @@ Partial Class FrmMeasurements
         Series5.Legend = "Legend1"
         Series5.Name = "Series1"
         GrpRefBlades.Series.Add(Series5)
-        GrpRefBlades.Size = New Size(227, 141)
+        GrpRefBlades.Size = New Size(227, 131)
         GrpRefBlades.TabIndex = 24
         GrpRefBlades.Text = "Chart2"
         ' 
@@ -621,7 +560,7 @@ Partial Class FrmMeasurements
         RadTrackLeadingEdge.Margin = New Padding(15, 3, 3, 3)
         RadTrackLeadingEdge.Name = "RadTrackLeadingEdge"
         tloTrack.SetRowSpan(RadTrackLeadingEdge, 2)
-        RadTrackLeadingEdge.Size = New Size(59, 42)
+        RadTrackLeadingEdge.Size = New Size(59, 38)
         RadTrackLeadingEdge.TabIndex = 25
         RadTrackLeadingEdge.TabStop = True
         RadTrackLeadingEdge.Text = "LE"
@@ -631,11 +570,11 @@ Partial Class FrmMeasurements
         ' 
         RadTrackMidBlade.AutoSize = True
         RadTrackMidBlade.Dock = DockStyle.Fill
-        RadTrackMidBlade.Location = New Point(247, 51)
+        RadTrackMidBlade.Location = New Point(247, 47)
         RadTrackMidBlade.Margin = New Padding(15, 3, 3, 3)
         RadTrackMidBlade.Name = "RadTrackMidBlade"
         tloTrack.SetRowSpan(RadTrackMidBlade, 2)
-        RadTrackMidBlade.Size = New Size(59, 42)
+        RadTrackMidBlade.Size = New Size(59, 38)
         RadTrackMidBlade.TabIndex = 26
         RadTrackMidBlade.TabStop = True
         RadTrackMidBlade.Text = "Mid"
@@ -645,11 +584,11 @@ Partial Class FrmMeasurements
         ' 
         RadTrackTrailingEdge.AutoSize = True
         RadTrackTrailingEdge.Dock = DockStyle.Fill
-        RadTrackTrailingEdge.Location = New Point(247, 99)
+        RadTrackTrailingEdge.Location = New Point(247, 91)
         RadTrackTrailingEdge.Margin = New Padding(15, 3, 3, 3)
         RadTrackTrailingEdge.Name = "RadTrackTrailingEdge"
         tloTrack.SetRowSpan(RadTrackTrailingEdge, 2)
-        RadTrackTrailingEdge.Size = New Size(59, 45)
+        RadTrackTrailingEdge.Size = New Size(59, 43)
         RadTrackTrailingEdge.TabIndex = 27
         RadTrackTrailingEdge.TabStop = True
         RadTrackTrailingEdge.Text = "TE"
@@ -659,7 +598,7 @@ Partial Class FrmMeasurements
         ' 
         LblRefBlade.AutoSize = True
         LblRefBlade.Dock = DockStyle.Bottom
-        LblRefBlade.Location = New Point(312, 9)
+        LblRefBlade.Location = New Point(312, 7)
         LblRefBlade.Name = "LblRefBlade"
         LblRefBlade.Size = New Size(71, 15)
         LblRefBlade.TabIndex = 28
@@ -669,7 +608,7 @@ Partial Class FrmMeasurements
         ' 
         LblRefRadius.AutoSize = True
         LblRefRadius.Dock = DockStyle.Bottom
-        LblRefRadius.Location = New Point(312, 57)
+        LblRefRadius.Location = New Point(312, 51)
         LblRefRadius.Name = "LblRefRadius"
         LblRefRadius.Size = New Size(71, 15)
         LblRefRadius.TabIndex = 29
@@ -679,7 +618,7 @@ Partial Class FrmMeasurements
         ' 
         LblRake.AutoSize = True
         LblRake.Dock = DockStyle.Bottom
-        LblRake.Location = New Point(312, 105)
+        LblRake.Location = New Point(312, 95)
         LblRake.Name = "LblRake"
         LblRake.Size = New Size(71, 15)
         LblRake.TabIndex = 30
@@ -688,7 +627,7 @@ Partial Class FrmMeasurements
         ' CboxRefBlade
         ' 
         CboxRefBlade.FormattingEnabled = True
-        CboxRefBlade.Location = New Point(312, 27)
+        CboxRefBlade.Location = New Point(312, 25)
         CboxRefBlade.Name = "CboxRefBlade"
         CboxRefBlade.Size = New Size(71, 23)
         CboxRefBlade.TabIndex = 31
@@ -696,14 +635,14 @@ Partial Class FrmMeasurements
         ' ComboBox2
         ' 
         ComboBox2.FormattingEnabled = True
-        ComboBox2.Location = New Point(312, 75)
+        ComboBox2.Location = New Point(312, 69)
         ComboBox2.Name = "ComboBox2"
         ComboBox2.Size = New Size(71, 23)
         ComboBox2.TabIndex = 32
         ' 
         ' TxtRake
         ' 
-        TxtRake.Location = New Point(312, 123)
+        TxtRake.Location = New Point(312, 113)
         TxtRake.Name = "TxtRake"
         TxtRake.Size = New Size(71, 23)
         TxtRake.TabIndex = 33
@@ -713,10 +652,10 @@ Partial Class FrmMeasurements
         tloMeasurements.SetColumnSpan(GrpLocalPitch, 7)
         GrpLocalPitch.Controls.Add(TloLocalPitchDetails)
         GrpLocalPitch.Dock = DockStyle.Fill
-        GrpLocalPitch.Location = New Point(624, 231)
+        GrpLocalPitch.Location = New Point(624, 237)
         GrpLocalPitch.Name = "GrpLocalPitch"
         tloMeasurements.SetRowSpan(GrpLocalPitch, 8)
-        GrpLocalPitch.Size = New Size(477, 312)
+        GrpLocalPitch.Size = New Size(477, 306)
         GrpLocalPitch.TabIndex = 25
         GrpLocalPitch.TabStop = False
         GrpLocalPitch.Text = "Local Pitch Details"
@@ -724,7 +663,7 @@ Partial Class FrmMeasurements
         ' TloLocalPitchDetails
         ' 
         TloLocalPitchDetails.ColumnCount = 14
-        TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 15.0F))
+        TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 15F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
         TloLocalPitchDetails.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 7.692309F))
@@ -793,19 +732,19 @@ Partial Class FrmMeasurements
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
         TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 9.090908F))
-        TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 10.0F))
-        TloLocalPitchDetails.Size = New Size(471, 290)
+        TloLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 10F))
+        TloLocalPitchDetails.Size = New Size(471, 284)
         TloLocalPitchDetails.TabIndex = 0
         ' 
         ' CmdLPDS
         ' 
         TloLocalPitchDetails.SetColumnSpan(CmdLPDS, 2)
         CmdLPDS.Dock = DockStyle.Fill
-        CmdLPDS.Location = New Point(18, 28)
+        CmdLPDS.Location = New Point(18, 27)
         CmdLPDS.Margin = New Padding(3, 3, 3, 25)
         CmdLPDS.Name = "CmdLPDS"
         TloLocalPitchDetails.SetRowSpan(CmdLPDS, 2)
-        CmdLPDS.Size = New Size(64, 22)
+        CmdLPDS.Size = New Size(64, 20)
         CmdLPDS.TabIndex = 1
         CmdLPDS.Text = "S"
         CmdLPDS.UseVisualStyleBackColor = True
@@ -814,11 +753,11 @@ Partial Class FrmMeasurements
         ' 
         TloLocalPitchDetails.SetColumnSpan(CmdLPDI, 2)
         CmdLPDI.Dock = DockStyle.Fill
-        CmdLPDI.Location = New Point(88, 28)
+        CmdLPDI.Location = New Point(88, 27)
         CmdLPDI.Margin = New Padding(3, 3, 3, 25)
         CmdLPDI.Name = "CmdLPDI"
         TloLocalPitchDetails.SetRowSpan(CmdLPDI, 2)
-        CmdLPDI.Size = New Size(64, 22)
+        CmdLPDI.Size = New Size(64, 20)
         CmdLPDI.TabIndex = 2
         CmdLPDI.Text = "I"
         CmdLPDI.UseVisualStyleBackColor = True
@@ -827,11 +766,11 @@ Partial Class FrmMeasurements
         ' 
         TloLocalPitchDetails.SetColumnSpan(CmdLPDII, 2)
         CmdLPDII.Dock = DockStyle.Fill
-        CmdLPDII.Location = New Point(158, 28)
+        CmdLPDII.Location = New Point(158, 27)
         CmdLPDII.Margin = New Padding(3, 3, 3, 25)
         CmdLPDII.Name = "CmdLPDII"
         TloLocalPitchDetails.SetRowSpan(CmdLPDII, 2)
-        CmdLPDII.Size = New Size(64, 22)
+        CmdLPDII.Size = New Size(64, 20)
         CmdLPDII.TabIndex = 3
         CmdLPDII.Text = "II"
         CmdLPDII.UseVisualStyleBackColor = True
@@ -840,11 +779,11 @@ Partial Class FrmMeasurements
         ' 
         TloLocalPitchDetails.SetColumnSpan(CmdLPDIII, 2)
         CmdLPDIII.Dock = DockStyle.Fill
-        CmdLPDIII.Location = New Point(228, 28)
+        CmdLPDIII.Location = New Point(228, 27)
         CmdLPDIII.Margin = New Padding(3, 3, 3, 25)
         CmdLPDIII.Name = "CmdLPDIII"
         TloLocalPitchDetails.SetRowSpan(CmdLPDIII, 2)
-        CmdLPDIII.Size = New Size(64, 22)
+        CmdLPDIII.Size = New Size(64, 20)
         CmdLPDIII.TabIndex = 4
         CmdLPDIII.Text = "III"
         CmdLPDIII.UseVisualStyleBackColor = True
@@ -854,9 +793,9 @@ Partial Class FrmMeasurements
         CheckBox1.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox1, 5)
         CheckBox1.Dock = DockStyle.Fill
-        CheckBox1.Location = New Point(18, 78)
+        CheckBox1.Location = New Point(18, 75)
         CheckBox1.Name = "CheckBox1"
-        CheckBox1.Size = New Size(169, 19)
+        CheckBox1.Size = New Size(169, 18)
         CheckBox1.TabIndex = 5
         CheckBox1.Text = "Local Pitch"
         CheckBox1.UseVisualStyleBackColor = True
@@ -866,9 +805,9 @@ Partial Class FrmMeasurements
         CheckBox2.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox2, 5)
         CheckBox2.Dock = DockStyle.Fill
-        CheckBox2.Location = New Point(18, 103)
+        CheckBox2.Location = New Point(18, 99)
         CheckBox2.Name = "CheckBox2"
-        CheckBox2.Size = New Size(169, 19)
+        CheckBox2.Size = New Size(169, 18)
         CheckBox2.TabIndex = 6
         CheckBox2.Text = "Mean Pitch for Radius"
         CheckBox2.UseVisualStyleBackColor = True
@@ -878,9 +817,9 @@ Partial Class FrmMeasurements
         CheckBox3.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox3, 5)
         CheckBox3.Dock = DockStyle.Fill
-        CheckBox3.Location = New Point(18, 128)
+        CheckBox3.Location = New Point(18, 123)
         CheckBox3.Name = "CheckBox3"
-        CheckBox3.Size = New Size(169, 19)
+        CheckBox3.Size = New Size(169, 18)
         CheckBox3.TabIndex = 7
         CheckBox3.Text = "Mean Pitch for Blade"
         CheckBox3.UseVisualStyleBackColor = True
@@ -890,9 +829,9 @@ Partial Class FrmMeasurements
         CheckBox4.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox4, 5)
         CheckBox4.Dock = DockStyle.Fill
-        CheckBox4.Location = New Point(18, 153)
+        CheckBox4.Location = New Point(18, 147)
         CheckBox4.Name = "CheckBox4"
-        CheckBox4.Size = New Size(169, 19)
+        CheckBox4.Size = New Size(169, 18)
         CheckBox4.TabIndex = 8
         CheckBox4.Text = "Mean Pitch for Propeller"
         CheckBox4.UseVisualStyleBackColor = True
@@ -902,10 +841,10 @@ Partial Class FrmMeasurements
         CheckBox5.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox5, 5)
         CheckBox5.Dock = DockStyle.Fill
-        CheckBox5.Location = New Point(18, 178)
+        CheckBox5.Location = New Point(18, 171)
         CheckBox5.Name = "CheckBox5"
         TloLocalPitchDetails.SetRowSpan(CheckBox5, 2)
-        CheckBox5.Size = New Size(169, 44)
+        CheckBox5.Size = New Size(169, 42)
         CheckBox5.TabIndex = 9
         CheckBox5.Text = "Angular Deviation Between Consecutive Blades"
         CheckBox5.UseVisualStyleBackColor = True
@@ -915,10 +854,10 @@ Partial Class FrmMeasurements
         CheckBox6.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox6, 5)
         CheckBox6.Dock = DockStyle.Fill
-        CheckBox6.Location = New Point(18, 228)
+        CheckBox6.Location = New Point(18, 219)
         CheckBox6.Name = "CheckBox6"
         TloLocalPitchDetails.SetRowSpan(CheckBox6, 2)
-        CheckBox6.Size = New Size(169, 44)
+        CheckBox6.Size = New Size(169, 42)
         CheckBox6.TabIndex = 10
         CheckBox6.Text = "Relative Axial Position of Consecutive Blades"
         CheckBox6.UseVisualStyleBackColor = True
@@ -928,7 +867,7 @@ Partial Class FrmMeasurements
         LblLocalPitchDetails.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(LblLocalPitchDetails, 6)
         LblLocalPitchDetails.Dock = DockStyle.Bottom
-        LblLocalPitchDetails.Location = New Point(18, 10)
+        LblLocalPitchDetails.Location = New Point(18, 9)
         LblLocalPitchDetails.Name = "LblLocalPitchDetails"
         LblLocalPitchDetails.Size = New Size(204, 15)
         LblLocalPitchDetails.TabIndex = 0
@@ -941,7 +880,7 @@ Partial Class FrmMeasurements
         CheckBox7.Dock = DockStyle.Bottom
         CheckBox7.Location = New Point(298, 3)
         CheckBox7.Name = "CheckBox7"
-        CheckBox7.Size = New Size(64, 19)
+        CheckBox7.Size = New Size(64, 18)
         CheckBox7.TabIndex = 11
         CheckBox7.Text = "App"
         CheckBox7.UseVisualStyleBackColor = True
@@ -951,9 +890,9 @@ Partial Class FrmMeasurements
         CheckBox8.AutoSize = True
         TloLocalPitchDetails.SetColumnSpan(CheckBox8, 4)
         CheckBox8.Dock = DockStyle.Top
-        CheckBox8.Location = New Point(298, 53)
+        CheckBox8.Location = New Point(298, 51)
         CheckBox8.Name = "CheckBox8"
-        CheckBox8.Size = New Size(134, 19)
+        CheckBox8.Size = New Size(134, 18)
         CheckBox8.TabIndex = 12
         CheckBox8.Text = "Display Only"
         CheckBox8.UseVisualStyleBackColor = True
@@ -965,7 +904,7 @@ Partial Class FrmMeasurements
         CheckBox9.Dock = DockStyle.Bottom
         CheckBox9.Location = New Point(368, 3)
         CheckBox9.Name = "CheckBox9"
-        CheckBox9.Size = New Size(64, 19)
+        CheckBox9.Size = New Size(64, 18)
         CheckBox9.TabIndex = 13
         CheckBox9.Text = "Mins"
         CheckBox9.UseVisualStyleBackColor = True
@@ -974,9 +913,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS1.AutoSize = True
         LblLPDS1.Dock = DockStyle.Fill
-        LblLPDS1.Location = New Point(228, 75)
+        LblLPDS1.Location = New Point(228, 72)
         LblLPDS1.Name = "LblLPDS1"
-        LblLPDS1.Size = New Size(29, 25)
+        LblLPDS1.Size = New Size(29, 24)
         LblLPDS1.TabIndex = 14
         LblLPDS1.Text = "S"
         LblLPDS1.TextAlign = ContentAlignment.MiddleCenter
@@ -985,9 +924,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI1.AutoSize = True
         LblLPDI1.Dock = DockStyle.Fill
-        LblLPDI1.Location = New Point(263, 75)
+        LblLPDI1.Location = New Point(263, 72)
         LblLPDI1.Name = "LblLPDI1"
-        LblLPDI1.Size = New Size(29, 25)
+        LblLPDI1.Size = New Size(29, 24)
         LblLPDI1.TabIndex = 15
         LblLPDI1.Text = "I"
         LblLPDI1.TextAlign = ContentAlignment.MiddleCenter
@@ -996,9 +935,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII1.AutoSize = True
         LblLPDII1.Dock = DockStyle.Fill
-        LblLPDII1.Location = New Point(298, 75)
+        LblLPDII1.Location = New Point(298, 72)
         LblLPDII1.Name = "LblLPDII1"
-        LblLPDII1.Size = New Size(29, 25)
+        LblLPDII1.Size = New Size(29, 24)
         LblLPDII1.TabIndex = 16
         LblLPDII1.Text = "II"
         LblLPDII1.TextAlign = ContentAlignment.MiddleCenter
@@ -1007,9 +946,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII1.AutoSize = True
         LblLPDIII1.Dock = DockStyle.Fill
-        LblLPDIII1.Location = New Point(333, 75)
+        LblLPDIII1.Location = New Point(333, 72)
         LblLPDIII1.Name = "LblLPDIII1"
-        LblLPDIII1.Size = New Size(29, 25)
+        LblLPDIII1.Size = New Size(29, 24)
         LblLPDIII1.TabIndex = 17
         LblLPDIII1.Text = "III"
         LblLPDIII1.TextAlign = ContentAlignment.MiddleCenter
@@ -1018,9 +957,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS2.AutoSize = True
         LblLPDS2.Dock = DockStyle.Fill
-        LblLPDS2.Location = New Point(228, 100)
+        LblLPDS2.Location = New Point(228, 96)
         LblLPDS2.Name = "LblLPDS2"
-        LblLPDS2.Size = New Size(29, 25)
+        LblLPDS2.Size = New Size(29, 24)
         LblLPDS2.TabIndex = 18
         LblLPDS2.Text = "S"
         LblLPDS2.TextAlign = ContentAlignment.MiddleCenter
@@ -1029,9 +968,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI2.AutoSize = True
         LblLPDI2.Dock = DockStyle.Fill
-        LblLPDI2.Location = New Point(263, 100)
+        LblLPDI2.Location = New Point(263, 96)
         LblLPDI2.Name = "LblLPDI2"
-        LblLPDI2.Size = New Size(29, 25)
+        LblLPDI2.Size = New Size(29, 24)
         LblLPDI2.TabIndex = 19
         LblLPDI2.Text = "I"
         LblLPDI2.TextAlign = ContentAlignment.MiddleCenter
@@ -1040,9 +979,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII2.AutoSize = True
         LblLPDII2.Dock = DockStyle.Fill
-        LblLPDII2.Location = New Point(298, 100)
+        LblLPDII2.Location = New Point(298, 96)
         LblLPDII2.Name = "LblLPDII2"
-        LblLPDII2.Size = New Size(29, 25)
+        LblLPDII2.Size = New Size(29, 24)
         LblLPDII2.TabIndex = 20
         LblLPDII2.Text = "II"
         LblLPDII2.TextAlign = ContentAlignment.MiddleCenter
@@ -1051,9 +990,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII2.AutoSize = True
         LblLPDIII2.Dock = DockStyle.Fill
-        LblLPDIII2.Location = New Point(333, 100)
+        LblLPDIII2.Location = New Point(333, 96)
         LblLPDIII2.Name = "LblLPDIII2"
-        LblLPDIII2.Size = New Size(29, 25)
+        LblLPDIII2.Size = New Size(29, 24)
         LblLPDIII2.TabIndex = 21
         LblLPDIII2.Text = "III"
         LblLPDIII2.TextAlign = ContentAlignment.MiddleCenter
@@ -1062,9 +1001,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS3.AutoSize = True
         LblLPDS3.Dock = DockStyle.Fill
-        LblLPDS3.Location = New Point(228, 125)
+        LblLPDS3.Location = New Point(228, 120)
         LblLPDS3.Name = "LblLPDS3"
-        LblLPDS3.Size = New Size(29, 25)
+        LblLPDS3.Size = New Size(29, 24)
         LblLPDS3.TabIndex = 22
         LblLPDS3.Text = "S"
         LblLPDS3.TextAlign = ContentAlignment.MiddleCenter
@@ -1073,9 +1012,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI3.AutoSize = True
         LblLPDI3.Dock = DockStyle.Fill
-        LblLPDI3.Location = New Point(263, 125)
+        LblLPDI3.Location = New Point(263, 120)
         LblLPDI3.Name = "LblLPDI3"
-        LblLPDI3.Size = New Size(29, 25)
+        LblLPDI3.Size = New Size(29, 24)
         LblLPDI3.TabIndex = 23
         LblLPDI3.Text = "I"
         LblLPDI3.TextAlign = ContentAlignment.MiddleCenter
@@ -1084,9 +1023,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII3.AutoSize = True
         LblLPDII3.Dock = DockStyle.Fill
-        LblLPDII3.Location = New Point(298, 125)
+        LblLPDII3.Location = New Point(298, 120)
         LblLPDII3.Name = "LblLPDII3"
-        LblLPDII3.Size = New Size(29, 25)
+        LblLPDII3.Size = New Size(29, 24)
         LblLPDII3.TabIndex = 24
         LblLPDII3.Text = "II"
         LblLPDII3.TextAlign = ContentAlignment.MiddleCenter
@@ -1095,9 +1034,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII3.AutoSize = True
         LblLPDIII3.Dock = DockStyle.Fill
-        LblLPDIII3.Location = New Point(333, 125)
+        LblLPDIII3.Location = New Point(333, 120)
         LblLPDIII3.Name = "LblLPDIII3"
-        LblLPDIII3.Size = New Size(29, 25)
+        LblLPDIII3.Size = New Size(29, 24)
         LblLPDIII3.TabIndex = 25
         LblLPDIII3.Text = "III"
         LblLPDIII3.TextAlign = ContentAlignment.MiddleCenter
@@ -1106,9 +1045,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS4.AutoSize = True
         LblLPDS4.Dock = DockStyle.Fill
-        LblLPDS4.Location = New Point(228, 150)
+        LblLPDS4.Location = New Point(228, 144)
         LblLPDS4.Name = "LblLPDS4"
-        LblLPDS4.Size = New Size(29, 25)
+        LblLPDS4.Size = New Size(29, 24)
         LblLPDS4.TabIndex = 26
         LblLPDS4.Text = "S"
         LblLPDS4.TextAlign = ContentAlignment.MiddleCenter
@@ -1117,9 +1056,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI4.AutoSize = True
         LblLPDI4.Dock = DockStyle.Fill
-        LblLPDI4.Location = New Point(263, 150)
+        LblLPDI4.Location = New Point(263, 144)
         LblLPDI4.Name = "LblLPDI4"
-        LblLPDI4.Size = New Size(29, 25)
+        LblLPDI4.Size = New Size(29, 24)
         LblLPDI4.TabIndex = 27
         LblLPDI4.Text = "I"
         LblLPDI4.TextAlign = ContentAlignment.MiddleCenter
@@ -1128,9 +1067,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII4.AutoSize = True
         LblLPDII4.Dock = DockStyle.Fill
-        LblLPDII4.Location = New Point(298, 150)
+        LblLPDII4.Location = New Point(298, 144)
         LblLPDII4.Name = "LblLPDII4"
-        LblLPDII4.Size = New Size(29, 25)
+        LblLPDII4.Size = New Size(29, 24)
         LblLPDII4.TabIndex = 28
         LblLPDII4.Text = "II"
         LblLPDII4.TextAlign = ContentAlignment.MiddleCenter
@@ -1139,9 +1078,9 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII4.AutoSize = True
         LblLPDIII4.Dock = DockStyle.Fill
-        LblLPDIII4.Location = New Point(333, 150)
+        LblLPDIII4.Location = New Point(333, 144)
         LblLPDIII4.Name = "LblLPDIII4"
-        LblLPDIII4.Size = New Size(29, 25)
+        LblLPDIII4.Size = New Size(29, 24)
         LblLPDIII4.TabIndex = 29
         LblLPDIII4.Text = "III"
         LblLPDIII4.TextAlign = ContentAlignment.MiddleCenter
@@ -1150,10 +1089,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS5.AutoSize = True
         LblLPDS5.Dock = DockStyle.Fill
-        LblLPDS5.Location = New Point(228, 175)
+        LblLPDS5.Location = New Point(228, 168)
         LblLPDS5.Name = "LblLPDS5"
         TloLocalPitchDetails.SetRowSpan(LblLPDS5, 2)
-        LblLPDS5.Size = New Size(29, 50)
+        LblLPDS5.Size = New Size(29, 48)
         LblLPDS5.TabIndex = 30
         LblLPDS5.Text = "S"
         LblLPDS5.TextAlign = ContentAlignment.MiddleCenter
@@ -1162,10 +1101,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI5.AutoSize = True
         LblLPDI5.Dock = DockStyle.Fill
-        LblLPDI5.Location = New Point(263, 175)
+        LblLPDI5.Location = New Point(263, 168)
         LblLPDI5.Name = "LblLPDI5"
         TloLocalPitchDetails.SetRowSpan(LblLPDI5, 2)
-        LblLPDI5.Size = New Size(29, 50)
+        LblLPDI5.Size = New Size(29, 48)
         LblLPDI5.TabIndex = 31
         LblLPDI5.Text = "I"
         LblLPDI5.TextAlign = ContentAlignment.MiddleCenter
@@ -1174,10 +1113,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII5.AutoSize = True
         LblLPDII5.Dock = DockStyle.Fill
-        LblLPDII5.Location = New Point(298, 175)
+        LblLPDII5.Location = New Point(298, 168)
         LblLPDII5.Name = "LblLPDII5"
         TloLocalPitchDetails.SetRowSpan(LblLPDII5, 2)
-        LblLPDII5.Size = New Size(29, 50)
+        LblLPDII5.Size = New Size(29, 48)
         LblLPDII5.TabIndex = 32
         LblLPDII5.Text = "II"
         LblLPDII5.TextAlign = ContentAlignment.MiddleCenter
@@ -1186,10 +1125,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII5.AutoSize = True
         LblLPDIII5.Dock = DockStyle.Fill
-        LblLPDIII5.Location = New Point(333, 175)
+        LblLPDIII5.Location = New Point(333, 168)
         LblLPDIII5.Name = "LblLPDIII5"
         TloLocalPitchDetails.SetRowSpan(LblLPDIII5, 2)
-        LblLPDIII5.Size = New Size(29, 50)
+        LblLPDIII5.Size = New Size(29, 48)
         LblLPDIII5.TabIndex = 33
         LblLPDIII5.Text = "III"
         LblLPDIII5.TextAlign = ContentAlignment.MiddleCenter
@@ -1198,10 +1137,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDS6.AutoSize = True
         LblLPDS6.Dock = DockStyle.Fill
-        LblLPDS6.Location = New Point(228, 225)
+        LblLPDS6.Location = New Point(228, 216)
         LblLPDS6.Name = "LblLPDS6"
         TloLocalPitchDetails.SetRowSpan(LblLPDS6, 2)
-        LblLPDS6.Size = New Size(29, 50)
+        LblLPDS6.Size = New Size(29, 48)
         LblLPDS6.TabIndex = 34
         LblLPDS6.Text = "S"
         LblLPDS6.TextAlign = ContentAlignment.MiddleCenter
@@ -1210,10 +1149,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDI6.AutoSize = True
         LblLPDI6.Dock = DockStyle.Fill
-        LblLPDI6.Location = New Point(263, 225)
+        LblLPDI6.Location = New Point(263, 216)
         LblLPDI6.Name = "LblLPDI6"
         TloLocalPitchDetails.SetRowSpan(LblLPDI6, 2)
-        LblLPDI6.Size = New Size(29, 50)
+        LblLPDI6.Size = New Size(29, 48)
         LblLPDI6.TabIndex = 35
         LblLPDI6.Text = "I"
         LblLPDI6.TextAlign = ContentAlignment.MiddleCenter
@@ -1222,10 +1161,10 @@ Partial Class FrmMeasurements
         ' 
         LblLPDII6.AutoSize = True
         LblLPDII6.Dock = DockStyle.Fill
-        LblLPDII6.Location = New Point(298, 225)
+        LblLPDII6.Location = New Point(298, 216)
         LblLPDII6.Name = "LblLPDII6"
         TloLocalPitchDetails.SetRowSpan(LblLPDII6, 2)
-        LblLPDII6.Size = New Size(29, 50)
+        LblLPDII6.Size = New Size(29, 48)
         LblLPDII6.TabIndex = 36
         LblLPDII6.Text = "II"
         LblLPDII6.TextAlign = ContentAlignment.MiddleCenter
@@ -1234,24 +1173,24 @@ Partial Class FrmMeasurements
         ' 
         LblLPDIII6.AutoSize = True
         LblLPDIII6.Dock = DockStyle.Fill
-        LblLPDIII6.Location = New Point(333, 225)
+        LblLPDIII6.Location = New Point(333, 216)
         LblLPDIII6.Name = "LblLPDIII6"
         TloLocalPitchDetails.SetRowSpan(LblLPDIII6, 2)
-        LblLPDIII6.Size = New Size(29, 50)
+        LblLPDIII6.Size = New Size(29, 48)
         LblLPDIII6.TabIndex = 37
         LblLPDIII6.Text = "III"
         LblLPDIII6.TextAlign = ContentAlignment.MiddleCenter
         ' 
         ' TextBox1
         ' 
-        TextBox1.Location = New Point(368, 178)
+        TextBox1.Location = New Point(368, 171)
         TextBox1.Name = "TextBox1"
         TextBox1.Size = New Size(29, 23)
         TextBox1.TabIndex = 38
         ' 
         ' TextBox2
         ' 
-        TextBox2.Location = New Point(368, 228)
+        TextBox2.Location = New Point(368, 219)
         TextBox2.Name = "TextBox2"
         TextBox2.Size = New Size(29, 23)
         TextBox2.TabIndex = 39
@@ -1261,7 +1200,7 @@ Partial Class FrmMeasurements
         LblOffsetToHub.AutoSize = True
         tloMeasurements.SetColumnSpan(LblOffsetToHub, 2)
         LblOffsetToHub.Dock = DockStyle.Bottom
-        LblOffsetToHub.Location = New Point(3, 99)
+        LblOffsetToHub.Location = New Point(3, 102)
         LblOffsetToHub.Name = "LblOffsetToHub"
         LblOffsetToHub.Size = New Size(132, 15)
         LblOffsetToHub.TabIndex = 26
@@ -1272,7 +1211,7 @@ Partial Class FrmMeasurements
         tloMeasurements.SetColumnSpan(CboxOffsetToHub, 2)
         CboxOffsetToHub.Dock = DockStyle.Top
         CboxOffsetToHub.FormattingEnabled = True
-        CboxOffsetToHub.Location = New Point(3, 117)
+        CboxOffsetToHub.Location = New Point(3, 120)
         CboxOffsetToHub.Name = "CboxOffsetToHub"
         CboxOffsetToHub.Size = New Size(132, 23)
         CboxOffsetToHub.TabIndex = 27
@@ -1282,7 +1221,7 @@ Partial Class FrmMeasurements
         LblStatus.AutoSize = True
         tloMeasurements.SetColumnSpan(LblStatus, 3)
         LblStatus.Dock = DockStyle.Bottom
-        LblStatus.Location = New Point(3, 175)
+        LblStatus.Location = New Point(3, 180)
         LblStatus.Name = "LblStatus"
         LblStatus.Size = New Size(201, 15)
         LblStatus.TabIndex = 28
@@ -1292,7 +1231,7 @@ Partial Class FrmMeasurements
         ' 
         tloMeasurements.SetColumnSpan(TxtStatus, 3)
         TxtStatus.Dock = DockStyle.Top
-        TxtStatus.Location = New Point(3, 193)
+        TxtStatus.Location = New Point(3, 198)
         TxtStatus.Name = "TxtStatus"
         TxtStatus.Size = New Size(201, 23)
         TxtStatus.TabIndex = 29
@@ -1306,7 +1245,7 @@ Partial Class FrmMeasurements
         GrpSystem.Name = "GrpSystem"
         GrpSystem.Padding = New Padding(1, 2, 0, 1)
         tloMeasurements.SetRowSpan(GrpSystem, 2)
-        GrpSystem.Size = New Size(132, 70)
+        GrpSystem.Size = New Size(132, 72)
         GrpSystem.TabIndex = 30
         GrpSystem.TabStop = False
         GrpSystem.Text = "System"
@@ -1314,8 +1253,8 @@ Partial Class FrmMeasurements
         ' Tlo
         ' 
         Tlo.ColumnCount = 1
-        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
-        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50.0F))
+        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        Tlo.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
         Tlo.Controls.Add(RadSysImperical, 0, 0)
         Tlo.Controls.Add(RadSysMetric, 0, 1)
         Tlo.Dock = DockStyle.Fill
@@ -1323,9 +1262,9 @@ Partial Class FrmMeasurements
         Tlo.Margin = New Padding(0)
         Tlo.Name = "Tlo"
         Tlo.RowCount = 2
-        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
-        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
-        Tlo.Size = New Size(131, 51)
+        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        Tlo.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        Tlo.Size = New Size(131, 53)
         Tlo.TabIndex = 0
         ' 
         ' RadSysImperical
@@ -1335,7 +1274,7 @@ Partial Class FrmMeasurements
         RadSysImperical.Location = New Point(15, 3)
         RadSysImperical.Margin = New Padding(15, 3, 3, 3)
         RadSysImperical.Name = "RadSysImperical"
-        RadSysImperical.Size = New Size(113, 19)
+        RadSysImperical.Size = New Size(113, 20)
         RadSysImperical.TabIndex = 0
         RadSysImperical.TabStop = True
         RadSysImperical.Text = "Imperical"
@@ -1345,10 +1284,10 @@ Partial Class FrmMeasurements
         ' 
         RadSysMetric.AutoSize = True
         RadSysMetric.Dock = DockStyle.Fill
-        RadSysMetric.Location = New Point(15, 28)
+        RadSysMetric.Location = New Point(15, 29)
         RadSysMetric.Margin = New Padding(15, 3, 3, 3)
         RadSysMetric.Name = "RadSysMetric"
-        RadSysMetric.Size = New Size(113, 20)
+        RadSysMetric.Size = New Size(113, 21)
         RadSysMetric.TabIndex = 1
         RadSysMetric.TabStop = True
         RadSysMetric.Text = "Metric"
@@ -1357,7 +1296,7 @@ Partial Class FrmMeasurements
         ' chkMeasurements
         ' 
         chkMeasurements.Appearance = Appearance.Button
-        chkMeasurements.Location = New Point(210, 193)
+        chkMeasurements.Location = New Point(210, 198)
         chkMeasurements.Name = "chkMeasurements"
         chkMeasurements.Size = New Size(63, 23)
         chkMeasurements.TabIndex = 33
@@ -1368,11 +1307,24 @@ Partial Class FrmMeasurements
         ' txtBlade
         ' 
         txtBlade.Dock = DockStyle.Top
-        txtBlade.Location = New Point(140, 39)
+        txtBlade.Location = New Point(140, 40)
         txtBlade.Margin = New Padding(2, 1, 0, 1)
         txtBlade.Name = "txtBlade"
         txtBlade.Size = New Size(67, 23)
         txtBlade.TabIndex = 34
+        ' 
+        ' EncoderStatusStrip1
+        ' 
+        EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        tloMeasurements.SetColumnSpan(EncoderStatusStrip1, 16)
+        EncoderStatusStrip1.Hardware = Nothing
+        EncoderStatusStrip1.Location = New Point(3, 549)
+        EncoderStatusStrip1.Name = "EncoderStatusStrip1"
+        EncoderStatusStrip1.Size = New Size(1098, 19)
+        EncoderStatusStrip1.TabIndex = 35
+        EncoderStatusStrip1.TimerInterval = 100L
+        EncoderStatusStrip1.TimerOn = False
+        EncoderStatusStrip1.WorkstationName = ""
         ' 
         ' CellMeasurementsBindingSource
         ' 
@@ -1391,16 +1343,13 @@ Partial Class FrmMeasurements
         ' 
         ' FrmMeasurements
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1104, 571)
         Controls.Add(tloMeasurements)
-        Controls.Add(StatusStrip1)
         Name = "FrmMeasurements"
         Text = "Measurements"
         CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        StatusStrip1.ResumeLayout(False)
-        StatusStrip1.PerformLayout()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).EndInit()
         tloMeasurements.ResumeLayout(False)
         tloMeasurements.PerformLayout()
@@ -1422,7 +1371,6 @@ Partial Class FrmMeasurements
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
-        PerformLayout()
     End Sub
     Friend WithEvents labBlade As Label
     Friend WithEvents txtAngle As TextBox
@@ -1438,14 +1386,6 @@ Partial Class FrmMeasurements
     Friend WithEvents cmdSetTip As Button
     Friend WithEvents cmdHome As Button
     Friend WithEvents cmdZero As Button
-    Friend WithEvents StatusStrip1 As StatusStrip
-    Friend WithEvents WorkstationLabel As ToolStripStatusLabel
-    Friend WithEvents EncodersSplitButton As ToolStripSplitButton
-    Friend WithEvents InitializeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetAngleToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetDepthToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ResetRadiusToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents StatusLabel As ToolStripStatusLabel
     Friend WithEvents GridBladebyRadius As DataGridView
     Friend WithEvents tloMeasurements As TableLayoutPanel
     Friend WithEvents gBoxPlotGraph As GroupBox
@@ -1522,4 +1462,5 @@ Partial Class FrmMeasurements
     Friend WithEvents txtBlade As TextBox
     Friend WithEvents PlotGraph As DataVisualization.Charting.Chart
     Friend WithEvents JobDetailsBindingSource As BindingSource
+    Friend WithEvents EncoderStatusStrip1 As EncoderStatusStrip
 End Class

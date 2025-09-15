@@ -53,27 +53,12 @@ Module FormInstances
             frm = Nothing
         End If
     End Sub
-    Public Function ComboDoubleClick() As Boolean
-        ' This function handles intervals between clicks to determine if a double-click has occurred.
-        ' Controls that don't raise the MouseDoubleClick event can use this function to detect double-clicks.
-        Const kDblClickTime As Integer = 500 ' Maximum time between clicks for a double-click
-        Static lastClick As DateTime = DateTime.MinValue
-        Dim result As Boolean = False
-        If (DateTime.Now - lastClick).TotalMilliseconds <= kDblClickTime Then
-            ' If the time since the last click is within the double-click threshold, return true.
-            result = True
-            lastClick = DateTime.MinValue ' Reset lastClick to prevent further double-clicks
-        Else
-            lastClick = DateTime.Now
-        End If
-        Return result
-
-    End Function
 
     <Extension()>
     Public Function DoubleClicked(combo As System.Windows.Forms.ComboBox) As Boolean
         ' Returns True if the specified ComboBox was double-clicked, else
-        ' returns False.
+        ' returns False. We need this because VB.NET/WinForms doesn't support
+        ' the ComboBox double-click event.
         Const kDblClickTime As Integer = 500 ' Maximum time between clicks for a double-click, in milliseconds
         Static lastControl As System.Windows.Forms.ComboBox = Nothing
         Static lastClick As DateTime = DateTime.MinValue

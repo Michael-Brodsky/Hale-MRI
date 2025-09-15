@@ -72,7 +72,6 @@ Public Class FrmManufacturers
         BindMasterDetails(ManufacturersBindingSource, PropellersBindingSource, "Propellers")
         ' Configure the RecordNavigator.
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Manufacturers"
         MasterSource = ManufacturersBindingSource
     End Sub
 

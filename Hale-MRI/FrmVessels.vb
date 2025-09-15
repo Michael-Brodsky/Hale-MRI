@@ -133,7 +133,6 @@ Public Class FrmVessels
 
     Private Sub FrmVessels_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Vessels"
         Navigator.BoundControls = New List(Of Control) From {
            DataGridVessels
        }

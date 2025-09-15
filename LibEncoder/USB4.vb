@@ -1,6 +1,7 @@
-﻿' This module emulates the USB4 hardware API functions for testing purposes.
-' This code is a mock implementation and does not interact with actual hardware.
-Imports System.Threading
+﻿Imports System.Threading
+''' <summary>
+''' Mock implementation of USB4 hardware API functions for testing purposes.
+''' </summary>
 Module USB4
     Public Const USB4_SUCCESS As Long = 0
     Public Function USB4_GetCount(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByRef pulVal As Long) As Long

@@ -119,7 +119,6 @@ Partial Public Class FrmCustomers
 
     Private Sub FrmCustomers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Navigator = RecordNavigationBar1
-        Navigator.Caption = "Customers"
         Navigator.BoundControls = New List(Of Control) From {
            DataGridCustomers
        }

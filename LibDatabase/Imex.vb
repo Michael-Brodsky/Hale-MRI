@@ -253,15 +253,20 @@ Public Module Imex
                     Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = newJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
                     If existingEmployee IsNot Nothing Then newJob.JobDetails(0).PerformedByNavigation = existingEmployee
                 End If
-                result = newJob
                 db.Jobs.Add(newJob)
+                db.SaveChanges()
+                result = newJob
             Else
-                existingJob.JobDetails.Add(newJob.JobDetails.FirstOrDefault())
+                If newJob.JobDetails?.Count > 0 Then
+                    existingJob.JobDetails.Add(newJob.JobDetails.First())
+                    db.SaveChanges()
+                End If
                 result = existingJob
             End If
         End If
         Return result
     End Function
+
     Public Sub ScanDataExport(ByVal sd As ScanData, ByVal outFile As String)
         If File.Exists(outFile) Then Throw New IOException("Scan data file already exists: " & outFile)
         Dim ostream As New StreamWriter(outFile, True)
@@ -555,6 +560,7 @@ Skip_Line:
     End Sub
     Private Sub SaveMeasurements(ByRef j As Job, ByVal radii As Radius, ByVal extremes As Extremes, ByVal cells As Cell)
         ' Saves the collected measurements into the JobDetails.
+        'j.JobDetails(0).Job = j
         SaveRadiusMeasurements(j, radii)
         SaveCellMeasurements(j, cells)
         SaveExtremeMeasurements(j, extremes)

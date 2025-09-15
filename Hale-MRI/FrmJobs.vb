@@ -1,45 +1,31 @@
 ﻿Imports System.ComponentModel
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 
-''' <summary>
-''' This form provides a user inteface for editing Job
-''' records and accessing related JobDetail records.
-''' </summary>
-
-Partial Public Class FrmJobs
+Public Class FrmJobs
     Inherits FrmDatabaseForm
-#Region "Private Members"
-    Private Enum JobPosition
-        ' Used by the NavigationEventHandler to initially 
-        ' select a Job when none is currently selected.
+#Region "Types and Constants"
+    Private Enum GetAJob
         First = 1
         Last = 2
     End Enum
-
-    Private mAddingNew As Boolean = False               ' Flag indicating whether we're currently adding a new Job.
-    Private mCustomersBindingList As BindingList(Of Customer) = Nothing
-    Private mFilter As Object = Nothing                 ' The current form filter object, if any.
-    Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
-    Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
-    Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
-    Private mSelectedJob As Job = Nothing               ' The currently selected Job, if any.
-    Private mVesselsBindingList As BindingList(Of Vessel) = Nothing
-    ' Define all forms this form can open.
+#End Region
+#Region "Private Members"
+    Private mFilter As Object = Nothing          ' The current form filter object, if any.
+    Private mFilterOn As Boolean = False         ' Flag indicating whether the current form filter is active.
+    ' Declare all forms this form can open.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCustomers As FrmCustomers
     Private mFrmVessels As FrmVessels
-    Private mFrmMeasurements As FrmMeasurements
+    Private mFrmMeasurements As Form1
 #End Region
 #Region "Public Interface"
     Public ReadOnly Property Current
         Get
-            Return BindingSourceCurrent(mMasterSource)
+            Return CurrentJob
         End Get
     End Property
 
@@ -51,7 +37,7 @@ Partial Public Class FrmJobs
         End Get
         Set(value As Object)
             mFilter = value
-            If mNavigator IsNot Nothing Then mNavigator.Filter = mFilter
+            Navigator.Filter = mFilter
             FilterOn = mFilter IsNot Nothing
         End Set
     End Property
@@ -61,128 +47,75 @@ Partial Public Class FrmJobs
             Return mFilterOn
         End Get
         Set(value As Boolean)
-            HandleSelectionChanges = False
             mFilterOn = value
             If mFilterOn AndAlso mFilter IsNot Nothing Then
                 FiltersApply()
             ElseIf Not mFilterOn AndAlso mFilter IsNot Nothing Then
                 FiltersRemove()
             End If
-            If mNavigator IsNot Nothing Then mNavigator.FilterOn = mFilterOn
-            HandleSelectionChanges = True
+            Navigator.FilterOn = mFilterOn
         End Set
     End Property
 
     Public Function Find(item As Job) As Job
+        ' Searches for the given Job and, if found, selects and returns it.
         Dim result As Job = Nothing
-        Dim pos As Integer = BindingSourceFind(MasterSource, item)
+        Dim pos As Integer = BindingSourceFind(JobsBindingSource, item)
         If pos <> kNoCurrentRecord Then
-            CurrentJob = MasterSource.Item(pos)
+            JobsBindingSource.Position = pos
             result = CurrentJob
         End If
         Return result
     End Function
+
+    Public Property Hardware As WorkstationEncoders ' We need to pass this to the measurements form.
 #End Region
 #Region "Private Interface"
-    Private Property AddingNew As Boolean
-        Get
-            Return mAddingNew
-        End Get
-        Set(value As Boolean)
-            mAddingNew = value
-            HandleSelectionChanges = Not mAddingNew
-            ScanDataEnabled = Not mAddingNew AndAlso TxtScanDataFile.Text.Length > 0
-            ComboJobs.Enabled = Not mAddingNew
-        End Set
-    End Property
-
-    Private Function AddNewCustomer(ByVal newCustomer As Customer) As Customer
-        mCustomersBindingList.Add(newCustomer)
-        ComboCustomers.DataSource = mCustomersBindingList
-        Database.Customers.Add(newCustomer)
-        Database.SaveChanges()
-        Return newCustomer
-    End Function
-
-    Private Sub AddNewJob()
-        ' The add new Job event and database changes are handled by the Navigator, 
-        ' but we have to create the new Job object and populate the data from the
-        ' form's controls.
-        Dim newJob As Job = BindingSourceCurrent(JobsBindingSource)
-        newJob.Vessel = CurrentVessel
-        newJob.JobNumber = Database.Jobs.Max(Function(j) j.JobNumber) + 1
-        Database.Jobs.Add(newJob)
-    End Sub
-
-    Private Function AddNewVessel(ByVal newVessel As Vessel) As Vessel
-        mVesselsBindingList.Add(newVessel)
-        ComboVessels.DataSource = mVesselsBindingList
-        Database.Vessels.Add(newVessel)
-        Database.SaveChanges()
-        Return newVessel
-    End Function
-
     Protected Overrides Sub BindDataSources()
+        ' Populate all drop down lists and bind JobsBindingSource (master) to JobDetailsBindingSource (details).
         If Database IsNot Nothing Then
-            ' These DataSources use LocalViews, which are loaded on application
-            ' startup, and not expected to change.
             ComboBlades.DataSource = Database.Blades.Local.ToBindingList
             ComboCup.DataSource = Database.Cups.Local.ToBindingList
             ComboLEExclusion.DataSource = Database.Exclusions.Local.ToBindingList
             ComboMaterial.DataSource = Database.Materials.Local.ToBindingList
+            ComboManufacturer.DataSource = Database.Manufacturers.Local.ToBindingList
             ComboRotation.DataSource = Database.Rotations.Local.ToBindingList
             ComboStyle.DataSource = Database.Styles.Local.ToBindingList
             ComboTeExclusion.DataSource = Database.Exclusions.Local.ToBindingList
-            ' These DataSources query the database, as they may change while
-            ' the application is open.
             EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
-            ComboInspectedBy.DataSource = EmployeesBindingSource.DataSource
-            ComboManufacturer.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(m) m.ManufacturerName).ToList())
-            ' Get the current list of Customers, Vessels and Jobs, and bind
-            ' Jobs (master) to JobDetails (details).
             FiltersRemove()
             BindMasterDetails(JobsBindingSource, JobDetailsBindingSource, "JobDetails")
-            HandleSelectionChanges = True
         End If
-        SelectedJob = Nothing
     End Sub
 
-    Private Property CurrentCustomer As Customer
-        Get
-            Return ComboCustomers.SelectedItem
-        End Get
-        Set(value As Customer)
-            ComboCustomers.SelectedItem = value
-        End Set
-    End Property
+    Private Function CreateNewJob() As Job
+        ' Returns a new Job with a unique job number and the currently selected Vessel.
+        Return New Job With {
+            .Vessel = SelectedVessel,
+            .StartDate = Date.Now,
+            .JobNumber = If(Database.Jobs.Any(), Database.Jobs.Max(Function(job) job.JobNumber) + 1, 1)
+        }
+    End Function
 
-    Private Property CurrentJob As Job
+    Private ReadOnly Property CurrentJob As Job
         Get
-            Return ComboJobs.SelectedItem
+            Return BindingSourceCurrent(JobsBindingSource)
         End Get
-        Set(value As Job)
-            ComboJobs.SelectedItem = value
-        End Set
-    End Property
-
-    Private Property CurrentVessel As Vessel
-        Get
-            Return ComboVessels.SelectedItem
-        End Get
-        Set(value As Vessel)
-            ComboVessels.SelectedItem = value
-        End Set
     End Property
 
     Private Function DeleteConfirm() As Boolean
         Return (MessageBox.Show($"Delete job {CurrentJob.JobNumber}?", STR_TITLE_DEFAULT, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) = DialogResult.OK)
     End Function
 
+    Private Sub DeleteJob()
+        BindingSourceRemove(Database, JobsBindingSource, Database.Jobs)
+    End Sub
+
     Private Sub FilterByCustomer()
         ' Filter the vessels drop down to include only the currently selected Customer's Vessels.
-        CurrentVessel = Nothing ' Blank the currently selected vessel in case the current Customer has no Vessels.
-        mVesselsBindingList = New BindingList(Of Vessel)(Database.Vessels.Where(Function(v) v.Customer Is CurrentCustomer).ToList())
-        ComboVessels.DataSource = mVesselsBindingList
+        SelectedVessel = Nothing    ' Blank the currently selected vessel in case the current Customer has no Vessels.
+        ComboVessels.DataSource = New BindingList(Of Vessel)(Database.Vessels.Where(Function(v) v.Customer Is SelectedCustomer).ToList())
+        If ComboVessels.Items.Count > 0 Then SelectedVessel = CType(ComboVessels.Items(0), Vessel)
         ' The first Customer Vessel, if any, should now be selected.
         FilterByVessel()
     End Sub
@@ -193,15 +126,9 @@ Partial Public Class FrmJobs
 
     Private Sub FilterByVessel()
         ' Filter the jobs drop down to include only the currently selected Vessel's Jobs.
-        CurrentJob = Nothing    ' Blank the currently selected job in case the current Vessel has no Jobs.
-        JobsBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Where(Function(j) j.Vessel Is CurrentVessel).ToList())
-        ' The JobsBindingSource index pointer doesn't change, even when requeried. So it will select the
-        ' Nth Job in the list, even though the list may have changed. We want the currently selected Job
-        ' to remain selected, not the possibly different Job at the old index:
-        If CurrentVessel IsNot Nothing AndAlso CurrentVessel IsNot SelectedJob?.Vessel Then
-            JobsBindingSource.MoveFirst()
-            SelectedJob = CurrentJob
-        End If
+        SelectedJob = Nothing   ' Blank the currently selected Job in case the current Vessel has no Jobs.
+        JobsBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Where(Function(j) j.Vessel Is SelectedVessel).ToList())
+        If JobsBindingSource.Count > 0 Then SelectedJob = CType(JobsBindingSource(0), Job)
     End Sub
 
     Private Sub FiltersApply()
@@ -215,115 +142,106 @@ Partial Public Class FrmJobs
             Case Else
                 ' Handle other filter types if necessary.
         End Select
-        ' Filtering changes the Customers, Vessels and Jobs lists, but
-        ' we don't want the current selections to change, unless there
-        ' are no current selections or a list becomes empty:
-        If JobsBindingSource.Count = 0 Then
-            SelectedJob = Nothing
-        ElseIf SelectedJob Is Nothing Then
-            SelectedJob = CurrentJob
-        ElseIf CurrentJob IsNot SelectedJob Then
-            CurrentJob = SelectedJob
-        End If
     End Sub
 
     Private Sub FiltersRemove()
         ' Save the currently selected Customer, Vessel and Job.
-        Dim currJob As Job = CurrentJob
-        Dim currVessel As Vessel = CurrentVessel
-        Dim currCustomer As Customer = CurrentCustomer
-        ' Blank the associated controls.
-        ShowCurrent(Nothing, Nothing, Nothing)
-        ' Get current lists of Customers, Vessels and Jobs from the database.
-        mCustomersBindingList = New BindingList(Of Customer)(Database.Customers.OrderBy(Function(c) c.CustomerName).ToList())
-        mVesselsBindingList = New BindingList(Of Vessel)(Database.Vessels.OrderBy(Function(v) v.VesselName).ToList())
-        ComboCustomers.DataSource = mCustomersBindingList
-        ComboVessels.DataSource = mVesselsBindingList
-        'ComboCustomers.DataSource = New BindingList(Of Customer)(Database.Customers.OrderBy(Function(c) c.CustomerName).ToList())
-        'ComboVessels.DataSource = New BindingList(Of Vessel)(Database.Vessels.OrderBy(Function(v) v.VesselName).ToList())
+        Dim displayedCustomer As Customer = SelectedCustomer
+        Dim displayedVessel As Vessel = SelectedVessel
+        Dim displayedJob As Job = SelectedJob
+        ' Refresh the drop down lists.
+        ComboCustomers.DataSource = New BindingList(Of Customer)(Database.Customers.OrderBy(Function(c) c.CustomerName).ToList())
+        ComboVessels.DataSource = New BindingList(Of Vessel)(Database.Vessels.OrderBy(Function(v) v.VesselName).ToList())
         JobsBindingSource.DataSource = New BindingList(Of Job)(Database.Jobs.Local.OrderBy(Function(j) j.JobNumber).ToList())
         ' Show the previously selected Customer, Vessel and Job.
-        ShowCurrent(currCustomer, currVessel, currJob)
+        SelectedJob = displayedJob
+        SelectedVessel = displayedVessel
+        SelectedCustomer = displayedCustomer
     End Sub
 
-    Private WriteOnly Property HandleSelectionChanges As Boolean
+    Private WriteOnly Property InitialJob As GetAJob
+        Set(value As GetAJob)
+            JobSelected = True
+            Select Case value
+                Case GetAJob.First
+                    JobsBindingSource.MoveFirst()
+                Case GetAJob.Last
+                    JobsBindingSource.MoveLast()
+                Case Else
+            End Select
+            Navigator.Refresh()
+        End Set
+    End Property
+
+    Private Property JobSelected As Boolean
+        Get
+            Return Not JobsBindingSource.IsBindingSuspended
+        End Get
         Set(value As Boolean)
-            Static handled As Boolean
-            If value <> handled Then
-                If value Then
-                    AddHandler ComboVessels.SelectedIndexChanged, AddressOf ComboVessels_SelectedIndexChanged
-                    AddHandler ComboJobs.SelectedIndexChanged, AddressOf ComboJobs_SelectedIndexChanged
-                Else
-                    RemoveHandler ComboJobs.SelectedIndexChanged, AddressOf ComboJobs_SelectedIndexChanged
-                    RemoveHandler ComboVessels.SelectedIndexChanged, AddressOf ComboVessels_SelectedIndexChanged
-                End If
-                handled = value
+            If value Then
+                JobsBindingSource.ResumeBinding()
+                DataGridJobDetails.DataSource = JobDetailsBindingSource
+            Else
+                JobsBindingSource.SuspendBinding()
+                DataGridJobDetails.DataSource = Nothing
             End If
         End Set
     End Property
 
-    Private Property MasterSource As BindingSource
-        Get
-            Return mMasterSource
-        End Get
-        Set(value As BindingSource)
-            mMasterSource = value
-            If Navigator IsNot Nothing Then Navigator.MasterSource = mMasterSource
+    Private WriteOnly Property JobSelectionEnabled As Boolean
+        Set(value As Boolean)
+            ComboCustomers.Enabled = value
+            ComboVessels.Enabled = value
+            ComboJobs.Enabled = value
+            ScanDataPickEnabled = value
         End Set
     End Property
 
     Private Property Navigator As RecordNavigationBar
+
+    Private Property SelectedCustomer As Customer
         Get
-            Return mNavigator
+            Return CType(ComboCustomers.SelectedItem, Customer)
         End Get
-        Set(value As RecordNavigationBar)
-            mNavigator = value
-            If mNavigator IsNot Nothing Then mNavigator.Database = Database
+        Set(value As Customer)
+            ComboCustomers.SelectedItem = value
         End Set
     End Property
 
-    Private Sub SaveChanges()
-        ' Database changes are handled by the Navigator, but the special case of
-        ' adding a new Job has additional steps that are taken here.
-        If AddingNew Then
-            AddNewJob()
-            AddingNew = False
-        End If
+    Private Property PreviousJob As Job
+
+    Private Sub ScanDataExport()
+
     End Sub
 
-    Private WriteOnly Property ScanDataEnabled As Boolean
+    Private WriteOnly Property ScanDataImexEnabled As Boolean
         Set(value As Boolean)
             CmdScanDataImport.Enabled = value
             CmdScanDataExport.Enabled = value
         End Set
     End Property
 
-    Private Sub ScanDataExport()
-
-    End Sub
-
     Private Sub ScanDataImport()
-        ' Import scan data from a file, add it to the database and show the job details.
+        ' Import scan data from a file, add it to the database and show the job data.
         Dim scandataFile As String = TxtScanDataFile.Text
-        Dim importedJob As Job = Imex.ScanDataImport(scanDataFile)
+        Dim importedJob As Job = Imex.ScanDataImport(scandataFile)
         If importedJob Is Nothing Then
             ' If no job was created, show an error message.
             MessageBox.Show("No job was created from the scan data file because it is corrupted or missing required data.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        ' ScanDataAdd will generate a unique JobNumber.
+        ' ScanDataAdd will add the imported Job to the Jobs table and generate a unique JobNumber.
         importedJob = ScanDataAdd(importedJob, Database)
-        Database.SaveChanges()
+        ' We need to refresh the Employees list in case a new employee was added.
         EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
-        ' After saving, we need to refresh the JobsBindingSource.
+        ' Clear the form filters and show the imported job.
         If FilterOn Then
             FilterOn = False
         Else
             FiltersRemove()
         End If
-        ' Show the imported Job.
-        CurrentJob = importedJob
-        TxtScanDataFile.Text = scanDataFile
+        SelectedJob = importedJob
+        TxtScanDataFile.Text = scandataFile
     End Sub
 
     Private Sub ScanDataPick()
@@ -335,94 +253,135 @@ Partial Public Class FrmJobs
         If ofd.ShowDialog() = DialogResult.OK Then TxtScanDataFile.Text = ofd.FileName
     End Sub
 
-    Private Sub SelectJob(ByVal pos As JobPosition)
-        ' When the form first opens nothing is selected and all Job controls are disabled.
-        ' Selections from the Customers, Vessels and Jobs drop downs are handled by their
-        ' respective SelectionChangeCommitted events. When an initial selection is made
-        ' from the Navigator (which is unaware of this form's state), those events won't
-        ' fire and we have to make the selection here.
-        HandleSelectionChanges = True
-        JobsBindingSource.ResumeBinding()
-        Select Case pos
-            Case JobPosition.First
-                JobsBindingSource.MoveFirst()
-            Case JobPosition.Last
-                JobsBindingSource.MoveLast()
-            Case Else
-        End Select
-        SelectedJob = BindingSourceCurrent(JobsBindingSource)
-        CurrentVessel = SelectedJob?.Vessel
-        Navigator.ShowPosition()
-    End Sub
-
-    Private Property SelectedJob As Job
-        Get
-            Return mSelectedJob
-        End Get
-        Set(value As Job)
-            mSelectedJob = value
-            ' If a Job is selected, enable the controls and display the Job and 
-            ' any JobDetails data, else blank and disable the associated controls.
-            If mSelectedJob IsNot Nothing Then
-                JobsBindingSource.ResumeBinding()
-                If CurrentJob IsNot SelectedJob Then CurrentJob = SelectedJob
-                DataGridJobDetails.DataSource = JobDetailsBindingSource
-            Else
-                JobsBindingSource.SuspendBinding()
-                DataGridJobDetails.DataSource = Nothing
-            End If
+    Private WriteOnly Property ScanDataPickEnabled As Boolean
+        Set(value As Boolean)
+            TxtScanDataFile.Enabled = value
+            CmdScanDataPick.Enabled = value
+            If Not value Then ScanDataImexEnabled = False
         End Set
     End Property
 
-    Private Sub ShowCurrent(selectedCustomer As Customer, selectedVessel As Vessel, selectedJob As Job)
-        ' Convenience method to display all three current selections at once.
-        CurrentCustomer = selectedCustomer
-        CurrentVessel = selectedVessel
-        CurrentJob = selectedJob
-    End Sub
+    Private Property SelectedJob As Job
+        Get
+            Return CType(ComboJobs.SelectedItem, Job)
+        End Get
+        Set(value As Job)
+            If value IsNot Nothing AndAlso JobsBindingSource.IsBindingSuspended Then JobSelected = True
+            ComboJobs.SelectedItem = value
+        End Set
+    End Property
 
-    Private Sub UndoChanges()
-        ' The undo event and database updates are handled by the Navigator.
-        ' Here, we handle any changes required to the form's controls as a
-        ' result of the undo.
-        If AddingNew Then
-            AddingNew = False
-            CurrentJob = SelectedJob
-        End If
-    End Sub
+    Private Property SelectedVessel As Vessel
+        Get
+            Return CType(ComboVessels.SelectedItem, Vessel)
+        End Get
+        Set(value As Vessel)
+            ComboVessels.SelectedItem = value
+        End Set
+    End Property
 #End Region
 #Region "Event Handlers"
-    Private Sub CmdScanDataImport_Click(sender As Object, e As EventArgs) Handles CmdScanDataImport.Click
-        ScanDataImport()
+    Private Sub CmdScanDataExport_Click(sender As Object, e As EventArgs) Handles CmdScanDataExport.Click
+        Try
+            ScanDataExport()
+        Catch ex As Exception
+            MessageBox.Show("Error opening jobs form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
-    Private Sub CmdScanDataExport_Click(sender As Object, e As EventArgs) Handles CmdScanDataExport.Click
-        ScanDataExport()
+    Private Sub CmdScanDataImport_Click(sender As Object, e As EventArgs) Handles CmdScanDataImport.Click
+        Try
+            ScanDataImport()
+        Catch ex As Exception
+            MessageBox.Show("Error importing scan data: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub CmdScanDataPick_Click(sender As Object, e As EventArgs) Handles CmdScanDataPick.Click
-        ScanDataPick()
+        Try
+            ScanDataPick()
+        Catch ex As Exception
+            MessageBox.Show("Error selecting scan data: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
+        Try
+            Filter = SelectedCustomer
+        Catch ex As Exception
+            MessageBox.Show("Filtering error: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ComboJobs_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboJobs.MouseClick
+        ' Open the measurements form with the clicked Job record.
+        Try
+            If CurrentJob IsNot Nothing AndAlso ComboJobs.DoubleClicked() Then
+                ShowForm(mFrmMeasurements, Database)
+                mFrmMeasurements.Hardware = Hardware
+                mFrmMeasurements.Job = CurrentJob
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ComboJobs_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboJobs.SelectionChangeCommitted
+        Try
+            ' If no Job is currently selected and a valid selection was made ...
+            If Not JobSelected AndAlso SelectedJob IsNot Nothing Then
+                ' ... save the selected Job so we can restore it after setting JobSelected = True
+                Dim j As Job = SelectedJob
+                JobSelected = True
+                SelectedJob = j
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error selecting a job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboVessels.SelectedIndexChanged
+        If SelectedVessel IsNot Nothing Then
+            SelectedCustomer = SelectedVessel?.Customer
+            If JobsBindingSource.Count = 0 And Navigator IsNot Nothing Then Navigator.CmdAddNew.Enabled = True
+        End If
+    End Sub
+
+    Private Sub ComboVessels_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboVessels.SelectionChangeCommitted
+        Try
+            Filter = SelectedVessel
+        Catch ex As Exception
+            MessageBox.Show("Filtering error: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
-        ShowForm(mFrmMeasurements, Database)
-        mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+        ' Open the measurements form with the clicked JobDetail record.
+        Try
+            ShowForm(mFrmMeasurements, Database)
+            mFrmMeasurements.Hardware = Hardware
+            mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+        Catch ex As Exception
+            MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
-    Protected Overrides Sub FrmDatabaseForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        ' For some reason the base class method doesn't prevent the DataGridJobDetails
-        ' from throwing an exception when we're closing, so do this:
+    Private Sub FormJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        On Error Resume Next
         DataGridJobDetails.DataSource = Nothing
-        MasterSource.SuspendBinding()
         MyBase.FrmDatabaseForm_FormClosing(sender, e)
     End Sub
 
-    Private Sub FrmJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        DataGridJobDetails.AutoGenerateColumns = False
-        Navigator = RecordNavigationBar1
-        Navigator.Caption = ""
-        Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
-        Navigator.BoundControls = New List(Of Control) From {
+    Private Sub FormJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            DataGridJobDetails.AutoGenerateColumns = False
+            DataGridJobDetails.DataSource = Nothing
+            Navigator = RecordNavigationBar1
+            'Navigator.Caption = ""
+            'Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
+            ' These are the controls bound to the JobsBindingSource that the Navigator will enable automatically
+            ' and notify us when any changes are made.
+            Navigator.BoundControls = New List(Of Control) From {
             ComboManufacturer,
             TxtPartNumber,
             ComboStyle,
@@ -441,27 +400,46 @@ Partial Public Class FrmJobs
             ComboInspectedBy,
             TxtDAR
         }
-        ComboCustomers.DataSource = mCustomersBindingList
-        ComboVessels.DataSource = mVesselsBindingList
-        ShowCurrent(Nothing, Nothing, Nothing)
-        MasterSource = JobsBindingSource
-        AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+            Navigator.Database = Database
+            Navigator.MasterSource = JobsBindingSource  ' The Navigator manages the Job records and notifies us when changes occur.
+            JobSelected = False                         ' Nothing is initially selected when this form loads.
+            AddHandler JobsBindingSource.CurrentChanged, AddressOf JobsBindingSource_CurrentChanged
+            AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        Catch ex As Exception
+            MessageBox.Show("Error opening the jobs form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub JobsBindingSource_CurrentChanged(sender As Object, e As EventArgs)
+        Try
+            If CurrentJob IsNot Nothing Then SelectedVessel = CurrentJob?.Vessel
+            TxtScanDataFile.Text = String.Empty
+        Catch ex As Exception
+            MessageBox.Show("Error moving to the selected record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub JobsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobsBindingSource.AddingNew
-        AddingNew = True
+        Try
+            Dim newJob As Job = CreateNewJob()
+            PreviousJob = SelectedJob
+            e.NewObject = newJob
+            Database.Jobs.Add(newJob)
+            JobSelectionEnabled = False
+        Catch ex As Exception
+            MessageBox.Show("Error adding a new job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
+        ' Handles Navigator events so we can update our control states accordingly.
         Select Case e.EventName
             Case "AddNew"
+                ' No action required. Handled in JobsBindingSource_AddingNew.
             Case "Delete"
-                If DeleteConfirm() Then
-                    Dim v As Vessel = CurrentVessel ' Save the current Vessel in case this is it's only Job, which would blank it after deleting the Job.
-                    BindingSourceRemove(Database, JobsBindingSource, Database.Jobs)
-                    If JobsBindingSource.Count = 0 Then CurrentVessel = v   ' If no Jobs remain for the current Vessel, restore it.
-                End If
+                If DeleteConfirm() Then DeleteJob()
             Case "Editing"
+                JobSelectionEnabled = Not e.Value
             Case "FilterOff"
                 FilterOn = False
             Case "FilterOn"
@@ -470,133 +448,21 @@ Partial Public Class FrmJobs
                 ' Not implemented. Receives a parameter of type Object from the Navigator
                 ' that can be used to search the JobsBindingSource.
             Case "GotoFirst", "GotoNext", "GotoPrev"
-                If JobsBindingSource.IsBindingSuspended Then SelectJob(JobPosition.First)
-                Navigator.ControlsEnable()
+                If JobsBindingSource.IsBindingSuspended Then InitialJob = GetAJob.First
             Case "GotoLast"
-                If JobsBindingSource.IsBindingSuspended Then SelectJob(JobPosition.Last)
-                Navigator.ControlsEnable()
+                If JobsBindingSource.IsBindingSuspended Then InitialJob = GetAJob.Last
             Case "Save"
-                SaveChanges()
+                JobSelectionEnabled = True
             Case "Undo"
-                UndoChanges()
+                If PreviousJob IsNot Nothing Then SelectedJob = PreviousJob
+                JobSelectionEnabled = True
             Case Else
         End Select
     End Sub
 
     Private Sub TxtScanDataFile_TextChanged(sender As Object, e As EventArgs) Handles TxtScanDataFile.TextChanged
-        ScanDataEnabled = (TxtScanDataFile.Text.Length > 0)
+        On Error Resume Next
+        ScanDataImexEnabled = (TxtScanDataFile.Text.Length > 0)
     End Sub
-#End Region
-#Region "ComboCustomers Event Handlers"
-    ' These events handle user interactions with the Customers combo box.
-    ' The control is strictly used to filter the Vessels and Jobs combo boxes,
-    ' and to add new Customers. It does not directly select the current Job.
-    Private Sub ComboCustomers_Enter(sender As Object, e As EventArgs) Handles ComboCustomers.Enter
-        AddHandler ComboCustomers.SelectedValueChanged, AddressOf ComboCustomers_SelectedValueChanged
-    End Sub
-
-    Private Sub ComboCustomers_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboCustomers.KeyDown
-        ' Handles auto-complete selections that are not in the list (new item)
-        If ComboCustomers.NotInList(e) Then
-            If MessageBox.Show($"Add new customer '{ComboCustomers.Text}'?", STR_TITLE_DEFAULT, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) = DialogResult.OK Then
-                'Dim newCustomer As New Customer With {.CustomerName = ComboCustomers.Text}
-                ' Add the new Customer to the database.
-                CurrentCustomer = AddNewCustomer(New Customer With {.CustomerName = ComboCustomers.Text})
-            End If
-        End If
-    End Sub
-
-    Private Sub ComboCustomers_Leave(sender As Object, e As EventArgs) Handles ComboCustomers.Leave
-        RemoveHandler ComboCustomers.SelectedValueChanged, AddressOf ComboCustomers_SelectedValueChanged
-    End Sub
-
-    Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
-        ' Handles double-click events.
-        If CurrentCustomer IsNot Nothing AndAlso ComboCustomers.DoubleClicked() Then
-            ' Open the Customers form with the selected Customer as the current record.
-            ShowForm(mFrmCustomers, Database)
-            mFrmCustomers.Find(CurrentCustomer)
-        End If
-    End Sub
-
-    Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
-        ' Handles user-initiated selection changes.
-        Filter = CurrentCustomer
-    End Sub
-
-    Private Sub ComboCustomers_SelectedValueChanged(sender As Object, e As EventArgs)
-        ' Handles auto-complete selection changes.
-        Filter = CurrentCustomer
-    End Sub
-#End Region
-#Region "ComboJobs Event Handlers"
-    ' These events handle user interactions with the Jobs combo box.
-    ' The control is used to select the current Job. It does not
-    ' directly filter the Customers or Vessels combo boxes.
-    Private Sub ComboJobs_MouseClick(sender As Object, e As EventArgs) Handles ComboJobs.MouseClick
-        ' Handles double-click events.
-        If CurrentJob IsNot Nothing AndAlso ComboJobs.DoubleClicked() Then
-            ShowForm(mFrmMeasurements, Database)
-            mFrmMeasurements.Job = CurrentJob
-        End If
-    End Sub
-    Private Sub ComboJobs_SelectedIndexChanged(sender As Object, e As EventArgs)
-        ' Handles programmatic changes to the selected index.
-        HandleSelectionChanges = False
-        SelectedJob = CurrentJob
-        HandleSelectionChanges = True
-        CurrentVessel = SelectedJob?.Vessel
-        TxtScanDataFile.Clear()
-    End Sub
-#End Region
-#Region "CoboVessels Event Handlers"
-    ' These events handle user interactions with the Vessels combo box.
-    ' The control is strictly used to filter the Jobs combo box, and
-    ' to add new Vessels. It does not directly select the current Job.
-    Private Sub ComboVessels_Enter(sender As Object, e As EventArgs) Handles ComboVessels.Enter
-        AddHandler ComboVessels.SelectedValueChanged, AddressOf ComboVessels_SelectedValueChanged
-    End Sub
-
-    Private Sub ComboVessels_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboVessels.KeyDown
-        ' Handles auto-complete selections that are not in the list (new item)
-        If ComboVessels.NotInList(e) Then
-            If MessageBox.Show($"Add new vessel '{ComboVessels.Text}'?", STR_TITLE_DEFAULT, MessageBoxButtons.OKCancel, MessageBoxIcon.Question) = DialogResult.OK Then
-                CurrentVessel = AddNewVessel(New Vessel With {
-                    .VesselName = ComboVessels.Text,
-                    .Customer = CurrentCustomer
-                })
-            End If
-        End If
-    End Sub
-
-    Private Sub ComboVessels_Leave(sender As Object, e As EventArgs) Handles ComboVessels.Leave
-        RemoveHandler ComboVessels.SelectedValueChanged, AddressOf ComboVessels_SelectedValueChanged
-    End Sub
-
-    Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
-        ' Handles double-click events.
-        If CurrentVessel IsNot Nothing AndAlso ComboVessels.DoubleClicked() Then
-            ' Open the Vessels form with the selected Vessel as the current record.
-            ShowForm(mFrmVessels, Database)
-            mFrmVessels.Find(CurrentVessel)
-        End If
-    End Sub
-
-    Private Sub ComboVessels_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboVessels.SelectionChangeCommitted
-        ' Handles user-initiated selection changes.  
-        Filter = CurrentVessel
-    End Sub
-
-    Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs)
-        ' Handles programmatic changes to the selected index.   
-        CurrentCustomer = CurrentVessel?.Customer
-        If CurrentVessel IsNot Nothing Then Navigator.CmdAddNew.Enabled = True
-    End Sub
-
-    Private Sub ComboVessels_SelectedValueChanged(sender As Object, e As EventArgs)
-        ' Handles auto-complete selection changes.
-        Filter = CurrentVessel
-    End Sub
-
 #End Region
 End Class

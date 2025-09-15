@@ -33,10 +33,7 @@ Partial Class FrmJobs
         ComboVessels = New ComboBox()
         ComboCustomers = New ComboBox()
         DataGridJobDetails = New DataGridView()
-        DateStarted = New DataGridViewTextBoxColumn()
-        PerformedBy = New DataGridViewComboBoxColumn()
         EmployeesBindingSource = New BindingSource(components)
-        Description = New DataGridViewTextBoxColumn()
         TxtBore = New TextBox()
         TxtDiameter = New TextBox()
         TxtPartNumber = New TextBox()
@@ -78,6 +75,9 @@ Partial Class FrmJobs
         TxtScanDataFile = New TextBox()
         RecordNavigationBar1 = New RecordNavigationBar()
         LabMeasurements = New Label()
+        DateStarted = New DataGridViewTextBoxColumn()
+        PerformedBy = New DataGridViewComboBoxColumn()
+        Description = New DataGridViewTextBoxColumn()
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
@@ -95,7 +95,7 @@ Partial Class FrmJobs
         ' LabJob
         ' 
         LabJob.AutoSize = True
-        LabJob.Font = New Font("Segoe UI", 9.0F)
+        LabJob.Font = New Font("Segoe UI", 9F)
         LabJob.Location = New Point(29, 137)
         LabJob.Name = "LabJob"
         LabJob.Size = New Size(25, 15)
@@ -126,7 +126,7 @@ Partial Class FrmJobs
         ComboJobs.AutoCompleteSource = AutoCompleteSource.ListItems
         ComboJobs.DataSource = JobsBindingSource
         ComboJobs.DisplayMember = "JobNumber"
-        ComboJobs.Font = New Font("Segoe UI", 9.0F)
+        ComboJobs.Font = New Font("Segoe UI", 9F)
         ComboJobs.FormattingEnabled = True
         ComboJobs.Location = New Point(94, 134)
         ComboJobs.Name = "ComboJobs"
@@ -164,7 +164,7 @@ Partial Class FrmJobs
         DataGridJobDetails.AllowUserToDeleteRows = False
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
@@ -172,56 +172,23 @@ Partial Class FrmJobs
         DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {DateStarted, PerformedBy, Description})
-        DataGridJobDetails.Location = New Point(451, 379)
+        DataGridJobDetails.Location = New Point(458, 379)
         DataGridJobDetails.Margin = New Padding(0)
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.ReadOnly = True
         DataGridJobDetails.RowHeadersWidth = 82
-        DataGridJobDetails.Size = New Size(642, 282)
+        DataGridJobDetails.Size = New Size(635, 282)
         DataGridJobDetails.TabIndex = 193
-        ' 
-        ' DateStarted
-        ' 
-        DateStarted.DataPropertyName = "StartDate"
-        DateStarted.HeaderText = "Date Started"
-        DateStarted.MinimumWidth = 140
-        DateStarted.Name = "DateStarted"
-        DateStarted.ReadOnly = True
-        DateStarted.Width = 140
-        ' 
-        ' PerformedBy
-        ' 
-        PerformedBy.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        PerformedBy.DataPropertyName = "PerformedBy"
-        PerformedBy.DataSource = EmployeesBindingSource
-        PerformedBy.DisplayMember = "EmployeeName"
-        PerformedBy.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
-        PerformedBy.HeaderText = "Performed By"
-        PerformedBy.MinimumWidth = 120
-        PerformedBy.Name = "PerformedBy"
-        PerformedBy.ReadOnly = True
-        PerformedBy.ValueMember = "Id"
-        PerformedBy.Width = 120
         ' 
         ' EmployeesBindingSource
         ' 
         EmployeesBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
         EmployeesBindingSource.Sort = ""
         ' 
-        ' Description
-        ' 
-        Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        Description.DataPropertyName = "Description"
-        Description.HeaderText = "Description"
-        Description.MinimumWidth = 298
-        Description.Name = "Description"
-        Description.ReadOnly = True
-        Description.Width = 298
-        ' 
         ' TxtBore
         ' 
         TxtBore.DataBindings.Add(New Binding("Text", JobsBindingSource, "PropellerBore", True))
-        TxtBore.Location = New Point(536, 280)
+        TxtBore.Location = New Point(543, 280)
         TxtBore.Name = "TxtBore"
         TxtBore.Size = New Size(190, 23)
         TxtBore.TabIndex = 258
@@ -229,7 +196,7 @@ Partial Class FrmJobs
         ' TxtDiameter
         ' 
         TxtDiameter.DataBindings.Add(New Binding("Text", JobsBindingSource, "PropellerDiameter", True))
-        TxtDiameter.Location = New Point(536, 251)
+        TxtDiameter.Location = New Point(543, 251)
         TxtDiameter.Name = "TxtDiameter"
         TxtDiameter.Size = New Size(190, 23)
         TxtDiameter.TabIndex = 257
@@ -237,7 +204,7 @@ Partial Class FrmJobs
         ' TxtPartNumber
         ' 
         TxtPartNumber.DataBindings.Add(New Binding("Text", JobsBindingSource, "PropellerPartNumber", True))
-        TxtPartNumber.Location = New Point(536, 105)
+        TxtPartNumber.Location = New Point(543, 105)
         TxtPartNumber.Name = "TxtPartNumber"
         TxtPartNumber.Size = New Size(190, 23)
         TxtPartNumber.TabIndex = 256
@@ -315,7 +282,7 @@ Partial Class FrmJobs
         ' LabBore
         ' 
         LabBore.AutoSize = True
-        LabBore.Location = New Point(451, 283)
+        LabBore.Location = New Point(458, 283)
         LabBore.Name = "LabBore"
         LabBore.Size = New Size(31, 15)
         LabBore.TabIndex = 247
@@ -326,7 +293,7 @@ Partial Class FrmJobs
         ComboInspectedBy.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "InspectedBy", True))
         ComboInspectedBy.DataSource = EmployeesBindingSource
         ComboInspectedBy.DisplayMember = "EmployeeName"
-        ComboInspectedBy.Font = New Font("Segoe UI", 9.0F)
+        ComboInspectedBy.Font = New Font("Segoe UI", 9F)
         ComboInspectedBy.FormattingEnabled = True
         ComboInspectedBy.Location = New Point(903, 309)
         ComboInspectedBy.Name = "ComboInspectedBy"
@@ -363,7 +330,7 @@ Partial Class FrmJobs
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9.0F)
+        Label1.Font = New Font("Segoe UI", 9F)
         Label1.Location = New Point(793, 312)
         Label1.Name = "Label1"
         Label1.Size = New Size(74, 15)
@@ -373,7 +340,7 @@ Partial Class FrmJobs
         ' LabDiameter
         ' 
         LabDiameter.AutoSize = True
-        LabDiameter.Location = New Point(451, 254)
+        LabDiameter.Location = New Point(458, 254)
         LabDiameter.Name = "LabDiameter"
         LabDiameter.Size = New Size(55, 15)
         LabDiameter.TabIndex = 241
@@ -382,7 +349,7 @@ Partial Class FrmJobs
         ' LabBlades
         ' 
         LabBlades.AutoSize = True
-        LabBlades.Location = New Point(451, 224)
+        LabBlades.Location = New Point(458, 224)
         LabBlades.Name = "LabBlades"
         LabBlades.Size = New Size(41, 15)
         LabBlades.TabIndex = 240
@@ -391,7 +358,7 @@ Partial Class FrmJobs
         ' LabRotation
         ' 
         LabRotation.AutoSize = True
-        LabRotation.Location = New Point(451, 195)
+        LabRotation.Location = New Point(458, 195)
         LabRotation.Name = "LabRotation"
         LabRotation.Size = New Size(52, 15)
         LabRotation.TabIndex = 239
@@ -400,7 +367,7 @@ Partial Class FrmJobs
         ' LabMaterial
         ' 
         LabMaterial.AutoSize = True
-        LabMaterial.Location = New Point(451, 166)
+        LabMaterial.Location = New Point(458, 166)
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(50, 15)
         LabMaterial.TabIndex = 238
@@ -409,7 +376,7 @@ Partial Class FrmJobs
         ' LabStyle
         ' 
         LabStyle.AutoSize = True
-        LabStyle.Location = New Point(451, 137)
+        LabStyle.Location = New Point(458, 137)
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(32, 15)
         LabStyle.TabIndex = 237
@@ -418,7 +385,7 @@ Partial Class FrmJobs
         ' LabManufacturer
         ' 
         LabManufacturer.AutoSize = True
-        LabManufacturer.Location = New Point(451, 79)
+        LabManufacturer.Location = New Point(458, 79)
         LabManufacturer.Name = "LabManufacturer"
         LabManufacturer.Size = New Size(79, 15)
         LabManufacturer.TabIndex = 236
@@ -435,7 +402,7 @@ Partial Class FrmJobs
         ' LabPartNumber
         ' 
         LabPartNumber.AutoSize = True
-        LabPartNumber.Location = New Point(451, 108)
+        LabPartNumber.Location = New Point(458, 108)
         LabPartNumber.Name = "LabPartNumber"
         LabPartNumber.Size = New Size(75, 15)
         LabPartNumber.TabIndex = 234
@@ -476,7 +443,7 @@ Partial Class FrmJobs
         ComboBlades.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerBlades", True))
         ComboBlades.DisplayMember = "BladeCount"
         ComboBlades.FormattingEnabled = True
-        ComboBlades.Location = New Point(536, 221)
+        ComboBlades.Location = New Point(543, 221)
         ComboBlades.Name = "ComboBlades"
         ComboBlades.Size = New Size(190, 23)
         ComboBlades.TabIndex = 230
@@ -487,7 +454,7 @@ Partial Class FrmJobs
         ComboRotation.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerRotation", True))
         ComboRotation.DisplayMember = "Rotation1"
         ComboRotation.FormattingEnabled = True
-        ComboRotation.Location = New Point(536, 192)
+        ComboRotation.Location = New Point(543, 192)
         ComboRotation.Name = "ComboRotation"
         ComboRotation.Size = New Size(190, 23)
         ComboRotation.TabIndex = 229
@@ -509,7 +476,7 @@ Partial Class FrmJobs
         ComboMaterial.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerMaterial", True))
         ComboMaterial.DisplayMember = "Material1"
         ComboMaterial.FormattingEnabled = True
-        ComboMaterial.Location = New Point(536, 163)
+        ComboMaterial.Location = New Point(543, 163)
         ComboMaterial.Name = "ComboMaterial"
         ComboMaterial.Size = New Size(190, 23)
         ComboMaterial.TabIndex = 227
@@ -520,7 +487,7 @@ Partial Class FrmJobs
         ComboStyle.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerStyle", True))
         ComboStyle.DisplayMember = "Style1"
         ComboStyle.FormattingEnabled = True
-        ComboStyle.Location = New Point(536, 134)
+        ComboStyle.Location = New Point(543, 134)
         ComboStyle.Name = "ComboStyle"
         ComboStyle.Size = New Size(190, 23)
         ComboStyle.TabIndex = 226
@@ -531,7 +498,7 @@ Partial Class FrmJobs
         ComboManufacturer.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerManufacturerId", True))
         ComboManufacturer.DisplayMember = "ManufacturerName"
         ComboManufacturer.FormattingEnabled = True
-        ComboManufacturer.Location = New Point(536, 76)
+        ComboManufacturer.Location = New Point(543, 76)
         ComboManufacturer.Name = "ComboManufacturer"
         ComboManufacturer.Size = New Size(190, 23)
         ComboManufacturer.TabIndex = 225
@@ -590,30 +557,64 @@ Partial Class FrmJobs
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         RecordNavigationBar1.BoundControls = Nothing
-        RecordNavigationBar1.Caption = "Caption"
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(364, 12)
+        RecordNavigationBar1.Location = New Point(458, 9)
+        RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Size = New Size(729, 30)
+        RecordNavigationBar1.Size = New Size(635, 24)
         RecordNavigationBar1.TabIndex = 266
         ' 
         ' LabMeasurements
         ' 
         LabMeasurements.AutoSize = True
-        LabMeasurements.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
-        LabMeasurements.Location = New Point(451, 364)
+        LabMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMeasurements.Location = New Point(458, 364)
         LabMeasurements.Name = "LabMeasurements"
         LabMeasurements.Size = New Size(90, 15)
         LabMeasurements.TabIndex = 267
         LabMeasurements.Text = "Measurements"
         ' 
+        ' DateStarted
+        ' 
+        DateStarted.DataPropertyName = "StartDate"
+        DateStarted.HeaderText = "Date Started"
+        DateStarted.MinimumWidth = 140
+        DateStarted.Name = "DateStarted"
+        DateStarted.ReadOnly = True
+        DateStarted.Width = 140
+        ' 
+        ' PerformedBy
+        ' 
+        PerformedBy.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        PerformedBy.DataPropertyName = "PerformedBy"
+        PerformedBy.DataSource = EmployeesBindingSource
+        PerformedBy.DisplayMember = "EmployeeName"
+        PerformedBy.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+        PerformedBy.HeaderText = "Performed By"
+        PerformedBy.MinimumWidth = 120
+        PerformedBy.Name = "PerformedBy"
+        PerformedBy.ReadOnly = True
+        PerformedBy.ValueMember = "Id"
+        PerformedBy.Width = 120
+        ' 
+        ' Description
+        ' 
+        Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        Description.DataPropertyName = "Description"
+        Description.HeaderText = "Description"
+        Description.MinimumWidth = 290
+        Description.Name = "Description"
+        Description.ReadOnly = True
+        Description.Width = 290
+        ' 
         ' FrmJobs
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1128, 708)
         Controls.Add(LabMeasurements)
@@ -723,9 +724,9 @@ Partial Class FrmJobs
     Friend WithEvents labCalibrationFile As Label
     Friend WithEvents TxtScanDataFile As TextBox
     Friend WithEvents EmployeesBindingSource As BindingSource
+    Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
+    Friend WithEvents LabMeasurements As Label
     Friend WithEvents DateStarted As DataGridViewTextBoxColumn
     Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
     Friend WithEvents Description As DataGridViewTextBoxColumn
-    Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
-    Friend WithEvents LabMeasurements As Label
 End Class

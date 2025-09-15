@@ -31,6 +31,12 @@ Public Module BindingSources
         Return result
     End Function
 
+    Public Function BindingSourceAddNew(Of T As Class)(db As HaleMRIContext, ByRef bs As BindingSource, ByRef entity As DbSet(Of T)) As ChangeTracking.EntityEntry(Of T)
+        Dim result = entity.Add(BindingSourceCurrent(bs))
+        BindingSourceSave(db, bs)
+        Return result
+    End Function
+
     Public Function BindingSourceCurrent(bs As BindingSource) As Object
         ' Returns the current record in the BindingSource, or Nothing if there is no current record.
         Return If(bs IsNot Nothing AndAlso bs.Position <> kNoCurrentRecord, bs.Current, Nothing)
@@ -59,6 +65,7 @@ Public Module BindingSources
         ' Saves the current BindingSource record to the Database.
         bs.EndEdit()
         db.SaveChanges()
+        bs.ResetBindings(False)
     End Sub
 
     Public Sub BindingSourceUndo(db As HaleMRIContext, ByRef bs As BindingSource)

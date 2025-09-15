@@ -35,7 +35,6 @@ Partial Class RecordNavigationBar
         CmdSave = New Button()
         CmdUndo = New Button()
         TableLayoutPanel1 = New TableLayoutPanel()
-        LabCaption = New Label()
         ChkToggleFilter = New CheckBox()
         TableLayoutPanel1.SuspendLayout()
         SuspendLayout()
@@ -44,8 +43,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdGotoFirst.Enabled = False
         CmdGotoFirst.Image = CType(resources.GetObject("CmdGotoFirst.Image"), Image)
-        CmdGotoFirst.Location = New Point(88, 3)
-        CmdGotoFirst.Margin = New Padding(3, 3, 0, 3)
+        CmdGotoFirst.Location = New Point(0, 0)
+        CmdGotoFirst.Margin = New Padding(0)
         CmdGotoFirst.Name = "CmdGotoFirst"
         CmdGotoFirst.Size = New Size(38, 24)
         CmdGotoFirst.TabIndex = 0
@@ -56,8 +55,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdGotoPrevious.Enabled = False
         CmdGotoPrevious.Image = CType(resources.GetObject("CmdGotoPrevious.Image"), Image)
-        CmdGotoPrevious.Location = New Point(126, 3)
-        CmdGotoPrevious.Margin = New Padding(0, 3, 0, 3)
+        CmdGotoPrevious.Location = New Point(38, 0)
+        CmdGotoPrevious.Margin = New Padding(0)
         CmdGotoPrevious.Name = "CmdGotoPrevious"
         CmdGotoPrevious.Size = New Size(38, 24)
         CmdGotoPrevious.TabIndex = 1
@@ -66,8 +65,8 @@ Partial Class RecordNavigationBar
         ' TxtCurrentPosition
         ' 
         TxtCurrentPosition.Enabled = False
-        TxtCurrentPosition.Location = New Point(164, 3)
-        TxtCurrentPosition.Margin = New Padding(0, 3, 0, 3)
+        TxtCurrentPosition.Location = New Point(76, 0)
+        TxtCurrentPosition.Margin = New Padding(0)
         TxtCurrentPosition.Name = "TxtCurrentPosition"
         TxtCurrentPosition.Size = New Size(100, 23)
         TxtCurrentPosition.TabIndex = 2
@@ -77,8 +76,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdGotoNext.Enabled = False
         CmdGotoNext.Image = CType(resources.GetObject("CmdGotoNext.Image"), Image)
-        CmdGotoNext.Location = New Point(264, 3)
-        CmdGotoNext.Margin = New Padding(0, 3, 0, 3)
+        CmdGotoNext.Location = New Point(176, 0)
+        CmdGotoNext.Margin = New Padding(0)
         CmdGotoNext.Name = "CmdGotoNext"
         CmdGotoNext.Size = New Size(38, 24)
         CmdGotoNext.TabIndex = 3
@@ -88,8 +87,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdGotoLast.Enabled = False
         CmdGotoLast.Image = CType(resources.GetObject("CmdGotoLast.Image"), Image)
-        CmdGotoLast.Location = New Point(302, 3)
-        CmdGotoLast.Margin = New Padding(0, 3, 3, 3)
+        CmdGotoLast.Location = New Point(214, 0)
+        CmdGotoLast.Margin = New Padding(0, 0, 3, 0)
         CmdGotoLast.Name = "CmdGotoLast"
         CmdGotoLast.Size = New Size(38, 24)
         CmdGotoLast.TabIndex = 4
@@ -99,8 +98,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdAddNew.Enabled = False
         CmdAddNew.Image = CType(resources.GetObject("CmdAddNew.Image"), Image)
-        CmdAddNew.Location = New Point(346, 3)
-        CmdAddNew.Margin = New Padding(3, 3, 0, 3)
+        CmdAddNew.Location = New Point(258, 0)
+        CmdAddNew.Margin = New Padding(3, 0, 0, 0)
         CmdAddNew.Name = "CmdAddNew"
         CmdAddNew.Size = New Size(38, 24)
         CmdAddNew.TabIndex = 5
@@ -110,8 +109,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdDelete.Enabled = False
         CmdDelete.Image = CType(resources.GetObject("CmdDelete.Image"), Image)
-        CmdDelete.Location = New Point(384, 3)
-        CmdDelete.Margin = New Padding(0, 3, 3, 3)
+        CmdDelete.Location = New Point(296, 0)
+        CmdDelete.Margin = New Padding(0, 0, 3, 0)
         CmdDelete.Name = "CmdDelete"
         CmdDelete.Size = New Size(37, 24)
         CmdDelete.TabIndex = 6
@@ -121,8 +120,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdFind.Enabled = False
         CmdFind.Image = CType(resources.GetObject("CmdFind.Image"), Image)
-        CmdFind.Location = New Point(468, 3)
-        CmdFind.Margin = New Padding(0, 3, 0, 3)
+        CmdFind.Location = New Point(377, 0)
+        CmdFind.Margin = New Padding(0)
         CmdFind.Name = "CmdFind"
         CmdFind.Size = New Size(38, 24)
         CmdFind.TabIndex = 8
@@ -131,8 +130,8 @@ Partial Class RecordNavigationBar
         ' TxtFind
         ' 
         TxtFind.Enabled = False
-        TxtFind.Location = New Point(506, 3)
-        TxtFind.Margin = New Padding(0, 3, 3, 3)
+        TxtFind.Location = New Point(415, 0)
+        TxtFind.Margin = New Padding(0)
         TxtFind.Name = "TxtFind"
         TxtFind.Size = New Size(141, 23)
         TxtFind.TabIndex = 9
@@ -141,8 +140,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdSave.Enabled = False
         CmdSave.Image = CType(resources.GetObject("CmdSave.Image"), Image)
-        CmdSave.Location = New Point(653, 3)
-        CmdSave.Margin = New Padding(3, 3, 0, 3)
+        CmdSave.Location = New Point(559, 0)
+        CmdSave.Margin = New Padding(3, 0, 0, 0)
         CmdSave.Name = "CmdSave"
         CmdSave.Size = New Size(38, 24)
         CmdSave.TabIndex = 10
@@ -152,8 +151,8 @@ Partial Class RecordNavigationBar
         ' 
         CmdUndo.Enabled = False
         CmdUndo.Image = CType(resources.GetObject("CmdUndo.Image"), Image)
-        CmdUndo.Location = New Point(691, 3)
-        CmdUndo.Margin = New Padding(0, 3, 0, 3)
+        CmdUndo.Location = New Point(597, 0)
+        CmdUndo.Margin = New Padding(0)
         CmdUndo.Name = "CmdUndo"
         CmdUndo.Size = New Size(38, 24)
         CmdUndo.TabIndex = 11
@@ -162,6 +161,7 @@ Partial Class RecordNavigationBar
         ' TableLayoutPanel1
         ' 
         TableLayoutPanel1.AutoSize = True
+        TableLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         TableLayoutPanel1.ColumnCount = 13
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
@@ -187,28 +187,14 @@ Partial Class RecordNavigationBar
         TableLayoutPanel1.Controls.Add(CmdGotoLast, 5, 0)
         TableLayoutPanel1.Controls.Add(CmdAddNew, 6, 0)
         TableLayoutPanel1.Controls.Add(CmdDelete, 7, 0)
-        TableLayoutPanel1.Controls.Add(LabCaption, 0, 0)
         TableLayoutPanel1.Controls.Add(ChkToggleFilter, 8, 0)
         TableLayoutPanel1.Location = New Point(0, 0)
         TableLayoutPanel1.Margin = New Padding(0)
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 1
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
-        TableLayoutPanel1.Size = New Size(729, 30)
+        TableLayoutPanel1.Size = New Size(635, 24)
         TableLayoutPanel1.TabIndex = 12
-        ' 
-        ' LabCaption
-        ' 
-        LabCaption.AutoSize = True
-        LabCaption.Dock = DockStyle.Left
-        LabCaption.Font = New Font("Segoe UI", 14F, FontStyle.Bold)
-        LabCaption.Location = New Point(0, 0)
-        LabCaption.Margin = New Padding(0, 0, 3, 0)
-        LabCaption.Name = "LabCaption"
-        LabCaption.Size = New Size(82, 30)
-        LabCaption.TabIndex = 12
-        LabCaption.Text = "Caption"
-        LabCaption.TextAlign = ContentAlignment.MiddleLeft
         ' 
         ' ChkToggleFilter
         ' 
@@ -216,7 +202,8 @@ Partial Class RecordNavigationBar
         ChkToggleFilter.Enabled = False
         ChkToggleFilter.Image = My.Resources.Resources.Filter
         ChkToggleFilter.ImageAlign = ContentAlignment.TopLeft
-        ChkToggleFilter.Location = New Point(427, 3)
+        ChkToggleFilter.Location = New Point(339, 0)
+        ChkToggleFilter.Margin = New Padding(3, 0, 0, 0)
         ChkToggleFilter.Name = "ChkToggleFilter"
         ChkToggleFilter.RightToLeft = RightToLeft.Yes
         ChkToggleFilter.Size = New Size(38, 24)
@@ -231,9 +218,11 @@ Partial Class RecordNavigationBar
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
+        AutoSizeMode = AutoSizeMode.GrowAndShrink
         Controls.Add(TableLayoutPanel1)
+        Margin = New Padding(0)
         Name = "RecordNavigationBar"
-        Size = New Size(729, 30)
+        Size = New Size(635, 24)
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
         ResumeLayout(False)
@@ -252,7 +241,6 @@ Partial Class RecordNavigationBar
     Friend WithEvents CmdSave As Button
     Friend WithEvents CmdUndo As Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
-    Friend WithEvents LabCaption As Label
     Friend WithEvents ChkToggleFilter As CheckBox
 
 End Class

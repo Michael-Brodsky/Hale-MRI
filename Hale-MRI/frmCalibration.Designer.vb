@@ -60,7 +60,7 @@ Partial Class FrmCalibration
         ToolTipSave = New ToolTip(components)
         TxtAngleResolution = New TextBox()
         TxtDepthResolution = New TextBox()
-        WorkstationStatusStrip1 = New WorkstationStatusStrip()
+        EncoderStatusStrip1 = New EncoderStatusStrip()
         SuspendLayout()
         ' 
         ' txtAngleCalibration
@@ -425,25 +425,22 @@ Partial Class FrmCalibration
         TxtDepthResolution.Size = New Size(188, 23)
         TxtDepthResolution.TabIndex = 19
         ' 
-        ' WorkstationStatusStrip1
+        ' EncoderStatusStrip1
         ' 
-        WorkstationStatusStrip1.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        WorkstationStatusStrip1.Hardware = Nothing
-        WorkstationStatusStrip1.Location = New Point(0, 482)
-        WorkstationStatusStrip1.Margin = New Padding(2, 1, 2, 1)
-        WorkstationStatusStrip1.Name = "WorkstationStatusStrip1"
-        WorkstationStatusStrip1.Operation = ""
-        WorkstationStatusStrip1.Size = New Size(795, 39)
-        WorkstationStatusStrip1.Status = WorkstationStatusStrip.EncoderStatus.NoEncoders
-        WorkstationStatusStrip1.TabIndex = 33
-        WorkstationStatusStrip1.WorkstationName = ""
+        EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        EncoderStatusStrip1.Hardware = Nothing
+        EncoderStatusStrip1.Location = New Point(-1, 497)
+        EncoderStatusStrip1.Name = "EncoderStatusStrip1"
+        EncoderStatusStrip1.Size = New Size(796, 23)
+        EncoderStatusStrip1.TabIndex = 33
+        EncoderStatusStrip1.WorkstationName = ""
         ' 
         ' FrmCalibration
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(795, 520)
-        Controls.Add(WorkstationStatusStrip1)
+        Controls.Add(EncoderStatusStrip1)
         Controls.Add(TxtDepthResolution)
         Controls.Add(TxtAngleResolution)
         Controls.Add(cmdDefaultCalibration)
@@ -524,5 +521,5 @@ Partial Class FrmCalibration
     Friend WithEvents ToolTipSave As ToolTip
     Friend WithEvents TxtAngleResolution As TextBox
     Friend WithEvents TxtDepthResolution As TextBox
-    Friend WithEvents WorkstationStatusStrip1 As WorkstationStatusStrip
+    Friend WithEvents EncoderStatusStrip1 As EncoderStatusStrip
 End Class

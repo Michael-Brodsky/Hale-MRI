@@ -17,7 +17,6 @@ Public Class FrmMeasurements
 #End Region
 #Region "Private Members"
     Private mBlades As Integer
-    Private mHardware As WorkstationEncoders
     Private mJobDetails As JobDetail
     Private mJob As Job
     Private Scanning As Boolean
@@ -33,18 +32,20 @@ Public Class FrmMeasurements
 
     Public Property Hardware As WorkstationEncoders
         Get
-            Return mHardware
+            Return EncoderStatusStrip1.Hardware
         End Get
         Set(value As WorkstationEncoders)
-            mHardware = value
+            EncoderStatusStrip1.Hardware = value
         End Set
     End Property
+
     Public Property Job As Job
         Get
             Return mJob
         End Get
         Set(value As Job)
             mJob = value
+            If mJob IsNot Nothing Then JobDetails = mJob.JobDetails.FirstOrDefault()
         End Set
     End Property
 
@@ -53,15 +54,13 @@ Public Class FrmMeasurements
             Return mJobDetails
         End Get
         Set(value As JobDetail)
-            If value IsNot Nothing Then
-                mJobDetails = value
-                Job = mJobDetails.Job
-                If mJobDetails IsNot Nothing Then
-                    JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) From {mJobDetails}.ToList()
-                    BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
-                    BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
-                    BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementBindingSource, "RadiusMeasurements")
-                End If
+            mJobDetails = value
+            mJob = mJobDetails?.Job
+            If mJobDetails IsNot Nothing Then
+                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) From {mJobDetails}.ToList()
+                BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
+                BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
+                BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementBindingSource, "RadiusMeasurements")
             End If
         End Set
     End Property
@@ -77,6 +76,8 @@ Public Class FrmMeasurements
             Dim TECells As New List(Of Integer?)
             Dim Angles As New List(Of Double?)
             Dim Depths As New List(Of Double?)
+            Dim angleMeasurement As Double = 0
+            Dim depthMeasurement As Double = 0
             If Database IsNot Nothing Then
                 ' Get the existing radius measurements for the current job details
                 For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
@@ -109,34 +110,35 @@ Public Class FrmMeasurements
                 TxtStatus.Text = "Idle"
                 Return
             End If
-            With Hardware.Encoders
-                AngleArray(0) = .Angle()
-                DepthArray(0) = .Depth()
-                For n = 1 To pointtotal
-                    While .Angle() > Int((AngleArray(n - 1) + ScanIncrement) / ScanIncrement + 0.5) / ScanIncrement
-                        If Scanning = False Then
-                            GoTo exittheFor
-                        End If
-                        txtAngle.Text = .Angle().ToString()
-                        txtDepth.Text = .Depth().ToString()
-                        System.Threading.Thread.Sleep(5)
-                    End While
-
-                    If .Angle() < 180 And ScanBlade = 1 Then
-                        AngleArray(n) = .Angle() - 360
-                    Else
-                        AngleArray(n) = .Angle()
+            With EncoderStatusStrip1
+                angleMeasurement = AngleArray(0) = .Angle()
+                depthMeasurement = DepthArray(0) = .Depth
+            End With
+            For n = 1 To pointtotal
+                While angleMeasurement > Int((AngleArray(n - 1) + ScanIncrement) / ScanIncrement + 0.5) / ScanIncrement
+                    If Scanning = False Then
+                        GoTo exittheFor
                     End If
-                    DepthArray(n) = .Depth()
-                Next
-exittheFor:
-                If .Angle() > 180 And ScanBlade = 1 Then
-                    AngleArray(n) = .Angle() - 360
+                    txtAngle.Text = angleMeasurement.ToString()
+                    txtDepth.Text = depthMeasurement.ToString()
+                    System.Threading.Thread.Sleep(5)
+                End While
+
+                If angleMeasurement < 180 And ScanBlade = 1 Then
+                    AngleArray(n) = angleMeasurement - 360
                 Else
-                    AngleArray(n) = .Angle()
+                    AngleArray(n) = angleMeasurement
                 End If
-                DepthArray(n) = .Depth()
-                timerMeasurements.Enabled = True
+                DepthArray(n) = depthMeasurement
+            Next
+exittheFor:
+            If angleMeasurement > 180 And ScanBlade = 1 Then
+                AngleArray(n) = angleMeasurement - 360
+            Else
+                AngleArray(n) = angleMeasurement
+            End If
+            DepthArray(n) = depthMeasurement
+            timerMeasurements.Enabled = True
                 'Need to add a check for duplicate radius measurements for the same blade and radius so we can remove old data
                 ' Save the measurements to the database
                 Dim needdelete As Boolean = False
@@ -187,7 +189,6 @@ exittheFor:
                         .Depth = DepthArray(x)
                     }
                 Next
-            End With
         End If
     End Sub
     Private Function GetPitchofBladeRadius(Blade As Integer, Radius As Double) As Double()
@@ -322,7 +323,7 @@ exittheFor:
         cmdHome.Enabled = False
     End Sub
     Private Sub MeasurementsGet()
-        ' Uset this in place of UpdateFields()
+        ' Use this in place of UpdateFields()
         With Hardware.Encoders
             txtAngle.Text = .Angle
             txtRadius.Text = .Radius(Job.PropellerDiameter).Value
@@ -440,9 +441,9 @@ exittheFor:
     End Sub
     Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles cmdZero.Click
         Try
-            mHardware.Encoders.ResetCount(ANGLE_ENCODER)
-            mHardware.Encoders.ResetCount(RADIUS_ENCODER)
-            mHardware.Encoders.ResetCount(DEPTH_ENCODER)
+            EncoderStatusStrip1.ResetAngle()
+            EncoderStatusStrip1.ResetDepth()
+            EncoderStatusStrip1.ResetRadius()
         Catch ex As Exception
             MessageBox.Show("Error zeroing encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
