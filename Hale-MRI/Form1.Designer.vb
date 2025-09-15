@@ -23,6 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -49,6 +50,8 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         Panel1 = New Panel()
+        LabRadiusPercent = New Label()
+        TxtRadiusPercent = New TextBox()
         ChkAutoScan = New CheckBox()
         LabDepth = New Label()
         TxtDepth = New TextBox()
@@ -56,8 +59,7 @@ Partial Class Form1
         TxtRadius = New TextBox()
         LabAngle = New Label()
         TxtAngle = New TextBox()
-        LabRadiusPercent = New Label()
-        TxtRadiusPercent = New TextBox()
+        PictureBoxLogo = New PictureBox()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -68,6 +70,7 @@ Partial Class Form1
         PanelJob.SuspendLayout()
         TableLayoutPanel1.SuspendLayout()
         Panel1.SuspendLayout()
+        CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' RecordNavigationBar1
@@ -337,6 +340,22 @@ Partial Class Form1
         Panel1.Size = New Size(907, 531)
         Panel1.TabIndex = 8
         ' 
+        ' LabRadiusPercent
+        ' 
+        LabRadiusPercent.AutoSize = True
+        LabRadiusPercent.Location = New Point(194, 64)
+        LabRadiusPercent.Name = "LabRadiusPercent"
+        LabRadiusPercent.Size = New Size(85, 15)
+        LabRadiusPercent.TabIndex = 8
+        LabRadiusPercent.Text = "Radius Percent"
+        ' 
+        ' TxtRadiusPercent
+        ' 
+        TxtRadiusPercent.Location = New Point(194, 82)
+        TxtRadiusPercent.Name = "TxtRadiusPercent"
+        TxtRadiusPercent.Size = New Size(173, 23)
+        TxtRadiusPercent.TabIndex = 7
+        ' 
         ' ChkAutoScan
         ' 
         ChkAutoScan.Appearance = Appearance.Button
@@ -399,27 +418,23 @@ Partial Class Form1
         TxtAngle.Size = New Size(173, 23)
         TxtAngle.TabIndex = 0
         ' 
-        ' LabRadiusPercent
+        ' PictureBoxLogo
         ' 
-        LabRadiusPercent.AutoSize = True
-        LabRadiusPercent.Location = New Point(194, 64)
-        LabRadiusPercent.Name = "LabRadiusPercent"
-        LabRadiusPercent.Size = New Size(85, 15)
-        LabRadiusPercent.TabIndex = 8
-        LabRadiusPercent.Text = "Radius Percent"
-        ' 
-        ' TxtRadiusPercent
-        ' 
-        TxtRadiusPercent.Location = New Point(194, 82)
-        TxtRadiusPercent.Name = "TxtRadiusPercent"
-        TxtRadiusPercent.Size = New Size(173, 23)
-        TxtRadiusPercent.TabIndex = 7
+        PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), Image)
+        PictureBoxLogo.InitialImage = CType(resources.GetObject("PictureBoxLogo.InitialImage"), Image)
+        PictureBoxLogo.Location = New Point(12, 12)
+        PictureBoxLogo.Name = "PictureBoxLogo"
+        PictureBoxLogo.Size = New Size(189, 86)
+        PictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom
+        PictureBoxLogo.TabIndex = 9
+        PictureBoxLogo.TabStop = False
         ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(1134, 671)
+        Controls.Add(PictureBoxLogo)
         Controls.Add(Panel1)
         Controls.Add(PanelJob)
         Controls.Add(TxtJobNumber)
@@ -441,6 +456,7 @@ Partial Class Form1
         TableLayoutPanel1.PerformLayout()
         Panel1.ResumeLayout(False)
         Panel1.PerformLayout()
+        CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -480,4 +496,5 @@ Partial Class Form1
     Friend WithEvents ChkAutoScan As CheckBox
     Friend WithEvents LabRadiusPercent As Label
     Friend WithEvents TxtRadiusPercent As TextBox
+    Friend WithEvents PictureBoxLogo As PictureBox
 End Class

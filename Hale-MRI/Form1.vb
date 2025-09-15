@@ -2,6 +2,7 @@
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 
 Public Class Form1
     Inherits FrmDatabaseForm
@@ -76,7 +77,7 @@ Public Class Form1
     Private Property Navigator As RecordNavigationBar
 
     Private Sub ShowJobInfo()
-        ' Show the current Customer, Vessel and Job and Propeller info.
+        ' Show the current Customer, Vessel, Job and Propeller info.
         Dim mfg As Manufacturer = Job?.PropellerManufacturer
         TxtJobNumber.Text = Job?.JobNumber.ToString()
         TxtCustomer.Text = Job?.Vessel?.Customer?.CustomerName
@@ -90,6 +91,7 @@ Public Class Form1
     End Sub
 
     Private Sub ChkAutoScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkAutoScan.CheckedChanged
+        ' Toggle the auto scan timer on/off.
         Try
             EncoderStatusStrip1.TimerOn = ChkAutoScan.Checked
             ChkAutoScan.Text = If(ChkAutoScan.Checked, "Stop", "Start")
@@ -101,6 +103,7 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ' Initialize ane form controls.
+            ChkAutoScan.Enabled = Hardware IsNot Nothing AndAlso Hardware.Encoders IsNot Nothing AndAlso Hardware.Encoders.Initialized
             ChkAutoScan.Text = If(ChkAutoScan.Checked, "Stop", "Start")
             ' Initialize the Navigator
             Navigator = RecordNavigationBar1
