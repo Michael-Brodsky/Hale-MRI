@@ -6,7 +6,7 @@ Namespace Models
     Partial Public Class Vessel
         Public Property Id As Integer?
 
-        Public Property CustomerId As Integer?
+        Public Property CustomerId As Integer
 
         Public Property ServiceTypeId As Integer?
 

@@ -305,6 +305,17 @@ Public Class FrmJobs
         End Try
     End Sub
 
+    Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
+        Try
+            If SelectedCustomer IsNot Nothing AndAlso ComboCustomers.DoubleClicked() Then
+                ShowForm(mFrmCustomers, Database)
+                mFrmCustomers.Find(SelectedCustomer)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error opening the customers form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
     Private Sub ComboCustomers_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboCustomers.SelectionChangeCommitted
         Try
             Filter = SelectedCustomer
@@ -338,6 +349,18 @@ Public Class FrmJobs
         Catch ex As Exception
             MessageBox.Show("Error selecting a job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
+        Try
+            If SelectedVessel IsNot Nothing AndAlso ComboVessels.DoubleClicked() Then
+                ShowForm(mFrmVessels, Database)
+                mFrmVessels.Find(SelectedVessel)
+            End If
+        Catch ex As Exception
+            MessageBox.Show("Error opening the vessels form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+
     End Sub
 
     Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboVessels.SelectedIndexChanged

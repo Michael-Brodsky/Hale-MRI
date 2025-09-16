@@ -1,5 +1,8 @@
-﻿Imports LibDatabase.Models
+﻿Imports System
+Imports System.Collections.Generic
+Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.VisualBasic
 
 Namespace Contexts
     Partial Public Class HaleMRIContext
@@ -35,6 +38,8 @@ Namespace Contexts
         Public Overridable Property Manufacturers As DbSet(Of Manufacturer)
 
         Public Overridable Property Materials As DbSet(Of Material)
+
+        Public Overridable Property MeasurementTypes As DbSet(Of MeasurementType)
 
         Public Overridable Property Propellers As DbSet(Of Propeller)
 
@@ -322,6 +327,8 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.JobId, "Job ID")
 
+                    entity.HasIndex(Function(e) e.MeasurementTypeId, "Measurement Type ID")
+
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
@@ -330,6 +337,9 @@ Namespace Contexts
                         HasMaxLength(255).
                         HasColumnName("File Name")
                     entity.Property(Function(e) e.JobId).HasColumnName("Job ID")
+                    entity.Property(Function(e) e.MeasurementTypeId).
+                        HasDefaultValue(0).
+                        HasColumnName("Measurement Type ID")
                     entity.Property(Function(e) e.PerformedBy).HasColumnName("Performed By")
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
                     entity.Property(Function(e) e.ToleranceClass).
@@ -340,6 +350,10 @@ Namespace Contexts
                     entity.HasOne(Function(d) d.Job).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.JobId).
                         HasConstraintName("JobsJob Details")
+
+                    entity.HasOne(Function(d) d.MeasurementType).WithMany(Function(p) p.JobDetails).
+                        HasForeignKey(Function(d) d.MeasurementTypeId).
+                        HasConstraintName("~Measurement TypesJob Details")
 
                     entity.HasOne(Function(d) d.PerformedByNavigation).WithMany(Function(p) p.JobDetails).
                         HasForeignKey(Function(d) d.PerformedBy).
@@ -400,6 +414,23 @@ Namespace Contexts
                     entity.Property(Function(e) e.Material1).
                         HasMaxLength(16).
                         HasColumnName("Material")
+                End Sub)
+
+            modelBuilder.Entity(Of MeasurementType)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.ToTable("~Measurement Types")
+
+                    entity.HasIndex(Function(e) e.Id, "ID")
+
+                    entity.Property(Function(e) e.Id).
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.MeasurementType1).
+                        IsRequired().
+                        HasMaxLength(16).
+                        HasColumnName("Measurement Type")
                 End Sub)
 
             modelBuilder.Entity(Of Propeller)(

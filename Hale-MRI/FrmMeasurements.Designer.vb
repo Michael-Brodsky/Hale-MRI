@@ -123,8 +123,8 @@ Partial Class FrmMeasurements
         EncoderStatusStrip1 = New EncoderStatusStrip()
         CellMeasurementsBindingSource = New BindingSource(components)
         ExtremeMeasurementsBindingSource = New BindingSource(components)
-        timerMeasurements = New Timer(components)
         JobDetailsBindingSource = New BindingSource(components)
+        timerMeasurements = New Timer(components)
         CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).BeginInit()
         tloMeasurements.SuspendLayout()
@@ -1334,12 +1334,12 @@ Partial Class FrmMeasurements
         ' 
         ExtremeMeasurementsBindingSource.DataSource = GetType(LibDatabase.Models.ExtremeMeasurement)
         ' 
-        ' timerMeasurements
-        ' 
-        ' 
         ' JobDetailsBindingSource
         ' 
         JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
+        ' 
+        ' timerMeasurements
+        ' 
         ' 
         ' FrmMeasurements
         ' 
@@ -1457,10 +1457,10 @@ Partial Class FrmMeasurements
     Friend WithEvents CellMeasurementsBindingSource As BindingSource
     Friend WithEvents ExtremeMeasurementsBindingSource As BindingSource
     Friend WithEvents chkMeasurements As CheckBox
-    Friend WithEvents timerMeasurements As Timer
     Friend WithEvents BladeID As DataGridViewTextBoxColumn
     Friend WithEvents txtBlade As TextBox
     Friend WithEvents PlotGraph As DataVisualization.Charting.Chart
     Friend WithEvents JobDetailsBindingSource As BindingSource
     Friend WithEvents EncoderStatusStrip1 As EncoderStatusStrip
+    Friend WithEvents timerMeasurements As Timer
 End Class

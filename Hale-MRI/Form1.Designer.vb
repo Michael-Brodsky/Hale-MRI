@@ -32,7 +32,8 @@ Partial Class Form1
         RadiusMeasurementBindingSource = New BindingSource(components)
         DataGridJobDetails = New DataGridView()
         StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        DescriptionDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
+        MeasurementTypesBindingSource = New BindingSource(components)
         ToleranceClassDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
         ClassBindingSource = New BindingSource(components)
         WheelPitchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -50,6 +51,8 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         Panel1 = New Panel()
+        LabBlade = New Label()
+        ComboBlade = New ComboBox()
         LabRadiusPercent = New Label()
         TxtRadiusPercent = New TextBox()
         ChkAutoScan = New CheckBox()
@@ -65,6 +68,7 @@ Partial Class Form1
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ClassBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         PanelJob.SuspendLayout()
@@ -141,9 +145,18 @@ Partial Class Form1
         ' 
         ' DescriptionDataGridViewTextBoxColumn
         ' 
-        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
+        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "MeasurementTypeId"
+        DescriptionDataGridViewTextBoxColumn.DataSource = MeasurementTypesBindingSource
+        DescriptionDataGridViewTextBoxColumn.DisplayMember = "MeasurementType1"
         DescriptionDataGridViewTextBoxColumn.HeaderText = "Measurement"
         DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
+        DescriptionDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
+        DescriptionDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
+        DescriptionDataGridViewTextBoxColumn.ValueMember = "Id"
+        ' 
+        ' MeasurementTypesBindingSource
+        ' 
+        MeasurementTypesBindingSource.DataSource = GetType(LibDatabase.Models.MeasurementType)
         ' 
         ' ToleranceClassDataGridViewTextBoxColumn
         ' 
@@ -326,6 +339,8 @@ Partial Class Form1
         ' Panel1
         ' 
         Panel1.BorderStyle = BorderStyle.Fixed3D
+        Panel1.Controls.Add(LabBlade)
+        Panel1.Controls.Add(ComboBlade)
         Panel1.Controls.Add(LabRadiusPercent)
         Panel1.Controls.Add(TxtRadiusPercent)
         Panel1.Controls.Add(ChkAutoScan)
@@ -340,10 +355,27 @@ Partial Class Form1
         Panel1.Size = New Size(907, 531)
         Panel1.TabIndex = 8
         ' 
+        ' LabBlade
+        ' 
+        LabBlade.AutoSize = True
+        LabBlade.Location = New Point(18, 12)
+        LabBlade.Name = "LabBlade"
+        LabBlade.Size = New Size(36, 15)
+        LabBlade.TabIndex = 10
+        LabBlade.Text = "Blade"
+        ' 
+        ' ComboBlade
+        ' 
+        ComboBlade.FormattingEnabled = True
+        ComboBlade.Location = New Point(18, 31)
+        ComboBlade.Name = "ComboBlade"
+        ComboBlade.Size = New Size(65, 23)
+        ComboBlade.TabIndex = 9
+        ' 
         ' LabRadiusPercent
         ' 
         LabRadiusPercent.AutoSize = True
-        LabRadiusPercent.Location = New Point(194, 64)
+        LabRadiusPercent.Location = New Point(268, 62)
         LabRadiusPercent.Name = "LabRadiusPercent"
         LabRadiusPercent.Size = New Size(85, 15)
         LabRadiusPercent.TabIndex = 8
@@ -351,7 +383,7 @@ Partial Class Form1
         ' 
         ' TxtRadiusPercent
         ' 
-        TxtRadiusPercent.Location = New Point(194, 82)
+        TxtRadiusPercent.Location = New Point(268, 80)
         TxtRadiusPercent.Name = "TxtRadiusPercent"
         TxtRadiusPercent.Size = New Size(173, 23)
         TxtRadiusPercent.TabIndex = 7
@@ -361,19 +393,18 @@ Partial Class Form1
         ChkAutoScan.Appearance = Appearance.Button
         ChkAutoScan.Image = My.Resources.Resources.Timer
         ChkAutoScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkAutoScan.Location = New Point(551, 32)
+        ChkAutoScan.Location = New Point(625, 30)
         ChkAutoScan.Margin = New Padding(2, 1, 2, 1)
         ChkAutoScan.Name = "ChkAutoScan"
         ChkAutoScan.Size = New Size(82, 23)
         ChkAutoScan.TabIndex = 6
-        ChkAutoScan.Text = "    Cal All"
         ChkAutoScan.TextImageRelation = TextImageRelation.ImageBeforeText
         ChkAutoScan.UseVisualStyleBackColor = True
         ' 
         ' LabDepth
         ' 
         LabDepth.AutoSize = True
-        LabDepth.Location = New Point(373, 14)
+        LabDepth.Location = New Point(447, 12)
         LabDepth.Name = "LabDepth"
         LabDepth.Size = New Size(39, 15)
         LabDepth.TabIndex = 5
@@ -381,7 +412,7 @@ Partial Class Form1
         ' 
         ' TxtDepth
         ' 
-        TxtDepth.Location = New Point(373, 32)
+        TxtDepth.Location = New Point(447, 30)
         TxtDepth.Name = "TxtDepth"
         TxtDepth.Size = New Size(173, 23)
         TxtDepth.TabIndex = 4
@@ -389,7 +420,7 @@ Partial Class Form1
         ' LabRadius
         ' 
         LabRadius.AutoSize = True
-        LabRadius.Location = New Point(194, 14)
+        LabRadius.Location = New Point(268, 12)
         LabRadius.Name = "LabRadius"
         LabRadius.Size = New Size(42, 15)
         LabRadius.TabIndex = 3
@@ -397,7 +428,7 @@ Partial Class Form1
         ' 
         ' TxtRadius
         ' 
-        TxtRadius.Location = New Point(194, 32)
+        TxtRadius.Location = New Point(268, 30)
         TxtRadius.Name = "TxtRadius"
         TxtRadius.Size = New Size(173, 23)
         TxtRadius.TabIndex = 2
@@ -405,7 +436,7 @@ Partial Class Form1
         ' LabAngle
         ' 
         LabAngle.AutoSize = True
-        LabAngle.Location = New Point(15, 14)
+        LabAngle.Location = New Point(89, 12)
         LabAngle.Name = "LabAngle"
         LabAngle.Size = New Size(38, 15)
         LabAngle.TabIndex = 1
@@ -413,7 +444,7 @@ Partial Class Form1
         ' 
         ' TxtAngle
         ' 
-        TxtAngle.Location = New Point(15, 32)
+        TxtAngle.Location = New Point(89, 30)
         TxtAngle.Name = "TxtAngle"
         TxtAngle.Size = New Size(173, 23)
         TxtAngle.TabIndex = 0
@@ -448,6 +479,7 @@ Partial Class Form1
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ClassBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         PanelJob.ResumeLayout(False)
@@ -471,11 +503,6 @@ Partial Class Form1
     Friend WithEvents EmployeesBindingSource As BindingSource
     Friend WithEvents ClassBindingSource As BindingSource
     Friend WithEvents TxtJobNumber As TextBox
-    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents WheelPitchDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents PerformedByDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
     Friend WithEvents PanelJob As Panel
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents TxtVessel As TextBox
@@ -497,4 +524,12 @@ Partial Class Form1
     Friend WithEvents LabRadiusPercent As Label
     Friend WithEvents TxtRadiusPercent As TextBox
     Friend WithEvents PictureBoxLogo As PictureBox
+    Friend WithEvents MeasurementTypesBindingSource As BindingSource
+    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents WheelPitchDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents PerformedByDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents LabBlade As Label
+    Friend WithEvents ComboBlade As ComboBox
 End Class

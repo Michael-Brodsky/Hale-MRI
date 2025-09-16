@@ -26,6 +26,7 @@ Public Class Form1
             With EncoderStatusStrip1
                 .Hardware = value
                 If .Hardware IsNot Nothing AndAlso .Hardware.Encoders IsNot Nothing AndAlso Not .Hardware.Encoders.Initialized Then EncoderStatusStrip1.Initialize()
+                ChkAutoScan.Enabled = .Hardware IsNot Nothing AndAlso .Hardware.Encoders IsNot Nothing AndAlso .Hardware.Encoders.Initialized
             End With
         End Set
     End Property
@@ -78,7 +79,11 @@ Public Class Form1
 
     Private Sub ShowJobInfo()
         ' Show the current Customer, Vessel, Job and Propeller info.
-        Dim mfg As Manufacturer = Job?.PropellerManufacturer
+        Dim bsBlades As New BindingList(Of Integer)
+        For i As Integer = 1 To mJob.PropellerBlades
+            bsBlades.Add(i)
+        Next
+        ComboBlade.DataSource = bsBlades
         TxtJobNumber.Text = Job?.JobNumber.ToString()
         TxtCustomer.Text = Job?.Vessel?.Customer?.CustomerName
         TxtVessel.Text = Job?.Vessel?.VesselName
@@ -115,8 +120,9 @@ Public Class Form1
             BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
             BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementBindingSource, "RadiusMeasurements")
             ' These are needed by the DataGridJobDetails.
-            EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(em) em.EmployeeName).ToList())
             ClassBindingSource.DataSource = New BindingList(Of Tolerance)(Database.Tolerances.Local.ToBindingList())
+            EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(em) em.EmployeeName).ToList())
+            MeasurementTypesBindingSource.DataSource = New BindingList(Of MeasurementType)(Database.MeasurementTypes.OrderBy(Function(mt) mt.Id).ToList())
             ' Initialize the EncoderStatusStrip1's .
             EncoderStatusStrip1.TimerInterval = Database.Settings.Local.FirstOrDefault().EncoderCalibrationSampleRate
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick

@@ -129,6 +129,9 @@
   <metadata name="RadiusMeasurementBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>716, 13</value>
   </metadata>
+  <metadata name="MeasurementTypesBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>1307, 15</value>
+  </metadata>
   <metadata name="ClassBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>1149, 15</value>
   </metadata>
@@ -139,7 +142,7 @@
   <data name="PictureBoxLogo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAcEAAAC4CAIAAAAUg8ACAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wgAADsIBFShKgAAAtU5JREFUeF7sXQWcHGXyra+7ZzdOIEBwDfFkfeN4QnB3DofDXYO7O4e7O4QAcbd1
+        vAAADrwBlbxySQAAtU5JREFUeF7sXQWcHGXyra+7ZzdOIEBwDfFkfeN4QnB3DofDXYO7O4e7O4QAcbd1
         jW2y7u470vr/vfp6ZiVykMtxgf/U9YXd2Zme1tclr15RY2OjN2xhC1vYwvbHrbGxkQKBgBO2sIUtbGH7
         4xYIBMjr9fZ8OWxhC1vYwvY7zOv1hjE0bGELW9i208IYGrawhS1s229hDA1b2MIWtu23MIaGLWxhC9v2
         WxhDwxa2sIVt+y2MoTDbcUzHsm3DsRzTcUwbL9n40XAsW76Hf3Es/tmSn9iK2XgDVoOVWFiB/BT+ZNuW
@@ -919,7 +922,7 @@
   <data name="PictureBoxLogo.InitialImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAcEAAAC4CAIAAAAUg8ACAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAO
-        wQAADsEBuJFr7QAAtU5JREFUeF7sXQWcHGXyra+7ZzdOIEBwDfFkfeN4QnB3DofDXYO7O4e7O4QAcbd1
+        vAAADrwBlbxySQAAtU5JREFUeF7sXQWcHGXyra+7ZzdOIEBwDfFkfeN4QnB3DofDXYO7O4e7O4QAcbd1
         jW2y7u470vr/vfp6ZiVykMtxgf/U9YXd2Zme1tclr15RY2OjN2xhC1vYwvbHrbGxkQKBgBO2sIUtbGH7
         4xYIBMjr9fZ8OWxhC1vYwvY7zOv1hjE0bGELW9i208IYGrawhS1s229hDA1b2MIWtu23MIaGLWxhC9v2
         WxhDwxa2sIVt+y2MoTDbcUzHsm3DsRzTcUwbL9n40XAsW76Hf3Es/tmSn9iK2XgDVoOVWFiB/BT+ZNuW

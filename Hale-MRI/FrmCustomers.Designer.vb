@@ -25,6 +25,7 @@ Partial Class FrmCustomers
         components = New ComponentModel.Container()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
         DataGridCustomers = New DataGridView()
         CustomerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -82,7 +83,7 @@ Partial Class FrmCustomers
         DataGridCustomers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridCustomers.Columns.AddRange(New DataGridViewColumn() {CustomerNameDataGridViewTextBoxColumn, AddressDataGridViewTextBoxColumn, CityDataGridViewTextBoxColumn, State, PostalCodeDataGridViewTextBoxColumn, CountryCode, TelephoneDataGridViewTextBoxColumn, EmailDataGridViewTextBoxColumn, WebsiteDataGridViewTextBoxColumn})
         DataGridCustomers.DataSource = CustomerBindingSource
-        DataGridCustomers.Location = New Point(0, 42)
+        DataGridCustomers.Location = New Point(0, 36)
         DataGridCustomers.Margin = New Padding(0)
         DataGridCustomers.Name = "DataGridCustomers"
         DataGridCustomers.RowHeadersWidth = 82
@@ -298,6 +299,7 @@ Partial Class FrmCustomers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Enabled = False
@@ -307,7 +309,7 @@ Partial Class FrmCustomers
         RecordNavigationBar1.Margin = New Padding(0, 0, 0, 12)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Size = New Size(729, 30)
+        RecordNavigationBar1.Size = New Size(635, 24)
         RecordNavigationBar1.TabIndex = 1
         ' 
         ' TableLayoutPanel2
@@ -323,7 +325,7 @@ Partial Class FrmCustomers
         TableLayoutPanel2.RowCount = 2
         TableLayoutPanel2.RowStyles.Add(New RowStyle())
         TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        TableLayoutPanel2.Size = New Size(926, 250)
+        TableLayoutPanel2.Size = New Size(647, 250)
         TableLayoutPanel2.TabIndex = 6
         ' 
         ' labVesselJobsTitle
@@ -342,6 +344,14 @@ Partial Class FrmCustomers
         DataGridVesselJobs.AllowUserToAddRows = False
         DataGridVesselJobs.AllowUserToDeleteRows = False
         DataGridVesselJobs.AutoGenerateColumns = False
+        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = SystemColors.Control
+        DataGridViewCellStyle3.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle3.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.True
+        DataGridVesselJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         DataGridVesselJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridVesselJobs.Columns.AddRange(New DataGridViewColumn() {JobNumberDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn})
         DataGridVesselJobs.DataSource = JobBindingSource
@@ -350,13 +360,14 @@ Partial Class FrmCustomers
         DataGridVesselJobs.MultiSelect = False
         DataGridVesselJobs.Name = "DataGridVesselJobs"
         DataGridVesselJobs.ReadOnly = True
-        DataGridVesselJobs.Size = New Size(920, 229)
+        DataGridVesselJobs.Size = New Size(647, 229)
         DataGridVesselJobs.TabIndex = 1
         ' 
         ' JobNumberDataGridViewTextBoxColumn
         ' 
         JobNumberDataGridViewTextBoxColumn.DataPropertyName = "JobNumber"
         JobNumberDataGridViewTextBoxColumn.HeaderText = "JobNumber"
+        JobNumberDataGridViewTextBoxColumn.MinimumWidth = 100
         JobNumberDataGridViewTextBoxColumn.Name = "JobNumberDataGridViewTextBoxColumn"
         JobNumberDataGridViewTextBoxColumn.ReadOnly = True
         ' 
@@ -364,21 +375,25 @@ Partial Class FrmCustomers
         ' 
         StartDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate"
         StartDateDataGridViewTextBoxColumn.HeaderText = "StartDate"
+        StartDateDataGridViewTextBoxColumn.MinimumWidth = 152
         StartDateDataGridViewTextBoxColumn.Name = "StartDateDataGridViewTextBoxColumn"
         StartDateDataGridViewTextBoxColumn.ReadOnly = True
+        StartDateDataGridViewTextBoxColumn.Width = 152
         ' 
         ' DescriptionDataGridViewTextBoxColumn
         ' 
         DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
         DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
+        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 352
         DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
         DescriptionDataGridViewTextBoxColumn.ReadOnly = True
+        DescriptionDataGridViewTextBoxColumn.Width = 352
         ' 
         ' FrmCustomers
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1632, 817)
+        ClientSize = New Size(1571, 817)
         Controls.Add(TableLayoutPanel2)
         Controls.Add(TableLayoutPanel3)
         Controls.Add(PanelCustomerVessels)
@@ -421,9 +436,6 @@ Partial Class FrmCustomers
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
     Friend WithEvents labVesselJobsTitle As Label
     Friend WithEvents DataGridVesselJobs As DataGridView
-    Friend WithEvents JobNumberDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents CustomerNameDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents AddressDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents CityDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
@@ -433,4 +445,7 @@ Partial Class FrmCustomers
     Friend WithEvents TelephoneDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents EmailDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents WebsiteDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents JobNumberDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
 End Class

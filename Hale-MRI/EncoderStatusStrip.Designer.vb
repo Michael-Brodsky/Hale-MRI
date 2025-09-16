@@ -68,14 +68,14 @@ Partial Class EncoderStatusStrip
         ' InitializeToolStripMenuItem
         ' 
         InitializeToolStripMenuItem.Name = "InitializeToolStripMenuItem"
-        InitializeToolStripMenuItem.Size = New Size(180, 22)
+        InitializeToolStripMenuItem.Size = New Size(117, 22)
         InitializeToolStripMenuItem.Text = "Initialize"
         ' 
         ' ResetToolStripMenuItem
         ' 
         ResetToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {AngleToolStripMenuItem, DepthToolStripMenuItem, RadiusToolStripMenuItem, AllToolStripMenuItem})
         ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        ResetToolStripMenuItem.Size = New Size(180, 22)
+        ResetToolStripMenuItem.Size = New Size(117, 22)
         ResetToolStripMenuItem.Text = "Reset"
         ' 
         ' AngleToolStripMenuItem

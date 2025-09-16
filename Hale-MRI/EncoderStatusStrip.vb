@@ -118,6 +118,12 @@ Public Class EncoderStatusStrip
         Return CType(Command(EncoderCommand.Radius, diameter), IEncoderHardware.RadiusMeasurement)
     End Function
 
+    Public Sub ResetAll()
+        ResetAngle()
+        ResetDepth()
+        ResetRadius()
+    End Sub
+
     Public Sub ResetAngle()
         Command(EncoderCommand.AngleReset)
     End Sub
@@ -237,9 +243,7 @@ Public Class EncoderStatusStrip
     End Sub
 
     Private Sub AllToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AllToolStripMenuItem.Click
-        Me.ResetAngle()
-        Me.ResetDepth()
-        Me.ResetRadius()
+        Me.ResetAll()
     End Sub
 
     Private Sub StartToolStripMenuItem_Click(sender As Object, e As EventArgs)
