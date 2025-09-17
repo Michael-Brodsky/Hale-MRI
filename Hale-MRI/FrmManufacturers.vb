@@ -99,7 +99,7 @@ Public Class FrmManufacturers
 #Region "Event Handlers"
     Private Sub DataGridPropeller_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridPropellers.CellMouseDoubleClick
         Try
-            ShowForm(mFrmPropellers, Database)
+            ShowForm(mFrmPropellers, Database, User)
             mFrmPropellers.Find(PropellersBindingSource.Current.Id)
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)

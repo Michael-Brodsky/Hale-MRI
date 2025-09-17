@@ -50,7 +50,7 @@ Namespace Models
 
         Public Property PropellerRotation As String
 
-        Public Property PropellerBore As Double?
+        Public Property PropellerBore As String
 
         Public Overridable Property CupNavigation As Cup
 

@@ -3,6 +3,7 @@ Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
+Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 
 Public Class FrmJobs
     Inherits FrmDatabaseForm
@@ -199,15 +200,6 @@ Public Class FrmJobs
 
     Private Property Navigator As RecordNavigationBar
 
-    Private Property SelectedCustomer As Customer
-        Get
-            Return CType(ComboCustomers.SelectedItem, Customer)
-        End Get
-        Set(value As Customer)
-            ComboCustomers.SelectedItem = value
-        End Set
-    End Property
-
     Private Property PreviousJob As Job
 
     Private Sub ScanDataExport()
@@ -261,6 +253,15 @@ Public Class FrmJobs
         End Set
     End Property
 
+    Private Property SelectedCustomer As Customer
+        Get
+            Return CType(ComboCustomers.SelectedItem, Customer)
+        End Get
+        Set(value As Customer)
+            ComboCustomers.SelectedItem = value
+        End Set
+    End Property
+
     Private Property SelectedJob As Job
         Get
             Return CType(ComboJobs.SelectedItem, Job)
@@ -277,6 +278,7 @@ Public Class FrmJobs
         End Get
         Set(value As Vessel)
             ComboVessels.SelectedItem = value
+            If ComboVessels.SelectedItem IsNot Nothing AndAlso JobsBindingSource.Count = 0 Then Navigator.CmdAddNew.Enabled = True
         End Set
     End Property
 #End Region
@@ -308,7 +310,7 @@ Public Class FrmJobs
     Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
         Try
             If SelectedCustomer IsNot Nothing AndAlso ComboCustomers.DoubleClicked() Then
-                ShowForm(mFrmCustomers, Database)
+                ShowForm(mFrmCustomers, Database, User)
                 mFrmCustomers.Find(SelectedCustomer)
             End If
         Catch ex As Exception
@@ -328,7 +330,7 @@ Public Class FrmJobs
         ' Open the measurements form with the clicked Job record.
         Try
             If CurrentJob IsNot Nothing AndAlso ComboJobs.DoubleClicked() Then
-                ShowForm(mFrmMeasurements, Database)
+                ShowForm(mFrmMeasurements, Database, User)
                 mFrmMeasurements.Hardware = Hardware
                 mFrmMeasurements.Job = CurrentJob
             End If
@@ -354,7 +356,7 @@ Public Class FrmJobs
     Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
         Try
             If SelectedVessel IsNot Nothing AndAlso ComboVessels.DoubleClicked() Then
-                ShowForm(mFrmVessels, Database)
+                ShowForm(mFrmVessels, Database, User)
                 mFrmVessels.Find(SelectedVessel)
             End If
         Catch ex As Exception
@@ -381,7 +383,7 @@ Public Class FrmJobs
     Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
         ' Open the measurements form with the clicked JobDetail record.
         Try
-            ShowForm(mFrmMeasurements, Database)
+            ShowForm(mFrmMeasurements, Database, User)
             mFrmMeasurements.Hardware = Hardware
             mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
         Catch ex As Exception
@@ -392,7 +394,6 @@ Public Class FrmJobs
     Private Sub FormJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         On Error Resume Next
         DataGridJobDetails.DataSource = Nothing
-        MyBase.FrmDatabaseForm_FormClosing(sender, e)
     End Sub
 
     Private Sub FormJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -483,9 +484,25 @@ Public Class FrmJobs
         End Select
     End Sub
 
-    Private Sub TxtScanDataFile_TextChanged(sender As Object, e As EventArgs) Handles TxtScanDataFile.TextChanged
-        On Error Resume Next
-        ScanDataImexEnabled = (TxtScanDataFile.Text.Length > 0)
+    Private Sub ComboStyle_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboStyle.SelectionChangeCommitted
+        If ComboStyle.SelectedItem IsNot Nothing Then
+            Dim n = ComboBlades.DataBindings.Count
+            Select Case ComboStyle.SelectedValue
+                Case "3-Blade"
+                    ComboBlades.SelectedIndex = 1
+                    Dim i = ComboBlades.SelectedItem
+                    Dim v = ComboBlades.SelectedValue
+                Case "4-Blade", "Dura Quad", "Dyna Quad", "Equi Quad"
+                    ComboBlades.SelectedIndex = 2
+                    Dim i = ComboBlades.SelectedItem
+                    Dim v = ComboBlades.SelectedValue
+                Case Else
+            End Select
+            JobsBindingSource.EndEdit()
+            ComboBlades.DataBindings("SelectedValue").WriteValue()
+            'Dim x As Job = BindingSourceCurrent(JobsBindingSource)
+            'x?.PropellerBlades = New Blade() With {.BladeCount = 3}
+        End If
     End Sub
 #End Region
 End Class

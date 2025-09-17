@@ -5,6 +5,8 @@
 ''' 
 Imports System.Runtime.CompilerServices
 Imports LibDatabase.Contexts
+Imports LibDatabase.Models
+
 Module FormInstances
     Public Sub ShowForm(Of F As {Form, New})(ByRef frm As F)
         frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
@@ -19,12 +21,13 @@ Module FormInstances
         End If
     End Sub
 
-    Public Sub ShowForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, Optional ByVal windowState As FormWindowState = FormWindowState.Normal, Optional ByVal modal As Boolean = False)
+    Public Sub ShowForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, ByVal user As Employee, Optional ByVal windowState As FormWindowState = FormWindowState.Normal, Optional ByVal modal As Boolean = False)
         frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
         If frm Is Nothing OrElse Not frm.IsHandleCreated Then
             ' If no instance of the form is open, create and show a new instance
             frm = New F With {
-                .Database = dB
+                .Database = dB,
+                .User = user
             }
             If modal Then
                 ' Show the form as a modal dialog
@@ -52,6 +55,26 @@ Module FormInstances
             frm.Dispose()
             frm = Nothing
         End If
+    End Sub
+
+    <Extension()>
+    Public Sub IsEnabled(dataGrid As DataGridView, value As Boolean)
+        dataGrid.Enabled = value
+        If dataGrid.Enabled Then
+            dataGrid.DefaultCellStyle.BackColor = SystemColors.Window
+            dataGrid.DefaultCellStyle.ForeColor = SystemColors.ControlText
+            dataGrid.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Window
+            dataGrid.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.ControlText
+            dataGrid.EnableHeadersVisualStyles = True
+        Else
+            dataGrid.DefaultCellStyle.BackColor = SystemColors.Control
+            dataGrid.DefaultCellStyle.ForeColor = SystemColors.GrayText
+            dataGrid.ColumnHeadersDefaultCellStyle.BackColor = SystemColors.Control
+            dataGrid.ColumnHeadersDefaultCellStyle.ForeColor = SystemColors.GrayText
+            dataGrid.CurrentCell = Nothing
+            dataGrid.EnableHeadersVisualStyles = False
+        End If
+        dataGrid.Refresh()
     End Sub
 
     <Extension()>

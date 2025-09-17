@@ -51,16 +51,60 @@ Public Class FrmCalibration
     End Property
 #End Region
 #Region "Private Interface"
-    Private Sub SaveCancelControlsEnabled(ByVal value As Boolean)
+    Private Sub SaveCancelControlsEnabled(ByVal enabled As Boolean)
         ' Enable or disable the Save and Cancel buttons based on the value parameter
-        cmdSaveCalibration.Enabled = value
-        cmdCancelCalibration.Enabled = value
+        CmdSaveCalibration.Enabled = enabled AndAlso DataEntryControlsFilled()
+        CmdCancelCalibration.Enabled = enabled AndAlso DataEntryControlsFilled()
     End Sub
     Private Sub CalibrationCancel()
         ' Cancel the calibration data changes and reset the UI components
         WorkstationCalibrationShow()
         EncodersCalibrationSet()
         SaveCancelControlsEnabled(False)
+    End Sub
+    Private Sub CalibrationControlsEnable(ByVal enabled As Boolean)
+        CmdZeroCalibration.Enabled = enabled
+        CmdDefaultCalibration.Enabled = enabled
+        CmdAngleCalibration.Enabled = enabled
+        CmdDefaultCalibration.Enabled = enabled
+        CmdDepthCalibration.Enabled = enabled
+        CmdRadiusCalibration.Enabled = enabled
+    End Sub
+    Private Sub DataEntryControlsEnable(ByVal enabled As Boolean)
+        TxtAngleResolution.Enabled = enabled
+        TxtDepthResolution.Enabled = enabled
+        TxtRadiusResolution.Enabled = enabled
+        TxtRadiusOffsetR.Enabled = enabled
+        TxtRadiusOffsetL.Enabled = enabled
+        TxtHalfProbeDiameter.Enabled = enabled
+        TxtScanIncrement.Enabled = enabled
+        TxtFixedOffset.Enabled = enabled
+    End Sub
+    Private Function DataEntryControlsFilled() As Boolean
+        Return _
+            TxtAngleResolution.Text <> "" AndAlso
+            TxtDepthResolution.Text <> "" AndAlso
+            TxtRadiusResolution.Text <> "" AndAlso
+            TxtRadiusOffsetR.Text <> "" AndAlso
+            TxtRadiusOffsetL.Text <> "" AndAlso
+            TxtHalfProbeDiameter.Text <> "" AndAlso
+            TxtScanIncrement.Text <> "" AndAlso
+            TxtFixedOffset.Text <> ""
+    End Function
+    Private Sub FileControlsEnable(ByVal enabled As Boolean)
+        CmdCalibrationFile.Enabled = enabled
+        TxtCalibrationFile.Enabled = enabled
+    End Sub
+    Private Sub FormControlsEnable(ByVal enabled As Boolean)
+        CalibrationControlsEnable(enabled)
+        DataEntryControlsEnable(enabled)
+        FileControlsEnable(enabled)
+        If Not enabled Then
+            ImexControlsEnabled(False)
+        Else
+            ImexControlsEnabled(TxtCalibrationFile.Text <> "")
+        End If
+        SaveCancelControlsEnabled(enabled)
     End Sub
     Private Sub CalibrationDefault()
         ' Reset the calibration values to default
@@ -79,7 +123,7 @@ Public Class FrmCalibration
             .Filter = "Calibration Files (*.txt)|*.txt|All Files (*.*)|*.*",
             .InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
         }
-        If ofd.ShowDialog() = DialogResult.OK Then txtCalibrationFile.Text = ofd.FileName
+        If ofd.ShowDialog() = DialogResult.OK Then TxtCalibrationFile.Text = ofd.FileName
     End Sub
     Private Sub CalibrationImport(filePath As String)
         ' Import and show calibration data from a file
@@ -88,17 +132,17 @@ Public Class FrmCalibration
     Private Sub CalibrationParse()
         ' Parse the calibration data from UI components and update the Workstation instance
         With EncoderStatusStrip1.Hardware.Workstation
-            .AngleCalibration = Double.Parse(txtAngleCalibration.Text)
-            .DepthCalibration = Double.Parse(txtDepthCalibration.Text)
-            .RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
+            .AngleCalibration = Double.Parse(TxtAngleCalibration.Text)
+            .DepthCalibration = Double.Parse(TxtDepthCalibration.Text)
+            .RadiusCalibration = Double.Parse(TxtRadiusCalibration.Text)
             .AngleResolution = Integer.Parse(TxtAngleResolution.Text)
             .DepthResolution = Integer.Parse(TxtDepthResolution.Text)
             .RadiusResolution = Integer.Parse(TxtRadiusResolution.Text)
             .RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
             .RadiusOffsetL = Integer.Parse(TxtRadiusOffsetL.Text)
-            .HalfProbeDiameter = Integer.Parse(txtHalfProbeDiameter.Text)
-            .ScanIncrement = Integer.Parse(txtScanIncrement.Text)
-            .FixedOffset = Integer.Parse(txtFixedOffset.Text)
+            .HalfProbeDiameter = Integer.Parse(TxtHalfProbeDiameter.Text)
+            .ScanIncrement = Integer.Parse(TxtScanIncrement.Text)
+            .FixedOffset = Integer.Parse(TxtFixedOffset.Text)
         End With
     End Sub
     Private Sub CalibrationSave()
@@ -121,17 +165,17 @@ Public Class FrmCalibration
     End Sub
     Private Sub CalibrationZero()
         ' Reset the calibration values to zero
-        txtAngleCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
-        txtDepthCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
-        txtRadiusCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
+        TxtAngleCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
+        TxtDepthCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
+        TxtRadiusCalibration.Text = USDigital.CALIBRATION_DEFAULT.ToString()
     End Sub
     Private Sub EncodersControlsEnabled(ByVal value As Boolean)
         ' Enable or disable UI encoder controls based on the value parameter
-        cmdAngleCalibration.Enabled = value
-        cmdDepthCalibration.Enabled = value
-        cmdRadiusCalibration.Enabled = value
-        chkCalibrateAll.Enabled = value
-        cmdZeroCalibration.Enabled = value
+        CmdAngleCalibration.Enabled = value
+        CmdDepthCalibration.Enabled = value
+        CmdRadiusCalibration.Enabled = value
+        ChkCalibrateAll.Enabled = value
+        CmdZeroCalibration.Enabled = value
     End Sub
     Private Sub EncodersCalibrationSet(Optional ByVal ws As Workstation = Nothing)
         ' Set the encoder calibration values from the workstation data or UI components
@@ -141,17 +185,17 @@ Public Class FrmCalibration
             If Not IsDBNull(ws.RadiusCalibration) Then EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration = ws.RadiusCalibration
             If Not IsDBNull(ws.RadiusOffset) Then EncoderStatusStrip1.Hardware.Encoders.RadiusOffset = ws.RadiusOffset
         Else
-            EncoderStatusStrip1.Hardware.Encoders.AngleCalibration = Double.Parse(txtAngleCalibration.Text)
-            EncoderStatusStrip1.Hardware.Encoders.DepthCalibration = Double.Parse(txtDepthCalibration.Text)
-            EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration = Double.Parse(txtRadiusCalibration.Text)
+            EncoderStatusStrip1.Hardware.Encoders.AngleCalibration = Double.Parse(TxtAngleCalibration.Text)
+            EncoderStatusStrip1.Hardware.Encoders.DepthCalibration = Double.Parse(TxtDepthCalibration.Text)
+            EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration = Double.Parse(TxtRadiusCalibration.Text)
             EncoderStatusStrip1.Hardware.Encoders.RadiusOffset = Integer.Parse(TxtRadiusOffsetR.Text)
         End If
     End Sub
     Private Sub EncodersCalibrationShow()
         ' Load encoder calibration data into UI components
-        txtAngleCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.AngleCalibration.ToString()
-        txtDepthCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.DepthCalibration.ToString()
-        txtRadiusCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration.ToString()
+        TxtAngleCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.AngleCalibration.ToString()
+        TxtDepthCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.DepthCalibration.ToString()
+        TxtRadiusCalibration.Text = EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration.ToString()
         TxtRadiusOffsetR.Text = EncoderStatusStrip1.Hardware.Encoders.RadiusOffset.ToString()
     End Sub
     Private Sub ImexControlsEnabled(ByVal value As Boolean)
@@ -161,66 +205,67 @@ Public Class FrmCalibration
     End Sub
     Private Sub GetAngleCalibration()
         ' Get the angle calibration value from the encoder hardware and update the UI component
-        txtAngleCalibration.Text = EncoderStatusStrip1.CalibrateAngle().ToString()
+        TxtAngleCalibration.Text = EncoderStatusStrip1.CalibrateAngle().ToString()
     End Sub
     Private Sub GetDepthCalibration()
         ' Get the depth calibration value from the encoder hardware and update the UI component
-        txtDepthCalibration.Text = EncoderStatusStrip1.CalibrateDepth().ToString()
+        TxtDepthCalibration.Text = EncoderStatusStrip1.CalibrateDepth().ToString()
     End Sub
     Private Sub GetRadiusCalibration()
         ' Get the radius calibration value from the encoder hardware and update the UI component
-        txtRadiusCalibration.Text = EncoderStatusStrip1.CalibrateRadius().ToString()
+        TxtRadiusCalibration.Text = EncoderStatusStrip1.CalibrateRadius().ToString()
     End Sub
     Private Sub PollingEnable(ByVal enable As Boolean)
         ' Enable or disable the encoder polling timer and update the UI accordingly
         timerCalibration.Enabled = enable
-        chkCalibrateAll.Checked = enable
+        ChkCalibrateAll.Checked = enable
         EncoderStatusStrip1.Enabled = Not enable
+        FormControlsEnable(Not enable)
     End Sub
     Private Sub WorkstationCalibrationShow(Optional ByVal ws As Workstation = Nothing)
         ' Display the calibration data from the workstation in the UI components
         If ws Is Nothing Then ws = EncoderStatusStrip1.Hardware.Workstation
-        txtAngleCalibration.Text = ws.AngleCalibration.ToString()
-        txtDepthCalibration.Text = ws.DepthCalibration.ToString()
-        txtRadiusCalibration.Text = ws.RadiusCalibration.ToString()
+        TxtAngleCalibration.Text = ws.AngleCalibration.ToString()
+        TxtDepthCalibration.Text = ws.DepthCalibration.ToString()
+        TxtRadiusCalibration.Text = ws.RadiusCalibration.ToString()
         TxtAngleResolution.Text = ws.AngleResolution.ToString()
         TxtDepthResolution.Text = ws.DepthResolution.ToString()
         TxtRadiusResolution.Text = ws.RadiusResolution.ToString()
         TxtRadiusOffsetR.Text = ws.RadiusOffset.ToString()
         TxtRadiusOffsetL.Text = ws.RadiusOffsetL.ToString()
-        txtHalfProbeDiameter.Text = ws.HalfProbeDiameter.ToString()
-        txtScanIncrement.Text = ws.ScanIncrement.ToString()
-        txtFixedOffset.Text = ws.FixedOffset.ToString()
+        TxtHalfProbeDiameter.Text = ws.HalfProbeDiameter.ToString()
+        TxtScanIncrement.Text = ws.ScanIncrement.ToString()
+        TxtFixedOffset.Text = ws.FixedOffset.ToString()
         Me.Refresh()
     End Sub
 #End Region
-#Region "UI Event Handlers"
-    Private Sub ChkCalibrateAll_Click(sender As Object, e As EventArgs) Handles chkCalibrateAll.Click
+#Region "Event Handlers"
+    Private Sub ChkCalibrateAll_Click(sender As Object, e As EventArgs) Handles ChkCalibrateAll.Click
         Try
-            PollingEnable(chkCalibrateAll.Checked)
+            PollingEnable(ChkCalibrateAll.Checked)
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
 
-    Private Sub CmdAngleCalibration_Click(sender As Object, e As EventArgs) Handles cmdAngleCalibration.Click
+    Private Sub CmdAngleCalibration_Click(sender As Object, e As EventArgs) Handles CmdAngleCalibration.Click
         Try
             GetAngleCalibration()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
-    Private Sub CmdCalibrationFile_Click(sender As Object, e As EventArgs) Handles cmdCalibrationFile.Click
+    Private Sub CmdCalibrationFile_Click(sender As Object, e As EventArgs) Handles CmdCalibrationFile.Click
         Try
             CalibrationFilePick()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
-    Private Sub CmdCancelCalibration_Click(sender As Object, e As EventArgs) Handles cmdCancelCalibration.Click
+    Private Sub CmdCancelCalibration_Click(sender As Object, e As EventArgs) Handles CmdCancelCalibration.Click
         CalibrationCancel()
     End Sub
-    Private Sub CmdDefaultCalibration_Click(sender As Object, e As EventArgs) Handles cmdDefaultCalibration.Click
+    Private Sub CmdDefaultCalibration_Click(sender As Object, e As EventArgs) Handles CmdDefaultCalibration.Click
         Try
             CalibrationDefault()
         Catch ex As Exception
@@ -229,12 +274,12 @@ Public Class FrmCalibration
     End Sub
     Private Sub CmdExportCalibration_Click(sender As Object, e As EventArgs) Handles cmdExportCalibration.Click
         Try
-            CalibrationExport(txtCalibrationFile.Text)
+            CalibrationExport(TxtCalibrationFile.Text)
         Catch ex As Exception
             MsgBox(STR_ERR_CALIBRATION_WRITE & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
-    Private Sub CmdDepthCalibration_Click(sender As Object, e As EventArgs) Handles cmdDepthCalibration.Click
+    Private Sub CmdDepthCalibration_Click(sender As Object, e As EventArgs) Handles CmdDepthCalibration.Click
         Try
             GetDepthCalibration()
         Catch ex As Exception
@@ -243,26 +288,26 @@ Public Class FrmCalibration
     End Sub
     Private Sub CmdImportCalibration_Click(sender As Object, e As EventArgs) Handles cmdImportCalibration.Click
         Try
-            CalibrationImport(txtCalibrationFile.Text)
+            CalibrationImport(TxtCalibrationFile.Text)
         Catch ex As Exception
             MsgBox(STR_ERR_IMPORT & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
-    Private Sub CmdRadiusCalibration_Click(sender As Object, e As EventArgs) Handles cmdRadiusCalibration.Click
+    Private Sub CmdRadiusCalibration_Click(sender As Object, e As EventArgs) Handles CmdRadiusCalibration.Click
         Try
             GetRadiusCalibration()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
-    Private Sub CmdSaveCalibration_Click(sender As Object, e As EventArgs) Handles cmdSaveCalibration.Click
+    Private Sub CmdSaveCalibration_Click(sender As Object, e As EventArgs) Handles CmdSaveCalibration.Click
         Try
             CalibrationSave()
         Catch ex As Exception
             MsgBox(STR_ERR_CALIBRATION_WRITE & ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
-    Private Sub CmdZeroCalibration_Click(sender As Object, e As EventArgs) Handles cmdZeroCalibration.Click
+    Private Sub CmdZeroCalibration_Click(sender As Object, e As EventArgs) Handles CmdZeroCalibration.Click
         Try
             CalibrationZero()
         Catch ex As Exception
@@ -280,41 +325,41 @@ Public Class FrmCalibration
         End Try
     End Sub
 
-    Private Sub TxtAngleCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtAngleCalibration.TextChanged
+    Private Sub TxtAngleCalibration_TextChanged(sender As Object, e As EventArgs) Handles TxtAngleCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtAngleResolution_TextChanged(sender As Object, e As EventArgs)
+    Private Sub TxtAngleResolution_TextChanged(sender As Object, e As EventArgs) Handles TxtAngleResolution.TextChanged
+        SaveCancelControlsEnabled(TxtAngleResolution.Text.Length > 0)
+    End Sub
+    Private Sub TxtCalibrationFile_TextChanged(sender As Object, e As EventArgs) Handles TxtCalibrationFile.TextChanged
+        ImexControlsEnabled(TxtCalibrationFile.Text.Length > 0)
+    End Sub
+    Private Sub TxtDepthCalibration_TextChanged(sender As Object, e As EventArgs) Handles TxtDepthCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtCalibrationFile_TextChanged(sender As Object, e As EventArgs) Handles txtCalibrationFile.TextChanged
-        ImexControlsEnabled(txtCalibrationFile.Text.Length > 0)
+    Private Sub TxtDepthResolution_TextChanged(sender As Object, e As EventArgs) Handles TxtDepthResolution.TextChanged
+        SaveCancelControlsEnabled(TxtDepthResolution.Text.Length > 0)
     End Sub
-    Private Sub TxtDepthCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtDepthCalibration.TextChanged
+    Private Sub TxtFixedOffset_TextChanged(sender As Object, e As EventArgs) Handles TxtFixedOffset.TextChanged
+        SaveCancelControlsEnabled(TxtFixedOffset.Text.Length > 0)
+    End Sub
+    Private Sub TxtHalfProbeDiameter_TextChanged(sender As Object, e As EventArgs) Handles TxtHalfProbeDiameter.TextChanged
+        SaveCancelControlsEnabled(TxtHalfProbeDiameter.Text.Length > 0)
+    End Sub
+    Private Sub TxtRadiusCalibration_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusCalibration.TextChanged
         SaveCancelControlsEnabled(True)
     End Sub
-    Private Sub TxtDepthResolution_TextChanged(sender As Object, e As EventArgs)
-        SaveCancelControlsEnabled(True)
-    End Sub
-    Private Sub TxtFixedOffset_TextChanged(sender As Object, e As EventArgs) Handles txtFixedOffset.TextChanged
-        SaveCancelControlsEnabled(True)
-    End Sub
-    Private Sub TxtHalfProbeDiameter_TextChanged(sender As Object, e As EventArgs) Handles txtHalfProbeDiameter.TextChanged
-        SaveCancelControlsEnabled(True)
-    End Sub
-    Private Sub TxtRadiusCalibration_TextChanged(sender As Object, e As EventArgs) Handles txtRadiusCalibration.TextChanged
-        SaveCancelControlsEnabled(True)
-    End Sub
-    Private Sub TxtRadiusOffset_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusOffsetR.TextChanged
-        SaveCancelControlsEnabled(True)
+    Private Sub TxtRadiusOffsetR_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusOffsetR.TextChanged
+        SaveCancelControlsEnabled(TxtRadiusOffsetR.Text.Length > 0)
     End Sub
     Private Sub TxtRadiusOffsetL_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusOffsetL.TextChanged
-        SaveCancelControlsEnabled(True)
+        SaveCancelControlsEnabled(TxtRadiusOffsetL.Text.Length > 0)
     End Sub
     Private Sub TxtRadiusResolution_TextChanged(sender As Object, e As EventArgs) Handles TxtRadiusResolution.TextChanged
-        SaveCancelControlsEnabled(True)
+        SaveCancelControlsEnabled(TxtRadiusResolution.Text.Length > 0)
     End Sub
-    Private Sub txtScanIncrement_TextChanged(sender As Object, e As EventArgs) Handles txtScanIncrement.TextChanged
-        SaveCancelControlsEnabled(True)
+    Private Sub TxtScanIncrement_TextChanged(sender As Object, e As EventArgs) Handles TxtScanIncrement.TextChanged
+        SaveCancelControlsEnabled(TxtScanIncrement.Text.Length > 0)
     End Sub
 #End Region
 End Class

@@ -178,7 +178,10 @@ Namespace Contexts
                         IsRequired().
                         HasMaxLength(64).
                         HasColumnName("Employee Name")
-                    entity.Property(Function(e) e.Password).HasMaxLength(32)
+                    entity.Property(Function(e) e.Password).
+                        IsRequired().
+                        HasMaxLength(32).
+                        HasDefaultValueSql("""Hale-MRI""")
                 End Sub)
 
             modelBuilder.Entity(Of Exclusion)(
@@ -245,7 +248,9 @@ Namespace Contexts
                         HasColumnName("LE Exclusion")
                     entity.Property(Function(e) e.MarkedPitch).HasColumnName("Marked Pitch")
                     entity.Property(Function(e) e.PropellerBlades).HasColumnName("Propeller Blades")
-                    entity.Property(Function(e) e.PropellerBore).HasColumnName("Propeller Bore")
+                    entity.Property(Function(e) e.PropellerBore).
+                        HasMaxLength(8).
+                        HasColumnName("Propeller Bore")
                     entity.Property(Function(e) e.PropellerDescription).
                         HasMaxLength(64).
                         HasColumnName("Propeller Description")
@@ -337,9 +342,7 @@ Namespace Contexts
                         HasMaxLength(255).
                         HasColumnName("File Name")
                     entity.Property(Function(e) e.JobId).HasColumnName("Job ID")
-                    entity.Property(Function(e) e.MeasurementTypeId).
-                        HasDefaultValue(0).
-                        HasColumnName("Measurement Type ID")
+                    entity.Property(Function(e) e.MeasurementTypeId).HasColumnName("Measurement Type ID")
                     entity.Property(Function(e) e.PerformedBy).HasColumnName("Performed By")
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
                     entity.Property(Function(e) e.ToleranceClass).

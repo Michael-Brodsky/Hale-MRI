@@ -36,9 +36,9 @@ Partial Class Form1
         MeasurementTypesBindingSource = New BindingSource(components)
         ToleranceClassDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
         ClassBindingSource = New BindingSource(components)
-        WheelPitchDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         PerformedByDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
         EmployeesBindingSource = New BindingSource(components)
+        Description = New DataGridViewTextBoxColumn()
         TxtJobNumber = New TextBox()
         PanelJob = New Panel()
         TableLayoutPanel1 = New TableLayoutPanel()
@@ -50,7 +50,12 @@ Partial Class Form1
         TxtDiameter = New TextBox()
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
-        Panel1 = New Panel()
+        PanelMeasurements = New Panel()
+        CmdUndoMeasurement = New Button()
+        CmdSaveMeasurement = New Button()
+        LabWheelPitch = New Label()
+        TxtWheelPitch = New TextBox()
+        CmdHomeEncoders = New Button()
         LabBlade = New Label()
         ComboBlade = New ComboBox()
         LabRadiusPercent = New Label()
@@ -73,7 +78,7 @@ Partial Class Form1
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         PanelJob.SuspendLayout()
         TableLayoutPanel1.SuspendLayout()
-        Panel1.SuspendLayout()
+        PanelMeasurements.SuspendLayout()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -127,7 +132,7 @@ Partial Class Form1
         DataGridJobDetails.AutoGenerateColumns = False
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, WheelPitchDataGridViewTextBoxColumn, PerformedByDataGridViewTextBoxColumn})
+        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedByDataGridViewTextBoxColumn, Description})
         DataGridJobDetails.DataSource = JobDetailsBindingSource
         DataGridJobDetails.Location = New Point(485, 48)
         DataGridJobDetails.Name = "DataGridJobDetails"
@@ -164,20 +169,16 @@ Partial Class Form1
         ToleranceClassDataGridViewTextBoxColumn.DataSource = ClassBindingSource
         ToleranceClassDataGridViewTextBoxColumn.DisplayMember = "ToleranceClass"
         ToleranceClassDataGridViewTextBoxColumn.HeaderText = "Class"
+        ToleranceClassDataGridViewTextBoxColumn.MinimumWidth = 50
         ToleranceClassDataGridViewTextBoxColumn.Name = "ToleranceClassDataGridViewTextBoxColumn"
         ToleranceClassDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         ToleranceClassDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         ToleranceClassDataGridViewTextBoxColumn.ValueMember = "ToleranceClass"
+        ToleranceClassDataGridViewTextBoxColumn.Width = 50
         ' 
         ' ClassBindingSource
         ' 
         ClassBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
-        ' 
-        ' WheelPitchDataGridViewTextBoxColumn
-        ' 
-        WheelPitchDataGridViewTextBoxColumn.DataPropertyName = "WheelPitch"
-        WheelPitchDataGridViewTextBoxColumn.HeaderText = "Wheel Pitch"
-        WheelPitchDataGridViewTextBoxColumn.Name = "WheelPitchDataGridViewTextBoxColumn"
         ' 
         ' PerformedByDataGridViewTextBoxColumn
         ' 
@@ -196,6 +197,14 @@ Partial Class Form1
         ' 
         EmployeesBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
         EmployeesBindingSource.Sort = ""
+        ' 
+        ' Description
+        ' 
+        Description.DataPropertyName = "Description"
+        Description.HeaderText = "Description"
+        Description.MinimumWidth = 152
+        Description.Name = "Description"
+        Description.Width = 152
         ' 
         ' TxtJobNumber
         ' 
@@ -336,29 +345,84 @@ Partial Class Form1
         TxtCustomer.Size = New Size(177, 15)
         TxtCustomer.TabIndex = 1
         ' 
-        ' Panel1
+        ' PanelMeasurements
         ' 
-        Panel1.BorderStyle = BorderStyle.Fixed3D
-        Panel1.Controls.Add(LabBlade)
-        Panel1.Controls.Add(ComboBlade)
-        Panel1.Controls.Add(LabRadiusPercent)
-        Panel1.Controls.Add(TxtRadiusPercent)
-        Panel1.Controls.Add(ChkAutoScan)
-        Panel1.Controls.Add(LabDepth)
-        Panel1.Controls.Add(TxtDepth)
-        Panel1.Controls.Add(LabRadius)
-        Panel1.Controls.Add(TxtRadius)
-        Panel1.Controls.Add(LabAngle)
-        Panel1.Controls.Add(TxtAngle)
-        Panel1.Location = New Point(215, 111)
-        Panel1.Name = "Panel1"
-        Panel1.Size = New Size(907, 531)
-        Panel1.TabIndex = 8
+        PanelMeasurements.BorderStyle = BorderStyle.Fixed3D
+        PanelMeasurements.Controls.Add(CmdUndoMeasurement)
+        PanelMeasurements.Controls.Add(CmdSaveMeasurement)
+        PanelMeasurements.Controls.Add(LabWheelPitch)
+        PanelMeasurements.Controls.Add(TxtWheelPitch)
+        PanelMeasurements.Controls.Add(CmdHomeEncoders)
+        PanelMeasurements.Controls.Add(LabBlade)
+        PanelMeasurements.Controls.Add(ComboBlade)
+        PanelMeasurements.Controls.Add(LabRadiusPercent)
+        PanelMeasurements.Controls.Add(TxtRadiusPercent)
+        PanelMeasurements.Controls.Add(ChkAutoScan)
+        PanelMeasurements.Controls.Add(LabDepth)
+        PanelMeasurements.Controls.Add(TxtDepth)
+        PanelMeasurements.Controls.Add(LabRadius)
+        PanelMeasurements.Controls.Add(TxtRadius)
+        PanelMeasurements.Controls.Add(LabAngle)
+        PanelMeasurements.Controls.Add(TxtAngle)
+        PanelMeasurements.Location = New Point(215, 111)
+        PanelMeasurements.Name = "PanelMeasurements"
+        PanelMeasurements.Size = New Size(905, 531)
+        PanelMeasurements.TabIndex = 8
+        ' 
+        ' CmdUndoMeasurement
+        ' 
+        CmdUndoMeasurement.Enabled = False
+        CmdUndoMeasurement.Image = My.Resources.Resources.Cancel
+        CmdUndoMeasurement.Location = New Point(814, 30)
+        CmdUndoMeasurement.Name = "CmdUndoMeasurement"
+        CmdUndoMeasurement.Size = New Size(36, 23)
+        CmdUndoMeasurement.TabIndex = 16
+        CmdUndoMeasurement.UseVisualStyleBackColor = True
+        ' 
+        ' CmdSaveMeasurement
+        ' 
+        CmdSaveMeasurement.Enabled = False
+        CmdSaveMeasurement.Image = My.Resources.Resources.Checkmark
+        CmdSaveMeasurement.Location = New Point(772, 30)
+        CmdSaveMeasurement.Name = "CmdSaveMeasurement"
+        CmdSaveMeasurement.Size = New Size(36, 23)
+        CmdSaveMeasurement.TabIndex = 15
+        CmdSaveMeasurement.UseVisualStyleBackColor = True
+        ' 
+        ' LabWheelPitch
+        ' 
+        LabWheelPitch.AutoSize = True
+        LabWheelPitch.Location = New Point(441, 62)
+        LabWheelPitch.Name = "LabWheelPitch"
+        LabWheelPitch.Size = New Size(70, 15)
+        LabWheelPitch.TabIndex = 13
+        LabWheelPitch.Text = "Wheel Pitch"
+        ' 
+        ' TxtWheelPitch
+        ' 
+        TxtWheelPitch.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "WheelPitch", True))
+        TxtWheelPitch.Location = New Point(441, 80)
+        TxtWheelPitch.Name = "TxtWheelPitch"
+        TxtWheelPitch.Size = New Size(173, 23)
+        TxtWheelPitch.TabIndex = 12
+        ' 
+        ' CmdHomeEncoders
+        ' 
+        CmdHomeEncoders.Image = My.Resources.Resources.Home
+        CmdHomeEncoders.ImageAlign = ContentAlignment.MiddleRight
+        CmdHomeEncoders.Location = New Point(695, 30)
+        CmdHomeEncoders.Name = "CmdHomeEncoders"
+        CmdHomeEncoders.Size = New Size(71, 23)
+        CmdHomeEncoders.TabIndex = 11
+        CmdHomeEncoders.Text = "Home"
+        CmdHomeEncoders.TextAlign = ContentAlignment.MiddleLeft
+        CmdHomeEncoders.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdHomeEncoders.UseVisualStyleBackColor = True
         ' 
         ' LabBlade
         ' 
         LabBlade.AutoSize = True
-        LabBlade.Location = New Point(18, 12)
+        LabBlade.Location = New Point(12, 12)
         LabBlade.Name = "LabBlade"
         LabBlade.Size = New Size(36, 15)
         LabBlade.TabIndex = 10
@@ -367,7 +431,7 @@ Partial Class Form1
         ' ComboBlade
         ' 
         ComboBlade.FormattingEnabled = True
-        ComboBlade.Location = New Point(18, 31)
+        ComboBlade.Location = New Point(12, 31)
         ComboBlade.Name = "ComboBlade"
         ComboBlade.Size = New Size(65, 23)
         ComboBlade.TabIndex = 9
@@ -375,7 +439,7 @@ Partial Class Form1
         ' LabRadiusPercent
         ' 
         LabRadiusPercent.AutoSize = True
-        LabRadiusPercent.Location = New Point(268, 62)
+        LabRadiusPercent.Location = New Point(262, 62)
         LabRadiusPercent.Name = "LabRadiusPercent"
         LabRadiusPercent.Size = New Size(85, 15)
         LabRadiusPercent.TabIndex = 8
@@ -383,7 +447,7 @@ Partial Class Form1
         ' 
         ' TxtRadiusPercent
         ' 
-        TxtRadiusPercent.Location = New Point(268, 80)
+        TxtRadiusPercent.Location = New Point(262, 80)
         TxtRadiusPercent.Name = "TxtRadiusPercent"
         TxtRadiusPercent.Size = New Size(173, 23)
         TxtRadiusPercent.TabIndex = 7
@@ -393,18 +457,19 @@ Partial Class Form1
         ChkAutoScan.Appearance = Appearance.Button
         ChkAutoScan.Image = My.Resources.Resources.Timer
         ChkAutoScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkAutoScan.Location = New Point(625, 30)
+        ChkAutoScan.Location = New Point(619, 30)
         ChkAutoScan.Margin = New Padding(2, 1, 2, 1)
         ChkAutoScan.Name = "ChkAutoScan"
-        ChkAutoScan.Size = New Size(82, 23)
+        ChkAutoScan.Size = New Size(71, 23)
         ChkAutoScan.TabIndex = 6
+        ChkAutoScan.Text = "Start"
         ChkAutoScan.TextImageRelation = TextImageRelation.ImageBeforeText
         ChkAutoScan.UseVisualStyleBackColor = True
         ' 
         ' LabDepth
         ' 
         LabDepth.AutoSize = True
-        LabDepth.Location = New Point(447, 12)
+        LabDepth.Location = New Point(441, 12)
         LabDepth.Name = "LabDepth"
         LabDepth.Size = New Size(39, 15)
         LabDepth.TabIndex = 5
@@ -412,7 +477,7 @@ Partial Class Form1
         ' 
         ' TxtDepth
         ' 
-        TxtDepth.Location = New Point(447, 30)
+        TxtDepth.Location = New Point(441, 30)
         TxtDepth.Name = "TxtDepth"
         TxtDepth.Size = New Size(173, 23)
         TxtDepth.TabIndex = 4
@@ -420,7 +485,7 @@ Partial Class Form1
         ' LabRadius
         ' 
         LabRadius.AutoSize = True
-        LabRadius.Location = New Point(268, 12)
+        LabRadius.Location = New Point(262, 12)
         LabRadius.Name = "LabRadius"
         LabRadius.Size = New Size(42, 15)
         LabRadius.TabIndex = 3
@@ -428,7 +493,7 @@ Partial Class Form1
         ' 
         ' TxtRadius
         ' 
-        TxtRadius.Location = New Point(268, 30)
+        TxtRadius.Location = New Point(262, 30)
         TxtRadius.Name = "TxtRadius"
         TxtRadius.Size = New Size(173, 23)
         TxtRadius.TabIndex = 2
@@ -436,7 +501,7 @@ Partial Class Form1
         ' LabAngle
         ' 
         LabAngle.AutoSize = True
-        LabAngle.Location = New Point(89, 12)
+        LabAngle.Location = New Point(83, 12)
         LabAngle.Name = "LabAngle"
         LabAngle.Size = New Size(38, 15)
         LabAngle.TabIndex = 1
@@ -444,7 +509,7 @@ Partial Class Form1
         ' 
         ' TxtAngle
         ' 
-        TxtAngle.Location = New Point(89, 30)
+        TxtAngle.Location = New Point(83, 30)
         TxtAngle.Name = "TxtAngle"
         TxtAngle.Size = New Size(173, 23)
         TxtAngle.TabIndex = 0
@@ -464,9 +529,9 @@ Partial Class Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1134, 671)
+        ClientSize = New Size(1146, 671)
         Controls.Add(PictureBoxLogo)
-        Controls.Add(Panel1)
+        Controls.Add(PanelMeasurements)
         Controls.Add(PanelJob)
         Controls.Add(TxtJobNumber)
         Controls.Add(DataGridJobDetails)
@@ -486,8 +551,8 @@ Partial Class Form1
         PanelJob.PerformLayout()
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
-        Panel1.ResumeLayout(False)
-        Panel1.PerformLayout()
+        PanelMeasurements.ResumeLayout(False)
+        PanelMeasurements.PerformLayout()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -513,7 +578,7 @@ Partial Class Form1
     Friend WithEvents TxtDiameter As TextBox
     Friend WithEvents TxtBore As TextBox
     Friend WithEvents TxtCustomer As TextBox
-    Friend WithEvents Panel1 As Panel
+    Friend WithEvents PanelMeasurements As Panel
     Friend WithEvents LabDepth As Label
     Friend WithEvents TxtDepth As TextBox
     Friend WithEvents LabRadius As Label
@@ -525,11 +590,16 @@ Partial Class Form1
     Friend WithEvents TxtRadiusPercent As TextBox
     Friend WithEvents PictureBoxLogo As PictureBox
     Friend WithEvents MeasurementTypesBindingSource As BindingSource
+    Friend WithEvents LabBlade As Label
+    Friend WithEvents ComboBlade As ComboBox
+    Friend WithEvents CmdHomeEncoders As Button
     Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
     Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents WheelPitchDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents PerformedByDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents LabBlade As Label
-    Friend WithEvents ComboBlade As ComboBox
+    Friend WithEvents Description As DataGridViewTextBoxColumn
+    Friend WithEvents LabWheelPitch As Label
+    Friend WithEvents TxtWheelPitch As TextBox
+    Friend WithEvents CmdUndoMeasurement As Button
+    Friend WithEvents CmdSaveMeasurement As Button
 End Class

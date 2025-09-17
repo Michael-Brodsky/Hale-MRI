@@ -108,7 +108,7 @@ Public Class FrmVessels
     Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
         ' Open the Jobs form with the selected job as the current record.
         Try
-            ShowForm(mFrmJobs, Database)
+            ShowForm(mFrmJobs, Database, User)
             mFrmJobs.Find(BindingSourceCurrent(JobsBindingSource))
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)

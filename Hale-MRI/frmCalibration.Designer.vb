@@ -23,39 +23,39 @@ Partial Class FrmCalibration
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        txtAngleCalibration = New TextBox()
+        TxtAngleCalibration = New TextBox()
         labAngleCalibration = New Label()
-        cmdAngleCalibration = New Button()
-        cmdRadiusCalibration = New Button()
+        CmdAngleCalibration = New Button()
+        CmdRadiusCalibration = New Button()
         labRadiusCalibration = New Label()
-        txtRadiusCalibration = New TextBox()
-        cmdDepthCalibration = New Button()
+        TxtRadiusCalibration = New TextBox()
+        CmdDepthCalibration = New Button()
         labDepthCalibration = New Label()
-        txtDepthCalibration = New TextBox()
+        TxtDepthCalibration = New TextBox()
         labRadiusOffsetR = New Label()
         TxtRadiusOffsetR = New TextBox()
-        cmdSaveCalibration = New Button()
-        cmdCancelCalibration = New Button()
-        txtCalibrationFile = New TextBox()
+        CmdSaveCalibration = New Button()
+        CmdCancelCalibration = New Button()
+        TxtCalibrationFile = New TextBox()
         labCalibrationFile = New Label()
         cmdImportCalibration = New Button()
         cmdExportCalibration = New Button()
-        chkCalibrateAll = New CheckBox()
+        ChkCalibrateAll = New CheckBox()
         labRadiusOffsetL = New Label()
         TxtRadiusOffsetL = New TextBox()
         labScanIncrement = New Label()
-        txtScanIncrement = New TextBox()
+        TxtScanIncrement = New TextBox()
         labHalfProbeDiameter = New Label()
-        txtHalfProbeDiameter = New TextBox()
+        TxtHalfProbeDiameter = New TextBox()
         labFixedOffset = New Label()
-        txtFixedOffset = New TextBox()
+        TxtFixedOffset = New TextBox()
         labRadiusResolution = New Label()
         TxtRadiusResolution = New TextBox()
         labDepthResolution = New Label()
         Label7 = New Label()
-        cmdCalibrationFile = New Button()
-        cmdZeroCalibration = New Button()
-        cmdDefaultCalibration = New Button()
+        CmdCalibrationFile = New Button()
+        CmdZeroCalibration = New Button()
+        CmdDefaultCalibration = New Button()
         timerCalibration = New Timer(components)
         ToolTipSave = New ToolTip(components)
         TxtAngleResolution = New TextBox()
@@ -63,14 +63,14 @@ Partial Class FrmCalibration
         EncoderStatusStrip1 = New EncoderStatusStrip()
         SuspendLayout()
         ' 
-        ' txtAngleCalibration
+        ' TxtAngleCalibration
         ' 
-        txtAngleCalibration.Location = New Point(141, 126)
-        txtAngleCalibration.Margin = New Padding(2, 1, 2, 1)
-        txtAngleCalibration.Name = "txtAngleCalibration"
-        txtAngleCalibration.ReadOnly = True
-        txtAngleCalibration.Size = New Size(188, 23)
-        txtAngleCalibration.TabIndex = 9
+        TxtAngleCalibration.Location = New Point(141, 126)
+        TxtAngleCalibration.Margin = New Padding(2, 1, 2, 1)
+        TxtAngleCalibration.Name = "TxtAngleCalibration"
+        TxtAngleCalibration.ReadOnly = True
+        TxtAngleCalibration.Size = New Size(188, 23)
+        TxtAngleCalibration.TabIndex = 9
         ' 
         ' labAngleCalibration
         ' 
@@ -82,31 +82,35 @@ Partial Class FrmCalibration
         labAngleCalibration.TabIndex = 8
         labAngleCalibration.Text = "Angle Calibration"
         ' 
-        ' cmdAngleCalibration
+        ' CmdAngleCalibration
         ' 
-        cmdAngleCalibration.Image = My.Resources.Resources.Measure
-        cmdAngleCalibration.Location = New Point(345, 128)
-        cmdAngleCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdAngleCalibration.Name = "cmdAngleCalibration"
-        cmdAngleCalibration.Size = New Size(82, 22)
-        cmdAngleCalibration.TabIndex = 10
-        cmdAngleCalibration.Text = "Calibrate"
-        cmdAngleCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(cmdAngleCalibration, "Calibrate Angle Encoder")
-        cmdAngleCalibration.UseVisualStyleBackColor = True
+        CmdAngleCalibration.Image = My.Resources.Resources.Measure
+        CmdAngleCalibration.ImageAlign = ContentAlignment.MiddleRight
+        CmdAngleCalibration.Location = New Point(345, 128)
+        CmdAngleCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdAngleCalibration.Name = "CmdAngleCalibration"
+        CmdAngleCalibration.Size = New Size(82, 22)
+        CmdAngleCalibration.TabIndex = 10
+        CmdAngleCalibration.Text = "Calibrate"
+        CmdAngleCalibration.TextAlign = ContentAlignment.MiddleLeft
+        CmdAngleCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(CmdAngleCalibration, "Calibrate Angle Encoder")
+        CmdAngleCalibration.UseVisualStyleBackColor = True
         ' 
-        ' cmdRadiusCalibration
+        ' CmdRadiusCalibration
         ' 
-        cmdRadiusCalibration.Image = My.Resources.Resources.Measure
-        cmdRadiusCalibration.Location = New Point(345, 177)
-        cmdRadiusCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdRadiusCalibration.Name = "cmdRadiusCalibration"
-        cmdRadiusCalibration.Size = New Size(82, 22)
-        cmdRadiusCalibration.TabIndex = 16
-        cmdRadiusCalibration.Text = "Calibrate"
-        cmdRadiusCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(cmdRadiusCalibration, "Calibrate Radius Encoder")
-        cmdRadiusCalibration.UseVisualStyleBackColor = True
+        CmdRadiusCalibration.Image = My.Resources.Resources.Measure
+        CmdRadiusCalibration.ImageAlign = ContentAlignment.MiddleRight
+        CmdRadiusCalibration.Location = New Point(345, 177)
+        CmdRadiusCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdRadiusCalibration.Name = "CmdRadiusCalibration"
+        CmdRadiusCalibration.Size = New Size(82, 22)
+        CmdRadiusCalibration.TabIndex = 16
+        CmdRadiusCalibration.Text = "Calibrate"
+        CmdRadiusCalibration.TextAlign = ContentAlignment.MiddleLeft
+        CmdRadiusCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(CmdRadiusCalibration, "Calibrate Radius Encoder")
+        CmdRadiusCalibration.UseVisualStyleBackColor = True
         ' 
         ' labRadiusCalibration
         ' 
@@ -118,27 +122,29 @@ Partial Class FrmCalibration
         labRadiusCalibration.TabIndex = 14
         labRadiusCalibration.Text = "Radius Calibration"
         ' 
-        ' txtRadiusCalibration
+        ' TxtRadiusCalibration
         ' 
-        txtRadiusCalibration.Location = New Point(141, 176)
-        txtRadiusCalibration.Margin = New Padding(2, 1, 2, 1)
-        txtRadiusCalibration.Name = "txtRadiusCalibration"
-        txtRadiusCalibration.ReadOnly = True
-        txtRadiusCalibration.Size = New Size(188, 23)
-        txtRadiusCalibration.TabIndex = 15
+        TxtRadiusCalibration.Location = New Point(141, 176)
+        TxtRadiusCalibration.Margin = New Padding(2, 1, 2, 1)
+        TxtRadiusCalibration.Name = "TxtRadiusCalibration"
+        TxtRadiusCalibration.ReadOnly = True
+        TxtRadiusCalibration.Size = New Size(188, 23)
+        TxtRadiusCalibration.TabIndex = 15
         ' 
-        ' cmdDepthCalibration
+        ' CmdDepthCalibration
         ' 
-        cmdDepthCalibration.Image = My.Resources.Resources.Measure
-        cmdDepthCalibration.Location = New Point(345, 152)
-        cmdDepthCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdDepthCalibration.Name = "cmdDepthCalibration"
-        cmdDepthCalibration.Size = New Size(82, 22)
-        cmdDepthCalibration.TabIndex = 13
-        cmdDepthCalibration.Text = "Calibrate"
-        cmdDepthCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(cmdDepthCalibration, "Calibrate Depth Encoder")
-        cmdDepthCalibration.UseVisualStyleBackColor = True
+        CmdDepthCalibration.Image = My.Resources.Resources.Measure
+        CmdDepthCalibration.ImageAlign = ContentAlignment.MiddleRight
+        CmdDepthCalibration.Location = New Point(345, 152)
+        CmdDepthCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdDepthCalibration.Name = "CmdDepthCalibration"
+        CmdDepthCalibration.Size = New Size(82, 22)
+        CmdDepthCalibration.TabIndex = 13
+        CmdDepthCalibration.Text = "Calibrate"
+        CmdDepthCalibration.TextAlign = ContentAlignment.MiddleLeft
+        CmdDepthCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(CmdDepthCalibration, "Calibrate Depth Encoder")
+        CmdDepthCalibration.UseVisualStyleBackColor = True
         ' 
         ' labDepthCalibration
         ' 
@@ -150,14 +156,14 @@ Partial Class FrmCalibration
         labDepthCalibration.TabIndex = 11
         labDepthCalibration.Text = "Depth Calibration"
         ' 
-        ' txtDepthCalibration
+        ' TxtDepthCalibration
         ' 
-        txtDepthCalibration.Location = New Point(141, 151)
-        txtDepthCalibration.Margin = New Padding(2, 1, 2, 1)
-        txtDepthCalibration.Name = "txtDepthCalibration"
-        txtDepthCalibration.ReadOnly = True
-        txtDepthCalibration.Size = New Size(188, 23)
-        txtDepthCalibration.TabIndex = 12
+        TxtDepthCalibration.Location = New Point(141, 151)
+        TxtDepthCalibration.Margin = New Padding(2, 1, 2, 1)
+        TxtDepthCalibration.Name = "TxtDepthCalibration"
+        TxtDepthCalibration.ReadOnly = True
+        TxtDepthCalibration.Size = New Size(188, 23)
+        TxtDepthCalibration.TabIndex = 12
         ' 
         ' labRadiusOffsetR
         ' 
@@ -177,37 +183,37 @@ Partial Class FrmCalibration
         TxtRadiusOffsetR.Size = New Size(188, 23)
         TxtRadiusOffsetR.TabIndex = 23
         ' 
-        ' cmdSaveCalibration
+        ' CmdSaveCalibration
         ' 
-        cmdSaveCalibration.Enabled = False
-        cmdSaveCalibration.Image = My.Resources.Resources.Save
-        cmdSaveCalibration.Location = New Point(17, 432)
-        cmdSaveCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdSaveCalibration.Name = "cmdSaveCalibration"
-        cmdSaveCalibration.Size = New Size(72, 22)
-        cmdSaveCalibration.TabIndex = 31
-        ToolTipSave.SetToolTip(cmdSaveCalibration, "Save Changes")
-        cmdSaveCalibration.UseVisualStyleBackColor = True
+        CmdSaveCalibration.Enabled = False
+        CmdSaveCalibration.Image = My.Resources.Resources.Save
+        CmdSaveCalibration.Location = New Point(17, 432)
+        CmdSaveCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdSaveCalibration.Name = "CmdSaveCalibration"
+        CmdSaveCalibration.Size = New Size(72, 22)
+        CmdSaveCalibration.TabIndex = 31
+        ToolTipSave.SetToolTip(CmdSaveCalibration, "Save Changes")
+        CmdSaveCalibration.UseVisualStyleBackColor = True
         ' 
-        ' cmdCancelCalibration
+        ' CmdCancelCalibration
         ' 
-        cmdCancelCalibration.Enabled = False
-        cmdCancelCalibration.Image = My.Resources.Resources.Cancel
-        cmdCancelCalibration.Location = New Point(92, 432)
-        cmdCancelCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdCancelCalibration.Name = "cmdCancelCalibration"
-        cmdCancelCalibration.Size = New Size(72, 22)
-        cmdCancelCalibration.TabIndex = 32
-        ToolTipSave.SetToolTip(cmdCancelCalibration, "Cancel Changes")
-        cmdCancelCalibration.UseVisualStyleBackColor = True
+        CmdCancelCalibration.Enabled = False
+        CmdCancelCalibration.Image = My.Resources.Resources.Cancel
+        CmdCancelCalibration.Location = New Point(92, 432)
+        CmdCancelCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdCancelCalibration.Name = "CmdCancelCalibration"
+        CmdCancelCalibration.Size = New Size(72, 22)
+        CmdCancelCalibration.TabIndex = 32
+        ToolTipSave.SetToolTip(CmdCancelCalibration, "Cancel Changes")
+        CmdCancelCalibration.UseVisualStyleBackColor = True
         ' 
-        ' txtCalibrationFile
+        ' TxtCalibrationFile
         ' 
-        txtCalibrationFile.Location = New Point(141, 20)
-        txtCalibrationFile.Margin = New Padding(2, 1, 2, 1)
-        txtCalibrationFile.Name = "txtCalibrationFile"
-        txtCalibrationFile.Size = New Size(596, 23)
-        txtCalibrationFile.TabIndex = 1
+        TxtCalibrationFile.Location = New Point(141, 20)
+        TxtCalibrationFile.Margin = New Padding(2, 1, 2, 1)
+        TxtCalibrationFile.Name = "TxtCalibrationFile"
+        TxtCalibrationFile.Size = New Size(596, 23)
+        TxtCalibrationFile.TabIndex = 1
         ' 
         ' labCalibrationFile
         ' 
@@ -243,20 +249,20 @@ Partial Class FrmCalibration
         ToolTipSave.SetToolTip(cmdExportCalibration, "Export Calibration To File")
         cmdExportCalibration.UseVisualStyleBackColor = True
         ' 
-        ' chkCalibrateAll
+        ' ChkCalibrateAll
         ' 
-        chkCalibrateAll.Appearance = Appearance.Button
-        chkCalibrateAll.Image = My.Resources.Resources.Timer
-        chkCalibrateAll.ImageAlign = ContentAlignment.MiddleRight
-        chkCalibrateAll.Location = New Point(345, 104)
-        chkCalibrateAll.Margin = New Padding(2, 1, 2, 1)
-        chkCalibrateAll.Name = "chkCalibrateAll"
-        chkCalibrateAll.Size = New Size(82, 23)
-        chkCalibrateAll.TabIndex = 5
-        chkCalibrateAll.Text = "    Cal All"
-        chkCalibrateAll.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(chkCalibrateAll, "Calibrate All Encoders Continuously")
-        chkCalibrateAll.UseVisualStyleBackColor = True
+        ChkCalibrateAll.Appearance = Appearance.Button
+        ChkCalibrateAll.Image = My.Resources.Resources.Timer
+        ChkCalibrateAll.ImageAlign = ContentAlignment.MiddleRight
+        ChkCalibrateAll.Location = New Point(345, 104)
+        ChkCalibrateAll.Margin = New Padding(2, 1, 2, 1)
+        ChkCalibrateAll.Name = "ChkCalibrateAll"
+        ChkCalibrateAll.Size = New Size(82, 23)
+        ChkCalibrateAll.TabIndex = 5
+        ChkCalibrateAll.Text = "Cal All"
+        ChkCalibrateAll.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(ChkCalibrateAll, "Calibrate All Encoders Continuously")
+        ChkCalibrateAll.UseVisualStyleBackColor = True
         ' 
         ' labRadiusOffsetL
         ' 
@@ -286,13 +292,13 @@ Partial Class FrmCalibration
         labScanIncrement.TabIndex = 27
         labScanIncrement.Text = "Scan Increment"
         ' 
-        ' txtScanIncrement
+        ' TxtScanIncrement
         ' 
-        txtScanIncrement.Location = New Point(141, 360)
-        txtScanIncrement.Margin = New Padding(2, 1, 2, 1)
-        txtScanIncrement.Name = "txtScanIncrement"
-        txtScanIncrement.Size = New Size(188, 23)
-        txtScanIncrement.TabIndex = 28
+        TxtScanIncrement.Location = New Point(141, 360)
+        TxtScanIncrement.Margin = New Padding(2, 1, 2, 1)
+        TxtScanIncrement.Name = "TxtScanIncrement"
+        TxtScanIncrement.Size = New Size(188, 23)
+        TxtScanIncrement.TabIndex = 28
         ' 
         ' labHalfProbeDiameter
         ' 
@@ -304,13 +310,13 @@ Partial Class FrmCalibration
         labHalfProbeDiameter.TabIndex = 26
         labHalfProbeDiameter.Text = "Half Probe Diam"
         ' 
-        ' txtHalfProbeDiameter
+        ' TxtHalfProbeDiameter
         ' 
-        txtHalfProbeDiameter.Location = New Point(141, 335)
-        txtHalfProbeDiameter.Margin = New Padding(2, 1, 2, 1)
-        txtHalfProbeDiameter.Name = "txtHalfProbeDiameter"
-        txtHalfProbeDiameter.Size = New Size(188, 23)
-        txtHalfProbeDiameter.TabIndex = 26
+        TxtHalfProbeDiameter.Location = New Point(141, 335)
+        TxtHalfProbeDiameter.Margin = New Padding(2, 1, 2, 1)
+        TxtHalfProbeDiameter.Name = "TxtHalfProbeDiameter"
+        TxtHalfProbeDiameter.Size = New Size(188, 23)
+        TxtHalfProbeDiameter.TabIndex = 26
         ' 
         ' labFixedOffset
         ' 
@@ -322,13 +328,13 @@ Partial Class FrmCalibration
         labFixedOffset.TabIndex = 29
         labFixedOffset.Text = "Fixed Offset"
         ' 
-        ' txtFixedOffset
+        ' TxtFixedOffset
         ' 
-        txtFixedOffset.Location = New Point(141, 385)
-        txtFixedOffset.Margin = New Padding(2, 1, 2, 1)
-        txtFixedOffset.Name = "txtFixedOffset"
-        txtFixedOffset.Size = New Size(188, 23)
-        txtFixedOffset.TabIndex = 30
+        TxtFixedOffset.Location = New Point(141, 385)
+        TxtFixedOffset.Margin = New Padding(2, 1, 2, 1)
+        TxtFixedOffset.Name = "TxtFixedOffset"
+        TxtFixedOffset.Size = New Size(188, 23)
+        TxtFixedOffset.TabIndex = 30
         ' 
         ' labRadiusResolution
         ' 
@@ -368,42 +374,46 @@ Partial Class FrmCalibration
         Label7.TabIndex = 17
         Label7.Text = "Angle Resolution"
         ' 
-        ' cmdCalibrationFile
+        ' CmdCalibrationFile
         ' 
-        cmdCalibrationFile.Image = My.Resources.Resources.OpenfileDialog
-        cmdCalibrationFile.Location = New Point(741, 21)
-        cmdCalibrationFile.Margin = New Padding(2, 1, 2, 1)
-        cmdCalibrationFile.Name = "cmdCalibrationFile"
-        cmdCalibrationFile.Size = New Size(35, 22)
-        cmdCalibrationFile.TabIndex = 2
-        ToolTipSave.SetToolTip(cmdCalibrationFile, "Select Calibration File")
-        cmdCalibrationFile.UseVisualStyleBackColor = True
+        CmdCalibrationFile.Image = My.Resources.Resources.OpenfileDialog
+        CmdCalibrationFile.Location = New Point(741, 21)
+        CmdCalibrationFile.Margin = New Padding(2, 1, 2, 1)
+        CmdCalibrationFile.Name = "CmdCalibrationFile"
+        CmdCalibrationFile.Size = New Size(35, 22)
+        CmdCalibrationFile.TabIndex = 2
+        ToolTipSave.SetToolTip(CmdCalibrationFile, "Select Calibration File")
+        CmdCalibrationFile.UseVisualStyleBackColor = True
         ' 
-        ' cmdZeroCalibration
+        ' CmdZeroCalibration
         ' 
-        cmdZeroCalibration.Image = My.Resources.Resources.Home
-        cmdZeroCalibration.Location = New Point(431, 104)
-        cmdZeroCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdZeroCalibration.Name = "cmdZeroCalibration"
-        cmdZeroCalibration.Size = New Size(82, 23)
-        cmdZeroCalibration.TabIndex = 6
-        cmdZeroCalibration.Text = "Zero"
-        cmdZeroCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(cmdZeroCalibration, "Zero Calibration")
-        cmdZeroCalibration.UseVisualStyleBackColor = True
+        CmdZeroCalibration.Image = My.Resources.Resources.Home
+        CmdZeroCalibration.ImageAlign = ContentAlignment.MiddleRight
+        CmdZeroCalibration.Location = New Point(431, 104)
+        CmdZeroCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdZeroCalibration.Name = "CmdZeroCalibration"
+        CmdZeroCalibration.Size = New Size(82, 23)
+        CmdZeroCalibration.TabIndex = 6
+        CmdZeroCalibration.Text = "Zero"
+        CmdZeroCalibration.TextAlign = ContentAlignment.MiddleLeft
+        CmdZeroCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(CmdZeroCalibration, "Zero Calibration")
+        CmdZeroCalibration.UseVisualStyleBackColor = True
         ' 
-        ' cmdDefaultCalibration
+        ' CmdDefaultCalibration
         ' 
-        cmdDefaultCalibration.Image = My.Resources.Resources.DefaultConstraint
-        cmdDefaultCalibration.Location = New Point(517, 104)
-        cmdDefaultCalibration.Margin = New Padding(2, 1, 2, 1)
-        cmdDefaultCalibration.Name = "cmdDefaultCalibration"
-        cmdDefaultCalibration.Size = New Size(82, 23)
-        cmdDefaultCalibration.TabIndex = 7
-        cmdDefaultCalibration.Text = "Default"
-        cmdDefaultCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
-        ToolTipSave.SetToolTip(cmdDefaultCalibration, "Load Default Calibration")
-        cmdDefaultCalibration.UseVisualStyleBackColor = True
+        CmdDefaultCalibration.Image = My.Resources.Resources.DefaultConstraint
+        CmdDefaultCalibration.ImageAlign = ContentAlignment.MiddleRight
+        CmdDefaultCalibration.Location = New Point(517, 104)
+        CmdDefaultCalibration.Margin = New Padding(2, 1, 2, 1)
+        CmdDefaultCalibration.Name = "CmdDefaultCalibration"
+        CmdDefaultCalibration.Size = New Size(82, 23)
+        CmdDefaultCalibration.TabIndex = 7
+        CmdDefaultCalibration.Text = "Default"
+        CmdDefaultCalibration.TextAlign = ContentAlignment.MiddleLeft
+        CmdDefaultCalibration.TextImageRelation = TextImageRelation.ImageBeforeText
+        ToolTipSave.SetToolTip(CmdDefaultCalibration, "Load Default Calibration")
+        CmdDefaultCalibration.UseVisualStyleBackColor = True
         ' 
         ' timerCalibration
         ' 
@@ -433,6 +443,8 @@ Partial Class FrmCalibration
         EncoderStatusStrip1.Name = "EncoderStatusStrip1"
         EncoderStatusStrip1.Size = New Size(796, 23)
         EncoderStatusStrip1.TabIndex = 33
+        EncoderStatusStrip1.TimerInterval = 100L
+        EncoderStatusStrip1.TimerOn = False
         EncoderStatusStrip1.WorkstationName = ""
         ' 
         ' FrmCalibration
@@ -443,39 +455,39 @@ Partial Class FrmCalibration
         Controls.Add(EncoderStatusStrip1)
         Controls.Add(TxtDepthResolution)
         Controls.Add(TxtAngleResolution)
-        Controls.Add(cmdDefaultCalibration)
-        Controls.Add(cmdZeroCalibration)
-        Controls.Add(cmdCalibrationFile)
+        Controls.Add(CmdDefaultCalibration)
+        Controls.Add(CmdZeroCalibration)
+        Controls.Add(CmdCalibrationFile)
         Controls.Add(labRadiusResolution)
         Controls.Add(TxtRadiusResolution)
         Controls.Add(labDepthResolution)
         Controls.Add(Label7)
         Controls.Add(labFixedOffset)
-        Controls.Add(txtFixedOffset)
+        Controls.Add(TxtFixedOffset)
         Controls.Add(labScanIncrement)
-        Controls.Add(txtScanIncrement)
+        Controls.Add(TxtScanIncrement)
         Controls.Add(labHalfProbeDiameter)
-        Controls.Add(txtHalfProbeDiameter)
+        Controls.Add(TxtHalfProbeDiameter)
         Controls.Add(labRadiusOffsetL)
         Controls.Add(TxtRadiusOffsetL)
-        Controls.Add(chkCalibrateAll)
+        Controls.Add(ChkCalibrateAll)
         Controls.Add(cmdExportCalibration)
         Controls.Add(cmdImportCalibration)
         Controls.Add(labCalibrationFile)
-        Controls.Add(txtCalibrationFile)
-        Controls.Add(cmdCancelCalibration)
-        Controls.Add(cmdSaveCalibration)
+        Controls.Add(TxtCalibrationFile)
+        Controls.Add(CmdCancelCalibration)
+        Controls.Add(CmdSaveCalibration)
         Controls.Add(labRadiusOffsetR)
         Controls.Add(TxtRadiusOffsetR)
-        Controls.Add(cmdDepthCalibration)
+        Controls.Add(CmdDepthCalibration)
         Controls.Add(labDepthCalibration)
-        Controls.Add(txtDepthCalibration)
-        Controls.Add(cmdRadiusCalibration)
+        Controls.Add(TxtDepthCalibration)
+        Controls.Add(CmdRadiusCalibration)
         Controls.Add(labRadiusCalibration)
-        Controls.Add(txtRadiusCalibration)
-        Controls.Add(cmdAngleCalibration)
+        Controls.Add(TxtRadiusCalibration)
+        Controls.Add(CmdAngleCalibration)
         Controls.Add(labAngleCalibration)
-        Controls.Add(txtAngleCalibration)
+        Controls.Add(TxtAngleCalibration)
         Margin = New Padding(2, 1, 2, 1)
         Name = "FrmCalibration"
         Text = "Encoder Calibration"
@@ -484,39 +496,39 @@ Partial Class FrmCalibration
         PerformLayout()
     End Sub
 
-    Friend WithEvents txtAngleCalibration As TextBox
+    Friend WithEvents TxtAngleCalibration As TextBox
     Friend WithEvents labAngleCalibration As Label
-    Friend WithEvents cmdAngleCalibration As Button
-    Friend WithEvents cmdRadiusCalibration As Button
+    Friend WithEvents CmdAngleCalibration As Button
+    Friend WithEvents CmdRadiusCalibration As Button
     Friend WithEvents labRadiusCalibration As Label
-    Friend WithEvents txtRadiusCalibration As TextBox
-    Friend WithEvents cmdDepthCalibration As Button
+    Friend WithEvents TxtRadiusCalibration As TextBox
+    Friend WithEvents CmdDepthCalibration As Button
     Friend WithEvents labDepthCalibration As Label
-    Friend WithEvents txtDepthCalibration As TextBox
+    Friend WithEvents TxtDepthCalibration As TextBox
     Friend WithEvents labRadiusOffsetR As Label
     Friend WithEvents TxtRadiusOffsetR As TextBox
-    Friend WithEvents cmdSaveCalibration As Button
-    Friend WithEvents cmdCancelCalibration As Button
-    Friend WithEvents txtCalibrationFile As TextBox
+    Friend WithEvents CmdSaveCalibration As Button
+    Friend WithEvents CmdCancelCalibration As Button
+    Friend WithEvents TxtCalibrationFile As TextBox
     Friend WithEvents labCalibrationFile As Label
     Friend WithEvents cmdImportCalibration As Button
     Friend WithEvents cmdExportCalibration As Button
-    Friend WithEvents chkCalibrateAll As CheckBox
+    Friend WithEvents ChkCalibrateAll As CheckBox
     Friend WithEvents labRadiusOffsetL As Label
     Friend WithEvents TxtRadiusOffsetL As TextBox
     Friend WithEvents labScanIncrement As Label
-    Friend WithEvents txtScanIncrement As TextBox
+    Friend WithEvents TxtScanIncrement As TextBox
     Friend WithEvents labHalfProbeDiameter As Label
-    Friend WithEvents txtHalfProbeDiameter As TextBox
+    Friend WithEvents TxtHalfProbeDiameter As TextBox
     Friend WithEvents labFixedOffset As Label
-    Friend WithEvents txtFixedOffset As TextBox
+    Friend WithEvents TxtFixedOffset As TextBox
     Friend WithEvents labRadiusResolution As Label
     Friend WithEvents TxtRadiusResolution As TextBox
     Friend WithEvents labDepthResolution As Label
     Friend WithEvents Label7 As Label
-    Friend WithEvents cmdCalibrationFile As Button
-    Friend WithEvents cmdZeroCalibration As Button
-    Friend WithEvents cmdDefaultCalibration As Button
+    Friend WithEvents CmdCalibrationFile As Button
+    Friend WithEvents CmdZeroCalibration As Button
+    Friend WithEvents CmdDefaultCalibration As Button
     Friend WithEvents timerCalibration As Timer
     Friend WithEvents ToolTipSave As ToolTip
     Friend WithEvents TxtAngleResolution As TextBox

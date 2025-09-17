@@ -35,7 +35,25 @@ Public Class EncoderStatusStrip
     Private mTimerOn As Boolean = False                                 ' Flag indicating whether the scan timer is currently active.
 #End Region
 #Region "Public Interface"
-    Public ReadOnly Property EncoderStatus As EncoderStatus
+    Public Class EncoderEventArgs
+        Inherits EventArgs
+        ' Custom event arguments for navigation events.
+        ' When raised, clients can inspect the properties.
+        Public Property EventName As String
+        Public Property Key As Object
+        Public Property Value As Object
+        Public Sub New(eventName As String, Optional key As Object = Nothing, Optional value As Object = Nothing)
+            Me.EventName = eventName
+            Me.Key = key
+            Me.Value = value
+        End Sub
+    End Class
+
+    Public Delegate Sub EncoderEventHandler(sender As Object, e As EncoderEventArgs)
+
+    Public Event EncoderEvent As EncoderEventHandler
+
+    Public ReadOnly Property Status As EncoderStatus
         Get
             Return mEncoderStatus
         End Get
@@ -202,22 +220,27 @@ Public Class EncoderStatusStrip
                 TSLabelEncodersStatus.ForeColor = Color.Black
                 TSLabelEncodersStatus.Text = STR_STATUS_BUSY
                 TSButtonEncoders.Enabled = False
+                RaiseEvent EncoderEvent(Me, New EncoderEventArgs("Busy"))
                 Me.Refresh()
             Case EncoderStatus.EncoderError
                 TSLabelEncodersStatus.ForeColor = Color.Red
                 TSLabelEncodersStatus.Text = STR_STATUS_ERROR
+                RaiseEvent EncoderEvent(Me, New EncoderEventArgs("Error"))
             Case EncoderStatus.NoEncoders
                 TSLabelEncodersStatus.ForeColor = Color.Red
                 TSLabelEncodersStatus.Text = STR_STATUS_NO_ENCODERS
                 TSButtonEncoders.Enabled = False
+                RaiseEvent EncoderEvent(Me, New EncoderEventArgs("NoEncoders"))
             Case EncoderStatus.NotInitialized
                 TSLabelEncodersStatus.ForeColor = Color.Red
                 TSLabelEncodersStatus.Text = STR_STATUS_NOT_INITIALIZED
                 TSButtonEncoders.Enabled = True
+                RaiseEvent EncoderEvent(Me, New EncoderEventArgs("NotInitialized"))
             Case EncoderStatus.Ready
                 TSLabelEncodersStatus.ForeColor = Color.Green
                 TSLabelEncodersStatus.Text = STR_STATUS_READY
                 TSButtonEncoders.Enabled = True
+                RaiseEvent EncoderEvent(Me, New EncoderEventArgs("Ready"))
             Case Else
                 TSLabelEncodersStatus.Text = ""
                 TSButtonEncoders.Enabled = False

@@ -56,6 +56,7 @@ Partial Public Class FrmCustomers
         Database.Customers.Add(BindingSourceCurrent(CustomerBindingSource))
         AddingNew = False
     End Sub
+
     Protected Overrides Sub BindDataSources()
         ' Master list is Customers sorted by CustomerName.
         Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
@@ -99,7 +100,7 @@ Partial Public Class FrmCustomers
     Private Sub DatagridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
         ' Open the Vessels form with the selected vessel as the current record.
         Try
-            ShowForm(mFrmVessels, Database)
+            ShowForm(mFrmVessels, Database, User)
             mFrmVessels.Find(BindingSourceCurrent(VesselBindingSource))
         Catch ex As Exception
             MessageBox.Show("Error opening vessel details: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -109,7 +110,7 @@ Partial Public Class FrmCustomers
     Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
         ' Open the Jobs form with the selected job as the current record.
         Try
-            ShowForm(mFrmJobs, Database)
+            ShowForm(mFrmJobs, Database, User)
             'mFrmJobs.Filter = Nothing
             mFrmJobs.Find(JobBindingSource.Current)
         Catch ex As Exception
@@ -121,7 +122,7 @@ Partial Public Class FrmCustomers
         Navigator = RecordNavigationBar1
         Navigator.BoundControls = New List(Of Control) From {
            DataGridCustomers
-       }
+        }
         MasterSource = CustomerBindingSource
         AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
     End Sub

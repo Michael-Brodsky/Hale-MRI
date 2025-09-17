@@ -224,8 +224,6 @@ Public Class RecordNavigationBar
 
     Private Sub DataSource_PositionChanged(sender As Object, e As EventArgs)
         Me.Refresh()
-        'ShowPosition()
-        ' ControlsEnable()
     End Sub
 #End Region
 #Region "Private Interface"
@@ -276,7 +274,7 @@ Public Class RecordNavigationBar
         End Set
     End Property
 
-    Private WriteOnly Property SaveUndoControlsEnabled As Boolean
+    Public WriteOnly Property SaveUndoControlsEnabled As Boolean
         ' The Save and Undo Controls are enabled only when the current record is being editted. 
         ' This will also enable any navigation and modification Controls accordingly.
         Set(value As Boolean)
@@ -285,10 +283,12 @@ Public Class RecordNavigationBar
             CmdGotoFirst.Enabled = Not CmdSave.Enabled
             CmdAddNew.Enabled = Not CmdSave.Enabled
 
+            CmdFind.Enabled = CmdGotoFirst.Enabled
             CmdGotoLast.Enabled = CmdGotoFirst.Enabled
             CmdGotoNext.Enabled = CmdGotoFirst.Enabled
             CmdGotoPrevious.Enabled = CmdGotoFirst.Enabled
             CmdDelete.Enabled = CmdAddNew.Enabled
+            TxtFind.Enabled = CmdFind.Enabled
             RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Editing",, value))
         End Set
     End Property

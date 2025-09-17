@@ -6,6 +6,7 @@ Public Class FrmHaleMRI
 #Region "Private Members"
     Private mDatabase As New HaleMRIContext
     Private mWorkstationEncoders As New WorkstationEncoders()
+    Private mUser As Employee
     ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
@@ -28,7 +29,8 @@ Public Class FrmHaleMRI
             MessageBox.Show("Please enter both username and password.", "Login Error", MessageBoxButtons.OK, MessageBoxIcon.Warning)
             Return
         End If
-        If ApplicationLogin(userName, password) <> kLoginFailed Then
+        mUser = ApplicationLogin(mDatabase, userName, password)
+        If mUser IsNot Nothing Then
             ' If login is successful, proceed to the main application.
             ' Here you can initialize the main form or load the necessary data.
             PanelLogin.Hide() ' Hide the login form if needed.
@@ -53,7 +55,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdCustomers_Click(sender As Object, e As EventArgs) Handles CmdCustomers.Click
         Try
-            ShowForm(mFrmCustomers, mDatabase)
+            ShowForm(mFrmCustomers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening customers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -61,7 +63,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdJobDetails_Click(sender As Object, e As EventArgs)
         Try
-            ShowForm(mFrmJobDetails, mDatabase)
+            ShowForm(mFrmJobDetails, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening job details form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -69,7 +71,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles CmdJobs.Click
         Try
-            ShowForm(mFrmJobs, mDatabase)
+            ShowForm(mFrmJobs, mDatabase, mUser)
             mFrmJobs.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening jobs form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -78,7 +80,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdManufacturers_Click(sender As Object, e As EventArgs) Handles CmdManufacturers.Click
         Try
-            ShowForm(mFrmManufacturers, mDatabase)
+            ShowForm(mFrmManufacturers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening manufacturers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -94,7 +96,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdPropellers_Click(sender As Object, e As EventArgs) Handles CmdPropellers.Click
         Try
-            ShowForm(mFrmPropellers, mDatabase)
+            ShowForm(mFrmPropellers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening propellers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -109,7 +111,7 @@ Public Class FrmHaleMRI
     End Sub
     Private Sub CmdSettings_Click(sender As Object, e As EventArgs) Handles CmdSettings.Click
         Try
-            ShowForm(mFrmSettings, mDatabase)
+            ShowForm(mFrmSettings, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening settings form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -117,7 +119,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdVessels_Click(sender As Object, e As EventArgs) Handles CmdVessels.Click
         Try
-            ShowForm(mFrmVessels, mDatabase)
+            ShowForm(mFrmVessels, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening vessels form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
