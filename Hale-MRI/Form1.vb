@@ -1,10 +1,11 @@
 ﻿Imports System.ComponentModel
-Imports Hale_MRI.RecordNavigationBar
 Imports Hale_MRI.EncoderStatusStrip
+Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibEncoder.EncoderHardware
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.Metadata.Builders
 
 Public Class Form1
     Inherits FrmDatabaseForm
@@ -162,6 +163,7 @@ Public Class Form1
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ' Initialize ane form controls.
+            DataGridBladeRadius.AutoGenerateColumns = False
             PanelMeasurements.Enabled = (EncoderStatusStrip1.Status = EncoderStatus.Ready)
             ' Initialize the Navigator
             Navigator = RecordNavigationBar1
@@ -207,7 +209,21 @@ Public Class Form1
         End Select
     End Sub
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
-
+        ' For example, show the average RadiusMeasurements.Radius for each blade of a JobDetail record.
+        ' The LINQ query is the SQL equivqalent of:
+        '   SELECT [Blade ID] AS [BladeId], Avg([Radius]) AS [AvgRadius]
+        '   FROM [Radius Measurements]
+        '   GROUP BY [Blade ID]
+        '   ORDER BY [Blade ID];
+        '
+        ' The DataGridBladeRadius is bound to the BladeRadiusBindingSource and
+        ' has two colmuns with DataPropertyName "BladeId" and "AvgRadius" which
+        ' are the same names of the columns produced by the LINQ query.
+        BladeRadiusBindingSource.DataSource = Database.RadiusMeasurements.Local _
+            .GroupBy(Function(cm) cm.BladeId) _
+            .Select(Function(brm) New With {.BladeId = brm.Key, .AvgRadius = brm.Average(Function(cm) cm.Radius)}) _
+            .OrderBy(Function(cm) cm.BladeId) _
+            .ToList()
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
@@ -273,7 +289,7 @@ Public Class Form1
     End Sub
 
     Private Sub RadiusMeasurementBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles RadiusMeasurementBindingSource.AddingNew
-        Dim newMeasurement As New RadiusMeasurement With {
+        Dim newMeasurement As New LibDatabase.Models.RadiusMeasurement With {
             .JobDetails = mJobDetails,
             .BladeId = ComboBlade.SelectedValue,
             .Radius = Double.Parse(TxtRadius.Text)

@@ -238,9 +238,9 @@ Public Class FrmJobs
 
     Private Sub ScanDataPick()
         Dim ofd As New OpenFileDialog With {
-            .Title = "Select ScanData File",
+            .Title = "Select Scan Data File",
             .Filter = "ScanData Files (*.txt)|*.txt|All Files (*.*)|*.*",
-            .InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+            .InitialDirectory = If(Database.Settings.Local.FirstOrDefault()?.ApplicationDefaultFolder, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         }
         If ofd.ShowDialog() = DialogResult.OK Then TxtScanDataFile.Text = ofd.FileName
     End Sub
@@ -303,7 +303,7 @@ Public Class FrmJobs
         Try
             ScanDataPick()
         Catch ex As Exception
-            MessageBox.Show("Error selecting scan data: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error selecting scan data file: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -351,6 +351,19 @@ Public Class FrmJobs
         Catch ex As Exception
             MessageBox.Show("Error selecting a job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub ComboStyle_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboStyle.SelectionChangeCommitted
+        ' Automatically chnage the blade count for certain propeller styles.
+        If ComboStyle.SelectedItem IsNot Nothing Then
+            Select Case ComboStyle.SelectedValue
+                Case "3-Blade"
+
+                Case "4-Blade", "Dura Quad", "Dyna Quad", "Equi Quad"
+
+                Case Else
+            End Select
+        End If
     End Sub
 
     Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
@@ -484,25 +497,12 @@ Public Class FrmJobs
         End Select
     End Sub
 
-    Private Sub ComboStyle_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboStyle.SelectionChangeCommitted
-        If ComboStyle.SelectedItem IsNot Nothing Then
-            Dim n = ComboBlades.DataBindings.Count
-            Select Case ComboStyle.SelectedValue
-                Case "3-Blade"
-                    ComboBlades.SelectedIndex = 1
-                    Dim i = ComboBlades.SelectedItem
-                    Dim v = ComboBlades.SelectedValue
-                Case "4-Blade", "Dura Quad", "Dyna Quad", "Equi Quad"
-                    ComboBlades.SelectedIndex = 2
-                    Dim i = ComboBlades.SelectedItem
-                    Dim v = ComboBlades.SelectedValue
-                Case Else
-            End Select
-            JobsBindingSource.EndEdit()
-            ComboBlades.DataBindings("SelectedValue").WriteValue()
-            'Dim x As Job = BindingSourceCurrent(JobsBindingSource)
-            'x?.PropellerBlades = New Blade() With {.BladeCount = 3}
-        End If
+    Private Sub TxtScanDataFile_TextChanged(sender As Object, e As EventArgs) Handles TxtScanDataFile.TextChanged
+        Try
+            ScanDataImexEnabled = (TxtScanDataFile.Text.Length > 0)
+        Catch ex As Exception
+            MessageBox.Show("Error selecting scan data file: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 End Class

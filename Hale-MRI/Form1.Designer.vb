@@ -51,6 +51,11 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         PanelMeasurements = New Panel()
+        LabBladeRadius = New Label()
+        DataGridBladeRadius = New DataGridView()
+        BladeId = New DataGridViewTextBoxColumn()
+        AvgRadius = New DataGridViewTextBoxColumn()
+        BladeRadiusBindingSource = New BindingSource(components)
         CmdUndoMeasurement = New Button()
         CmdSaveMeasurement = New Button()
         LabWheelPitch = New Label()
@@ -79,6 +84,8 @@ Partial Class Form1
         PanelJob.SuspendLayout()
         TableLayoutPanel1.SuspendLayout()
         PanelMeasurements.SuspendLayout()
+        CType(DataGridBladeRadius, ComponentModel.ISupportInitialize).BeginInit()
+        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -90,7 +97,7 @@ Partial Class Form1
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(485, 11)
+        RecordNavigationBar1.Location = New Point(479, 11)
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
@@ -134,7 +141,7 @@ Partial Class Form1
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedByDataGridViewTextBoxColumn, Description})
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridJobDetails.Location = New Point(485, 48)
+        DataGridJobDetails.Location = New Point(479, 48)
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.ScrollBars = ScrollBars.None
         DataGridJobDetails.Size = New Size(635, 50)
@@ -348,6 +355,8 @@ Partial Class Form1
         ' PanelMeasurements
         ' 
         PanelMeasurements.BorderStyle = BorderStyle.Fixed3D
+        PanelMeasurements.Controls.Add(LabBladeRadius)
+        PanelMeasurements.Controls.Add(DataGridBladeRadius)
         PanelMeasurements.Controls.Add(CmdUndoMeasurement)
         PanelMeasurements.Controls.Add(CmdSaveMeasurement)
         PanelMeasurements.Controls.Add(LabWheelPitch)
@@ -369,6 +378,43 @@ Partial Class Form1
         PanelMeasurements.Size = New Size(905, 531)
         PanelMeasurements.TabIndex = 8
         ' 
+        ' LabBladeRadius
+        ' 
+        LabBladeRadius.AutoSize = True
+        LabBladeRadius.Location = New Point(12, 116)
+        LabBladeRadius.Name = "LabBladeRadius"
+        LabBladeRadius.Size = New Size(74, 15)
+        LabBladeRadius.TabIndex = 18
+        LabBladeRadius.Text = "Blade Radius"
+        ' 
+        ' DataGridBladeRadius
+        ' 
+        DataGridBladeRadius.AutoGenerateColumns = False
+        DataGridBladeRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridBladeRadius.Columns.AddRange(New DataGridViewColumn() {BladeId, AvgRadius})
+        DataGridBladeRadius.DataSource = BladeRadiusBindingSource
+        DataGridBladeRadius.Location = New Point(12, 134)
+        DataGridBladeRadius.Name = "DataGridBladeRadius"
+        DataGridBladeRadius.Size = New Size(423, 150)
+        DataGridBladeRadius.TabIndex = 17
+        ' 
+        ' BladeId
+        ' 
+        BladeId.DataPropertyName = "BladeId"
+        BladeId.HeaderText = "Blade"
+        BladeId.MinimumWidth = 60
+        BladeId.Name = "BladeId"
+        BladeId.ReadOnly = True
+        BladeId.Width = 60
+        ' 
+        ' AvgRadius
+        ' 
+        AvgRadius.DataPropertyName = "AvgRadius"
+        AvgRadius.HeaderText = "Radius"
+        AvgRadius.MinimumWidth = 160
+        AvgRadius.Name = "AvgRadius"
+        AvgRadius.Width = 160
+        ' 
         ' CmdUndoMeasurement
         ' 
         CmdUndoMeasurement.Enabled = False
@@ -382,7 +428,7 @@ Partial Class Form1
         ' CmdSaveMeasurement
         ' 
         CmdSaveMeasurement.Enabled = False
-        CmdSaveMeasurement.Image = My.Resources.Resources.Checkmark
+        CmdSaveMeasurement.Image = CType(resources.GetObject("CmdSaveMeasurement.Image"), Image)
         CmdSaveMeasurement.Location = New Point(772, 30)
         CmdSaveMeasurement.Name = "CmdSaveMeasurement"
         CmdSaveMeasurement.Size = New Size(36, 23)
@@ -529,7 +575,7 @@ Partial Class Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1146, 671)
+        ClientSize = New Size(1131, 671)
         Controls.Add(PictureBoxLogo)
         Controls.Add(PanelMeasurements)
         Controls.Add(PanelJob)
@@ -553,6 +599,8 @@ Partial Class Form1
         TableLayoutPanel1.PerformLayout()
         PanelMeasurements.ResumeLayout(False)
         PanelMeasurements.PerformLayout()
+        CType(DataGridBladeRadius, ComponentModel.ISupportInitialize).EndInit()
+        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -602,4 +650,9 @@ Partial Class Form1
     Friend WithEvents TxtWheelPitch As TextBox
     Friend WithEvents CmdUndoMeasurement As Button
     Friend WithEvents CmdSaveMeasurement As Button
+    Friend WithEvents DataGridBladeRadius As DataGridView
+    Friend WithEvents LabBladeRadius As Label
+    Friend WithEvents BladeRadiusBindingSource As BindingSource
+    Friend WithEvents BladeId As DataGridViewTextBoxColumn
+    Friend WithEvents AvgRadius As DataGridViewTextBoxColumn
 End Class
