@@ -2,7 +2,7 @@
 
 Module MRIMath
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
-        'Parameters might change depending on how we can access data from database
+        'Pitch = (360 * Change in Depth) / Change in Angle'
         Dim deltaangle = secondangle - firstangle
         Dim deltadepth = seconddepth - firstdepth
         Dim pitch As Double
@@ -17,6 +17,7 @@ Module MRIMath
         Return pitch
     End Function
     Public Function GetChordLength(bladenum As Integer, radperc As Integer) As Double
+        'Nothing we are doing now uses this need to fully implement
         Dim chordlength As Double
         Dim Diameter As Double = 22 'can replace this with database reference or global variable
 
@@ -34,10 +35,12 @@ Module MRIMath
         Return chordlength
     End Function
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
+        'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))
         Dim bladenumber As Integer
         If Blades = 0 Or Angle < 0 Then
             Return 0
         End If
         Return bladenumber = Blades - CInt(Math.Ceiling(Angle / (360 / Blades)))
+
     End Function
 End Module
