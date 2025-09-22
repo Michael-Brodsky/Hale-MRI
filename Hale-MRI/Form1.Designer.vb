@@ -73,6 +73,7 @@ Partial Class Form1
         LabAngle = New Label()
         TxtAngle = New TextBox()
         PictureBoxLogo = New PictureBox()
+        CmdNext = New Button()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -355,6 +356,7 @@ Partial Class Form1
         ' PanelMeasurements
         ' 
         PanelMeasurements.BorderStyle = BorderStyle.Fixed3D
+        PanelMeasurements.Controls.Add(CmdNext)
         PanelMeasurements.Controls.Add(LabBladeRadius)
         PanelMeasurements.Controls.Add(DataGridBladeRadius)
         PanelMeasurements.Controls.Add(CmdUndoMeasurement)
@@ -375,7 +377,7 @@ Partial Class Form1
         PanelMeasurements.Controls.Add(TxtAngle)
         PanelMeasurements.Location = New Point(215, 111)
         PanelMeasurements.Name = "PanelMeasurements"
-        PanelMeasurements.Size = New Size(905, 531)
+        PanelMeasurements.Size = New Size(942, 531)
         PanelMeasurements.TabIndex = 8
         ' 
         ' LabBladeRadius
@@ -419,7 +421,7 @@ Partial Class Form1
         ' 
         CmdUndoMeasurement.Enabled = False
         CmdUndoMeasurement.Image = My.Resources.Resources.Cancel
-        CmdUndoMeasurement.Location = New Point(814, 30)
+        CmdUndoMeasurement.Location = New Point(895, 31)
         CmdUndoMeasurement.Name = "CmdUndoMeasurement"
         CmdUndoMeasurement.Size = New Size(36, 23)
         CmdUndoMeasurement.TabIndex = 16
@@ -429,7 +431,7 @@ Partial Class Form1
         ' 
         CmdSaveMeasurement.Enabled = False
         CmdSaveMeasurement.Image = CType(resources.GetObject("CmdSaveMeasurement.Image"), Image)
-        CmdSaveMeasurement.Location = New Point(772, 30)
+        CmdSaveMeasurement.Location = New Point(853, 31)
         CmdSaveMeasurement.Name = "CmdSaveMeasurement"
         CmdSaveMeasurement.Size = New Size(36, 23)
         CmdSaveMeasurement.TabIndex = 15
@@ -456,7 +458,7 @@ Partial Class Form1
         ' 
         CmdHomeEncoders.Image = My.Resources.Resources.Home
         CmdHomeEncoders.ImageAlign = ContentAlignment.MiddleRight
-        CmdHomeEncoders.Location = New Point(695, 30)
+        CmdHomeEncoders.Location = New Point(776, 31)
         CmdHomeEncoders.Name = "CmdHomeEncoders"
         CmdHomeEncoders.Size = New Size(71, 23)
         CmdHomeEncoders.TabIndex = 11
@@ -503,7 +505,7 @@ Partial Class Form1
         ChkAutoScan.Appearance = Appearance.Button
         ChkAutoScan.Image = My.Resources.Resources.Timer
         ChkAutoScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkAutoScan.Location = New Point(619, 30)
+        ChkAutoScan.Location = New Point(700, 31)
         ChkAutoScan.Margin = New Padding(2, 1, 2, 1)
         ChkAutoScan.Name = "ChkAutoScan"
         ChkAutoScan.Size = New Size(71, 23)
@@ -571,11 +573,24 @@ Partial Class Form1
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
         ' 
+        ' CmdNext
+        ' 
+        CmdNext.Image = CType(resources.GetObject("CmdNext.Image"), Image)
+        CmdNext.ImageAlign = ContentAlignment.MiddleRight
+        CmdNext.Location = New Point(620, 31)
+        CmdNext.Name = "CmdNext"
+        CmdNext.Size = New Size(75, 23)
+        CmdNext.TabIndex = 19
+        CmdNext.Text = "Next"
+        CmdNext.TextAlign = ContentAlignment.MiddleLeft
+        CmdNext.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdNext.UseVisualStyleBackColor = True
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1131, 671)
+        ClientSize = New Size(1193, 671)
         Controls.Add(PictureBoxLogo)
         Controls.Add(PanelMeasurements)
         Controls.Add(PanelJob)
@@ -655,4 +670,5 @@ Partial Class Form1
     Friend WithEvents BladeRadiusBindingSource As BindingSource
     Friend WithEvents BladeId As DataGridViewTextBoxColumn
     Friend WithEvents AvgRadius As DataGridViewTextBoxColumn
+    Friend WithEvents CmdNext As Button
 End Class

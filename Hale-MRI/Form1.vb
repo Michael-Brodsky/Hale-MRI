@@ -5,7 +5,8 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibEncoder.EncoderHardware
 Imports Microsoft.EntityFrameworkCore
-Imports Microsoft.EntityFrameworkCore.Metadata.Builders
+Imports System.Linq
+
 
 Public Class Form1
     Inherits FrmDatabaseForm
@@ -47,7 +48,8 @@ Public Class Form1
                 .Include(Function(em) em.ExtremeMeasurements) _
                 .Include(Function(rm) rm.RadiusMeasurements) _
                 .OrderBy(Function(sd) sd.StartDate).ToList())
-                mJobDetails = mJob?.JobDetails?.FirstOrDefault()
+                JobDetailsBindingSource.MoveLast()
+                JobDetailsBindingSource.MoveFirst()
                 ShowJobInfo()
             End If
         End Set
@@ -70,6 +72,19 @@ Public Class Form1
             End If
         End Set
     End Property
+
+    Private Sub BladeRadiusUpdate()
+        Dim rm As IList(Of RadiusMeasurement) = If(RadiusMeasurementBindingSource.Count > 0, RadiusMeasurementBindingSource.List, New List(Of RadiusMeasurement))
+        BladeRadiusBindingSource.DataSource =
+                If(JobDetails IsNot Nothing AndAlso JobDetails.Id IsNot Nothing,
+                    rm.ToList() _
+                    .GroupBy(Function(cm) cm?.BladeId) _
+                    .Select(Function(brm) New With {.BladeId = brm.Key, .AvgRadius = brm.Average(Function(cm) cm?.Radius)}) _
+                    .OrderBy(Function(cm) cm?.BladeId) _
+                    .ToList(),
+                Nothing)
+        'End If
+    End Sub
 
     Private Sub CreateNewMeasurement()
         CellMeasurementsBindingSource.AddNew()
@@ -145,7 +160,7 @@ Public Class Form1
             CmdHomeEncoders.Enabled = Not ChkAutoScan.Checked   ' Home button disabled while scanning.
             ComboBlade.Enabled = Not ChkAutoScan.Checked        ' Blade changes disabled while scanning.
             ' JobDetails changes disabled while scanning.
-            RecordNavigationBar1.Enabled = Not ChkAutoScan.Checked AndAlso Me.Current IsNot Nothing
+            RecordNavigationBar1.Enabled = Not ChkAutoScan.Checked AndAlso Current IsNot Nothing
             DataGridJobDetails.IsEnabled(RecordNavigationBar1.Enabled)
         Catch ex As Exception
             MessageBox.Show("Error toggling the encoders scan timer: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -219,11 +234,10 @@ Public Class Form1
         ' The DataGridBladeRadius is bound to the BladeRadiusBindingSource and
         ' has two colmuns with DataPropertyName "BladeId" and "AvgRadius" which
         ' are the same names of the columns produced by the LINQ query.
-        BladeRadiusBindingSource.DataSource = Database.RadiusMeasurements.Local _
-            .GroupBy(Function(cm) cm.BladeId) _
-            .Select(Function(brm) New With {.BladeId = brm.Key, .AvgRadius = brm.Average(Function(cm) cm.Radius)}) _
-            .OrderBy(Function(cm) cm.BladeId) _
-            .ToList()
+        mJobDetails = Me.Current
+        If Me.JobDetails IsNot Nothing Then BladeRadiusUpdate()
+
+        'BladeRadiusBindingSource.ResetBindings(False)
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
@@ -248,7 +262,11 @@ Public Class Form1
                 PanelMeasurements.Enabled = True
             Case "Undo"
                 ' Enable the PanelMeasurements when the user has cancelled the JobDetails record changes.
-                PanelMeasurements.Enabled = True
+                If Me.Current IsNot Nothing Then
+                    JobDetailsBindingSource.ResetCurrentItem()
+                    BladeRadiusUpdate()
+                    PanelMeasurements.Enabled = True
+                End If
             Case Else
         End Select
     End Sub
@@ -322,5 +340,10 @@ Public Class Form1
     Private Sub ComboBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboBlade.SelectedIndexChanged
         ' Disable the measurement controls if no blade is selected.
         MeasurementControlsEnable(ComboBlade.SelectedItem IsNot Nothing)
+    End Sub
+
+    Private Sub CmdNext_Click(sender As Object, e As EventArgs) Handles CmdNext.Click
+        ComboBlade.SelectedIndex = If(ComboBlade.SelectedIndex < ComboBlade.Items.Count - 1, ComboBlade.SelectedIndex + 1, 0)
+        ChkAutoScan.Checked = True
     End Sub
 End Class

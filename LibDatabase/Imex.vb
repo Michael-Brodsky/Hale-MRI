@@ -251,56 +251,57 @@ Public Module Imex
         Return ws
     End Function
 
-    Public Function ScanDataAdd(newJob As Job, db As HaleMRIContext) As Job
-        ' Adds a new Job to the database using data collected from a scan data file.
-        Dim result As Job = Nothing
-        If newJob IsNot Nothing Then
-            Dim existingJob As Job = db.Jobs.FirstOrDefault(Function(j) j.JobNumber = newJob.JobNumber.ToString())
-            If existingJob Is Nothing Then
-                If String.IsNullOrWhiteSpace(newJob.Vessel.VesselName) Then newJob.Vessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
-                Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = newJob.Vessel.VesselName.ToString())
-                If existingVessel IsNot Nothing Then
-                    newJob.Vessel = existingVessel
-                Else
-                    If String.IsNullOrEmpty(newJob.Vessel.Customer.CustomerName) Then
-                        newJob.Vessel.Customer = New Customer With {.CustomerName = $"(New Customer {db.Customers.Count + 1})"}
-                    Else
-                        Dim existingCustomer As Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = newJob.Vessel.Customer.CustomerName.ToString())
-                        If existingCustomer IsNot Nothing Then
-                            newJob.Vessel.Customer = existingCustomer
-                        End If
-                    End If
-                End If
-                If newJob.PropellerManufacturer IsNot Nothing Then
-                    Dim existingManufacturer As Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = newJob.PropellerManufacturer.ManufacturerName.ToString())
-                    If existingManufacturer IsNot Nothing Then newJob.PropellerManufacturer = existingManufacturer
-                End If
-                If newJob.LeExclusion IsNot Nothing Then newJob.LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = newJob.LeExclusion)?.Exclusion1
-                If newJob.TeExclusion IsNot Nothing Then newJob.TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = newJob.TeExclusion)?.Exclusion1
-                If newJob.Cup IsNot Nothing Then newJob.Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = newJob.Cup)?.Cup1
-                If newJob.PropellerStyle IsNot Nothing Then newJob.PropellerStyle = db.Styles.FirstOrDefault(Function(s) s.Style1 = newJob.PropellerStyle.ToString())?.Style1
-                If newJob.PropellerMaterial IsNot Nothing Then newJob.PropellerMaterial = db.Materials.FirstOrDefault(Function(m) m.Material1 = newJob.PropellerMaterial.ToString())?.Material1
-                If newJob.PropellerBlades IsNot Nothing Then newJob.PropellerBlades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = newJob.PropellerBlades.ToString())?.BladeCount
-                If newJob.PropellerRotation IsNot Nothing Then newJob.PropellerRotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = newJob.PropellerRotation.ToString())?.Rotation1
-                If newJob.JobDetails(0).PerformedByNavigation IsNot Nothing Then
-                    Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = newJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
-                    If existingEmployee IsNot Nothing Then newJob.JobDetails(0).PerformedByNavigation = existingEmployee
-                End If
-                If Not String.IsNullOrWhiteSpace(newJob.JobDetails(0).Description) Then
-                    Dim measurement As MeasurementType = db.MeasurementTypes.Local.FirstOrDefault(Function(mt) mt.MeasurementType1 = newJob.JobDetails(0).Description.ToString())
-                    If measurement IsNot Nothing Then newJob.JobDetails(0).MeasurementType = measurement
-                End If
-                db.Jobs.Add(newJob)
-                db.SaveChanges()
-                result = newJob
-            Else
-                If newJob.JobDetails?.Count > 0 Then
-                    existingJob.JobDetails.Add(newJob.JobDetails.First())
-                    db.SaveChanges()
-                End If
-                result = existingJob
-            End If
-        End If
+    Public Function ScanDataExists(ByRef importedJob As Job, db As HaleMRIContext) As Boolean
+        Dim result As Boolean = False
+        'If importedJob IsNot Nothing Then
+        '    Dim jobNumber As Integer = importedJob.JobNumber
+        '    importedJob = If(db.Jobs.FirstOrDefault(Function(j) j.JobNumber = jobNumber.ToString()), importedJob)
+        '    If importedJob.JobNumber = 0 Then
+        '        'If String.IsNullOrWhiteSpace(importedJob.Vessel.VesselName) Then importedJob.Vessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
+        '        'Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = importedJob.Vessel.VesselName.ToString())
+        '        'If existingVessel IsNot Nothing Then
+        '        'importedJob.Vessel = existingVessel
+        '        If Not VesselExists(db, importedJob.Vessel) Then GetCustomer(db, importedJob.Vessel.Customer)
+        '        'Else
+        '        '    If String.IsNullOrEmpty(importedJob.Vessel.Customer.CustomerName) Then
+        '        '        importedJob.Vessel.Customer = New Customer With {.CustomerName = $"(New Customer {db.Customers.Count + 1})"}
+        '        '    Else
+        '        '        Dim existingCustomer As Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = importedJob.Vessel.Customer.CustomerName.ToString())
+        '        '        If existingCustomer IsNot Nothing Then
+        '        '            importedJob.Vessel.Customer = existingCustomer
+        '        '        End If
+        '        '    End If
+        '        'End If
+        '        If importedJob.PropellerManufacturer IsNot Nothing Then
+        '            Dim existingManufacturer As Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = importedJob.PropellerManufacturer.ManufacturerName.ToString())
+        '            If existingManufacturer IsNot Nothing Then importedJob.PropellerManufacturer = existingManufacturer
+        '        End If
+        '        If importedJob.LeExclusion IsNot Nothing Then importedJob.LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.LeExclusion)?.Exclusion1
+        '        If importedJob.TeExclusion IsNot Nothing Then importedJob.TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.TeExclusion)?.Exclusion1
+        '        If importedJob.Cup IsNot Nothing Then importedJob.Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = importedJob.Cup)?.Cup1
+        '        If importedJob.PropellerStyle IsNot Nothing Then importedJob.PropellerStyle = db.Styles.FirstOrDefault(Function(s) s.Style1 = importedJob.PropellerStyle.ToString())?.Style1
+        '        If importedJob.PropellerMaterial IsNot Nothing Then importedJob.PropellerMaterial = db.Materials.FirstOrDefault(Function(m) m.Material1 = importedJob.PropellerMaterial.ToString())?.Material1
+        '        If importedJob.PropellerBlades IsNot Nothing Then importedJob.PropellerBlades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = importedJob.PropellerBlades.ToString())?.BladeCount
+        '        If importedJob.PropellerRotation IsNot Nothing Then importedJob.PropellerRotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = importedJob.PropellerRotation.ToString())?.Rotation1
+        '        If importedJob.JobDetails(0).PerformedByNavigation IsNot Nothing Then
+        '            Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = importedJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
+        '            If existingEmployee IsNot Nothing Then importedJob.JobDetails(0).PerformedByNavigation = existingEmployee
+        '        End If
+        '        If Not String.IsNullOrWhiteSpace(importedJob.JobDetails(0).Description) Then
+        '            Dim measurement As MeasurementType = db.MeasurementTypes.Local.FirstOrDefault(Function(mt) mt.MeasurementType1 = importedJob.JobDetails(0).Description.ToString())
+        '            If measurement IsNot Nothing Then importedJob.JobDetails(0).MeasurementType = measurement
+        '        End If
+        '        'db.Jobs.Add(importedJob)
+        '        'db.SaveChanges()
+        '        result = False
+        '    Else
+        '        'If importedJob.JobDetails?.Count > 0 Then
+        '        '    existingJob.JobDetails.Add(importedJob.JobDetails(0))
+        '        '    db.SaveChanges()
+        '        'End If
+        '        result = True
+        '    End If
+        'End If
         Return result
     End Function
 
@@ -321,10 +322,11 @@ Public Module Imex
     End Function
 #End Region
 #Region "Private Interface"
-    Private Function GetCustomer(db As HaleMRIContext, ByVal item As Customer) As Customer
-        If String.IsNullOrWhiteSpace(item.CustomerName) Then item.CustomerName = $"(New Customer {db.Customers.Count + 1})"
-        Return If(db.Customers.FirstOrDefault(Function(c) c.CustomerName = item.CustomerName.ToString()), item)
-    End Function
+    Private Sub GetCustomer(db As HaleMRIContext, ByRef newCustomer As Customer)
+        Dim customerName As String = newCustomer.CustomerName
+        If String.IsNullOrWhiteSpace(newCustomer.CustomerName) Then newCustomer.CustomerName = $"(New Customer {db.Customers.Count + 1})"
+        newCustomer = If(db.Customers.FirstOrDefault(Function(c) c.CustomerName = customerName.ToString()), newCustomer)
+    End Sub
 
     Private Function GetEmployee(db As HaleMRIContext, ByVal item As Employee) As Employee
         Return If(Not String.IsNullOrWhiteSpace(item.EmployeeName),
@@ -344,9 +346,12 @@ Public Module Imex
             Nothing)
     End Function
 
-    Private Function GetVessel(db As HaleMRIContext, ByVal item As Vessel) As Vessel
-        If String.IsNullOrWhiteSpace(item.VesselName) Then item.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
-        Return If(db.Vessels.FirstOrDefault(Function(v) v.VesselName = item.VesselName.ToString()), item)
+    Private Function VesselExists(db As HaleMRIContext, ByRef newVessel As Vessel) As Boolean
+        Dim vesselName As String = newVessel.VesselName
+        If String.IsNullOrWhiteSpace(newVessel.VesselName) Then newVessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
+        Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = vesselName.ToString())
+        newVessel = If(existingVessel, newVessel)
+        Return newVessel Is existingVessel
     End Function
 
     Private Sub ReadCalibrationData(ByRef ws As Workstation, ByVal istream As StreamReader)
@@ -517,6 +522,7 @@ SkipLine:
                     skipped += 1
             End Select
 Skip_Line:
+            If lineId >= ScanDataLineId.idJobNumber AndAlso j Is Nothing Then Exit Do
             lineId += 1
         Loop
         Return j
