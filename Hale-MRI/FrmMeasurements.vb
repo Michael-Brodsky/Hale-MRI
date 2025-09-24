@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Security.Cryptography.Pkcs
 Imports Hale_MRI.EncoderStatusStrip
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
@@ -494,27 +495,30 @@ exittheFor:
             Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
             Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
             txtAngle.Text = angle.ToString()
             txtRadius.Text = radius.Value.ToString()
             txtDepth.Text = depth.ToString()
-            txtRadiusPercent.Text = (radius.Value * 100.0).ToString()
-            MeasurementsSave(angle, depth, radius)
+            txtRadiusPercent.Text = radius.Percent.ToString()
+            MeasurementsSave(blade, angle, depth, radius)
         End With
     End Sub
 
-    Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
+    Private Sub MeasurementsSave(ByVal blade As Integer, ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Saves the given measurements and any related data.
         Dim cm As New CellMeasurement With {
-            .JobDetails = mJobDetails,
+            .JobDetails = Me.JobDetails,
             .Angle = angle,
             .Depth = depth
         }
         Dim rm As New RadiusMeasurement With {
-            .JobDetails = mJobDetails,
-            .Radius = radius.Value,
+            .JobDetails = Me.JobDetails,
+            .BladeId = blade,
+            .Radius = radius.Percent,
             .LeCell = 0,
             .TeCell = RadiusMeasurementsBindingSource.Count + 1
-            }
+        }
+        Dim x = radius.Percent
         Database.CellMeasurements.Add(cm)
         Database.RadiusMeasurements.Add(rm)
         ' Nothing is actually saved to the database until Database.SaveChanges() is called.
