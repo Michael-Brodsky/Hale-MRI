@@ -39,13 +39,16 @@ Partial Class FrmSettings
         TxtCompanyContact = New TextBox()
         TxtCompanyAddress = New TextBox()
         TxtCompanyName = New TextBox()
-        TabPage2 = New TabPage()
+        TabPageApplication = New TabPage()
         CmdDefaultFolder = New Button()
-        CmdDatabaseFile = New Button()
         LabDefaultFolder = New Label()
+        TxtDefaultFolder = New TextBox()
+        TabPageDatabase = New TabPage()
+        LabDatabaseMaintenance = New Label()
+        ComboDatabaseMaintenance = New ComboBox()
+        CmdDatabaseFile = New Button()
         Label1 = New Label()
         LabDatabasePath = New Label()
-        TxtDefaultFolder = New TextBox()
         TxtConnectionString = New TextBox()
         TxtDatabaseFile = New TextBox()
         CmdUndo = New Button()
@@ -53,13 +56,15 @@ Partial Class FrmSettings
         TabControl1.SuspendLayout()
         TabPageShop.SuspendLayout()
         CType(SettingsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        TabPage2.SuspendLayout()
+        TabPageApplication.SuspendLayout()
+        TabPageDatabase.SuspendLayout()
         SuspendLayout()
         ' 
         ' TabControl1
         ' 
         TabControl1.Controls.Add(TabPageShop)
-        TabControl1.Controls.Add(TabPage2)
+        TabControl1.Controls.Add(TabPageApplication)
+        TabControl1.Controls.Add(TabPageDatabase)
         TabControl1.Location = New Point(32, 29)
         TabControl1.Name = "TabControl1"
         TabControl1.SelectedIndex = 0
@@ -194,94 +199,124 @@ Partial Class FrmSettings
         TxtCompanyName.Size = New Size(320, 23)
         TxtCompanyName.TabIndex = 6
         ' 
-        ' TabPage2
+        ' TabPageApplication
         ' 
-        TabPage2.Controls.Add(CmdDefaultFolder)
-        TabPage2.Controls.Add(CmdDatabaseFile)
-        TabPage2.Controls.Add(LabDefaultFolder)
-        TabPage2.Controls.Add(Label1)
-        TabPage2.Controls.Add(LabDatabasePath)
-        TabPage2.Controls.Add(TxtDefaultFolder)
-        TabPage2.Controls.Add(TxtConnectionString)
-        TabPage2.Controls.Add(TxtDatabaseFile)
-        TabPage2.Location = New Point(4, 24)
-        TabPage2.Name = "TabPage2"
-        TabPage2.Padding = New Padding(3)
-        TabPage2.Size = New Size(589, 328)
-        TabPage2.TabIndex = 1
-        TabPage2.Text = "Application"
-        TabPage2.UseVisualStyleBackColor = True
+        TabPageApplication.Controls.Add(CmdDefaultFolder)
+        TabPageApplication.Controls.Add(LabDefaultFolder)
+        TabPageApplication.Controls.Add(TxtDefaultFolder)
+        TabPageApplication.Location = New Point(4, 24)
+        TabPageApplication.Name = "TabPageApplication"
+        TabPageApplication.Padding = New Padding(3)
+        TabPageApplication.Size = New Size(589, 328)
+        TabPageApplication.TabIndex = 1
+        TabPageApplication.Text = "Application"
+        TabPageApplication.UseVisualStyleBackColor = True
         ' 
         ' CmdDefaultFolder
         ' 
         CmdDefaultFolder.Image = My.Resources.Resources.OpenfileDialog
-        CmdDefaultFolder.Location = New Point(487, 113)
+        CmdDefaultFolder.Location = New Point(495, 69)
         CmdDefaultFolder.Margin = New Padding(2, 1, 2, 1)
         CmdDefaultFolder.Name = "CmdDefaultFolder"
         CmdDefaultFolder.Size = New Size(35, 22)
         CmdDefaultFolder.TabIndex = 265
         CmdDefaultFolder.UseVisualStyleBackColor = True
         ' 
-        ' CmdDatabaseFile
-        ' 
-        CmdDatabaseFile.Image = My.Resources.Resources.OpenfileDialog
-        CmdDatabaseFile.Location = New Point(487, 53)
-        CmdDatabaseFile.Margin = New Padding(2, 1, 2, 1)
-        CmdDatabaseFile.Name = "CmdDatabaseFile"
-        CmdDatabaseFile.Size = New Size(35, 22)
-        CmdDatabaseFile.TabIndex = 264
-        CmdDatabaseFile.UseVisualStyleBackColor = True
-        ' 
         ' LabDefaultFolder
         ' 
         LabDefaultFolder.AutoSize = True
-        LabDefaultFolder.Location = New Point(53, 113)
+        LabDefaultFolder.Location = New Point(61, 71)
         LabDefaultFolder.Name = "LabDefaultFolder"
         LabDefaultFolder.Size = New Size(81, 15)
         LabDefaultFolder.TabIndex = 5
         LabDefaultFolder.Text = "Default Folder"
         ' 
+        ' TxtDefaultFolder
+        ' 
+        TxtDefaultFolder.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationDefaultFolder", True))
+        TxtDefaultFolder.Location = New Point(170, 68)
+        TxtDefaultFolder.Name = "TxtDefaultFolder"
+        TxtDefaultFolder.Size = New Size(320, 23)
+        TxtDefaultFolder.TabIndex = 2
+        ' 
+        ' TabPageDatabase
+        ' 
+        TabPageDatabase.Controls.Add(LabDatabaseMaintenance)
+        TabPageDatabase.Controls.Add(ComboDatabaseMaintenance)
+        TabPageDatabase.Controls.Add(CmdDatabaseFile)
+        TabPageDatabase.Controls.Add(Label1)
+        TabPageDatabase.Controls.Add(LabDatabasePath)
+        TabPageDatabase.Controls.Add(TxtConnectionString)
+        TabPageDatabase.Controls.Add(TxtDatabaseFile)
+        TabPageDatabase.Location = New Point(4, 24)
+        TabPageDatabase.Name = "TabPageDatabase"
+        TabPageDatabase.Padding = New Padding(3)
+        TabPageDatabase.Size = New Size(589, 328)
+        TabPageDatabase.TabIndex = 2
+        TabPageDatabase.Text = "Database"
+        TabPageDatabase.UseVisualStyleBackColor = True
+        ' 
+        ' LabDatabaseMaintenance
+        ' 
+        LabDatabaseMaintenance.AutoSize = True
+        LabDatabaseMaintenance.Location = New Point(61, 129)
+        LabDatabaseMaintenance.Name = "LabDatabaseMaintenance"
+        LabDatabaseMaintenance.Size = New Size(76, 15)
+        LabDatabaseMaintenance.TabIndex = 271
+        LabDatabaseMaintenance.Text = "Maintenance"
+        ' 
+        ' ComboDatabaseMaintenance
+        ' 
+        ComboDatabaseMaintenance.FormattingEnabled = True
+        ComboDatabaseMaintenance.Items.AddRange(New Object() {"Daily", "Semi-Weekly", "Weekly", "Bi-Weekly", "Monthly", "Never"})
+        ComboDatabaseMaintenance.Location = New Point(170, 126)
+        ComboDatabaseMaintenance.Name = "ComboDatabaseMaintenance"
+        ComboDatabaseMaintenance.Size = New Size(121, 23)
+        ComboDatabaseMaintenance.TabIndex = 270
+        ' 
+        ' CmdDatabaseFile
+        ' 
+        CmdDatabaseFile.Image = My.Resources.Resources.OpenfileDialog
+        CmdDatabaseFile.Location = New Point(495, 69)
+        CmdDatabaseFile.Margin = New Padding(2, 1, 2, 1)
+        CmdDatabaseFile.Name = "CmdDatabaseFile"
+        CmdDatabaseFile.Size = New Size(35, 22)
+        CmdDatabaseFile.TabIndex = 269
+        CmdDatabaseFile.UseVisualStyleBackColor = True
+        ' 
         ' Label1
         ' 
         Label1.AutoSize = True
-        Label1.Location = New Point(53, 84)
+        Label1.Location = New Point(61, 100)
         Label1.Name = "Label1"
         Label1.Size = New Size(103, 15)
-        Label1.TabIndex = 4
+        Label1.TabIndex = 268
         Label1.Text = "Connection String"
         ' 
         ' LabDatabasePath
         ' 
         LabDatabasePath.AutoSize = True
-        LabDatabasePath.Location = New Point(53, 55)
+        LabDatabasePath.Location = New Point(61, 71)
         LabDatabasePath.Name = "LabDatabasePath"
         LabDatabasePath.Size = New Size(76, 15)
-        LabDatabasePath.TabIndex = 3
+        LabDatabasePath.TabIndex = 267
         LabDatabasePath.Text = "Database File"
-        ' 
-        ' TxtDefaultFolder
-        ' 
-        TxtDefaultFolder.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationDefaultFolder", True))
-        TxtDefaultFolder.Location = New Point(162, 110)
-        TxtDefaultFolder.Name = "TxtDefaultFolder"
-        TxtDefaultFolder.Size = New Size(320, 23)
-        TxtDefaultFolder.TabIndex = 2
         ' 
         ' TxtConnectionString
         ' 
         TxtConnectionString.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationConnectionString", True))
-        TxtConnectionString.Location = New Point(162, 81)
+        TxtConnectionString.Location = New Point(170, 97)
         TxtConnectionString.Name = "TxtConnectionString"
         TxtConnectionString.Size = New Size(320, 23)
-        TxtConnectionString.TabIndex = 1
+        TxtConnectionString.TabIndex = 266
         ' 
         ' TxtDatabaseFile
         ' 
         TxtDatabaseFile.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationDatabaseFile", True))
-        TxtDatabaseFile.Location = New Point(162, 52)
+        TxtDatabaseFile.Location = New Point(170, 68)
         TxtDatabaseFile.Name = "TxtDatabaseFile"
         TxtDatabaseFile.Size = New Size(320, 23)
-        TxtDatabaseFile.TabIndex = 0
+        TxtDatabaseFile.TabIndex = 265
         ' 
         ' CmdUndo
         ' 
@@ -319,8 +354,10 @@ Partial Class FrmSettings
         TabPageShop.ResumeLayout(False)
         TabPageShop.PerformLayout()
         CType(SettingsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        TabPage2.ResumeLayout(False)
-        TabPage2.PerformLayout()
+        TabPageApplication.ResumeLayout(False)
+        TabPageApplication.PerformLayout()
+        TabPageDatabase.ResumeLayout(False)
+        TabPageDatabase.PerformLayout()
         ResumeLayout(False)
     End Sub
 
@@ -332,7 +369,7 @@ Partial Class FrmSettings
     Friend WithEvents TxtCompanyContact As TextBox
     Friend WithEvents TxtCompanyAddress As TextBox
     Friend WithEvents TxtCompanyName As TextBox
-    Friend WithEvents TabPage2 As TabPage
+    Friend WithEvents TabPageApplication As TabPage
     Friend WithEvents LabCompanyPhone As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents LabCompanyWebsite As Label
@@ -340,14 +377,17 @@ Partial Class FrmSettings
     Friend WithEvents LabCompanyAddress As Label
     Friend WithEvents LabCompanyName As Label
     Friend WithEvents SettingsBindingSource As BindingSource
-    Friend WithEvents TxtConnectionString As TextBox
-    Friend WithEvents TxtDatabaseFile As TextBox
     Friend WithEvents LabDefaultFolder As Label
-    Friend WithEvents Label1 As Label
-    Friend WithEvents LabDatabasePath As Label
     Friend WithEvents TxtDefaultFolder As TextBox
     Friend WithEvents CmdDefaultFolder As Button
-    Friend WithEvents CmdDatabaseFile As Button
     Friend WithEvents CmdUndo As Button
     Friend WithEvents CmdSave As Button
+    Friend WithEvents TabPageDatabase As TabPage
+    Friend WithEvents CmdDatabaseFile As Button
+    Friend WithEvents Label1 As Label
+    Friend WithEvents LabDatabasePath As Label
+    Friend WithEvents TxtConnectionString As TextBox
+    Friend WithEvents TxtDatabaseFile As TextBox
+    Friend WithEvents LabDatabaseMaintenance As Label
+    Friend WithEvents ComboDatabaseMaintenance As ComboBox
 End Class

@@ -2,20 +2,12 @@
 
 Module MRIMath
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
-        'Pitch = (360 * Change in Depth) / Change in Angle'
+        'Pitch = (360 * Change in Depth) / Change in Angle
         Dim deltaangle = secondangle - firstangle
         Dim deltadepth = seconddepth - firstdepth
-        Dim pitch As Double
-        If (deltaangle <> 0) Then
-            pitch = (360 * deltadepth) / deltaangle
-            If (pitch <= 0) Then
-                pitch *= -1
-            End If
-        Else
-            pitch = 0
-        End If
-        Return pitch
+        Return If(deltaangle <> 0, Math.Abs((360 * deltadepth) / deltaangle), 0.0)
     End Function
+
     Public Function GetChordLength(bladenum As Integer, radperc As Integer) As Double
         'Nothing we are doing now uses this need to fully implement
         Dim chordlength As Double
@@ -34,13 +26,9 @@ Module MRIMath
 
         Return chordlength
     End Function
+
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
         'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))
-        Dim bladenumber As Integer
-        If Blades = 0 Or Angle < 0 Then
-            Return 0
-        End If
-        Return bladenumber = Blades - CInt(Math.Ceiling(Angle / (360 / Blades)))
-
+        Return If(Blades <> 0, Blades - CInt(Math.Ceiling(Angle / (360 / Blades))), 0)
     End Function
 End Module

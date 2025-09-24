@@ -41,7 +41,7 @@ Partial Class FrmMeasurements
         txtDepth = New TextBox()
         labRadius = New Label()
         txtRadius = New TextBox()
-        RadiusMeasurementBindingSource = New BindingSource(components)
+        RadiusMeasurementsBindingSource = New BindingSource(components)
         labRadiusPercent = New Label()
         txtRadiusPercent = New TextBox()
         labWheelPitch = New Label()
@@ -124,8 +124,8 @@ Partial Class FrmMeasurements
         CellMeasurementsBindingSource = New BindingSource(components)
         ExtremeMeasurementsBindingSource = New BindingSource(components)
         JobDetailsBindingSource = New BindingSource(components)
-        timerMeasurements = New Timer(components)
-        CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        BladeRadiusBindingSource = New BindingSource(components)
+        CType(RadiusMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).BeginInit()
         tloMeasurements.SuspendLayout()
         gBoxPlotGraph.SuspendLayout()
@@ -142,6 +142,7 @@ Partial Class FrmMeasurements
         CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' labBlade
@@ -218,9 +219,9 @@ Partial Class FrmMeasurements
         txtRadius.Size = New Size(203, 23)
         txtRadius.TabIndex = 6
         ' 
-        ' RadiusMeasurementBindingSource
+        ' RadiusMeasurementsBindingSource
         ' 
-        RadiusMeasurementBindingSource.DataSource = GetType(LibDatabase.Models.RadiusMeasurement)
+        RadiusMeasurementsBindingSource.DataSource = GetType(LibDatabase.Models.RadiusMeasurement)
         ' 
         ' labRadiusPercent
         ' 
@@ -1338,9 +1339,6 @@ Partial Class FrmMeasurements
         ' 
         JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
         ' 
-        ' timerMeasurements
-        ' 
-        ' 
         ' FrmMeasurements
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -1349,7 +1347,7 @@ Partial Class FrmMeasurements
         Controls.Add(tloMeasurements)
         Name = "FrmMeasurements"
         Text = "Measurements"
-        CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(RadiusMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).EndInit()
         tloMeasurements.ResumeLayout(False)
         tloMeasurements.PerformLayout()
@@ -1370,6 +1368,7 @@ Partial Class FrmMeasurements
         CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
     Friend WithEvents labBlade As Label
@@ -1390,7 +1389,7 @@ Partial Class FrmMeasurements
     Friend WithEvents tloMeasurements As TableLayoutPanel
     Friend WithEvents gBoxPlotGraph As GroupBox
     Friend WithEvents tloPlotGraph As TableLayoutPanel
-    Friend WithEvents RadiusMeasurementBindingSource As BindingSource
+    Friend WithEvents RadiusMeasurementsBindingSource As BindingSource
     Friend WithEvents GraphTrack As DataVisualization.Charting.Chart
     Friend WithEvents GrpTrack As GroupBox
     Friend WithEvents tloTrack As TableLayoutPanel
@@ -1462,5 +1461,5 @@ Partial Class FrmMeasurements
     Friend WithEvents PlotGraph As DataVisualization.Charting.Chart
     Friend WithEvents JobDetailsBindingSource As BindingSource
     Friend WithEvents EncoderStatusStrip1 As EncoderStatusStrip
-    Friend WithEvents timerMeasurements As Timer
+    Friend WithEvents BladeRadiusBindingSource As BindingSource
 End Class

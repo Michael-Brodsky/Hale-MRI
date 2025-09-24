@@ -35,10 +35,11 @@ Public Class EncoderStatusStrip
     Private mTimerOn As Boolean = False                                 ' Flag indicating whether the scan timer is currently active.
 #End Region
 #Region "Public Interface"
+    ''' <summary>
+    ''' Encapsulates properties that subscribers can inspect to take appropriate action.
+    ''' </summary>
     Public Class EncoderEventArgs
         Inherits EventArgs
-        ' Custom event arguments for navigation events.
-        ' When raised, clients can inspect the properties.
         Public Property EventName As String
         Public Property Key As Object
         Public Property Value As Object

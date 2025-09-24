@@ -84,13 +84,13 @@ Public Class FrmSettings
         End If
     End Sub
 
-    Private Sub CmdDatabaseFile_Click(sender As Object, e As EventArgs) Handles CmdDatabaseFile.Click
+    Private Sub CmdDatabaseFile_Click(sender As Object, e As EventArgs)
         Dim ofd As New OpenFileDialog With {
             .Title = "Select Database File",
             .Filter = "Database Files (*.accdb)|*.accdb|All Files (*.*)|*.*",
             .InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer)
         }
-        If ofd.ShowDialog() = DialogResult.OK Then TxtDatabaseFile.Text = ofd.FileName
+        If ofd.ShowDialog = DialogResult.OK Then TxtDatabaseFile.Text = ofd.FileName
     End Sub
 
     Private Sub CmdDefaultFolder_Click(sender As Object, e As EventArgs) Handles CmdDefaultFolder.Click
@@ -111,6 +111,7 @@ Public Class FrmSettings
 
     Private Sub FrmSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         BoundControls = New List(Of Control) From {
+            ComboDatabaseMaintenance,
             TxtCompanyName,
             TxtCompanyAddress,
             TxtCompanyWebsite,

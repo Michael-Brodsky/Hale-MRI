@@ -1,15 +1,14 @@
-﻿Imports LibDatabase.Contexts
+﻿Imports System.ComponentModel
+Imports Hale_MRI.EncoderStatusStrip
+Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibEncoder
-Imports LibEncoder.USDigital
 Imports Microsoft.EntityFrameworkCore
-Imports System.ComponentModel
 
 ''' <summary>
 ''' This form provides a user inteface for taking
 ''' and inserting measurements into JobDetail records.
 ''' </summary>
-
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Constants"
@@ -24,7 +23,7 @@ Public Class FrmMeasurements
 #Region "Public Interface"
     Public ReadOnly Property Current
         Get
-            Return mJobDetails
+            Return BindingSourceCurrent(JobDetailsBindingSource)
         End Get
     End Property
 
@@ -35,7 +34,16 @@ Public Class FrmMeasurements
             Return EncoderStatusStrip1.Hardware
         End Get
         Set(value As WorkstationEncoders)
-            EncoderStatusStrip1.Hardware = value
+            ' Assigns the given value to EncoderStatusStrip1, retrieves and assigns
+            ' the scan sampling rate from the database and, if not already,
+            ' intializes the encoder hardware.
+            With EncoderStatusStrip1
+                .Hardware = value
+                If .Hardware IsNot Nothing Then
+                    EncoderStatusStrip1.TimerInterval = Database.Settings.Local.FirstOrDefault().EncoderCalibrationSampleRate
+                    If .Hardware.Encoders IsNot Nothing AndAlso Not .Hardware.Encoders.Initialized Then EncoderStatusStrip1.Initialize()
+                End If
+            End With
         End Set
     End Property
 
@@ -44,8 +52,16 @@ Public Class FrmMeasurements
             Return mJob
         End Get
         Set(value As Job)
+            ' Loads all of the given Job's JobDetails and their Cell, Extreme and RadiusMeasurements.
             mJob = value
-            If mJob IsNot Nothing Then JobDetails = mJob.JobDetails.FirstOrDefault()
+            If mJob IsNot Nothing Then
+                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail)(Database.JobDetails _
+                .Where(Function(j) j.Job Is mJob) _
+                .Include(Function(cm) cm.CellMeasurements) _
+                .Include(Function(em) em.ExtremeMeasurements) _
+                .Include(Function(rm) rm.RadiusMeasurements) _
+                .OrderBy(Function(sd) sd.StartDate).ToList())
+            End If
         End Set
     End Property
 
@@ -54,13 +70,14 @@ Public Class FrmMeasurements
             Return mJobDetails
         End Get
         Set(value As JobDetail)
+            ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
             mJobDetails = value
             mJob = mJobDetails?.Job
             If mJobDetails IsNot Nothing Then
+                Database.Entry(mJobDetails).Collection(Function(cm) cm.CellMeasurements).Load()
+                Database.Entry(mJobDetails).Collection(Function(em) em.ExtremeMeasurements).Load()
+                Database.Entry(mJobDetails).Collection(Function(rm) rm.RadiusMeasurements).Load()
                 JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) From {mJobDetails}.ToList()
-                BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
-                BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
-                BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementBindingSource, "RadiusMeasurements")
             End If
         End Set
     End Property
@@ -138,57 +155,57 @@ exittheFor:
                 AngleArray(n) = angleMeasurement
             End If
             DepthArray(n) = depthMeasurement
-            timerMeasurements.Enabled = True
-                'Need to add a check for duplicate radius measurements for the same blade and radius so we can remove old data
-                ' Save the measurements to the database
-                Dim needdelete As Boolean = False
-                Dim celltotal As Integer = 0
-                Dim x As Integer = 0
-                For Each bladID In BladeIDs
-                    If bladID.Value = ScanBlade And Math.Round(Radii(x).Value) = Math.Round(ScanRadius) Then
-                        needdelete = True
-                        x += 1
+            'timerMeasurements.Enabled = True
+            'Need to add a check for duplicate radius measurements for the same blade and radius so we can remove old data
+            ' Save the measurements to the database
+            Dim needdelete As Boolean = False
+            Dim celltotal As Integer = 0
+            Dim x As Integer = 0
+            For Each bladID In BladeIDs
+                If bladID.Value = ScanBlade And Math.Round(Radii(x).Value) = Math.Round(ScanRadius) Then
+                    needdelete = True
+                    x += 1
+                    Exit For
+                End If
+                Dim lecell As Integer = LECells(x).Value
+                Dim tecell As Integer = TECells(x).Value
+                celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
+                x += 1
+            Next
+            If needdelete = True Then
+                ' Remove existing measurements for this blade and radius
+                Dim existingRadiusMeasurements = Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id And r.BladeId = ScanBlade And Math.Round(r.Radius.Value) = Math.Round(ScanRadius)).ToList()
+                For Each rdsm In existingRadiusMeasurements
+                    Database.RadiusMeasurements.Remove(rdsm)
+                Next
+                Dim existingCellMeasurements = Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Skip(celltotal).ToList()
+                Dim y As Integer = 0
+                Dim lecell As Integer = LECells(x).Value
+                Dim tecell As Integer = TECells(x).Value
+                Dim cellsToRemove As Integer = tecell - lecell + 1
+                For Each cm In existingCellMeasurements
+                    If y >= (cellsToRemove) Then
                         Exit For
                     End If
-                    Dim lecell As Integer = LECells(x).Value
-                    Dim tecell As Integer = TECells(x).Value
-                    celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
-                    x += 1
+                    Database.CellMeasurements.Remove(cm)
+                    y += 1
                 Next
-                If needdelete = True Then
-                    ' Remove existing measurements for this blade and radius
-                    Dim existingRadiusMeasurements = Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id And r.BladeId = ScanBlade And Math.Round(r.Radius.Value) = Math.Round(ScanRadius)).ToList()
-                    For Each rdsm In existingRadiusMeasurements
-                        Database.RadiusMeasurements.Remove(rdsm)
-                    Next
-                    Dim existingCellMeasurements = Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Skip(celltotal).ToList()
-                    Dim y As Integer = 0
-                    Dim lecell As Integer = LECells(x).Value
-                    Dim tecell As Integer = TECells(x).Value
-                    Dim cellsToRemove As Integer = tecell - lecell + 1
-                    For Each cm In existingCellMeasurements
-                        If y >= (cellsToRemove) Then
-                            Exit For
-                        End If
-                        Database.CellMeasurements.Remove(cm)
-                        y += 1
-                    Next
-                    Database.SaveChanges()
-                End If
-                Dim rm As New RadiusMeasurement With {
+                Database.SaveChanges()
+            End If
+            Dim rm As New RadiusMeasurement With {
+                .JobDetailsId = JobDetails.Id,
+                .BladeId = ScanBlade,
+                .Radius = Math.Round(ScanRadius, 2),
+                .LeCell = 0,
+                .TeCell = AngleArray.Length()
+            }
+            For x = 0 To AngleArray.Length - 1
+                Dim cm As New CellMeasurement With {
                     .JobDetailsId = JobDetails.Id,
-                    .BladeId = ScanBlade,
-                    .Radius = Math.Round(ScanRadius, 2),
-                    .LeCell = 0,
-                    .TeCell = AngleArray.Length()
+                    .Angle = AngleArray(x),
+                    .Depth = DepthArray(x)
                 }
-                For x = 0 To AngleArray.Length - 1
-                    Dim cm As New CellMeasurement With {
-                        .JobDetailsId = JobDetails.Id,
-                        .Angle = AngleArray(x),
-                        .Depth = DepthArray(x)
-                    }
-                Next
+            Next
         End If
     End Sub
     Private Function GetPitchofBladeRadius(Blade As Integer, Radius As Double) As Double()
@@ -313,25 +330,7 @@ exittheFor:
         'Dim PitchArray As Double() = GetPitchofBladeRadius(BladeNum, RadiusPerc)
 
     End Sub
-    Private Sub HomeEncoders()
-        With Hardware.Encoders
-            .ResetCount(USDigital.ANGLE_ENCODER)
-            .ResetCount(USDigital.RADIUS_ENCODER)
-            .ResetCount(USDigital.DEPTH_ENCODER)
-        End With
-        cmdHome.Visible = False
-        cmdHome.Enabled = False
-    End Sub
-    Private Sub MeasurementsGet()
-        ' Use this in place of UpdateFields()
-        With Hardware.Encoders
-            txtAngle.Text = .Angle
-            txtRadius.Text = .Radius(Job.PropellerDiameter).Value
-            txtDepth.Text = .Depth
-            txtRadiusPercent.Text = .Radius((Job.PropellerDiameter).Value * 100.0).ToString()
-            txtBlade.Text = MRIMath.GetBladeNumber(.Angle(), Job.PropellerBlades).ToString()
-        End With
-    End Sub
+
     Private Sub UpdatePitchByRadiusTableFull()
         'need to implement a method to check the table for existing data and clear or update if necessary
         While GridBladebyRadius.Columns.GetColumnCount(DataGridViewElementStates.Visible) > 1
@@ -439,60 +438,255 @@ exittheFor:
     Private Sub CountUpdate_Tick(sender As Object, e As EventArgs)
         'UpdateFields()
     End Sub
-    Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles cmdZero.Click
-        Try
-            EncoderStatusStrip1.ResetAngle()
-            EncoderStatusStrip1.ResetDepth()
-            EncoderStatusStrip1.ResetRadius()
-        Catch ex As Exception
-            MessageBox.Show("Error zeroing encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
 
     Private Sub CmdStartScan_Click(sender As Object, e As EventArgs)
 
 
     End Sub
 
-    Private Sub FrmMeasurements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Try
-            'Job = Database.Jobs.Where(Function(j) j.JobNumber = 3427).FirstOrDefault()
-            'JobDetails = Database.JobDetails.FirstOrDefault(Function(j) j.JobId = Job.Id)
-            timerMeasurements.Interval = Database.Settings.FirstOrDefault().EncoderCalibrationSampleRate
-            PlotGraph.Series(0).Color = Color.Green
-            PlotGraph.Series(1).Color = Color.Red
-            PlotGraph.Series(2).Color = Color.Blue
-        Catch ex As Exception
-            MessageBox.Show("Error loading settings: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+    'Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
+    '    Dim dp = New DataVisualization.Charting.DataPoint(0.5, 0.5)
+    '    Dim dp2 = New DataVisualization.Charting.DataPoint(0.5, 0)
+    '    Dim dp3 = New DataVisualization.Charting.DataPoint(0.5, -0.5)
+    '    PlotGraph.Series(0).Points.Add(dp2)
+    '    PlotGraph.Series(1).Points.Add(dp)
+    '    PlotGraph.Series(2).Points.Add(dp3)
+    '    Try
+    '        'timerMeasurements.Enabled = chkMeasurements.Checked
+    '        cmdHome.Enabled = Not chkMeasurements.Checked
+    '    Catch ex As Exception
+    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+    '    End Try
+    '    Try
+    '        UpdatePitchByRadiusTableFull()
+    '    Catch ex As Exception
+    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+    '    End Try
+    'End Sub
+#End Region
+#Region "NEW PRIVATE INTERFACE"
+    Private Sub HomeEncoders()
+        ' Resets all encoders and updates the form state accordingly.
+        EncoderStatusStrip1.ResetAll()
+        cmdHome.Enabled = False
     End Sub
 
+    Private Sub MeasurementsGet()
+        ' Calls encoder angle, depth and radius methods, and uses the returned
+        ' values as required.
+        '
+        ' All encoders calls should be made through EncoderStatusStrip1 rather
+        ' than this form's Hardware property as the control provides real time
+        ' visual cues, hardware status updates and automates some tasks.
+        '  
+        ' EncoderStatusStrip1.Angle(), .Depth() and .Radius() are encoder calls.
+        ' Only one encoder call is allowed per sampling period!!! This method
+        ' is responsible for making those calls, ONCE, then saving and using the
+        ' returned values as required.
+        '
+        ' No other form methods or properties should make any further calls to
+        ' these methods!!! If the angle, depth and radius measurements are needed
+        ' elsewhere, they need to use the values obtained here, either from
+        ' controls that hold the current values, the last row from the LocalViews
+        ' of the appropriate measurements table or, for convenience, we can add
+        ' and copy the values to private form members.
+        With EncoderStatusStrip1
+            Dim angle As Double = .Angle()
+            Dim depth As Double = .Depth()
+            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            txtAngle.Text = angle.ToString()
+            txtRadius.Text = radius.Value.ToString()
+            txtDepth.Text = depth.ToString()
+            txtRadiusPercent.Text = (radius.Value * 100.0).ToString()
+            MeasurementsSave(angle, depth, radius)
+        End With
+    End Sub
+
+    Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
+        ' Saves the given measurements and any related data.
+        Dim cm As New CellMeasurement With {
+            .JobDetails = mJobDetails,
+            .Angle = angle,
+            .Depth = depth
+        }
+        Dim rm As New RadiusMeasurement With {
+            .JobDetails = mJobDetails,
+            .Radius = radius.Value,
+            .LeCell = 0,
+            .TeCell = RadiusMeasurementsBindingSource.Count + 1
+            }
+        Database.CellMeasurements.Add(cm)
+        Database.RadiusMeasurements.Add(rm)
+        ' Nothing is actually saved to the database until Database.SaveChanges() is called.
+        ' Where & when that should be done is unclear. Need to discuss. Regardless, any
+        ' measurements, saved or not, can be accessed via the tables' LocalViews:
+        '   Database.CellMeasurements.Local
+
+    End Sub
+
+    Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
+        ' Blank, or compute the data and display it in, the data grid.
+        If show Then
+            ' Each row displays a particular blade's average pitch in columns by radius percent:
+
+            '   Blade | RadPct(0) | RadPct(1) | ... | RadPct(m) |
+            '   ------|-----------|-----------|-----|-----------|
+            '      1  |   x(1)    |   y(1)    |     |    z(1)   |
+            '   ------|-----------|-----------|-----|-----------|
+            '      2  |   x(2)    |   y(2)    |     |    z(2)   |
+            '   ------|-----------|-----------|-----|-----------|
+            '     ... |   ....    |   ....    |     |    ....   |
+            '   ------|-----------|-----------|-----|-----------|
+            '      N  |   x(n)    |   y(n)    |     |    z(n)   |
+            '   ------|-----------|-----------|-----|-----------|
+
+            ' where x(n), y(n) and z(n) = Avg(GetPitch(angle(i,n), angle(i-1,n), depth(i,n), depth(i-1,n)), 
+            ' n is the blade number from 1 to N, 
+            ' m is the mth distinct radius percent, and
+            ' i is the ith angle/depth measurement.
+            ' 
+            ' It appears that all of the data required to compute the grid cells is available in the
+            ' Cell and RadiusMeasurement tables, can be computed using SQL aggregate queries, loaded
+            ' into the BladeRadiusBindingSource, which can then be assigned to the grid's DataSource
+            ' property.
+            '
+            ' For example the MRIMath.GetPitch() method can be replaced with a single SQL query:
+            ' (Note that the query uses MS Access syntax. MS Access does not support the SQL LAG()
+            ' function, which works with successive rows in a table using a single predicate, and
+            ' thus is implemented here using subqueries)
+            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+            '   SELECT ((360.0 * (Depth - PreviousDepth)) / (Angle - PreviousAngle)) AS Pitch
+            '   FROM
+            '   (
+            '       SELECT a.Angle, a.Depth, 
+            '       (         
+            '           SELECT TOP 1 b.Angle
+            '           FROM [Cell Measurements] AS b
+            '           WHERE b.ID < a.ID
+            '           ORDER BY b.ID DESC
+            '       ) AS PreviousAngle, 
+            '       ( 
+            '           SELECT TOP 1 c.Depth 
+            '           FROM [Cell Measurements] AS c
+            '           WHERE c.ID < a.ID
+            '           ORDER BY c.ID DESC 
+            '       ) AS PreviousDepth 
+            '       FROM [Cell Measurements] AS a
+            '       ORDER BY a.ID
+            '   ) AS Deltas
+            '   WHERE Not (PreviousAngle Is Null Or PreviousDepth Is Null) And (Angle - PreviousAngle) <> 0;
+            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+            ' An INNER JOIN could then be added onto the [Radius Measurements] table to obtain the 
+            ' radius percent and blade number values, yielding everything we need to populate the grid.
+            ' However, the JOIN cannot be implemented until the relationship between Cell and 
+            ' RadiusMeasurements is understood. TODO: Sam, tell me how it works :)
+            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+
+            ' Get the needed data from the Cell and RadiusMeasurementsBindingSources
+            Dim rm As IList(Of RadiusMeasurement) = New List(Of RadiusMeasurement) From {RadiusMeasurementsBindingSource.List}
+            Dim cm As IList(Of CellMeasurement) = New List(Of CellMeasurement) From {CellMeasurementsBindingSource.List}
+            '
+            ' Query goes here and computes the data for the BindingSource: BladeRadiusBindingSource.DataSource = qry
+            '
+            ' Attach the grid to the computed BindingSource.
+            GridBladebyRadius.DataSource = BladeRadiusBindingSource
+        Else
+            GridBladebyRadius.DataSource = Nothing
+        End If
+    End Sub
+#End Region
+#Region "NEW EVENT HANDLERS"
     Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
-        Dim dp = New DataVisualization.Charting.DataPoint(0.5, 0.5)
-        Dim dp2 = New DataVisualization.Charting.DataPoint(0.5, 0)
-        Dim dp3 = New DataVisualization.Charting.DataPoint(0.5, -0.5)
-        PlotGraph.Series(0).Points.Add(dp2)
-        PlotGraph.Series(1).Points.Add(dp)
-        PlotGraph.Series(2).Points.Add(dp3)
+        ' Starts/stops the scanning process and updates the form state accordingly.
         Try
-            timerMeasurements.Enabled = chkMeasurements.Checked
+            EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
             cmdHome.Enabled = Not chkMeasurements.Checked
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
+    End Sub
+
+    Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles cmdZero.Click
+        ' Zeroes the encoders.
         Try
-            UpdatePitchByRadiusTableFull()
+            EncoderStatusStrip1.ResetAll()
         Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+            MessageBox.Show("Error zeroing encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
-    Private Sub TimerMeasurements_Tick(sender As Object, e As EventArgs) Handles timerMeasurements.Tick
+    Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
+        ' Handles encoder hardware events so we can update our controls accordingly.
+        Select Case e.EventName
+            Case "Error", "NoEncoders", "NotInitialized"
+                ' Place the form controls in a state that disables any encoder calls, 
+                ' e.g. start/stop scanning, home, etc. EncoderStatusStrip1 provides
+                ' a control to intialize the encoders.
+
+                chkMeasurements.Checked = False ' Stop scanning, lest ye create a domino effect of cascading exceptions :)
+
+            Case "Ready"
+                ' This event is raised after successful completion of any encoder call.
+                ' It can be used to enable form controls as appropriate. When scanning,
+                ' it only needs to be checked once, after the last encoder call returns.
+                ' A simply way is to enclose any code in an IF block:
+
+                If Not EncoderStatusStrip1.TimerOn Then
+                    ' Do Something
+                End If
+
+            Case "Busy"
+                ' This event is raised at the start of any encoder call. It can be 
+                ' useful in cases where a call doesn't return immediately (there's
+                ' some lag) to prevent users from continuously clicking a button
+                ' when all they needed was to be patient.
+            Case Else
+        End Select
+    End Sub
+
+    Private Sub FrmMeasurements_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            ' Initialize form controls. This method needs to initialize all form controls
+            ' based on some predefined "states". For example: if no encoders are detected,
+            ' they're not initialized or in an error state, then disable all controls that 
+            ' can access the encoders. 
+
+            PlotGraph.Series(0).Color = Color.Green
+            PlotGraph.Series(1).Color = Color.Red
+            PlotGraph.Series(2).Color = Color.Blue
+
+            ' EncoderStatusStrip1 handles the encoder hardware and its controls automatically. 
+            ' It raises events notifying clients of anything relevant. These events can, for
+            ' instance, be used to update this form's state and take periodic measurements.
+            ' See Encoders_EncoderEvent() and ScanTimer_Tick() for examples.
+            AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
+            AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
+
+            ' The following code binds the JobDetailsBindingSource (master) to the related
+            ' measurements tables (details). It provides automatic synchronization of any
+            ' data this form may consume without additional code. There is no need to "load"
+            ' additional data from the database anywhere else.
+            BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
+            BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
+            BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementsBindingSource, "RadiusMeasurements")
+        Catch ex As Exception
+            MessageBox.Show("Error loading the form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
+        ' This event fires anytime the user selects a new JobDetails record (Intial, Interim, Final, etc.)
+        ' For now it just keeps the form's JobDetails property current.
+        mJobDetails = Me.Current
+    End Sub
+
+    Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
+        ' This event fires on each EncoderStatusStrip1 timer tick and gets the next set of measurements from the encoders.
         Try
             MeasurementsGet()
         Catch ex As Exception
             chkMeasurements.Checked = False
-            MessageBox.Show("Error updating measurements: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region

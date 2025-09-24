@@ -51,6 +51,7 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         PanelMeasurements = New Panel()
+        CmdNext = New Button()
         LabBladeRadius = New Label()
         DataGridBladeRadius = New DataGridView()
         BladeId = New DataGridViewTextBoxColumn()
@@ -73,7 +74,6 @@ Partial Class Form1
         LabAngle = New Label()
         TxtAngle = New TextBox()
         PictureBoxLogo = New PictureBox()
-        CmdNext = New Button()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -98,7 +98,7 @@ Partial Class Form1
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(479, 11)
+        RecordNavigationBar1.Location = New Point(522, 11)
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
@@ -142,7 +142,7 @@ Partial Class Form1
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedByDataGridViewTextBoxColumn, Description})
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridJobDetails.Location = New Point(479, 48)
+        DataGridJobDetails.Location = New Point(522, 48)
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.ScrollBars = ScrollBars.None
         DataGridJobDetails.Size = New Size(635, 50)
@@ -219,7 +219,7 @@ Partial Class Form1
         TxtJobNumber.BackColor = SystemColors.Control
         TxtJobNumber.BorderStyle = BorderStyle.None
         TxtJobNumber.Font = New Font("Segoe UI", 14F, FontStyle.Bold)
-        TxtJobNumber.Location = New Point(215, 11)
+        TxtJobNumber.Location = New Point(258, 11)
         TxtJobNumber.Name = "TxtJobNumber"
         TxtJobNumber.Size = New Size(258, 25)
         TxtJobNumber.TabIndex = 6
@@ -379,6 +379,19 @@ Partial Class Form1
         PanelMeasurements.Name = "PanelMeasurements"
         PanelMeasurements.Size = New Size(942, 531)
         PanelMeasurements.TabIndex = 8
+        ' 
+        ' CmdNext
+        ' 
+        CmdNext.Image = My.Resources.Resources._Next
+        CmdNext.ImageAlign = ContentAlignment.MiddleRight
+        CmdNext.Location = New Point(620, 31)
+        CmdNext.Name = "CmdNext"
+        CmdNext.Size = New Size(75, 23)
+        CmdNext.TabIndex = 19
+        CmdNext.Text = "Next"
+        CmdNext.TextAlign = ContentAlignment.MiddleLeft
+        CmdNext.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdNext.UseVisualStyleBackColor = True
         ' 
         ' LabBladeRadius
         ' 
@@ -572,19 +585,6 @@ Partial Class Form1
         PictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
-        ' 
-        ' CmdNext
-        ' 
-        CmdNext.Image = CType(resources.GetObject("CmdNext.Image"), Image)
-        CmdNext.ImageAlign = ContentAlignment.MiddleRight
-        CmdNext.Location = New Point(620, 31)
-        CmdNext.Name = "CmdNext"
-        CmdNext.Size = New Size(75, 23)
-        CmdNext.TabIndex = 19
-        CmdNext.Text = "Next"
-        CmdNext.TextAlign = ContentAlignment.MiddleLeft
-        CmdNext.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdNext.UseVisualStyleBackColor = True
         ' 
         ' Form1
         ' 
