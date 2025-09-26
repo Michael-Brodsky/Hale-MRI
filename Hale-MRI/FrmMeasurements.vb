@@ -576,23 +576,24 @@ exittheFor:
             ' function, which works with successive rows in a table using a single predicate, and
             ' thus is implemented here using subqueries)
             '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            '   SELECT ((360.0 * (Depth - PreviousDepth)) / (Angle - PreviousAngle)) AS Pitch
+            '   SELECT Avg(((360.0 * (Depth - PreviousDepth)) / (Angle - PreviousAngle))) AS AveragePitch
             '   FROM
             '   (
             '       SELECT a.Angle, a.Depth, 
             '       (         
             '           SELECT TOP 1 b.Angle
             '           FROM [Cell Measurements] AS b
-            '           WHERE b.ID < a.ID
+            '           WHERE b.[Job Details ID] = a.[Job Details ID] And b.ID < a.ID
             '           ORDER BY b.ID DESC
             '       ) AS PreviousAngle, 
             '       ( 
             '           SELECT TOP 1 c.Depth 
             '           FROM [Cell Measurements] AS c
-            '           WHERE c.ID < a.ID
+            '           WHERE c.[Job Details ID] = a.[Job Details ID] And c.ID < a.ID
             '           ORDER BY c.ID DESC 
             '       ) AS PreviousDepth 
             '       FROM [Cell Measurements] AS a
+            '       WHERE a.[Job Details ID] = n
             '       ORDER BY a.ID
             '   ) AS Deltas
             '   WHERE Not (PreviousAngle Is Null Or PreviousDepth Is Null) And (Angle - PreviousAngle) <> 0;
