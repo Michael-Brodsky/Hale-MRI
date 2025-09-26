@@ -493,15 +493,10 @@ exittheFor:
         ' controls that hold the current values, the last row from the LocalViews
         ' of the appropriate measurements table or, for convenience, we can add
         ' and copy the values to private form members.
-        Dim randomGenerator As New Random()
-
-        ' Generate a random double between 0.0 (inclusive) and 1.0 (exclusive).
-        Dim randomNumber As Double = randomGenerator.NextDouble()
-
         With EncoderStatusStrip1
-            Dim angle As Double = randomNumber '.Angle()
+            Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
-            Dim radius As IEncoderHardware.RadiusMeasurement = New IEncoderHardware.RadiusMeasurement With {.Value = 50.0 + (randomNumber / 100) - 0.005} '.Radius(Job.PropellerDiameter)
+            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
             Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
             txtBlade.Text = blade
             txtAngle.Text = angle.ToString()
@@ -624,7 +619,7 @@ exittheFor:
             If chkMeasurements.Checked Then
                 mRadiusPercent.Clear()  ' Clear the RadiusPercent moving average at the start of the scan.
             Else
-                RadiusPercentSave(Integer.Parse(txtBlade.Text), mRadiusPercent.Output())    ' Save the RadiusPercent moving average at the end of the sacn.
+                RadiusPercentSave(Integer.Parse(txtBlade.Text), mRadiusPercent.Output())    ' Save the RadiusPercent moving average at the end of the scan.
             End If
             EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
             cmdHome.Enabled = Not chkMeasurements.Checked
