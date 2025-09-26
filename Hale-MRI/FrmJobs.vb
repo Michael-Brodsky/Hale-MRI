@@ -21,7 +21,7 @@ Public Class FrmJobs
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCustomers As FrmCustomers
     Private mFrmVessels As FrmVessels
-    Private mFrmMeasurements As Form1
+    Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
     Public ReadOnly Property Current

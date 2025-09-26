@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Diagnostics.Metrics
 Imports System.Security.Cryptography.Pkcs
 Imports Hale_MRI.EncoderStatusStrip
 Imports LibDatabase.Contexts
@@ -19,6 +20,7 @@ Public Class FrmMeasurements
     Private mBlades As Integer
     Private mJobDetails As JobDetail
     Private mJob As Job
+    Private mRadiusPercent As New MovingAverage(2)  ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private Scanning As Boolean
 #End Region
 #Region "Public Interface"
@@ -491,41 +493,56 @@ exittheFor:
         ' controls that hold the current values, the last row from the LocalViews
         ' of the appropriate measurements table or, for convenience, we can add
         ' and copy the values to private form members.
+        Dim randomGenerator As New Random()
+
+        ' Generate a random double between 0.0 (inclusive) and 1.0 (exclusive).
+        Dim randomNumber As Double = randomGenerator.NextDouble()
+
         With EncoderStatusStrip1
-            Dim angle As Double = .Angle()
+            Dim angle As Double = randomNumber '.Angle()
             Dim depth As Double = .Depth()
-            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            Dim radius As IEncoderHardware.RadiusMeasurement = New IEncoderHardware.RadiusMeasurement With {.Value = 50.0 + (randomNumber / 100) - 0.005} '.Radius(Job.PropellerDiameter)
             Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
+            txtBlade.Text = blade
             txtAngle.Text = angle.ToString()
             txtRadius.Text = radius.Value.ToString()
             txtDepth.Text = depth.ToString()
-            txtRadiusPercent.Text = radius.Percent.ToString()
+            txtRadiusPercent.Text = (radius.Value * 100).ToString()
             MeasurementsSave(blade, angle, depth, radius)
         End With
     End Sub
 
     Private Sub MeasurementsSave(ByVal blade As Integer, ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Saves the given measurements and any related data.
+        mRadiusPercent.Input(radius.Value)
         Dim cm As New CellMeasurement With {
             .JobDetails = Me.JobDetails,
             .Angle = angle,
             .Depth = depth
         }
-        Dim rm As New RadiusMeasurement With {
-            .JobDetails = Me.JobDetails,
-            .BladeId = blade,
-            .Radius = radius.Percent,
-            .LeCell = 0,
-            .TeCell = RadiusMeasurementsBindingSource.Count + 1
-        }
-        Dim x = radius.Percent
         Database.CellMeasurements.Add(cm)
-        Database.RadiusMeasurements.Add(rm)
-        ' Nothing is actually saved to the database until Database.SaveChanges() is called.
+        ' Attached BindingSources are updated automatically after .Add(). Nothing is
+        ' actually saved to the database until Database.SaveChanges() is called.
         ' Where & when that should be done is unclear. Need to discuss. Regardless, any
-        ' measurements, saved or not, can be accessed via the tables' LocalViews:
-        '   Database.CellMeasurements.Local
+        ' measurements, saved or not, can be accessed via the tables' LocalViews or 
+        ' the form's BindingSources.
+    End Sub
 
+    Private Sub RadiusPercentSave(ByVal blade As Integer, value As Double)
+        ' Retrieves and updates an measurement for the current JobDetails and BladeId, or
+        ' creates a new measurement and adds it to the database.
+        Dim rm As RadiusMeasurement = Database.RadiusMeasurements.Local.Where(Function(r) r.JobDetails Is Me.JobDetails And r.BladeId = blade)
+        If rm Is Nothing Then rm = New RadiusMeasurement With {
+            .JobDetails = Me.JobDetails
+        }
+        With rm
+            .BladeId = blade
+            .Radius = value
+            .LeCell = 0
+            .TeCell = RadiusMeasurementsBindingSource.Count + 1
+        End With
+        Database.RadiusMeasurements.Add(rm)
+        Database.SaveChanges()
     End Sub
 
     Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
@@ -603,6 +620,11 @@ exittheFor:
     Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
         ' Starts/stops the scanning process and updates the form state accordingly.
         Try
+            If chkMeasurements.Checked Then
+                mRadiusPercent.Clear()  ' Clear the RadiusPercent moving average at the start of the scan.
+            Else
+                RadiusPercentSave(Integer.Parse(txtBlade.Text), mRadiusPercent.Output())    ' Save the RadiusPercent moving average at the end of the sacn.
+            End If
             EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
             cmdHome.Enabled = Not chkMeasurements.Checked
         Catch ex As Exception
