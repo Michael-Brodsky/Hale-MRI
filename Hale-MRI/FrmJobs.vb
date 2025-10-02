@@ -21,6 +21,7 @@ Public Class FrmJobs
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCustomers As FrmCustomers
     Private mFrmVessels As FrmVessels
+    'Private mFrmMeasurements As Form1
     Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
@@ -223,9 +224,7 @@ Public Class FrmJobs
             Exit Sub
         End If
         ' ScanDataAdd will add the imported Job to the Jobs table and generate a unique JobNumber.
-        If ScanDataExists(importedJob, Database) Then
-
-        End If
+        importedJob = ScanDataAdd(importedJob, Database)
         ' We need to refresh the Employees list in case a new employee was added.
         EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
         ' Clear the form filters and show the imported job.

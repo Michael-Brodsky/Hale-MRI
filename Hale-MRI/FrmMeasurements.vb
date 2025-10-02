@@ -1,6 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports System.Diagnostics.Metrics
-Imports System.Security.Cryptography.Pkcs
 Imports Hale_MRI.EncoderStatusStrip
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
@@ -8,20 +6,17 @@ Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
 
 ''' <summary>
-''' This form provides a user inteface for taking
-''' and inserting measurements into JobDetail records.
+''' This form provides a user inteface for taking, 
+''' computing, saving, displaying and inserting 
+''' blade measurements.
 ''' </summary>
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
-#Region "Constants"
-
-#End Region
 #Region "Private Members"
-    Private mBlades As Integer
-    Private mJobDetails As JobDetail
-    Private mJob As Job
-    Private mRadiusPercent As New MovingAverage(2)  ' Keeps a moving average of RadiusPercent measurements during a scan.
-    Private Scanning As Boolean
+    Private mJobDetails As JobDetail                            ' The current JobDetail record
+    Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
+    Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
+    Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
 #End Region
 #Region "Public Interface"
     Public ReadOnly Property Current
@@ -58,13 +53,18 @@ Public Class FrmMeasurements
             ' Loads all of the given Job's JobDetails and their Cell, Extreme and RadiusMeasurements.
             mJob = value
             If mJob IsNot Nothing Then
-                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail)(Database.JobDetails _
-                .Where(Function(j) j.Job Is mJob) _
-                .Include(Function(cm) cm.CellMeasurements) _
-                .Include(Function(em) em.ExtremeMeasurements) _
-                .Include(Function(rm) rm.RadiusMeasurements) _
-                .OrderBy(Function(sd) sd.StartDate).ToList())
+                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) _
+                    (Database.JobDetails _
+                        .Where(Function(jd) jd.Job Is mJob) _
+                        .OrderBy(Function(jd) jd.StartDate) _
+                        .Include(Function(jd) jd.RadiusMeasurements) _
+                        .ThenInclude(Function(cm) cm.CellMeasurements) _
+                        .Include(Function(jd) jd.RadiusMeasurements) _
+                        .ThenInclude(Function(em) em.ExtremeMeasurements) _
+                        .AsSplitQuery().ToList()
+                    )
             End If
+            Debug.Print(JobDetailsBindingSource.Count)
         End Set
     End Property
 
@@ -77,422 +77,412 @@ Public Class FrmMeasurements
             mJobDetails = value
             mJob = mJobDetails?.Job
             If mJobDetails IsNot Nothing Then
-                Database.Entry(mJobDetails).Collection(Function(cm) cm.CellMeasurements).Load()
-                Database.Entry(mJobDetails).Collection(Function(em) em.ExtremeMeasurements).Load()
-                Database.Entry(mJobDetails).Collection(Function(rm) rm.RadiusMeasurements).Load()
-                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) From {mJobDetails}.ToList()
+                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) _
+                    (Database.JobDetails _
+                    .Where(Function(jd) jd Is mJobDetails) _
+                    .Include(Function(rm) rm.RadiusMeasurements) _
+                    .ThenInclude(Function(m) m.CellMeasurements) _
+                    .Include(Function(rm) rm.RadiusMeasurements) _
+                    .ThenInclude(Function(m) m.ExtremeMeasurements) _
+                    .AsSplitQuery().ToList()
+                )
             End If
         End Set
     End Property
 #End Region
 #Region "Private Interface"
 
-    Private Sub Scan(ScanRadius As Double, ScanBlade As Integer, ScanAngle As Double) ' Scans   a single blade radius, Function completion relies on correct operation of the hardware
-        'Input radius as a percentage to ensure accurate storage in the database
-        If Database IsNot Nothing Then
-            Dim BladeIDs As New List(Of Integer?)
-            Dim Radii As New List(Of Double?)
-            Dim LECells As New List(Of Integer?)
-            Dim TECells As New List(Of Integer?)
-            Dim Angles As New List(Of Double?)
-            Dim Depths As New List(Of Double?)
-            Dim angleMeasurement As Double = 0
-            Dim depthMeasurement As Double = 0
-            If Database IsNot Nothing Then
-                ' Get the existing radius measurements for the current job details
-                For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
-                    BladeIDs.Add(bladID)
-                Next
-                For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
-                    Radii.Add(Rad)
-                Next
-                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
-                    LECells.Add(integ)
-                Next
-                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
-                    TECells.Add(integ)
-                Next
-                For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
-                    Angles.Add(Ange)
-                Next
-                For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
-                    Depths.Add(Dept)
-                Next
-            End If
-            Dim AngleArray As Double() = New Double(0) {}
-            Dim DepthArray As Double() = New Double(0) {}
-            Dim n As Integer = 1
-            Dim pointtotal As Integer = (360 / Job.PropellerBlades)
-            Dim ScanIncrement As Double = 360 * Hardware.Workstation.ScanIncrement / Hardware.Workstation.AngleResolution 'This is the increment in degrees for each scan point
-            TxtStatus.Text = "Scanning Blade " & ScanBlade.ToString() & " at " & ScanRadius.ToString() & "% Radius"
-            If ScanRadius < 0 Or ScanRadius > 100 Then
-                MessageBox.Show("Invalid radius value. Please scan a radius between 0 and 100.", "Invalid Radius", MessageBoxButtons.OK, MessageBoxIcon.Error)
-                TxtStatus.Text = "Idle"
-                Return
-            End If
-            With EncoderStatusStrip1
-                angleMeasurement = AngleArray(0) = .Angle()
-                depthMeasurement = DepthArray(0) = .Depth
-            End With
-            For n = 1 To pointtotal
-                While angleMeasurement > Int((AngleArray(n - 1) + ScanIncrement) / ScanIncrement + 0.5) / ScanIncrement
-                    If Scanning = False Then
-                        GoTo exittheFor
-                    End If
-                    txtAngle.Text = angleMeasurement.ToString()
-                    txtDepth.Text = depthMeasurement.ToString()
-                    System.Threading.Thread.Sleep(5)
-                End While
+    '    Private Sub Scan(ScanRadius As Double, ScanBlade As Integer, ScanAngle As Double) ' Scans   a single blade radius, Function completion relies on correct operation of the hardware
+    '        'Input radius as a percentage to ensure accurate storage in the database
+    '        If Database IsNot Nothing Then
+    '            Dim BladeIDs As New List(Of Integer?)
+    '            Dim Radii As New List(Of Double?)
+    '            Dim LECells As New List(Of Integer?)
+    '            Dim TECells As New List(Of Integer?)
+    '            Dim Angles As New List(Of Double?)
+    '            Dim Depths As New List(Of Double?)
+    '            Dim angleMeasurement As Double = 0
+    '            Dim depthMeasurement As Double = 0
+    '            If Database IsNot Nothing Then
+    '                ' Get the existing radius measurements for the current job details
+    '                For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
+    '                    BladeIDs.Add(bladID)
+    '                Next
+    '                For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
+    '                    Radii.Add(Rad)
+    '                Next
+    '                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
+    '                    LECells.Add(integ)
+    '                Next
+    '                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
+    '                    TECells.Add(integ)
+    '                Next
+    '                For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
+    '                    Angles.Add(Ange)
+    '                Next
+    '                For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
+    '                    Depths.Add(Dept)
+    '                Next
+    '            End If
+    '            Dim AngleArray As Double() = New Double(0) {}
+    '            Dim DepthArray As Double() = New Double(0) {}
+    '            Dim n As Integer = 1
+    '            Dim pointtotal As Integer = (360 / Job.PropellerBlades)
+    '            Dim ScanIncrement As Double = 360 * Hardware.Workstation.ScanIncrement / Hardware.Workstation.AngleResolution 'This is the increment in degrees for each scan point
+    '            TxtStatus.Text = "Scanning Blade " & ScanBlade.ToString() & " at " & ScanRadius.ToString() & "% Radius"
+    '            If ScanRadius < 0 Or ScanRadius > 100 Then
+    '                MessageBox.Show("Invalid radius value. Please scan a radius between 0 and 100.", "Invalid Radius", MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '                TxtStatus.Text = "Idle"
+    '                Return
+    '            End If
+    '            With EncoderStatusStrip1
+    '                angleMeasurement = AngleArray(0) = .Angle()
+    '                depthMeasurement = DepthArray(0) = .Depth
+    '            End With
+    '            For n = 1 To pointtotal
+    '                While angleMeasurement > Int((AngleArray(n - 1) + ScanIncrement) / ScanIncrement + 0.5) / ScanIncrement
+    '                    'If Scanning = False Then
+    '                    'GoTo exittheFor
+    '                    'End If
+    '                    txtAngle.Text = angleMeasurement.ToString()
+    '                    txtDepth.Text = depthMeasurement.ToString()
+    '                    System.Threading.Thread.Sleep(5)
+    '                End While
 
-                If angleMeasurement < 180 And ScanBlade = 1 Then
-                    AngleArray(n) = angleMeasurement - 360
-                Else
-                    AngleArray(n) = angleMeasurement
-                End If
-                DepthArray(n) = depthMeasurement
-            Next
-exittheFor:
-            If angleMeasurement > 180 And ScanBlade = 1 Then
-                AngleArray(n) = angleMeasurement - 360
-            Else
-                AngleArray(n) = angleMeasurement
-            End If
-            DepthArray(n) = depthMeasurement
-            'timerMeasurements.Enabled = True
-            'Need to add a check for duplicate radius measurements for the same blade and radius so we can remove old data
-            ' Save the measurements to the database
-            Dim needdelete As Boolean = False
-            Dim celltotal As Integer = 0
-            Dim x As Integer = 0
-            For Each bladID In BladeIDs
-                If bladID.Value = ScanBlade And Math.Round(Radii(x).Value) = Math.Round(ScanRadius) Then
-                    needdelete = True
-                    x += 1
-                    Exit For
-                End If
-                Dim lecell As Integer = LECells(x).Value
-                Dim tecell As Integer = TECells(x).Value
-                celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
-                x += 1
-            Next
-            If needdelete = True Then
-                ' Remove existing measurements for this blade and radius
-                Dim existingRadiusMeasurements = Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id And r.BladeId = ScanBlade And Math.Round(r.Radius.Value) = Math.Round(ScanRadius)).ToList()
-                For Each rdsm In existingRadiusMeasurements
-                    Database.RadiusMeasurements.Remove(rdsm)
-                Next
-                Dim existingCellMeasurements = Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Skip(celltotal).ToList()
-                Dim y As Integer = 0
-                Dim lecell As Integer = LECells(x).Value
-                Dim tecell As Integer = TECells(x).Value
-                Dim cellsToRemove As Integer = tecell - lecell + 1
-                For Each cm In existingCellMeasurements
-                    If y >= (cellsToRemove) Then
-                        Exit For
-                    End If
-                    Database.CellMeasurements.Remove(cm)
-                    y += 1
-                Next
-                Database.SaveChanges()
-            End If
-            Dim rm As New RadiusMeasurement With {
-                .JobDetailsId = JobDetails.Id,
-                .BladeId = ScanBlade,
-                .Radius = Math.Round(ScanRadius, 2),
-                .LeCell = 0,
-                .TeCell = AngleArray.Length()
-            }
-            For x = 0 To AngleArray.Length - 1
-                Dim cm As New CellMeasurement With {
-                    .JobDetailsId = JobDetails.Id,
-                    .Angle = AngleArray(x),
-                    .Depth = DepthArray(x)
-                }
-            Next
-        End If
-    End Sub
-    Private Function GetPitchofBladeRadius(Blade As Integer, Radius As Double) As Double()
-        Dim PitchArray As Double() = {0}
-        If Database IsNot Nothing Then
-            Dim BladeIDs As New List(Of Integer?)
-            Dim Radii As New List(Of Double?)
-            Dim LECells As New List(Of Integer?)
-            Dim TECells As New List(Of Integer?)
-            Dim Angles As New List(Of Double?)
-            Dim Depths As New List(Of Double?)
-            For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
-                BladeIDs.Add(bladID)
-            Next
-            For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
-                Radii.Add(Rad)
-            Next
-            For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
-                LECells.Add(integ)
-            Next
-            For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
-                TECells.Add(integ)
-            Next
-            For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
-                Angles.Add(Ange)
-            Next
-            For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
-                Depths.Add(Dept)
-            Next
+    '                If angleMeasurement < 180 And ScanBlade = 1 Then
+    '                    AngleArray(n) = angleMeasurement - 360
+    '                Else
+    '                    AngleArray(n) = angleMeasurement
+    '                End If
+    '                DepthArray(n) = depthMeasurement
+    '            Next
+    'exittheFor:
+    '            If angleMeasurement > 180 And ScanBlade = 1 Then
+    '                AngleArray(n) = angleMeasurement - 360
+    '            Else
+    '                AngleArray(n) = angleMeasurement
+    '            End If
+    '            DepthArray(n) = depthMeasurement
+    '            'timerMeasurements.Enabled = True
+    '            'Need to add a check for duplicate radius measurements for the same blade and radius so we can remove old data
+    '            ' Save the measurements to the database
+    '            Dim needdelete As Boolean = False
+    '            Dim celltotal As Integer = 0
+    '            Dim x As Integer = 0
+    '            For Each bladID In BladeIDs
+    '                If bladID.Value = ScanBlade And Math.Round(Radii(x).Value) = Math.Round(ScanRadius) Then
+    '                    needdelete = True
+    '                    x += 1
+    '                    Exit For
+    '                End If
+    '                Dim lecell As Integer = LECells(x).Value
+    '                Dim tecell As Integer = TECells(x).Value
+    '                celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
+    '                x += 1
+    '            Next
+    '            If needdelete = True Then
+    '                ' Remove existing measurements for this blade and radius
+    '                Dim existingRadiusMeasurements = Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id And r.BladeId = ScanBlade And Math.Round(r.Radius.Value) = Math.Round(ScanRadius)).ToList()
+    '                For Each rdsm In existingRadiusMeasurements
+    '                    Database.RadiusMeasurements.Remove(rdsm)
+    '                Next
+    '                Dim existingCellMeasurements = Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Skip(celltotal).ToList()
+    '                Dim y As Integer = 0
+    '                Dim lecell As Integer = LECells(x).Value
+    '                Dim tecell As Integer = TECells(x).Value
+    '                Dim cellsToRemove As Integer = tecell - lecell + 1
+    '                For Each cm In existingCellMeasurements
+    '                    If y >= (cellsToRemove) Then
+    '                        Exit For
+    '                    End If
+    '                    Database.CellMeasurements.Remove(cm)
+    '                    y += 1
+    '                Next
+    '                Database.SaveChanges()
+    '            End If
+    '            Dim rm As New RadiusMeasurement With {
+    '                .JobDetailsId = JobDetails.Id,
+    '                .BladeId = ScanBlade,
+    '                .Radius = Math.Round(ScanRadius, 2),
+    '                .LeCell = 0,
+    '                .TeCell = AngleArray.Length()
+    '            }
+    '            For x = 0 To AngleArray.Length - 1
+    '                Dim cm As New CellMeasurement With {
+    '                    .JobDetailsId = JobDetails.Id,
+    '                    .Angle = AngleArray(x),
+    '                    .Depth = DepthArray(x)
+    '                }
+    '            Next
+    '        End If
+    '    End Sub
+    '    Private Function GetPitchofBladeRadius(Blade As Integer, Radius As Double) As Double()
+    '        Dim PitchArray As Double() = {0}
+    '        If Database IsNot Nothing Then
+    '            Dim BladeIDs As New List(Of Integer?)
+    '            Dim Radii As New List(Of Double?)
+    '            Dim LECells As New List(Of Integer?)
+    '            Dim TECells As New List(Of Integer?)
+    '            Dim Angles As New List(Of Double?)
+    '            Dim Depths As New List(Of Double?)
+    '            For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
+    '                BladeIDs.Add(bladID)
+    '            Next
+    '            For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
+    '                Radii.Add(Rad)
+    '            Next
+    '            For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
+    '                LECells.Add(integ)
+    '            Next
+    '            For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
+    '                TECells.Add(integ)
+    '            Next
+    '            For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
+    '                Angles.Add(Ange)
+    '            Next
+    '            For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
+    '                Depths.Add(Dept)
+    '            Next
 
-            Dim celltotal As Integer = 0
-            Dim x As Integer = 0
-            For Each bladID In BladeIDs
-                If bladID.Value = Blade And Math.Round(Radii(x).Value) = Math.Round(Radius) Then
-                    x += 1
-                    Exit For
-                End If
-                Dim lecell As Integer = LECells(x).Value
-                Dim tecell As Integer = TECells(x).Value
-                celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
-                x += 1
-            Next
-            Dim celldiff As Integer = TECells(x).Value - LECells(x).Value
-            For x = 0 To celldiff - 1
-                Dim angle1 As Double = Angles(celltotal + x).GetValueOrDefault()
-                Dim depth1 As Double = Depths(celltotal + x).GetValueOrDefault()
-                Dim angle2 As Double = Angles(celltotal + x + 1).GetValueOrDefault()
-                Dim depth2 As Double = Depths(celltotal + x + 1).GetValueOrDefault()
-                Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
-                PitchArray(x) = pitch
-            Next
+    '            Dim celltotal As Integer = 0
+    '            Dim x As Integer = 0
+    '            For Each bladID In BladeIDs
+    '                If bladID.Value = Blade And Math.Round(Radii(x).Value) = Math.Round(Radius) Then
+    '                    x += 1
+    '                    Exit For
+    '                End If
+    '                Dim lecell As Integer = LECells(x).Value
+    '                Dim tecell As Integer = TECells(x).Value
+    '                celltotal += tecell - lecell + 1 ' + 1 to include the cell stated by the actual values
+    '                x += 1
+    '            Next
+    '            Dim celldiff As Integer = TECells(x).Value - LECells(x).Value
+    '            For x = 0 To celldiff - 1
+    '                Dim angle1 As Double = Angles(celltotal + x).GetValueOrDefault()
+    '                Dim depth1 As Double = Depths(celltotal + x).GetValueOrDefault()
+    '                Dim angle2 As Double = Angles(celltotal + x + 1).GetValueOrDefault()
+    '                Dim depth2 As Double = Depths(celltotal + x + 1).GetValueOrDefault()
+    '                Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
+    '                PitchArray(x) = pitch
+    '            Next
 
-        End If
-        Return PitchArray
-    End Function
-    Private ReadOnly Property PitchofRadiusSegments As Double()
-        Get
-            ' This property calculates the average pitch for each radius segment based on the radius measurements and cell measurements. It returns an array of average Pitch Values
-            Dim pitcharray As Double() = {0}
-            If Database IsNot Nothing Then
+    '        End If
+    '        Return PitchArray
+    '    End Function
+    '    Private ReadOnly Property PitchofRadiusSegments As Double()
+    '        Get
+    '            ' This property calculates the average pitch for each radius segment based on the radius measurements and cell measurements. It returns an array of average Pitch Values
+    '            Dim pitcharray As Double() = {0}
+    '            If Database IsNot Nothing Then
 
-                Dim BladeIDs As New List(Of Integer?)
-                Dim Radii As New List(Of Double?)
-                Dim LECells As New List(Of Integer?)
-                Dim TECells As New List(Of Integer?)
-                Dim Angles As New List(Of Double?)
-                Dim Depths As New List(Of Double?)
-                For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
-                    BladeIDs.Add(bladID)
-                Next
-                For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
-                    Radii.Add(Rad)
-                Next
-                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
-                    LECells.Add(integ)
-                Next
-                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
-                    TECells.Add(integ)
-                Next
-                For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
-                    Angles.Add(Ange)
-                Next
-                For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
-                    Depths.Add(Dept)
-                Next
-                Dim PitchbyBladeRadius = New Double(BladeIDs.Count) {}
+    '                Dim BladeIDs As New List(Of Integer?)
+    '                Dim Radii As New List(Of Double?)
+    '                Dim LECells As New List(Of Integer?)
+    '                Dim TECells As New List(Of Integer?)
+    '                Dim Angles As New List(Of Double?)
+    '                Dim Depths As New List(Of Double?)
+    '                For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
+    '                    BladeIDs.Add(bladID)
+    '                Next
+    '                For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
+    '                    Radii.Add(Rad)
+    '                Next
+    '                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
+    '                    LECells.Add(integ)
+    '                Next
+    '                For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
+    '                    TECells.Add(integ)
+    '                Next
+    '                For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
+    '                    Angles.Add(Ange)
+    '                Next
+    '                For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
+    '                    Depths.Add(Dept)
+    '                Next
+    '                Dim PitchbyBladeRadius = New Double(BladeIDs.Count) {}
 
-                Dim cellcount As Integer = 0
-                For i = 0 To BladeIDs.Count - 1
-                    Dim bladid = BladeIDs(i)
-                    Dim bladeIndex As Integer = bladid - 1
-                    Dim radius As Double = Radii(i).GetValueOrDefault()
-                    Dim leCell As Integer = LECells(i).GetValueOrDefault()
-                    Dim teCell As Integer = TECells(i).GetValueOrDefault()
-                    Dim celldiff As Integer = teCell - leCell + cellcount
+    '                Dim cellcount As Integer = 0
+    '                For i = 0 To BladeIDs.Count - 1
+    '                    Dim bladid = BladeIDs(i)
+    '                    Dim bladeIndex As Integer = bladid - 1
+    '                    Dim radius As Double = Radii(i).GetValueOrDefault()
+    '                    Dim leCell As Integer = LECells(i).GetValueOrDefault()
+    '                    Dim teCell As Integer = TECells(i).GetValueOrDefault()
+    '                    Dim celldiff As Integer = teCell - leCell + cellcount
 
-                    Dim totalpitch As Double = 0
-                    Dim pitchcount As Integer = 0
-                    For x = cellcount To celldiff - 1
-                        Dim angle1 As Double = Angles(x).GetValueOrDefault()
-                        Dim depth1 As Double = Depths(x).GetValueOrDefault()
-                        Dim angle2 As Double = Angles(x + 1).GetValueOrDefault()
-                        Dim depth2 As Double = Depths(x + 1).GetValueOrDefault()
-                        Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
-                        totalpitch += pitch
-                        pitchcount += 1
-                    Next
-                    If pitchcount > 0 Then
-                        Dim averagePitch As Double = Math.Round(totalpitch / pitchcount, 2)
-                        PitchbyBladeRadius(i) = averagePitch
-                    End If
-                Next
-                pitcharray = PitchbyBladeRadius
-                Return pitcharray
-            End If
+    '                    Dim totalpitch As Double = 0
+    '                    Dim pitchcount As Integer = 0
+    '                    For x = cellcount To celldiff - 1
+    '                        Dim angle1 As Double = Angles(x).GetValueOrDefault()
+    '                        Dim depth1 As Double = Depths(x).GetValueOrDefault()
+    '                        Dim angle2 As Double = Angles(x + 1).GetValueOrDefault()
+    '                        Dim depth2 As Double = Depths(x + 1).GetValueOrDefault()
+    '                        Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
+    '                        totalpitch += pitch
+    '                        pitchcount += 1
+    '                    Next
+    '                    If pitchcount > 0 Then
+    '                        Dim averagePitch As Double = Math.Round(totalpitch / pitchcount, 2)
+    '                        PitchbyBladeRadius(i) = averagePitch
+    '                    End If
+    '                Next
+    '                pitcharray = PitchbyBladeRadius
+    '                Return pitcharray
+    '            End If
 
-            Return pitcharray
-        End Get
-    End Property
-    Private Sub UpdateBladeRadiusPlot(BladeNum As Integer, RadiusPerc As Double)
-        'Updates a single blade and radius in the plot graph
-        'Dim PitchArray As Double() = GetPitchofBladeRadius(BladeNum, RadiusPerc)
+    '            Return pitcharray
+    '        End Get
+    '    End Property
+    '    Private Sub UpdateBladeRadiusPlot(BladeNum As Integer, RadiusPerc As Double)
+    '        'Updates a single blade and radius in the plot graph
+    '        'Dim PitchArray As Double() = GetPitchofBladeRadius(BladeNum, RadiusPerc)
 
-    End Sub
+    '    End Sub
 
-    Private Sub UpdatePitchByRadiusTableFull()
-        'need to implement a method to check the table for existing data and clear or update if necessary
-        While GridBladebyRadius.Columns.GetColumnCount(DataGridViewElementStates.Visible) > 1
-            GridBladebyRadius.Columns.RemoveAt(GridBladebyRadius.Columns.Count - 1) 'remove all but the blade column
-        End While
-        GridBladebyRadius.Rows.Clear() 'remove all rows
-        If Database IsNot Nothing Then
-            Dim BladeIDs As New List(Of Integer?) 'Commented out sections have been moved to the PitchofRadiusSegments property as it will be used in multiple places
-            Dim Radii As New List(Of Double?)
-            'Dim LECells As New List(Of Integer?)
-            'Dim TECells As New List(Of Integer?)
-            'Dim Angles As New List(Of Double?)
-            'Dim Depths As New List(Of Double?)
+    '    Private Sub UpdatePitchByRadiusTableFull()
+    '        'need to implement a method to check the table for existing data and clear or update if necessary
+    '        While GridBladebyRadius.Columns.GetColumnCount(DataGridViewElementStates.Visible) > 1
+    '            GridBladebyRadius.Columns.RemoveAt(GridBladebyRadius.Columns.Count - 1) 'remove all but the blade column
+    '        End While
+    '        GridBladebyRadius.Rows.Clear() 'remove all rows
+    '        If Database IsNot Nothing Then
+    '            Dim BladeIDs As New List(Of Integer?) 'Commented out sections have been moved to the PitchofRadiusSegments property as it will be used in multiple places
+    '            Dim Radii As New List(Of Double?)
+    '            'Dim LECells As New List(Of Integer?)
+    '            'Dim TECells As New List(Of Integer?)
+    '            'Dim Angles As New List(Of Double?)
+    '            'Dim Depths As New List(Of Double?)
 
-            'Database.RadiusMeasurements.OrderBy(Of Integer)(Function(r) r.BladeId).Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Where(Function(r) r.BladeId).ToList()
+    '            'Database.RadiusMeasurements.OrderBy(Of Integer)(Function(r) r.BladeId).Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Where(Function(r) r.BladeId).ToList()
 
-            Dim colBladeIDS As New List(Of Integer?)
-            Dim colRadii As New List(Of Double?)
-            For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
-                BladeIDs.Add(bladID)
-            Next
-            For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
-                Radii.Add(Rad)
-            Next
-            For Each BladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).OrderBy(Function(r) r.Radius).Distinct.ToList()
-                colBladeIDS.Add(BladID.BladeId)
-                colRadii.Add(BladID.Radius)
-            Next
-
-
-            'For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
-            '    LECells.Add(integ)
-            'Next
-            'For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
-            '    TECells.Add(integ)
-            'Next
-            'For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
-            '    Angles.Add(Ange)
-            'Next
-            'For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
-            '    Depths.Add(Dept)
-            'Next
-
-            'Dim cellcount As Integer = 0
-            'For i = 0 To BladeIDs.Count - 1
-            '    Dim bladid = BladeIDs(i)
-            '    Dim bladeIndex As Integer = bladid - 1
-            '    Dim radius As Double = Radii(i).GetValueOrDefault()
-            '    Dim leCell As Integer = LECells(i).GetValueOrDefault()
-            '    Dim teCell As Integer = TECells(i).GetValueOrDefault()
-            '    Dim celldiff As Integer = teCell - leCell + cellcount
-
-            '    Dim totalpitch As Double = 0
-            '    Dim pitchcount As Integer = 0
-            '    For x = cellcount To celldiff - 1
-            '        Dim angle1 As Double = Angles(x).GetValueOrDefault()
-            '        Dim depth1 As Double = Depths(x).GetValueOrDefault()
-            '        Dim angle2 As Double = Angles(x + 1).GetValueOrDefault()
-            '        Dim depth2 As Double = Depths(x + 1).GetValueOrDefault()
-            '        Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
-            '        totalpitch += pitch
-            '        pitchcount += 1
-            '    Next
-            '    If pitchcount > 0 Then
-            '        Dim averagePitch As Double = Math.Round(totalpitch / pitchcount, 2)
-            '        PitchbyBladeRadius(i) = averagePitch
-            '    End If
-            'Next
-
-            Dim PitchbyBladeRadius As Double() = PitchofRadiusSegments
-            Dim radcountlist = colBladeIDS.FindAll(Function(b) b = 1)
-            Dim Raditerator = 0
-
-            While GridBladebyRadius.Columns.GetColumnCount(DataGridViewElementStates.Visible) - 1 < radcountlist.Count
-                Dim Radius As Double = colRadii(Raditerator).Value
-                Radius = Math.Round(Radius, 0)
-                GridBladebyRadius.Columns.Add(Radius.ToString(), Radius & "%")
-                Raditerator += 1
-            End While
-
-            While GridBladebyRadius.Rows.Count < Job.PropellerBlades
-                GridBladebyRadius.Rows.Add()
-            End While
-            For Each row In GridBladebyRadius.Rows
-                GridBladebyRadius.Rows(row.Index).Cells(0).Value = row.Index + 1
-            Next
-            Raditerator = 0
-            For i = 0 To BladeIDs.Count - 1
-                Dim Bindex As Integer = BladeIDs(i) - 1
-                GridBladebyRadius.Rows(Bindex).Cells(Math.Round(Radii(i).Value, 0).ToString()).Value = PitchbyBladeRadius(i)
-                Raditerator += 1
-            Next
-            GridBladebyRadius.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader)
-
-        End If
-    End Sub
-
-#End Region
-#Region "UI Event Handlers"
-    Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles cmdHome.Click
-        HomeEncoders()
-    End Sub
-    Private Sub CmdStopScan_Click(sender As Object, e As EventArgs)
-    End Sub
-    Private Sub CountUpdate_Tick(sender As Object, e As EventArgs)
-        'UpdateFields()
-    End Sub
-
-    Private Sub CmdStartScan_Click(sender As Object, e As EventArgs)
+    '            Dim colBladeIDS As New List(Of Integer?)
+    '            Dim colRadii As New List(Of Double?)
+    '            For Each bladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.BladeId).ToList()
+    '                BladeIDs.Add(bladID)
+    '            Next
+    '            For Each Rad In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.Radius).ToList()
+    '                Radii.Add(Rad)
+    '            Next
+    '            For Each BladID In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).OrderBy(Function(r) r.Radius).Distinct.ToList()
+    '                colBladeIDS.Add(BladID.BladeId)
+    '                colRadii.Add(BladID.Radius)
+    '            Next
 
 
-    End Sub
+    '            'For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.LeCell).ToList()
+    '            '    LECells.Add(integ)
+    '            'Next
+    '            'For Each integ In Database.RadiusMeasurements.Where(Function(r) r.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(r) r.TeCell).ToList()
+    '            '    TECells.Add(integ)
+    '            'Next
+    '            'For Each Ange In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Angle).ToList()
+    '            '    Angles.Add(Ange)
+    '            'Next
+    '            'For Each Dept In Database.CellMeasurements.Where(Function(c) c.JobDetailsId = JobDetails.Id).AsSplitQuery().Select(Function(c) c.Depth).ToList()
+    '            '    Depths.Add(Dept)
+    '            'Next
 
-    'Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
-    '    Dim dp = New DataVisualization.Charting.DataPoint(0.5, 0.5)
-    '    Dim dp2 = New DataVisualization.Charting.DataPoint(0.5, 0)
-    '    Dim dp3 = New DataVisualization.Charting.DataPoint(0.5, -0.5)
-    '    PlotGraph.Series(0).Points.Add(dp2)
-    '    PlotGraph.Series(1).Points.Add(dp)
-    '    PlotGraph.Series(2).Points.Add(dp3)
-    '    Try
-    '        'timerMeasurements.Enabled = chkMeasurements.Checked
-    '        cmdHome.Enabled = Not chkMeasurements.Checked
-    '    Catch ex As Exception
-    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
-    '    End Try
-    '    Try
-    '        UpdatePitchByRadiusTableFull()
-    '    Catch ex As Exception
-    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
-    '    End Try
-    'End Sub
+    '            'Dim cellcount As Integer = 0
+    '            'For i = 0 To BladeIDs.Count - 1
+    '            '    Dim bladid = BladeIDs(i)
+    '            '    Dim bladeIndex As Integer = bladid - 1
+    '            '    Dim radius As Double = Radii(i).GetValueOrDefault()
+    '            '    Dim leCell As Integer = LECells(i).GetValueOrDefault()
+    '            '    Dim teCell As Integer = TECells(i).GetValueOrDefault()
+    '            '    Dim celldiff As Integer = teCell - leCell + cellcount
+
+    '            '    Dim totalpitch As Double = 0
+    '            '    Dim pitchcount As Integer = 0
+    '            '    For x = cellcount To celldiff - 1
+    '            '        Dim angle1 As Double = Angles(x).GetValueOrDefault()
+    '            '        Dim depth1 As Double = Depths(x).GetValueOrDefault()
+    '            '        Dim angle2 As Double = Angles(x + 1).GetValueOrDefault()
+    '            '        Dim depth2 As Double = Depths(x + 1).GetValueOrDefault()
+    '            '        Dim pitch As Double = MRIMath.GetPitch(angle1, angle2, depth1, depth2)
+    '            '        totalpitch += pitch
+    '            '        pitchcount += 1
+    '            '    Next
+    '            '    If pitchcount > 0 Then
+    '            '        Dim averagePitch As Double = Math.Round(totalpitch / pitchcount, 2)
+    '            '        PitchbyBladeRadius(i) = averagePitch
+    '            '    End If
+    '            'Next
+
+    '            Dim PitchbyBladeRadius As Double() = PitchofRadiusSegments
+    '            Dim radcountlist = colBladeIDS.FindAll(Function(b) b = 1)
+    '            Dim Raditerator = 0
+
+    '            While GridBladebyRadius.Columns.GetColumnCount(DataGridViewElementStates.Visible) - 1 < radcountlist.Count
+    '                Dim Radius As Double = colRadii(Raditerator).Value
+    '                Radius = Math.Round(Radius, 0)
+    '                GridBladebyRadius.Columns.Add(Radius.ToString(), Radius & "%")
+    '                Raditerator += 1
+    '            End While
+
+    '            While GridBladebyRadius.Rows.Count < Job.PropellerBlades
+    '                GridBladebyRadius.Rows.Add()
+    '            End While
+    '            For Each row In GridBladebyRadius.Rows
+    '                GridBladebyRadius.Rows(row.Index).Cells(0).Value = row.Index + 1
+    '            Next
+    '            Raditerator = 0
+    '            For i = 0 To BladeIDs.Count - 1
+    '                Dim Bindex As Integer = BladeIDs(i) - 1
+    '                GridBladebyRadius.Rows(Bindex).Cells(Math.Round(Radii(i).Value, 0).ToString()).Value = PitchbyBladeRadius(i)
+    '                Raditerator += 1
+    '            Next
+    '            GridBladebyRadius.AutoResizeColumns(DataGridViewAutoSizeColumnsMode.ColumnHeader)
+
+    '        End If
+    '    End Sub
+
+    '#End Region
+    '#Region "UI Event Handlers"
+    '    Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles cmdHome.Click
+    '        HomeEncoders()
+    '    End Sub
+    '    Private Sub CmdStopScan_Click(sender As Object, e As EventArgs)
+    '    End Sub
+    '    Private Sub CountUpdate_Tick(sender As Object, e As EventArgs)
+    '        'UpdateFields()
+    '    End Sub
+
+    '    Private Sub CmdStartScan_Click(sender As Object, e As EventArgs)
+
+
+    '    End Sub
+
+    '    'Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
+    '    '    Dim dp = New DataVisualization.Charting.DataPoint(0.5, 0.5)
+    '    '    Dim dp2 = New DataVisualization.Charting.DataPoint(0.5, 0)
+    '    '    Dim dp3 = New DataVisualization.Charting.DataPoint(0.5, -0.5)
+    '    '    PlotGraph.Series(0).Points.Add(dp2)
+    '    '    PlotGraph.Series(1).Points.Add(dp)
+    '    '    PlotGraph.Series(2).Points.Add(dp3)
+    '    '    Try
+    '    '        'timerMeasurements.Enabled = chkMeasurements.Checked
+    '    '        cmdHome.Enabled = Not chkMeasurements.Checked
+    '    '    Catch ex As Exception
+    '    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+    '    '    End Try
+    '    '    Try
+    '    '        UpdatePitchByRadiusTableFull()
+    '    '    Catch ex As Exception
+    '    '        MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+    '    '    End Try
+    '    'End Sub
+    '#End Region
+    '#Region "NEW PRIVATE INTERFACE"
+    '    Private Sub HomeEncoders()
+    '        ' Resets all encoders and updates the form state accordingly.
+    '        EncoderStatusStrip1.ResetAll()
+    '        cmdHome.Enabled = False
+    '    End Sub
 #End Region
 #Region "NEW PRIVATE INTERFACE"
-    Private Sub HomeEncoders()
-        ' Resets all encoders and updates the form state accordingly.
-        EncoderStatusStrip1.ResetAll()
-        cmdHome.Enabled = False
-    End Sub
-
     Private Sub MeasurementsGet()
-        ' Calls encoder angle, depth and radius methods, and uses the returned
+        ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required.
-        '
-        ' All encoders calls should be made through EncoderStatusStrip1 rather
-        ' than this form's Hardware property as the control provides real time
-        ' visual cues, hardware status updates and automates some tasks.
-        '  
-        ' EncoderStatusStrip1.Angle(), .Depth() and .Radius() are encoder calls.
-        ' Only one encoder call is allowed per sampling period!!! This method
-        ' is responsible for making those calls, ONCE, then saving and using the
-        ' returned values as required.
-        '
-        ' No other form methods or properties should make any further calls to
-        ' these methods!!! If the angle, depth and radius measurements are needed
-        ' elsewhere, they need to use the values obtained here, either from
-        ' controls that hold the current values, the last row from the LocalViews
-        ' of the appropriate measurements table or, for convenience, we can add
-        ' and copy the values to private form members.
         With EncoderStatusStrip1
             Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
@@ -503,126 +493,71 @@ exittheFor:
             txtRadius.Text = radius.Value.ToString()
             txtDepth.Text = depth.ToString()
             txtRadiusPercent.Text = (radius.Value * 100).ToString()
-            MeasurementsSave(blade, angle, depth, radius)
+            MeasurementsSave(angle, depth, radius)
         End With
     End Sub
 
-    Private Sub MeasurementsSave(ByVal blade As Integer, ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
-        ' Saves the given measurements and any related data.
+    Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
+        ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
         mRadiusPercent.Input(radius.Value)
         Dim cm As New CellMeasurement With {
-            .JobDetails = Me.JobDetails,
+            .RadiusMeasurement = mRadiusMeasurement,
             .Angle = angle,
             .Depth = depth
         }
         Database.CellMeasurements.Add(cm)
-        ' Attached BindingSources are updated automatically after .Add(). Nothing is
-        ' actually saved to the database until Database.SaveChanges() is called.
-        ' Where & when that should be done is unclear. Need to discuss. Regardless, any
-        ' measurements, saved or not, can be accessed via the tables' LocalViews or 
-        ' the form's BindingSources.
     End Sub
 
-    Private Sub RadiusPercentSave(ByVal blade As Integer, value As Double)
-        ' Retrieves and updates an measurement for the current JobDetails and BladeId, or
-        ' creates a new measurement and adds it to the database.
-        Dim rm As RadiusMeasurement = Database.RadiusMeasurements.Local.Where(Function(r) r.JobDetails Is Me.JobDetails And r.BladeId = blade)
-        If rm Is Nothing Then rm = New RadiusMeasurement With {
-            .JobDetails = Me.JobDetails
-        }
-        With rm
-            .BladeId = blade
-            .Radius = value
-            .LeCell = 0
+    Private Sub NewRadiusMeasurement()
+        ' RadiusMeasurement is now parent (PK) of Cell and ExtremeMeasurements
+        ' (FK). Clear the previous moving average and create a new
+        ' RadiusMeasurement with .Radius = 0, which will be updated at
+        ' the end of the scan.
+        mRadiusPercent.Clear()
+        mRadiusMeasurement = New RadiusMeasurement With {
+            .JobDetails = Me.JobDetails,
+            .Radius = 0.0,
+            .LeCell = 0,
             .TeCell = RadiusMeasurementsBindingSource.Count + 1
-        End With
-        Database.RadiusMeasurements.Add(rm)
-        Database.SaveChanges()
+        }
+        Database.RadiusMeasurements.Add(mRadiusMeasurement)
+    End Sub
+
+    Private Sub SaveRadiusMeasurement()
+        ' Update and save the current RadiusMeasurement with the moving average
+        ' we collected while scanning.
+        mRadiusMeasurement.Radius = mRadiusPercent.Output()
+        mRadiusMeasurement.BladeId = Integer.Parse(txtBlade.Text)
+        ShowBladePitchByRadiusPercent(True)
     End Sub
 
     Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
-        ' Blank, or compute the data and display it in, the data grid.
-        If show Then
-            ' Each row displays a particular blade's average pitch in columns by radius percent:
-
-            '   Blade | RadPct(0) | RadPct(1) | ... | RadPct(m) |
-            '   ------|-----------|-----------|-----|-----------|
-            '      1  |   x(1)    |   y(1)    |     |    z(1)   |
-            '   ------|-----------|-----------|-----|-----------|
-            '      2  |   x(2)    |   y(2)    |     |    z(2)   |
-            '   ------|-----------|-----------|-----|-----------|
-            '     ... |   ....    |   ....    |     |    ....   |
-            '   ------|-----------|-----------|-----|-----------|
-            '      N  |   x(n)    |   y(n)    |     |    z(n)   |
-            '   ------|-----------|-----------|-----|-----------|
-
-            ' where x(n), y(n) and z(n) = Avg(GetPitch(angle(i,n), angle(i-1,n), depth(i,n), depth(i-1,n)), 
-            ' n is the blade number from 1 to N, 
-            ' m is the mth distinct radius percent, and
-            ' i is the ith angle/depth measurement.
-            ' 
-            ' It appears that all of the data required to compute the grid cells is available in the
-            ' Cell and RadiusMeasurement tables, can be computed using SQL aggregate queries, loaded
-            ' into the BladeRadiusBindingSource, which can then be assigned to the grid's DataSource
-            ' property.
-            '
-            ' For example the MRIMath.GetPitch() method can be replaced with a single SQL query:
-            ' (Note that the query uses MS Access syntax. MS Access does not support the SQL LAG()
-            ' function, which works with successive rows in a table using a single predicate, and
-            ' thus is implemented here using subqueries)
-            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            '   SELECT Avg(((360.0 * (Depth - PreviousDepth)) / (Angle - PreviousAngle))) AS AveragePitch
-            '   FROM
-            '   (
-            '       SELECT a.Angle, a.Depth, 
-            '       (         
-            '           SELECT TOP 1 b.Angle
-            '           FROM [Cell Measurements] AS b
-            '           WHERE b.[Job Details ID] = a.[Job Details ID] And b.ID < a.ID
-            '           ORDER BY b.ID DESC
-            '       ) AS PreviousAngle, 
-            '       ( 
-            '           SELECT TOP 1 c.Depth 
-            '           FROM [Cell Measurements] AS c
-            '           WHERE c.[Job Details ID] = a.[Job Details ID] And c.ID < a.ID
-            '           ORDER BY c.ID DESC 
-            '       ) AS PreviousDepth 
-            '       FROM [Cell Measurements] AS a
-            '       WHERE a.[Job Details ID] = n
-            '       ORDER BY a.ID
-            '   ) AS Deltas
-            '   WHERE Not (PreviousAngle Is Null Or PreviousDepth Is Null) And (Angle - PreviousAngle) <> 0;
-            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ' An INNER JOIN could then be added onto the [Radius Measurements] table to obtain the 
-            ' radius percent and blade number values, yielding everything we need to populate the grid.
-            ' However, the JOIN cannot be implemented until the relationship between Cell and 
-            ' RadiusMeasurements is understood. TODO: Sam, tell me how it works :)
-            '''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-            ' Get the needed data from the Cell and RadiusMeasurementsBindingSources
-            Dim rm As IList(Of RadiusMeasurement) = New List(Of RadiusMeasurement) From {RadiusMeasurementsBindingSource.List}
-            Dim cm As IList(Of CellMeasurement) = New List(Of CellMeasurement) From {CellMeasurementsBindingSource.List}
-            '
-            ' Query goes here and computes the data for the BindingSource: BladeRadiusBindingSource.DataSource = qry
-            '
-            ' Attach the grid to the computed BindingSource.
-            GridBladebyRadius.DataSource = BladeRadiusBindingSource
-        Else
-            GridBladebyRadius.DataSource = Nothing
-        End If
+        ' Displays each blade's average pitch by radius percent in the
+        ' data grid. Each distinct blade creates a new row and each
+        ' distinct radius perscent creates a new column.
+        Dim dtBladePitchByRadius As New DataTable()
+        Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
+        Dim rowBlade As DataRow
+        dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
+        For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.OrderBy(Function(b) b.BladeId)
+            Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString("F2")   ' Round radiusPercent to nearest whole number (1%).
+            rowBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
+            colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
+            rowBlade.Item(colRadius) = GetAverageBladePitch(rm.CellMeasurements.ToList())
+        Next
+        GridBladebyRadius.DataSource = dtBladePitchByRadius
     End Sub
 #End Region
 #Region "NEW EVENT HANDLERS"
     Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
-        ' Starts/stops the scanning process and updates the form state accordingly.
+        EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
+        cmdHome.Enabled = Not chkMeasurements.Checked
         Try
             If chkMeasurements.Checked Then
-                mRadiusPercent.Clear()  ' Clear the RadiusPercent moving average at the start of the scan.
+                NewRadiusMeasurement()
             Else
-                RadiusPercentSave(Integer.Parse(txtBlade.Text), mRadiusPercent.Output())    ' Save the RadiusPercent moving average at the end of the scan.
+                SaveRadiusMeasurement()
             End If
-            EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
-            cmdHome.Enabled = Not chkMeasurements.Checked
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
@@ -683,14 +618,6 @@ exittheFor:
             ' See Encoders_EncoderEvent() and ScanTimer_Tick() for examples.
             AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
-
-            ' The following code binds the JobDetailsBindingSource (master) to the related
-            ' measurements tables (details). It provides automatic synchronization of any
-            ' data this form may consume without additional code. There is no need to "load"
-            ' additional data from the database anywhere else.
-            BindMasterDetails(JobDetailsBindingSource, CellMeasurementsBindingSource, "CellMeasurements")
-            BindMasterDetails(JobDetailsBindingSource, ExtremeMeasurementsBindingSource, "ExtremeMeasurements")
-            BindMasterDetails(JobDetailsBindingSource, RadiusMeasurementsBindingSource, "RadiusMeasurements")
         Catch ex As Exception
             MessageBox.Show("Error loading the form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -700,6 +627,9 @@ exittheFor:
         ' This event fires anytime the user selects a new JobDetails record (Intial, Interim, Final, etc.)
         ' For now it just keeps the form's JobDetails property current.
         mJobDetails = Me.Current
+
+        ' Show any existing data for the current JobDeatils record.
+        If mJobDetails IsNot Nothing Then ShowBladePitchByRadiusPercent(True)
     End Sub
 
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
@@ -710,6 +640,19 @@ exittheFor:
             chkMeasurements.Checked = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub GridBladebyRadius_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles GridBladebyRadius.CellMouseDoubleClick
+        'ShowBladePitchByRadiusPercent(True)
+    End Sub
+
+    Private Sub GridBladebyRadius_MouseClick(sender As Object, e As MouseEventArgs) Handles GridBladebyRadius.MouseClick
+        '    If JobDetailsBindingSource.Position < JobDetailsBindingSource.Count - 1 Then
+        '        JobDetailsBindingSource.MoveNext()
+        '    Else
+        '        JobDetailsBindingSource.MoveFirst()
+        '    End If
+        '    ShowBladePitchByRadiusPercent(True)
     End Sub
 #End Region
 End Class

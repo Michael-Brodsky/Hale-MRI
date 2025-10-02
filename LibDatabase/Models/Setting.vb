@@ -29,5 +29,7 @@ Namespace Models
         Public Property EncoderDataInitialDirectory As String
 
         Public Property EncoderCalibrationSampleRate As Integer?
+
+        Public Property DatabaseMaintenanceSchedule As String
     End Class
 End Namespace

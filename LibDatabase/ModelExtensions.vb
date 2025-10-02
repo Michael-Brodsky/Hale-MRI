@@ -7,7 +7,7 @@ Public Module ModelExtensions
     Public Function Filter(Of T)(ByVal list As IEnumerable(Of T), ByVal filterParam As Func(Of T, Boolean)) As IEnumerable(Of T)
         ' Returns an enumerable collection, IEnumerable(Of DbSet(Of T)), 
         ' filtered according the filterParam expression.
-        Return list.Where(filterParam)
+        Return list.Where(filterParam).ToList()
     End Function
     <Extension()>
     Public Function ToDataTable(Of T)(ByVal data As IList(Of T)) As DataTable

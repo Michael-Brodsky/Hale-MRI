@@ -23,6 +23,7 @@ Partial Class FrmMeasurements
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
@@ -50,7 +51,6 @@ Partial Class FrmMeasurements
         cmdHome = New Button()
         cmdZero = New Button()
         GridBladebyRadius = New DataGridView()
-        BladeID = New DataGridViewTextBoxColumn()
         tloMeasurements = New TableLayoutPanel()
         gBoxPlotGraph = New GroupBox()
         tloPlotGraph = New TableLayoutPanel()
@@ -299,8 +299,18 @@ Partial Class FrmMeasurements
         ' 
         ' GridBladebyRadius
         ' 
+        GridBladebyRadius.AllowUserToAddRows = False
+        GridBladebyRadius.AllowUserToDeleteRows = False
+        GridBladebyRadius.AllowUserToOrderColumns = True
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        GridBladebyRadius.Columns.AddRange(New DataGridViewColumn() {BladeID})
         tloMeasurements.SetColumnSpan(GridBladebyRadius, 9)
         GridBladebyRadius.Dock = DockStyle.Fill
         GridBladebyRadius.Location = New Point(0, 234)
@@ -312,11 +322,6 @@ Partial Class FrmMeasurements
         GridBladebyRadius.SelectionMode = DataGridViewSelectionMode.CellSelect
         GridBladebyRadius.Size = New Size(621, 156)
         GridBladebyRadius.TabIndex = 21
-        ' 
-        ' BladeID
-        ' 
-        BladeID.HeaderText = "Blade"
-        BladeID.Name = "BladeID"
         ' 
         ' tloMeasurements
         ' 
@@ -1456,7 +1461,6 @@ Partial Class FrmMeasurements
     Friend WithEvents CellMeasurementsBindingSource As BindingSource
     Friend WithEvents ExtremeMeasurementsBindingSource As BindingSource
     Friend WithEvents chkMeasurements As CheckBox
-    Friend WithEvents BladeID As DataGridViewTextBoxColumn
     Friend WithEvents txtBlade As TextBox
     Friend WithEvents PlotGraph As DataVisualization.Charting.Chart
     Friend WithEvents JobDetailsBindingSource As BindingSource

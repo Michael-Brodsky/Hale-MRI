@@ -238,11 +238,11 @@ Public Module StoredProcedures
         ' This query retrieves job details optionally by job id number and optionally includes their associated measurements.
         Dim qry = From jd In db.JobDetails
                   Select jd
-        If includeMeasurements Then
-            qry = qry.Include(Function(jd) jd.CellMeasurements) _
-                     .Include(Function(jd) jd.ExtremeMeasurements) _
-                     .Include(Function(jd) jd.RadiusMeasurements)
-        End If
+        'If includeMeasurements Then
+        '    qry = qry.Include(Function(jd) jd.CellMeasurements) _
+        '             .Include(Function(jd) jd.ExtremeMeasurements) _
+        '             .Include(Function(jd) jd.RadiusMeasurements)
+        'End If
         If jobId <> 0 Then qry = qry.Where(Function(jd) jd.JobId = jobId.ToString)
         Return qry.ToList()
     End Function
@@ -251,9 +251,9 @@ Public Module StoredProcedures
         Dim qry = From jd In db.JobDetails
                   Select jd
         If includeMeasurements Then
-            qry = qry.Include(Function(jd) jd.CellMeasurements) _
-                     .Include(Function(jd) jd.ExtremeMeasurements) _
-                     .Include(Function(jd) jd.RadiusMeasurements)
+            'qry = qry.Include(Function(jd) jd.CellMeasurements) _
+            '         .Include(Function(jd) jd.ExtremeMeasurements) _
+            '         .Include(Function(jd) jd.RadiusMeasurements)
         End If
         If jobDetailID <> 0 Then qry = qry.Where(Function(jd) jd.Id = jobDetailID.ToString)
         Return qry.ToList()
@@ -263,9 +263,9 @@ Public Module StoredProcedures
         Dim qry = From jd In db.JobDetails
                   Select jd
         If includeMeasurements Then
-            qry = qry.Include(Function(jd) jd.CellMeasurements) _
-                     .Include(Function(jd) jd.ExtremeMeasurements) _
-                     .Include(Function(jd) jd.RadiusMeasurements)
+            'qry = qry.Include(Function(jd) jd.CellMeasurements) _
+            '         .Include(Function(jd) jd.ExtremeMeasurements) _
+            '         .Include(Function(jd) jd.RadiusMeasurements)
         End If
         If jobNumber <> 0 Then qry = qry.Where(Function(jd) jd.Job.JobNumber = jobNumber.ToString)
         Return qry.ToList()

@@ -73,6 +73,7 @@ Public Module Imex
     ''' Type that aggregates cell measurement values.
     ''' </summary>
     Private Class CellMeasurement
+        Public Property BladeID As Integer
         Public Property Angle As Double
         Public Property Depth As Double
     End Class
@@ -87,11 +88,21 @@ Public Module Imex
             Done
         End Enum
         Private mMeasurements As New List(Of CellMeasurement)()
+        Private mBlade As Integer = 0
+        Private mBladeCells As List(Of Integer)
+        Public WriteOnly Property BladeCells As List(Of Integer)
+            Set(value As List(Of Integer))
+                mBladeCells = value
+                Dim x = mBladeCells.Sum()
+                x = x
+            End Set
+        End Property
         Public ReadOnly Property Measurements As List(Of CellMeasurement)
             Get
                 Return mMeasurements
             End Get
         End Property
+
         Public WriteOnly Property Value As String
             Set(ByVal value As String)
                 SaveValue(value)
@@ -101,7 +112,10 @@ Public Module Imex
             Static state As MeasurementState = MeasurementState.Angle
             Static m As Integer = 0
 
-            If mMeasurements.Count = m Then mMeasurements.Add(New CellMeasurement())
+            If mMeasurements.Count = m Then
+                mMeasurements.Add(New CellMeasurement())
+                mMeasurements(m).BladeID = mBlade + 1
+            End If
             Select Case state
                 Case MeasurementState.Angle
                     mMeasurements(m).Angle = Convert.ToDouble(value)
@@ -111,6 +125,10 @@ Public Module Imex
             End Select
             state += 1
             If state = MeasurementState.Done Then
+                mBladeCells(mBlade) -= 1
+                If mBladeCells(mBlade) = 0 Then
+                    mBlade += 1
+                End If
                 state = MeasurementState.Angle
                 m += 1
             End If
@@ -156,13 +174,20 @@ Public Module Imex
         Private Const kLinesPerMeasurement As Integer = 3
         Private mMeasurements As New List(Of RadiusMeasurement)()
         Private mBlades As New List(Of Integer)()
+        Private mBladeCells As New List(Of Integer)()
         Public WriteOnly Property BladeCount As Integer
             Set(ByVal value As Integer)
                 For i As Integer = 1 To value
                     mMeasurements.Add(New RadiusMeasurement())
                 Next
                 mBlades.Add(value)
+                mBladeCells.Add(0)
             End Set
+        End Property
+        Public ReadOnly Property BladeCells As List(Of Integer)
+            Get
+                Return mBladeCells
+            End Get
         End Property
         Public ReadOnly Property Blades As List(Of Integer)
             Get
@@ -201,9 +226,11 @@ Public Module Imex
             End Select
             state += 1
             If state = MeasurementState.Done Then
+                mBladeCells(blade) += (mMeasurements(n + m).TeCell - mMeasurements(n + m).LeCell) + 1
                 state = MeasurementState.Radius
                 m += 1
                 If m = mBlades(blade) Then
+                    'mBladeCells(blade) += 1
                     m = 0
                     n += mBlades(blade)
                     blade += 1
@@ -251,57 +278,56 @@ Public Module Imex
         Return ws
     End Function
 
-    Public Function ScanDataExists(ByRef importedJob As Job, db As HaleMRIContext) As Boolean
-        Dim result As Boolean = False
-        'If importedJob IsNot Nothing Then
-        '    Dim jobNumber As Integer = importedJob.JobNumber
-        '    importedJob = If(db.Jobs.FirstOrDefault(Function(j) j.JobNumber = jobNumber.ToString()), importedJob)
-        '    If importedJob.JobNumber = 0 Then
-        '        'If String.IsNullOrWhiteSpace(importedJob.Vessel.VesselName) Then importedJob.Vessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
-        '        'Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = importedJob.Vessel.VesselName.ToString())
-        '        'If existingVessel IsNot Nothing Then
-        '        'importedJob.Vessel = existingVessel
-        '        If Not VesselExists(db, importedJob.Vessel) Then GetCustomer(db, importedJob.Vessel.Customer)
-        '        'Else
-        '        '    If String.IsNullOrEmpty(importedJob.Vessel.Customer.CustomerName) Then
-        '        '        importedJob.Vessel.Customer = New Customer With {.CustomerName = $"(New Customer {db.Customers.Count + 1})"}
-        '        '    Else
-        '        '        Dim existingCustomer As Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = importedJob.Vessel.Customer.CustomerName.ToString())
-        '        '        If existingCustomer IsNot Nothing Then
-        '        '            importedJob.Vessel.Customer = existingCustomer
-        '        '        End If
-        '        '    End If
-        '        'End If
-        '        If importedJob.PropellerManufacturer IsNot Nothing Then
-        '            Dim existingManufacturer As Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = importedJob.PropellerManufacturer.ManufacturerName.ToString())
-        '            If existingManufacturer IsNot Nothing Then importedJob.PropellerManufacturer = existingManufacturer
-        '        End If
-        '        If importedJob.LeExclusion IsNot Nothing Then importedJob.LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.LeExclusion)?.Exclusion1
-        '        If importedJob.TeExclusion IsNot Nothing Then importedJob.TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.TeExclusion)?.Exclusion1
-        '        If importedJob.Cup IsNot Nothing Then importedJob.Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = importedJob.Cup)?.Cup1
-        '        If importedJob.PropellerStyle IsNot Nothing Then importedJob.PropellerStyle = db.Styles.FirstOrDefault(Function(s) s.Style1 = importedJob.PropellerStyle.ToString())?.Style1
-        '        If importedJob.PropellerMaterial IsNot Nothing Then importedJob.PropellerMaterial = db.Materials.FirstOrDefault(Function(m) m.Material1 = importedJob.PropellerMaterial.ToString())?.Material1
-        '        If importedJob.PropellerBlades IsNot Nothing Then importedJob.PropellerBlades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = importedJob.PropellerBlades.ToString())?.BladeCount
-        '        If importedJob.PropellerRotation IsNot Nothing Then importedJob.PropellerRotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = importedJob.PropellerRotation.ToString())?.Rotation1
-        '        If importedJob.JobDetails(0).PerformedByNavigation IsNot Nothing Then
-        '            Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = importedJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
-        '            If existingEmployee IsNot Nothing Then importedJob.JobDetails(0).PerformedByNavigation = existingEmployee
-        '        End If
-        '        If Not String.IsNullOrWhiteSpace(importedJob.JobDetails(0).Description) Then
-        '            Dim measurement As MeasurementType = db.MeasurementTypes.Local.FirstOrDefault(Function(mt) mt.MeasurementType1 = importedJob.JobDetails(0).Description.ToString())
-        '            If measurement IsNot Nothing Then importedJob.JobDetails(0).MeasurementType = measurement
-        '        End If
-        '        'db.Jobs.Add(importedJob)
-        '        'db.SaveChanges()
-        '        result = False
-        '    Else
-        '        'If importedJob.JobDetails?.Count > 0 Then
-        '        '    existingJob.JobDetails.Add(importedJob.JobDetails(0))
-        '        '    db.SaveChanges()
-        '        'End If
-        '        result = True
-        '    End If
-        'End If
+    Public Function ScanDataAdd(importedJob As Job, db As HaleMRIContext) As Job
+        Dim result As Job = Nothing
+        If importedJob IsNot Nothing Then
+            Dim existingJob As Job = db.Jobs.FirstOrDefault(Function(j) j Is importedJob)
+            If existingJob Is Nothing Then
+                'If String.IsNullOrWhiteSpace(importedJob.Vessel.VesselName) Then importedJob.Vessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
+                'Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = importedJob.Vessel.VesselName.ToString())
+                'If existingVessel IsNot Nothing Then
+                'importedJob.Vessel = existingVessel
+                If Not VesselExists(db, importedJob.Vessel) Then GetCustomer(db, importedJob.Vessel.Customer)
+                'Else
+                '    If String.IsNullOrEmpty(importedJob.Vessel.Customer.CustomerName) Then
+                '        importedJob.Vessel.Customer = New Customer With {.CustomerName = $"(New Customer {db.Customers.Count + 1})"}
+                '    Else
+                '        Dim existingCustomer As Customer = db.Customers.FirstOrDefault(Function(c) c.CustomerName = importedJob.Vessel.Customer.CustomerName.ToString())
+                '        If existingCustomer IsNot Nothing Then
+                '            importedJob.Vessel.Customer = existingCustomer
+                '        End If
+                '    End If
+                'End If
+                If importedJob.PropellerManufacturer IsNot Nothing Then
+                    Dim existingManufacturer As Manufacturer = db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = importedJob.PropellerManufacturer.ManufacturerName.ToString())
+                    If existingManufacturer IsNot Nothing Then importedJob.PropellerManufacturer = existingManufacturer
+                End If
+                If importedJob?.LeExclusion IsNot Nothing Then importedJob.LeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.LeExclusion)?.Exclusion1
+                If importedJob?.TeExclusion IsNot Nothing Then importedJob.TeExclusion = db.Exclusions.FirstOrDefault(Function(e) e.Exclusion1 = importedJob.TeExclusion)?.Exclusion1
+                If importedJob?.Cup IsNot Nothing Then importedJob.Cup = db.Cups.FirstOrDefault(Function(c) c.Cup1 = importedJob.Cup)?.Cup1
+                If importedJob?.PropellerStyle IsNot Nothing Then importedJob.PropellerStyle = db.Styles.FirstOrDefault(Function(s) s.Style1 = importedJob.PropellerStyle.ToString())?.Style1
+                If importedJob?.PropellerMaterial IsNot Nothing Then importedJob.PropellerMaterial = db.Materials.FirstOrDefault(Function(m) m.Material1 = importedJob.PropellerMaterial.ToString())?.Material1
+                If importedJob?.PropellerBlades IsNot Nothing Then importedJob.PropellerBlades = db.Blades.FirstOrDefault(Function(b) b.BladeCount = importedJob.PropellerBlades.ToString())?.BladeCount
+                If importedJob?.PropellerRotation IsNot Nothing Then importedJob.PropellerRotation = db.Rotations.FirstOrDefault(Function(r) r.Rotation1 = importedJob.PropellerRotation.ToString())?.Rotation1
+                If importedJob?.JobDetails(0).PerformedByNavigation IsNot Nothing Then
+                    Dim existingEmployee As Employee = db.Employees.FirstOrDefault(Function(e) e.EmployeeName = importedJob.JobDetails(0).PerformedByNavigation.EmployeeName.ToString())
+                    If existingEmployee IsNot Nothing Then importedJob.JobDetails(0).PerformedByNavigation = existingEmployee
+                End If
+                If Not String.IsNullOrWhiteSpace(importedJob.JobDetails(0).Description) Then
+                    Dim measurement As MeasurementType = db.MeasurementTypes.Local.FirstOrDefault(Function(mt) mt.MeasurementType1 = importedJob.JobDetails(0).Description.ToString())
+                    If measurement IsNot Nothing Then importedJob.JobDetails(0).MeasurementType = measurement
+                End If
+                db.Jobs.Add(importedJob)
+                db.SaveChanges()
+                result = importedJob
+            Else
+                If importedJob.JobDetails?.Count > 0 Then
+                    existingJob.JobDetails.Add(importedJob.JobDetails(0))
+                    db.SaveChanges()
+                End If
+                result = existingJob
+            End If
+        End If
         Return result
     End Function
 
@@ -325,31 +351,31 @@ Public Module Imex
     Private Sub GetCustomer(db As HaleMRIContext, ByRef newCustomer As Customer)
         Dim customerName As String = newCustomer.CustomerName
         If String.IsNullOrWhiteSpace(newCustomer.CustomerName) Then newCustomer.CustomerName = $"(New Customer {db.Customers.Count + 1})"
-        newCustomer = If(db.Customers.FirstOrDefault(Function(c) c.CustomerName = customerName.ToString()), newCustomer)
+        newCustomer = If(db.Customers.Local.FirstOrDefault(Function(c) c.CustomerName = customerName.ToString()), newCustomer)
     End Sub
 
     Private Function GetEmployee(db As HaleMRIContext, ByVal item As Employee) As Employee
         Return If(Not String.IsNullOrWhiteSpace(item.EmployeeName),
-            If(db.Employees.FirstOrDefault(Function(e) e.EmployeeName = item.EmployeeName.ToString()), item),
+            If(db.Employees.Local.FirstOrDefault(Function(e) e.EmployeeName = item.EmployeeName.ToString()), item),
             Nothing)
     End Function
 
     Private Function GetManufacturer(db As HaleMRIContext, ByVal item As Manufacturer) As Manufacturer
         Return If(Not String.IsNullOrWhiteSpace(item.ManufacturerName),
-            If(db.Manufacturers.FirstOrDefault(Function(m) m.ManufacturerName = item.ManufacturerName.ToString()), item),
+            If(db.Manufacturers.Local.FirstOrDefault(Function(m) m.ManufacturerName = item.ManufacturerName.ToString()), item),
             Nothing)
     End Function
 
     Private Function GetMeasurementType(db As HaleMRIContext, ByVal item As MeasurementType) As MeasurementType
         Return If(Not String.IsNullOrWhiteSpace(item.MeasurementType1),
-            If(db.MeasurementTypes.FirstOrDefault(Function(m) m.MeasurementType1 = item.MeasurementType1.ToString()), item),
+            If(db.MeasurementTypes.Local.FirstOrDefault(Function(m) m.MeasurementType1 = item.MeasurementType1.ToString()), item),
             Nothing)
     End Function
 
     Private Function VesselExists(db As HaleMRIContext, ByRef newVessel As Vessel) As Boolean
         Dim vesselName As String = newVessel.VesselName
         If String.IsNullOrWhiteSpace(newVessel.VesselName) Then newVessel.VesselName = $"(New Vessel {db.Vessels.Count + 1})"
-        Dim existingVessel As Vessel = db.Vessels.FirstOrDefault(Function(v) v.VesselName = vesselName.ToString())
+        Dim existingVessel As Vessel = db.Vessels.Local.FirstOrDefault(Function(v) v.VesselName = vesselName.ToString())
         newVessel = If(existingVessel, newVessel)
         Return newVessel Is existingVessel
     End Function
@@ -410,12 +436,12 @@ SkipLine:
         Dim v As Vessel = Nothing
         Dim j As Job = Nothing
         Dim tempD As Double
-        On Error Resume Next
+        'On Error Resume Next
         Do While Not istream.EndOfStream
             line = TrimReplace(regex, istream.ReadLine())
             If String.IsNullOrWhiteSpace(line) Then
                 ' If the line is empty, skip it.
-                skipped += 1
+                'skipped += 1
                 GoTo Skip_Line
             End If
             Select Case lineId
@@ -507,6 +533,7 @@ SkipLine:
                     radii.Value = line
                 Case ScanDataLineId.idBladeCount + radii.LineCount + 1 To lineCount - j.PropellerBlades - skipped + 1
                     ' Read cell measurements
+                    If lineId = ScanDataLineId.idBladeCount + radii.LineCount + 1 Then cells.BladeCells = radii.BladeCells
                     cells.Value = line
                 Case Is > lineCount - j.PropellerBlades - skipped + 1
                     If line = kMRIEndOfFile Then
@@ -541,24 +568,25 @@ Skip_Line:
 
     Private Sub SaveCellMeasurements(ByRef j As Job, ByVal cells As Cell)
         ' Saves cell measurements into Job.JobDetails.CellMeasurement
-        For Each cm As CellMeasurement In cells.Measurements
-            j.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
-            .Angle = cm.Angle,
-            .Depth = cm.Depth
-            })
-        Next
+        'For Each cm As CellMeasurement In cells.Measurements
+        '    j.JobDetails(0).CellMeasurements.Add(New Models.CellMeasurement With {
+        '        .BladeId = cm.BladeID,
+        '        .Angle = cm.Angle,
+        '        .Depth = cm.Depth
+        '    })
+        'Next
     End Sub
 
     Private Sub SaveExtremeMeasurements(ByRef j As Job, ByVal extremes As Extremes)
         ' Saves extreme measurements into Job.JobDetails.ExtremeMeasurement
-        Dim b As Integer = 1
-        For Each em As Double In extremes.Measurements
-            j.JobDetails(0).ExtremeMeasurements.Add(New Models.ExtremeMeasurement With {
-            .BladeId = b,
-            .Extreme = em
-            })
-            b += 1
-        Next
+        'Dim b As Integer = 1
+        'For Each em As Double In extremes.Measurements
+        '    j.JobDetails(0).ExtremeMeasurements.Add(New Models.ExtremeMeasurement With {
+        '    .BladeId = b,
+        '    .Extreme = em
+        '    })
+        '    b += 1
+        'Next
     End Sub
 
     Private Sub SaveRadiusMeasurements(ByRef j As Job, ByVal radii As Radius)
@@ -577,7 +605,7 @@ Skip_Line:
                 m = 0
                 b += 1
             End If
-            b += 1
+            'b += 1
         Next
     End Sub
 

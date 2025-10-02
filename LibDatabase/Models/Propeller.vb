@@ -16,7 +16,7 @@ Namespace Models
 
         Public Property Material As String
 
-        Public Property Blades As Short?
+        Public Property Blades As Short
 
         Public Property Diameter As Double?
 

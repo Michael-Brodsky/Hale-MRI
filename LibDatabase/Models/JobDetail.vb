@@ -22,10 +22,6 @@ Namespace Models
 
         Public Property MeasurementTypeId As Integer?
 
-        Public Overridable Property CellMeasurements As ICollection(Of CellMeasurement) = New List(Of CellMeasurement)()
-
-        Public Overridable Property ExtremeMeasurements As ICollection(Of ExtremeMeasurement) = New List(Of ExtremeMeasurement)()
-
         Public Overridable Property Job As Job
 
         Public Overridable Property MeasurementType As MeasurementType

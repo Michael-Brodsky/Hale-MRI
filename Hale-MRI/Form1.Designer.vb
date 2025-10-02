@@ -23,20 +23,18 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
-        CellMeasurementsBindingSource = New BindingSource(components)
-        ExtremeMeasurementsBindingSource = New BindingSource(components)
-        RadiusMeasurementBindingSource = New BindingSource(components)
         DataGridJobDetails = New DataGridView()
-        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        DescriptionDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
+        StartDate = New DataGridViewTextBoxColumn()
+        MeasurementTypeDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
         MeasurementTypesBindingSource = New BindingSource(components)
         ToleranceClassDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
         ClassBindingSource = New BindingSource(components)
-        PerformedByDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
+        PerformedBy = New DataGridViewComboBoxColumn()
         EmployeesBindingSource = New BindingSource(components)
         Description = New DataGridViewTextBoxColumn()
         TxtJobNumber = New TextBox()
@@ -51,33 +49,9 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         PanelMeasurements = New Panel()
-        CmdNext = New Button()
-        LabBladeRadius = New Label()
-        DataGridBladeRadius = New DataGridView()
-        BladeId = New DataGridViewTextBoxColumn()
-        AvgRadius = New DataGridViewTextBoxColumn()
-        BladeRadiusBindingSource = New BindingSource(components)
-        CmdUndoMeasurement = New Button()
-        CmdSaveMeasurement = New Button()
-        LabWheelPitch = New Label()
-        TxtWheelPitch = New TextBox()
-        CmdHomeEncoders = New Button()
-        LabBlade = New Label()
-        ComboBlade = New ComboBox()
-        LabRadiusPercent = New Label()
-        TxtRadiusPercent = New TextBox()
-        ChkAutoScan = New CheckBox()
-        LabDepth = New Label()
-        TxtDepth = New TextBox()
-        LabRadius = New Label()
-        TxtRadius = New TextBox()
-        LabAngle = New Label()
-        TxtAngle = New TextBox()
+        GridBladebyRadius = New DataGridView()
         PictureBoxLogo = New PictureBox()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ClassBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -85,8 +59,7 @@ Partial Class Form1
         PanelJob.SuspendLayout()
         TableLayoutPanel1.SuspendLayout()
         PanelMeasurements.SuspendLayout()
-        CType(DataGridBladeRadius, ComponentModel.ISupportInitialize).BeginInit()
-        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(GridBladebyRadius, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -121,18 +94,6 @@ Partial Class Form1
         ' 
         JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
         ' 
-        ' CellMeasurementsBindingSource
-        ' 
-        CellMeasurementsBindingSource.DataSource = GetType(LibDatabase.Models.CellMeasurement)
-        ' 
-        ' ExtremeMeasurementsBindingSource
-        ' 
-        ExtremeMeasurementsBindingSource.DataSource = GetType(LibDatabase.Models.ExtremeMeasurement)
-        ' 
-        ' RadiusMeasurementBindingSource
-        ' 
-        RadiusMeasurementBindingSource.DataSource = GetType(LibDatabase.Models.RadiusMeasurement)
-        ' 
         ' DataGridJobDetails
         ' 
         DataGridJobDetails.AllowUserToAddRows = False
@@ -140,7 +101,7 @@ Partial Class Form1
         DataGridJobDetails.AutoGenerateColumns = False
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedByDataGridViewTextBoxColumn, Description})
+        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDate, MeasurementTypeDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedBy, Description})
         DataGridJobDetails.DataSource = JobDetailsBindingSource
         DataGridJobDetails.Location = New Point(522, 48)
         DataGridJobDetails.Name = "DataGridJobDetails"
@@ -148,24 +109,26 @@ Partial Class Form1
         DataGridJobDetails.Size = New Size(635, 50)
         DataGridJobDetails.TabIndex = 4
         ' 
-        ' StartDateDataGridViewTextBoxColumn
+        ' StartDate
         ' 
-        StartDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate"
-        StartDateDataGridViewTextBoxColumn.HeaderText = "Date"
-        StartDateDataGridViewTextBoxColumn.MinimumWidth = 152
-        StartDateDataGridViewTextBoxColumn.Name = "StartDateDataGridViewTextBoxColumn"
-        StartDateDataGridViewTextBoxColumn.Width = 152
+        StartDate.DataPropertyName = "StartDate"
+        StartDate.HeaderText = "Start Date"
+        StartDate.MinimumWidth = 120
+        StartDate.Name = "StartDate"
+        StartDate.Width = 120
         ' 
-        ' DescriptionDataGridViewTextBoxColumn
+        ' MeasurementTypeDataGridViewTextBoxColumn
         ' 
-        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "MeasurementTypeId"
-        DescriptionDataGridViewTextBoxColumn.DataSource = MeasurementTypesBindingSource
-        DescriptionDataGridViewTextBoxColumn.DisplayMember = "MeasurementType1"
-        DescriptionDataGridViewTextBoxColumn.HeaderText = "Measurement"
-        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
-        DescriptionDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
-        DescriptionDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
-        DescriptionDataGridViewTextBoxColumn.ValueMember = "Id"
+        MeasurementTypeDataGridViewTextBoxColumn.DataPropertyName = "MeasurementTypeId"
+        MeasurementTypeDataGridViewTextBoxColumn.DataSource = MeasurementTypesBindingSource
+        MeasurementTypeDataGridViewTextBoxColumn.DisplayMember = "MeasurementType1"
+        MeasurementTypeDataGridViewTextBoxColumn.HeaderText = "Measurement"
+        MeasurementTypeDataGridViewTextBoxColumn.MinimumWidth = 90
+        MeasurementTypeDataGridViewTextBoxColumn.Name = "MeasurementTypeDataGridViewTextBoxColumn"
+        MeasurementTypeDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
+        MeasurementTypeDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
+        MeasurementTypeDataGridViewTextBoxColumn.ValueMember = "Id"
+        MeasurementTypeDataGridViewTextBoxColumn.Width = 90
         ' 
         ' MeasurementTypesBindingSource
         ' 
@@ -177,29 +140,29 @@ Partial Class Form1
         ToleranceClassDataGridViewTextBoxColumn.DataSource = ClassBindingSource
         ToleranceClassDataGridViewTextBoxColumn.DisplayMember = "ToleranceClass"
         ToleranceClassDataGridViewTextBoxColumn.HeaderText = "Class"
-        ToleranceClassDataGridViewTextBoxColumn.MinimumWidth = 50
+        ToleranceClassDataGridViewTextBoxColumn.MinimumWidth = 60
         ToleranceClassDataGridViewTextBoxColumn.Name = "ToleranceClassDataGridViewTextBoxColumn"
         ToleranceClassDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         ToleranceClassDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         ToleranceClassDataGridViewTextBoxColumn.ValueMember = "ToleranceClass"
-        ToleranceClassDataGridViewTextBoxColumn.Width = 50
+        ToleranceClassDataGridViewTextBoxColumn.Width = 60
         ' 
         ' ClassBindingSource
         ' 
         ClassBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
         ' 
-        ' PerformedByDataGridViewTextBoxColumn
+        ' PerformedBy
         ' 
-        PerformedByDataGridViewTextBoxColumn.DataPropertyName = "PerformedBy"
-        PerformedByDataGridViewTextBoxColumn.DataSource = EmployeesBindingSource
-        PerformedByDataGridViewTextBoxColumn.DisplayMember = "EmployeeName"
-        PerformedByDataGridViewTextBoxColumn.HeaderText = "Performed By"
-        PerformedByDataGridViewTextBoxColumn.MinimumWidth = 140
-        PerformedByDataGridViewTextBoxColumn.Name = "PerformedByDataGridViewTextBoxColumn"
-        PerformedByDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
-        PerformedByDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
-        PerformedByDataGridViewTextBoxColumn.ValueMember = "Id"
-        PerformedByDataGridViewTextBoxColumn.Width = 140
+        PerformedBy.DataPropertyName = "PerformedBy"
+        PerformedBy.DataSource = EmployeesBindingSource
+        PerformedBy.DisplayMember = "EmployeeName"
+        PerformedBy.HeaderText = "Employee"
+        PerformedBy.MinimumWidth = 130
+        PerformedBy.Name = "PerformedBy"
+        PerformedBy.Resizable = DataGridViewTriState.True
+        PerformedBy.SortMode = DataGridViewColumnSortMode.Automatic
+        PerformedBy.ValueMember = "Id"
+        PerformedBy.Width = 130
         ' 
         ' EmployeesBindingSource
         ' 
@@ -210,9 +173,8 @@ Partial Class Form1
         ' 
         Description.DataPropertyName = "Description"
         Description.HeaderText = "Description"
-        Description.MinimumWidth = 152
         Description.Name = "Description"
-        Description.Width = 152
+        Description.Width = 200
         ' 
         ' TxtJobNumber
         ' 
@@ -356,224 +318,30 @@ Partial Class Form1
         ' PanelMeasurements
         ' 
         PanelMeasurements.BorderStyle = BorderStyle.Fixed3D
-        PanelMeasurements.Controls.Add(CmdNext)
-        PanelMeasurements.Controls.Add(LabBladeRadius)
-        PanelMeasurements.Controls.Add(DataGridBladeRadius)
-        PanelMeasurements.Controls.Add(CmdUndoMeasurement)
-        PanelMeasurements.Controls.Add(CmdSaveMeasurement)
-        PanelMeasurements.Controls.Add(LabWheelPitch)
-        PanelMeasurements.Controls.Add(TxtWheelPitch)
-        PanelMeasurements.Controls.Add(CmdHomeEncoders)
-        PanelMeasurements.Controls.Add(LabBlade)
-        PanelMeasurements.Controls.Add(ComboBlade)
-        PanelMeasurements.Controls.Add(LabRadiusPercent)
-        PanelMeasurements.Controls.Add(TxtRadiusPercent)
-        PanelMeasurements.Controls.Add(ChkAutoScan)
-        PanelMeasurements.Controls.Add(LabDepth)
-        PanelMeasurements.Controls.Add(TxtDepth)
-        PanelMeasurements.Controls.Add(LabRadius)
-        PanelMeasurements.Controls.Add(TxtRadius)
-        PanelMeasurements.Controls.Add(LabAngle)
-        PanelMeasurements.Controls.Add(TxtAngle)
+        PanelMeasurements.Controls.Add(GridBladebyRadius)
         PanelMeasurements.Location = New Point(215, 111)
         PanelMeasurements.Name = "PanelMeasurements"
         PanelMeasurements.Size = New Size(942, 531)
         PanelMeasurements.TabIndex = 8
         ' 
-        ' CmdNext
+        ' GridBladebyRadius
         ' 
-        CmdNext.Image = My.Resources.Resources._Next
-        CmdNext.ImageAlign = ContentAlignment.MiddleRight
-        CmdNext.Location = New Point(620, 31)
-        CmdNext.Name = "CmdNext"
-        CmdNext.Size = New Size(75, 23)
-        CmdNext.TabIndex = 19
-        CmdNext.Text = "Next"
-        CmdNext.TextAlign = ContentAlignment.MiddleLeft
-        CmdNext.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdNext.UseVisualStyleBackColor = True
-        ' 
-        ' LabBladeRadius
-        ' 
-        LabBladeRadius.AutoSize = True
-        LabBladeRadius.Location = New Point(12, 116)
-        LabBladeRadius.Name = "LabBladeRadius"
-        LabBladeRadius.Size = New Size(74, 15)
-        LabBladeRadius.TabIndex = 18
-        LabBladeRadius.Text = "Blade Radius"
-        ' 
-        ' DataGridBladeRadius
-        ' 
-        DataGridBladeRadius.AutoGenerateColumns = False
-        DataGridBladeRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridBladeRadius.Columns.AddRange(New DataGridViewColumn() {BladeId, AvgRadius})
-        DataGridBladeRadius.DataSource = BladeRadiusBindingSource
-        DataGridBladeRadius.Location = New Point(12, 134)
-        DataGridBladeRadius.Name = "DataGridBladeRadius"
-        DataGridBladeRadius.Size = New Size(423, 150)
-        DataGridBladeRadius.TabIndex = 17
-        ' 
-        ' BladeId
-        ' 
-        BladeId.DataPropertyName = "BladeId"
-        BladeId.HeaderText = "Blade"
-        BladeId.MinimumWidth = 60
-        BladeId.Name = "BladeId"
-        BladeId.ReadOnly = True
-        BladeId.Width = 60
-        ' 
-        ' AvgRadius
-        ' 
-        AvgRadius.DataPropertyName = "AvgRadius"
-        AvgRadius.HeaderText = "Radius"
-        AvgRadius.MinimumWidth = 160
-        AvgRadius.Name = "AvgRadius"
-        AvgRadius.Width = 160
-        ' 
-        ' CmdUndoMeasurement
-        ' 
-        CmdUndoMeasurement.Enabled = False
-        CmdUndoMeasurement.Image = My.Resources.Resources.Cancel
-        CmdUndoMeasurement.Location = New Point(895, 31)
-        CmdUndoMeasurement.Name = "CmdUndoMeasurement"
-        CmdUndoMeasurement.Size = New Size(36, 23)
-        CmdUndoMeasurement.TabIndex = 16
-        CmdUndoMeasurement.UseVisualStyleBackColor = True
-        ' 
-        ' CmdSaveMeasurement
-        ' 
-        CmdSaveMeasurement.Enabled = False
-        CmdSaveMeasurement.Image = CType(resources.GetObject("CmdSaveMeasurement.Image"), Image)
-        CmdSaveMeasurement.Location = New Point(853, 31)
-        CmdSaveMeasurement.Name = "CmdSaveMeasurement"
-        CmdSaveMeasurement.Size = New Size(36, 23)
-        CmdSaveMeasurement.TabIndex = 15
-        CmdSaveMeasurement.UseVisualStyleBackColor = True
-        ' 
-        ' LabWheelPitch
-        ' 
-        LabWheelPitch.AutoSize = True
-        LabWheelPitch.Location = New Point(441, 62)
-        LabWheelPitch.Name = "LabWheelPitch"
-        LabWheelPitch.Size = New Size(70, 15)
-        LabWheelPitch.TabIndex = 13
-        LabWheelPitch.Text = "Wheel Pitch"
-        ' 
-        ' TxtWheelPitch
-        ' 
-        TxtWheelPitch.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "WheelPitch", True))
-        TxtWheelPitch.Location = New Point(441, 80)
-        TxtWheelPitch.Name = "TxtWheelPitch"
-        TxtWheelPitch.Size = New Size(173, 23)
-        TxtWheelPitch.TabIndex = 12
-        ' 
-        ' CmdHomeEncoders
-        ' 
-        CmdHomeEncoders.Image = My.Resources.Resources.Home
-        CmdHomeEncoders.ImageAlign = ContentAlignment.MiddleRight
-        CmdHomeEncoders.Location = New Point(776, 31)
-        CmdHomeEncoders.Name = "CmdHomeEncoders"
-        CmdHomeEncoders.Size = New Size(71, 23)
-        CmdHomeEncoders.TabIndex = 11
-        CmdHomeEncoders.Text = "Home"
-        CmdHomeEncoders.TextAlign = ContentAlignment.MiddleLeft
-        CmdHomeEncoders.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdHomeEncoders.UseVisualStyleBackColor = True
-        ' 
-        ' LabBlade
-        ' 
-        LabBlade.AutoSize = True
-        LabBlade.Location = New Point(12, 12)
-        LabBlade.Name = "LabBlade"
-        LabBlade.Size = New Size(36, 15)
-        LabBlade.TabIndex = 10
-        LabBlade.Text = "Blade"
-        ' 
-        ' ComboBlade
-        ' 
-        ComboBlade.FormattingEnabled = True
-        ComboBlade.Location = New Point(12, 31)
-        ComboBlade.Name = "ComboBlade"
-        ComboBlade.Size = New Size(65, 23)
-        ComboBlade.TabIndex = 9
-        ' 
-        ' LabRadiusPercent
-        ' 
-        LabRadiusPercent.AutoSize = True
-        LabRadiusPercent.Location = New Point(262, 62)
-        LabRadiusPercent.Name = "LabRadiusPercent"
-        LabRadiusPercent.Size = New Size(85, 15)
-        LabRadiusPercent.TabIndex = 8
-        LabRadiusPercent.Text = "Radius Percent"
-        ' 
-        ' TxtRadiusPercent
-        ' 
-        TxtRadiusPercent.Location = New Point(262, 80)
-        TxtRadiusPercent.Name = "TxtRadiusPercent"
-        TxtRadiusPercent.Size = New Size(173, 23)
-        TxtRadiusPercent.TabIndex = 7
-        ' 
-        ' ChkAutoScan
-        ' 
-        ChkAutoScan.Appearance = Appearance.Button
-        ChkAutoScan.Image = My.Resources.Resources.Timer
-        ChkAutoScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkAutoScan.Location = New Point(700, 31)
-        ChkAutoScan.Margin = New Padding(2, 1, 2, 1)
-        ChkAutoScan.Name = "ChkAutoScan"
-        ChkAutoScan.Size = New Size(71, 23)
-        ChkAutoScan.TabIndex = 6
-        ChkAutoScan.Text = "Start"
-        ChkAutoScan.TextImageRelation = TextImageRelation.ImageBeforeText
-        ChkAutoScan.UseVisualStyleBackColor = True
-        ' 
-        ' LabDepth
-        ' 
-        LabDepth.AutoSize = True
-        LabDepth.Location = New Point(441, 12)
-        LabDepth.Name = "LabDepth"
-        LabDepth.Size = New Size(39, 15)
-        LabDepth.TabIndex = 5
-        LabDepth.Text = "Depth"
-        ' 
-        ' TxtDepth
-        ' 
-        TxtDepth.Location = New Point(441, 30)
-        TxtDepth.Name = "TxtDepth"
-        TxtDepth.Size = New Size(173, 23)
-        TxtDepth.TabIndex = 4
-        ' 
-        ' LabRadius
-        ' 
-        LabRadius.AutoSize = True
-        LabRadius.Location = New Point(262, 12)
-        LabRadius.Name = "LabRadius"
-        LabRadius.Size = New Size(42, 15)
-        LabRadius.TabIndex = 3
-        LabRadius.Text = "Radius"
-        ' 
-        ' TxtRadius
-        ' 
-        TxtRadius.Location = New Point(262, 30)
-        TxtRadius.Name = "TxtRadius"
-        TxtRadius.Size = New Size(173, 23)
-        TxtRadius.TabIndex = 2
-        ' 
-        ' LabAngle
-        ' 
-        LabAngle.AutoSize = True
-        LabAngle.Location = New Point(83, 12)
-        LabAngle.Name = "LabAngle"
-        LabAngle.Size = New Size(38, 15)
-        LabAngle.TabIndex = 1
-        LabAngle.Text = "Angle"
-        ' 
-        ' TxtAngle
-        ' 
-        TxtAngle.Location = New Point(83, 30)
-        TxtAngle.Name = "TxtAngle"
-        TxtAngle.Size = New Size(173, 23)
-        TxtAngle.TabIndex = 0
+        GridBladebyRadius.AllowUserToAddRows = False
+        GridBladebyRadius.AllowUserToDeleteRows = False
+        GridBladebyRadius.AllowUserToOrderColumns = True
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        GridBladebyRadius.Location = New Point(14, 232)
+        GridBladebyRadius.Name = "GridBladebyRadius"
+        GridBladebyRadius.Size = New Size(576, 181)
+        GridBladebyRadius.TabIndex = 0
         ' 
         ' PictureBoxLogo
         ' 
@@ -601,9 +369,6 @@ Partial Class Form1
         Name = "Form1"
         Text = "Measurements"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(CellMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(ExtremeMeasurementsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(RadiusMeasurementBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ClassBindingSource, ComponentModel.ISupportInitialize).EndInit()
@@ -613,9 +378,7 @@ Partial Class Form1
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
         PanelMeasurements.ResumeLayout(False)
-        PanelMeasurements.PerformLayout()
-        CType(DataGridBladeRadius, ComponentModel.ISupportInitialize).EndInit()
-        CType(BladeRadiusBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(GridBladebyRadius, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -624,9 +387,6 @@ Partial Class Form1
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
     Friend WithEvents EncoderStatusStrip1 As EncoderStatusStrip
     Friend WithEvents JobDetailsBindingSource As BindingSource
-    Friend WithEvents CellMeasurementsBindingSource As BindingSource
-    Friend WithEvents ExtremeMeasurementsBindingSource As BindingSource
-    Friend WithEvents RadiusMeasurementBindingSource As BindingSource
     Friend WithEvents DataGridJobDetails As DataGridView
     Friend WithEvents EmployeesBindingSource As BindingSource
     Friend WithEvents ClassBindingSource As BindingSource
@@ -642,33 +402,12 @@ Partial Class Form1
     Friend WithEvents TxtBore As TextBox
     Friend WithEvents TxtCustomer As TextBox
     Friend WithEvents PanelMeasurements As Panel
-    Friend WithEvents LabDepth As Label
-    Friend WithEvents TxtDepth As TextBox
-    Friend WithEvents LabRadius As Label
-    Friend WithEvents TxtRadius As TextBox
-    Friend WithEvents LabAngle As Label
-    Friend WithEvents TxtAngle As TextBox
-    Friend WithEvents ChkAutoScan As CheckBox
-    Friend WithEvents LabRadiusPercent As Label
-    Friend WithEvents TxtRadiusPercent As TextBox
     Friend WithEvents PictureBoxLogo As PictureBox
     Friend WithEvents MeasurementTypesBindingSource As BindingSource
-    Friend WithEvents LabBlade As Label
-    Friend WithEvents ComboBlade As ComboBox
-    Friend WithEvents CmdHomeEncoders As Button
-    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents StartDate As DataGridViewTextBoxColumn
+    Friend WithEvents MeasurementTypeDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
     Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents PerformedByDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
     Friend WithEvents Description As DataGridViewTextBoxColumn
-    Friend WithEvents LabWheelPitch As Label
-    Friend WithEvents TxtWheelPitch As TextBox
-    Friend WithEvents CmdUndoMeasurement As Button
-    Friend WithEvents CmdSaveMeasurement As Button
-    Friend WithEvents DataGridBladeRadius As DataGridView
-    Friend WithEvents LabBladeRadius As Label
-    Friend WithEvents BladeRadiusBindingSource As BindingSource
-    Friend WithEvents BladeId As DataGridViewTextBoxColumn
-    Friend WithEvents AvgRadius As DataGridViewTextBoxColumn
-    Friend WithEvents CmdNext As Button
+    Friend WithEvents GridBladebyRadius As DataGridView
 End Class

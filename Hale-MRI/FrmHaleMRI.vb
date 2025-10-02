@@ -11,11 +11,10 @@ Public Class FrmHaleMRI
     Private mFrmCalibration As FrmCalibration
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobDetails As FrmJobDetails
-    'Private mFrmJobs As Form1
     Private mFrmJobs As FrmJobs
-    'Private mFrmOne As Form1
     Private mFrmManufacturers As FrmManufacturers
     Private mFrmMeasurements As FrmMeasurements
+    'Private mFrmMeasurements As Form1
     Private mFrmReports As FrmReports
     Private mFrmPropellers As FrmPropellers
     Private mFrmSettings As FrmSettings
@@ -157,12 +156,13 @@ Public Class FrmHaleMRI
             mDatabase.Vessels.Load()
             mDatabase.Jobs.Load()
             mDatabase.JobDetails.Load()
-            mDatabase.Employees.Load()
-            mDatabase.Manufacturers.Load()
+            mDatabase.Employees.OrderBy(Function(emp) emp.EmployeeName).Load()
+            mDatabase.Manufacturers.OrderBy(Function(mfg) mfg.ManufacturerName).Load()
+            mDatabase.MeasurementTypes.Load()
             mDatabase.Propellers.Load()
-            mDatabase.VesselServiceTypes.Load()
-            mDatabase.StateCodes.Load()
-            mDatabase.CountryCodes.Load()
+            mDatabase.VesselServiceTypes.OrderBy(Function(vst) vst.ServiceType).Load()
+            mDatabase.StateCodes.OrderBy(Function(stc) stc.StateName).Load()
+            mDatabase.CountryCodes.OrderBy(Function(ctr) ctr.Country).Load()
             mDatabase.Materials.Load()
             mDatabase.Blades.Load()
             mDatabase.Styles.Load()

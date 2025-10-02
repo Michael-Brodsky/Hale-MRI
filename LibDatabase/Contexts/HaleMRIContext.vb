@@ -43,6 +43,8 @@ Namespace Contexts
 
         Public Overridable Property Propellers As DbSet(Of Propeller)
 
+        Public Overridable Property QryGetPitches As DbSet(Of QryGetPitch)
+
         Public Overridable Property RadiusMeasurements As DbSet(Of RadiusMeasurement)
 
         Public Overridable Property Rotations As DbSet(Of Rotation)
@@ -52,6 +54,8 @@ Namespace Contexts
         Public Overridable Property StateCodes As DbSet(Of StateCode)
 
         Public Overridable Property Styles As DbSet(Of Style)
+
+        Public Overridable Property Table1s As DbSet(Of Table1)
 
         Public Overridable Property Tolerances As DbSet(Of Tolerance)
 
@@ -88,16 +92,17 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.Id, "ID")
 
-                    entity.HasIndex(Function(e) e.JobDetailsId, "Radius ID")
+                    entity.HasIndex(Function(e) e.RadiusMeasurementId, "Radius ID")
 
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
-                    entity.Property(Function(e) e.JobDetailsId).HasColumnName("Job Details ID")
+                    entity.Property(Function(e) e.RadiusMeasurementId).HasColumnName("Radius Measurement ID")
 
-                    entity.HasOne(Function(d) d.JobDetails).WithMany(Function(p) p.CellMeasurements).
-                        HasForeignKey(Function(d) d.JobDetailsId).
-                        HasConstraintName("Job DetailsCell Measurements")
+                    entity.HasOne(Function(d) d.RadiusMeasurement).WithMany(Function(p) p.CellMeasurements).
+                        HasForeignKey(Function(d) d.RadiusMeasurementId).
+                        OnDelete(DeleteBehavior.ClientSetNull).
+                        HasConstraintName("Radius MeasurementsCell Measurements")
                 End Sub)
 
             modelBuilder.Entity(Of CountryCode)(
@@ -201,21 +206,19 @@ Namespace Contexts
 
                     entity.ToTable("Extreme Measurements")
 
-                    entity.HasIndex(Function(e) e.BladeId, "Blade ID")
-
                     entity.HasIndex(Function(e) e.Id, "ID")
 
-                    entity.HasIndex(Function(e) e.JobDetailsId, "Job Details ID")
+                    entity.HasIndex(Function(e) e.RadiusMeasurementId, "Job Details ID")
 
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
-                    entity.Property(Function(e) e.BladeId).HasColumnName("Blade ID")
-                    entity.Property(Function(e) e.JobDetailsId).HasColumnName("Job Details ID")
+                    entity.Property(Function(e) e.RadiusMeasurementId).HasColumnName("Radius Measurement ID")
 
-                    entity.HasOne(Function(d) d.JobDetails).WithMany(Function(p) p.ExtremeMeasurements).
-                        HasForeignKey(Function(d) d.JobDetailsId).
-                        HasConstraintName("Job DetailsExtremeMeasurements")
+                    entity.HasOne(Function(d) d.RadiusMeasurement).WithMany(Function(p) p.ExtremeMeasurements).
+                        HasForeignKey(Function(d) d.RadiusMeasurementId).
+                        OnDelete(DeleteBehavior.ClientSetNull).
+                        HasConstraintName("Radius MeasurementsExtreme Measurements")
                 End Sub)
 
             modelBuilder.Entity(Of Job)(
@@ -295,6 +298,7 @@ Namespace Contexts
 
                     entity.HasOne(Function(d) d.PropellerBladesNavigation).WithMany(Function(p) p.Jobs).
                         HasForeignKey(Function(d) d.PropellerBlades).
+                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("~BladesJobs")
 
                     entity.HasOne(Function(d) d.PropellerManufacturer).WithMany(Function(p) p.Jobs).
@@ -466,6 +470,15 @@ Namespace Contexts
                         HasConstraintName("ManufacturersPropellers")
                 End Sub)
 
+            modelBuilder.Entity(Of QryGetPitch)(
+                Sub(entity)
+                    entity.
+                    HasNoKey().
+                    ToView("qryGetPitch")
+
+                    entity.Property(Function(e) e.BladeId).HasColumnName("Blade ID")
+                End Sub)
+
             modelBuilder.Entity(Of RadiusMeasurement)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
@@ -538,6 +551,7 @@ Namespace Contexts
                         HasMaxLength(16).
                         HasColumnName("Company Phone")
                     entity.Property(Function(e) e.CompanyWebsite).HasMaxLength(255)
+                    entity.Property(Function(e) e.DatabaseMaintenanceSchedule).HasMaxLength(16)
                     entity.Property(Function(e) e.EncoderCalibrationSampleRate).HasColumnName("Encoder Calibration Sample Rate")
                     entity.Property(Function(e) e.EncoderDataInitialDirectory).
                         HasMaxLength(255).
@@ -575,6 +589,27 @@ Namespace Contexts
                     entity.Property(Function(e) e.Style1).
                         HasMaxLength(16).
                         HasColumnName("Style")
+                End Sub)
+
+            modelBuilder.Entity(Of Table1)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.ToTable("Table1")
+
+                    entity.HasIndex(Function(e) e.BladeId, "Blade ID")
+
+                    entity.HasIndex(Function(e) e.Id, "ID").IsUnique()
+
+                    entity.HasIndex(Function(e) e.JobDetailsId, "Job Details ID")
+
+                    entity.Property(Function(e) e.Id).
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.BladeId).
+                        HasDefaultValue(0S).
+                        HasColumnName("Blade ID")
+                    entity.Property(Function(e) e.JobDetailsId).HasColumnName("Job Details ID")
                 End Sub)
 
             modelBuilder.Entity(Of Tolerance)(

@@ -28,6 +28,7 @@ Public Class MovingAverage
         mWindow(N) = value
         N = (N + 1) Mod Size
     End Sub
+
     Public Function Output() As Double
         ' Returns the current moving average.
         Return Total / Size
@@ -44,6 +45,7 @@ Public Class MovingAverage
             Return mWindow.Length
         End Get
         Set(value As UShort)
+            ' Specifies the filter window (data buffer) size in elements (Min = 1, Max = USHORT_MAX - 1).
             ReDim mWindow(value - 1)    ' Initialize the data buffer.
             Total = 0                   ' Clear the cumulative sum.
             N = 0                       ' Reset the tail pointer.

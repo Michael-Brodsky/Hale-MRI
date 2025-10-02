@@ -44,7 +44,7 @@ Namespace Models
 
         Public Property PropellerMaterial As String
 
-        Public Property PropellerBlades As Short?
+        Public Property PropellerBlades As Short
 
         Public Property PropellerDiameter As Double?
 
