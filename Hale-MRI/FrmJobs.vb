@@ -3,7 +3,6 @@ Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 
 Public Class FrmJobs
     Inherits FrmDatabaseForm
@@ -21,8 +20,8 @@ Public Class FrmJobs
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmCustomers As FrmCustomers
     Private mFrmVessels As FrmVessels
-    'Private mFrmMeasurements As Form1
-    Private mFrmMeasurements As FrmMeasurements
+    Private mFrmMeasurements As Form1
+    'Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
     Public ReadOnly Property Current
@@ -183,6 +182,10 @@ Public Class FrmJobs
             If value Then
                 JobsBindingSource.ResumeBinding()
                 DataGridJobDetails.DataSource = JobDetailsBindingSource
+                ' If the no job was selected and user selects the first job in list,
+                ' binding source position wont change and the navigator won't
+                ' enable its controls. So we help along a bit here.
+                Navigator.Refresh()
             Else
                 JobsBindingSource.SuspendBinding()
                 DataGridJobDetails.DataSource = Nothing
@@ -223,11 +226,11 @@ Public Class FrmJobs
             MessageBox.Show("No job was created from the scan data file because it is corrupted or missing required data.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Error)
             Exit Sub
         End If
-        ' ScanDataAdd will add the imported Job to the Jobs table and generate a unique JobNumber.
-        importedJob = ScanDataAdd(importedJob, Database)
-        ' We need to refresh the Employees list in case a new employee was added.
+        ' Add the Job created from the imported scan data to the database.
+        importedJob = ScanDataAdd(Database, importedJob)
+        ' We need to refresh the EmployeesBindingSource in case a new employee was added.
         EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
-        ' Clear the form filters and show the imported job.
+        ' Clear the form filters and show the imported Job.
         If FilterOn Then
             FilterOn = False
         Else
@@ -415,29 +418,27 @@ Public Class FrmJobs
             DataGridJobDetails.AutoGenerateColumns = False
             DataGridJobDetails.DataSource = Nothing
             Navigator = RecordNavigationBar1
-            'Navigator.Caption = ""
-            'Navigator.Left = DataGridJobDetails.Left - Navigator.Margin.Left
             ' These are the controls bound to the JobsBindingSource that the Navigator will enable automatically
             ' and notify us when any changes are made.
             Navigator.BoundControls = New List(Of Control) From {
-            ComboManufacturer,
-            TxtPartNumber,
-            ComboStyle,
-            ComboMaterial,
-            ComboRotation,
-            ComboBlades,
-            TxtBore,
-            TxtDiameter,
-            TxtSerialNumber,
-            TxtStampNumber,
-            TxtMarkedPitch,
-            TxtDesiredPitch,
-            ComboLEExclusion,
-            ComboTeExclusion,
-            ComboCup,
-            ComboInspectedBy,
-            TxtDAR
-        }
+                ComboManufacturer,
+                TxtPartNumber,
+                ComboStyle,
+                ComboMaterial,
+                ComboRotation,
+                ComboBlades,
+                TxtBore,
+                TxtDiameter,
+                TxtSerialNumber,
+                TxtStampNumber,
+                TxtMarkedPitch,
+                TxtDesiredPitch,
+                ComboLEExclusion,
+                ComboTeExclusion,
+                ComboCup,
+                ComboInspectedBy,
+                TxtDAR
+            }
             Navigator.Database = Database
             Navigator.MasterSource = JobsBindingSource  ' The Navigator manages the Job records and notifies us when changes occur.
             JobSelected = False                         ' Nothing is initially selected when this form loads.

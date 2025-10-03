@@ -88,14 +88,6 @@ Public Class Form1
         End Set
     End Property
 
-    Private Sub BladeRadiusUpdate()
-
-    End Sub
-
-    Private Sub CreateNewMeasurement()
-
-    End Sub
-
     Private Function CreateNewJobDetail() As JobDetail
         Return New JobDetail With {
             .Job = mJob,
@@ -117,11 +109,54 @@ Public Class Form1
     End Sub
 
     Private Sub MeasurementsGet()
-        ' Poll the encoders and display the returned measurement values.
-        ' Once you have the values you want, reference the values displayed 
-        ' in the TextBoxes. Do not make further calls to encoder methods,
-        ' as this will take another measurement, which may differ from the
-        ' one displayed.
+        ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
+        ' values as required.
+        With EncoderStatusStrip1
+            Dim angle As Double = .Angle()
+            Dim depth As Double = .Depth()
+            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
+            TxtBlade.Text = blade
+            TxtAngle.Text = angle.ToString()
+            TxtRadius.Text = radius.Value.ToString()
+            TxtDepth.Text = depth.ToString()
+            TxtRadiusPercent.Text = (radius.Value * 100).ToString()
+            'MeasurementsSave(angle, depth, radius)
+        End With
+    End Sub
+
+    Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
+        ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
+        mRadiusPercent.Input(radius.Value)
+        Dim cm As New CellMeasurement With {
+            .RadiusMeasurement = mRadiusMeasurement,
+            .Angle = angle,
+            .Depth = depth
+        }
+        Database.CellMeasurements.Add(cm)
+    End Sub
+
+    Private Sub NewRadiusMeasurement()
+        ' RadiusMeasurement is now parent (PK) of Cell and ExtremeMeasurements
+        ' (FK). Clear the previous moving average and create a new
+        ' RadiusMeasurement with .Radius = 0, which will be updated at
+        ' the end of the scan.
+        mRadiusPercent.Clear()
+        mRadiusMeasurement = New RadiusMeasurement With {
+            .JobDetails = Me.JobDetails,
+            .Radius = 0.0,
+            .LeCell = 0,
+            .TeCell = 0
+        }
+        Database.RadiusMeasurements.Add(mRadiusMeasurement)
+    End Sub
+
+    Private Sub SaveRadiusMeasurement()
+        ' Update and save the current RadiusMeasurement with the moving average
+        ' we collected while scanning.
+        mRadiusMeasurement.Radius = mRadiusPercent.Output()
+        mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
+        ShowBladePitchByRadiusPercent(True)
     End Sub
 
     Private Property Navigator As RecordNavigationBar
@@ -259,5 +294,31 @@ Public Class Form1
         Dim newJobDetail As JobDetail = CreateNewJobDetail()
         e.NewObject = newJobDetail
         Database.JobDetails.Add(newJobDetail)
+    End Sub
+
+    Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
+        Try
+            EncoderStatusStrip1.TimerOn = ChkScan.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
+            CmdHome.Enabled = Not ChkScan.Checked
+            If ChkScan.Checked Then
+                NewRadiusMeasurement()
+            Else
+                SaveRadiusMeasurement()
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+        End Try
+    End Sub
+
+    Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles CmdHome.Click
+
+    End Sub
+
+    Private Sub CmdSetTip_Click(sender As Object, e As EventArgs) Handles CmdSetTip.Click
+
+    End Sub
+
+    Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles CmdZero.Click
+
     End Sub
 End Class

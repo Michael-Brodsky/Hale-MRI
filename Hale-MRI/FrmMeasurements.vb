@@ -534,7 +534,7 @@ Public Class FrmMeasurements
     Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
         ' Displays each blade's average pitch by radius percent in the
         ' data grid. Each distinct blade creates a new row and each
-        ' distinct radius perscent creates a new column.
+        ' distinct radius percent creates a new column.
         Dim dtBladePitchByRadius As New DataTable()
         Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
         Dim rowBlade As DataRow
@@ -640,19 +640,6 @@ Public Class FrmMeasurements
             chkMeasurements.Checked = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-
-    Private Sub GridBladebyRadius_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles GridBladebyRadius.CellMouseDoubleClick
-        'ShowBladePitchByRadiusPercent(True)
-    End Sub
-
-    Private Sub GridBladebyRadius_MouseClick(sender As Object, e As MouseEventArgs) Handles GridBladebyRadius.MouseClick
-        '    If JobDetailsBindingSource.Position < JobDetailsBindingSource.Count - 1 Then
-        '        JobDetailsBindingSource.MoveNext()
-        '    Else
-        '        JobDetailsBindingSource.MoveFirst()
-        '    End If
-        '    ShowBladePitchByRadiusPercent(True)
     End Sub
 #End Region
 End Class

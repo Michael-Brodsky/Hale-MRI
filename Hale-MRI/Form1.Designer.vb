@@ -23,7 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
@@ -49,8 +49,27 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         PanelMeasurements = New Panel()
+        LabAngle = New Label()
+        LabWheelPitch = New Label()
+        LabRadiusPercent = New Label()
+        LabOffsetToHub = New Label()
+        LabDepth = New Label()
+        LabRadius = New Label()
+        LabBlade = New Label()
+        TxtWheelPitch = New TextBox()
+        TxtRadiusPercent = New TextBox()
+        ComboOffsetToHub = New ComboBox()
+        TxtBlade = New TextBox()
+        TxtRadius = New TextBox()
+        TxtDepth = New TextBox()
+        TxtAngle = New TextBox()
         GridBladebyRadius = New DataGridView()
         PictureBoxLogo = New PictureBox()
+        ChkScan = New CheckBox()
+        Label1 = New Label()
+        CmdHome = New Button()
+        CmdSetTip = New Button()
+        CmdZero = New Button()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -318,27 +337,159 @@ Partial Class Form1
         ' PanelMeasurements
         ' 
         PanelMeasurements.BorderStyle = BorderStyle.Fixed3D
+        PanelMeasurements.Controls.Add(CmdZero)
+        PanelMeasurements.Controls.Add(CmdSetTip)
+        PanelMeasurements.Controls.Add(CmdHome)
+        PanelMeasurements.Controls.Add(Label1)
+        PanelMeasurements.Controls.Add(ChkScan)
+        PanelMeasurements.Controls.Add(LabAngle)
+        PanelMeasurements.Controls.Add(LabWheelPitch)
+        PanelMeasurements.Controls.Add(LabRadiusPercent)
+        PanelMeasurements.Controls.Add(LabOffsetToHub)
+        PanelMeasurements.Controls.Add(LabDepth)
+        PanelMeasurements.Controls.Add(LabRadius)
+        PanelMeasurements.Controls.Add(LabBlade)
+        PanelMeasurements.Controls.Add(TxtWheelPitch)
+        PanelMeasurements.Controls.Add(TxtRadiusPercent)
+        PanelMeasurements.Controls.Add(ComboOffsetToHub)
+        PanelMeasurements.Controls.Add(TxtBlade)
+        PanelMeasurements.Controls.Add(TxtRadius)
+        PanelMeasurements.Controls.Add(TxtDepth)
+        PanelMeasurements.Controls.Add(TxtAngle)
         PanelMeasurements.Controls.Add(GridBladebyRadius)
         PanelMeasurements.Location = New Point(215, 111)
         PanelMeasurements.Name = "PanelMeasurements"
         PanelMeasurements.Size = New Size(942, 531)
         PanelMeasurements.TabIndex = 8
         ' 
+        ' LabAngle
+        ' 
+        LabAngle.AutoSize = True
+        LabAngle.Location = New Point(14, 12)
+        LabAngle.Name = "LabAngle"
+        LabAngle.Size = New Size(38, 15)
+        LabAngle.TabIndex = 16
+        LabAngle.Text = "Angle"
+        ' 
+        ' LabWheelPitch
+        ' 
+        LabWheelPitch.AutoSize = True
+        LabWheelPitch.Location = New Point(429, 83)
+        LabWheelPitch.Name = "LabWheelPitch"
+        LabWheelPitch.Size = New Size(70, 15)
+        LabWheelPitch.TabIndex = 15
+        LabWheelPitch.Text = "Wheel Pitch"
+        ' 
+        ' LabRadiusPercent
+        ' 
+        LabRadiusPercent.AutoSize = True
+        LabRadiusPercent.Location = New Point(262, 83)
+        LabRadiusPercent.Name = "LabRadiusPercent"
+        LabRadiusPercent.Size = New Size(85, 15)
+        LabRadiusPercent.TabIndex = 14
+        LabRadiusPercent.Text = "Radius Percent"
+        ' 
+        ' LabOffsetToHub
+        ' 
+        LabOffsetToHub.AutoSize = True
+        LabOffsetToHub.Location = New Point(14, 83)
+        LabOffsetToHub.Name = "LabOffsetToHub"
+        LabOffsetToHub.Size = New Size(81, 15)
+        LabOffsetToHub.TabIndex = 13
+        LabOffsetToHub.Text = "Offset To Hub"
+        ' 
+        ' LabDepth
+        ' 
+        LabDepth.AutoSize = True
+        LabDepth.Location = New Point(429, 12)
+        LabDepth.Name = "LabDepth"
+        LabDepth.Size = New Size(39, 15)
+        LabDepth.TabIndex = 12
+        LabDepth.Text = "Depth"
+        ' 
+        ' LabRadius
+        ' 
+        LabRadius.AutoSize = True
+        LabRadius.Location = New Point(262, 12)
+        LabRadius.Name = "LabRadius"
+        LabRadius.Size = New Size(42, 15)
+        LabRadius.TabIndex = 11
+        LabRadius.Text = "Radius"
+        ' 
+        ' LabBlade
+        ' 
+        LabBlade.AutoSize = True
+        LabBlade.Location = New Point(181, 12)
+        LabBlade.Name = "LabBlade"
+        LabBlade.Size = New Size(36, 15)
+        LabBlade.TabIndex = 10
+        LabBlade.Text = "Blade"
+        ' 
+        ' TxtWheelPitch
+        ' 
+        TxtWheelPitch.Location = New Point(429, 101)
+        TxtWheelPitch.Name = "TxtWheelPitch"
+        TxtWheelPitch.Size = New Size(161, 23)
+        TxtWheelPitch.TabIndex = 7
+        ' 
+        ' TxtRadiusPercent
+        ' 
+        TxtRadiusPercent.Location = New Point(262, 101)
+        TxtRadiusPercent.Name = "TxtRadiusPercent"
+        TxtRadiusPercent.Size = New Size(161, 23)
+        TxtRadiusPercent.TabIndex = 6
+        ' 
+        ' ComboOffsetToHub
+        ' 
+        ComboOffsetToHub.FormattingEnabled = True
+        ComboOffsetToHub.Location = New Point(14, 101)
+        ComboOffsetToHub.Name = "ComboOffsetToHub"
+        ComboOffsetToHub.Size = New Size(161, 23)
+        ComboOffsetToHub.TabIndex = 5
+        ' 
+        ' TxtBlade
+        ' 
+        TxtBlade.Location = New Point(181, 30)
+        TxtBlade.Name = "TxtBlade"
+        TxtBlade.Size = New Size(75, 23)
+        TxtBlade.TabIndex = 4
+        ' 
+        ' TxtRadius
+        ' 
+        TxtRadius.Location = New Point(262, 30)
+        TxtRadius.Name = "TxtRadius"
+        TxtRadius.Size = New Size(161, 23)
+        TxtRadius.TabIndex = 3
+        ' 
+        ' TxtDepth
+        ' 
+        TxtDepth.Location = New Point(429, 30)
+        TxtDepth.Name = "TxtDepth"
+        TxtDepth.Size = New Size(161, 23)
+        TxtDepth.TabIndex = 2
+        ' 
+        ' TxtAngle
+        ' 
+        TxtAngle.Location = New Point(14, 30)
+        TxtAngle.Name = "TxtAngle"
+        TxtAngle.Size = New Size(161, 23)
+        TxtAngle.TabIndex = 1
+        ' 
         ' GridBladebyRadius
         ' 
         GridBladebyRadius.AllowUserToAddRows = False
         GridBladebyRadius.AllowUserToDeleteRows = False
         GridBladebyRadius.AllowUserToOrderColumns = True
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle7.BackColor = SystemColors.Control
+        DataGridViewCellStyle7.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle7.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle7.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        GridBladebyRadius.Location = New Point(14, 232)
+        GridBladebyRadius.Location = New Point(14, 248)
         GridBladebyRadius.Name = "GridBladebyRadius"
         GridBladebyRadius.Size = New Size(576, 181)
         GridBladebyRadius.TabIndex = 0
@@ -353,6 +504,67 @@ Partial Class Form1
         PictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
+        ' 
+        ' ChkScan
+        ' 
+        ChkScan.Appearance = Appearance.Button
+        ChkScan.Image = My.Resources.Resources.Timer
+        ChkScan.ImageAlign = ContentAlignment.MiddleRight
+        ChkScan.Location = New Point(262, 166)
+        ChkScan.Name = "ChkScan"
+        ChkScan.Size = New Size(70, 25)
+        ChkScan.TabIndex = 17
+        ChkScan.Text = " Scan"
+        ChkScan.TextImageRelation = TextImageRelation.ImageBeforeText
+        ChkScan.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(14, 230)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(90, 15)
+        Label1.TabIndex = 18
+        Label1.Text = "Avg Blade Pitch"
+        ' 
+        ' CmdHome
+        ' 
+        CmdHome.Image = My.Resources.Resources.Home
+        CmdHome.ImageAlign = ContentAlignment.MiddleRight
+        CmdHome.Location = New Point(368, 166)
+        CmdHome.Name = "CmdHome"
+        CmdHome.Size = New Size(70, 25)
+        CmdHome.TabIndex = 19
+        CmdHome.Text = "Home"
+        CmdHome.TextAlign = ContentAlignment.MiddleLeft
+        CmdHome.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdHome.UseVisualStyleBackColor = True
+        ' 
+        ' CmdSetTip
+        ' 
+        CmdSetTip.Image = My.Resources.Resources.SettingsPanel
+        CmdSetTip.ImageAlign = ContentAlignment.MiddleRight
+        CmdSetTip.Location = New Point(444, 166)
+        CmdSetTip.Name = "CmdSetTip"
+        CmdSetTip.Size = New Size(70, 25)
+        CmdSetTip.TabIndex = 20
+        CmdSetTip.Text = "Set Tip"
+        CmdSetTip.TextAlign = ContentAlignment.MiddleLeft
+        CmdSetTip.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdSetTip.UseVisualStyleBackColor = True
+        ' 
+        ' CmdZero
+        ' 
+        CmdZero.Image = My.Resources.Resources.SendtoBack
+        CmdZero.ImageAlign = ContentAlignment.MiddleRight
+        CmdZero.Location = New Point(520, 166)
+        CmdZero.Name = "CmdZero"
+        CmdZero.Size = New Size(70, 25)
+        CmdZero.TabIndex = 21
+        CmdZero.Text = "Zero"
+        CmdZero.TextAlign = ContentAlignment.MiddleLeft
+        CmdZero.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdZero.UseVisualStyleBackColor = True
         ' 
         ' Form1
         ' 
@@ -378,6 +590,7 @@ Partial Class Form1
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
         PanelMeasurements.ResumeLayout(False)
+        PanelMeasurements.PerformLayout()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
@@ -410,4 +623,23 @@ Partial Class Form1
     Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
     Friend WithEvents Description As DataGridViewTextBoxColumn
     Friend WithEvents GridBladebyRadius As DataGridView
+    Friend WithEvents TxtBlade As TextBox
+    Friend WithEvents TxtRadius As TextBox
+    Friend WithEvents TxtDepth As TextBox
+    Friend WithEvents TxtAngle As TextBox
+    Friend WithEvents TxtRadiusPercent As TextBox
+    Friend WithEvents ComboOffsetToHub As ComboBox
+    Friend WithEvents TxtWheelPitch As TextBox
+    Friend WithEvents LabAngle As Label
+    Friend WithEvents LabWheelPitch As Label
+    Friend WithEvents LabRadiusPercent As Label
+    Friend WithEvents LabOffsetToHub As Label
+    Friend WithEvents LabDepth As Label
+    Friend WithEvents LabRadius As Label
+    Friend WithEvents LabBlade As Label
+    Friend WithEvents ChkScan As CheckBox
+    Friend WithEvents CmdZero As Button
+    Friend WithEvents CmdSetTip As Button
+    Friend WithEvents CmdHome As Button
+    Friend WithEvents Label1 As Label
 End Class

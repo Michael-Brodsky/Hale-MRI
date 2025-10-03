@@ -13,8 +13,8 @@ Public Class FrmHaleMRI
     Private mFrmJobDetails As FrmJobDetails
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmMeasurements As FrmMeasurements
-    'Private mFrmMeasurements As Form1
+    'Private mFrmMeasurements As FrmMeasurements
+    Private mFrmMeasurements As Form1
     Private mFrmReports As FrmReports
     Private mFrmPropellers As FrmPropellers
     Private mFrmSettings As FrmSettings
