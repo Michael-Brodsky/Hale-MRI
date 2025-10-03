@@ -4,17 +4,17 @@ Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibEncoder
-Imports LibEncoder.EncoderHardware
 Imports Microsoft.EntityFrameworkCore
-
 
 Public Class Form1
     Inherits FrmDatabaseForm
 
+    Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of sampes per scan (this will be a database Setting).
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
+    Private mSampleCount As Integer                             ' Number of samples for the current scan.
 
     Public ReadOnly Property Current
         Get
@@ -104,10 +104,6 @@ Public Class Form1
         BindingSourceRemove(Database, JobDetailsBindingSource, Database.JobDetails)
     End Sub
 
-    Private Sub MeasurementControlsEnable(ByVal enabled As Boolean)
-
-    End Sub
-
     Private Sub MeasurementsGet()
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required.
@@ -136,6 +132,8 @@ Public Class Form1
         Database.CellMeasurements.Add(cm)
     End Sub
 
+    Private Property Navigator As RecordNavigationBar
+
     Private Sub NewRadiusMeasurement()
         ' RadiusMeasurement is now parent (PK) of Cell and ExtremeMeasurements
         ' (FK). Clear the previous moving average and create a new
@@ -159,7 +157,30 @@ Public Class Form1
         ShowBladePitchByRadiusPercent(True)
     End Sub
 
-    Private Property Navigator As RecordNavigationBar
+    Private Sub ScanControlsEnabled(ByVal isScanning As Boolean)
+        ' Disable any controls that can interfere with the
+        ' encoders while scanning. Enable them when done.
+        CmdHome.Enabled = Not isScanning
+        CmdSetTip.Enabled = CmdHome.Enabled
+        CmdZero.Enabled = CmdHome.Enabled
+    End Sub
+
+    Private Property Scanning As Boolean
+        Get
+            Return EncoderStatusStrip1.TimerOn
+        End Get
+        Set(value As Boolean)
+            If value Then
+                NewRadiusMeasurement()
+                mSampleCount = 0
+                EncoderStatusStrip1.TimerOn = True
+            Else
+                EncoderStatusStrip1.TimerOn = False
+                SaveRadiusMeasurement()
+            End If
+            ScanControlsEnabled(value)
+        End Set
+    End Property
 
     Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
         Dim dtBladePitchByRadius As New DataTable()
@@ -193,15 +214,8 @@ Public Class Form1
     End Sub
 
     Private Sub ShowJobDetailsInfo()
+        ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitchByRadiusPercent(True)
-    End Sub
-
-    Private Sub ChkAutoScan_CheckedChanged(sender As Object, e As EventArgs)
-        Try
-
-        Catch ex As Exception
-            MessageBox.Show("Error toggling the encoders scan timer: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
     End Sub
 
     Private Sub CmdHomeEncoders_Click(sender As Object, e As EventArgs)
@@ -285,26 +299,27 @@ Public Class Form1
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
         Try
             MeasurementsGet()
+            mSampleCount += 1
+            If mSampleCount = kMaxSamplesPerScan Then Scanning = False
         Catch ex As Exception
+            Scanning = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
     Private Sub JobDetailsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobDetailsBindingSource.AddingNew
-        Dim newJobDetail As JobDetail = CreateNewJobDetail()
-        e.NewObject = newJobDetail
-        Database.JobDetails.Add(newJobDetail)
+        Try
+            Dim newJobDetail As JobDetail = CreateNewJobDetail()
+            e.NewObject = newJobDetail
+            Database.JobDetails.Add(newJobDetail)
+        Catch ex As Exception
+            MessageBox.Show("Error adding new job details record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
         Try
-            EncoderStatusStrip1.TimerOn = ChkScan.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
-            CmdHome.Enabled = Not ChkScan.Checked
-            If ChkScan.Checked Then
-                NewRadiusMeasurement()
-            Else
-                SaveRadiusMeasurement()
-            End If
+            Me.Scanning = ChkScan.Checked
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try

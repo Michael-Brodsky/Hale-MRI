@@ -531,6 +531,16 @@ Public Class FrmMeasurements
         ShowBladePitchByRadiusPercent(True)
     End Sub
 
+    Private Sub ScanStart()
+        NewRadiusMeasurement()
+        EncoderStatusStrip1.TimerOn = True
+    End Sub
+
+    Private Sub ScanStop()
+        EncoderStatusStrip1.TimerOn = False
+        SaveRadiusMeasurement()
+    End Sub
+
     Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
         ' Displays each blade's average pitch by radius percent in the
         ' data grid. Each distinct blade creates a new row and each
@@ -550,15 +560,15 @@ Public Class FrmMeasurements
 #End Region
 #Region "NEW EVENT HANDLERS"
     Private Sub ChkMeasurements_CheckedChanged(sender As Object, e As EventArgs) Handles chkMeasurements.CheckedChanged
-        EncoderStatusStrip1.TimerOn = chkMeasurements.Checked   ' The TimerOn property starts/stops the EncoderStatusStrip's built-in timer.
-        cmdHome.Enabled = Not chkMeasurements.Checked
         Try
             If chkMeasurements.Checked Then
-                NewRadiusMeasurement()
+                ScanStart()
             Else
-                SaveRadiusMeasurement()
+                ScanStop()
             End If
+            cmdHome.Enabled = Not chkMeasurements.Checked
         Catch ex As Exception
+            EncoderStatusStrip1.TimerOn = False
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
     End Sub
