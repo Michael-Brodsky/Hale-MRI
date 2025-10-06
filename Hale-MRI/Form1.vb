@@ -9,7 +9,7 @@ Imports Microsoft.EntityFrameworkCore
 Public Class Form1
     Inherits FrmDatabaseForm
 
-    Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of sampes per scan (this will be a database Setting).
+    Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this will be a database Setting).
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
@@ -218,12 +218,28 @@ Public Class Form1
         ShowBladePitchByRadiusPercent(True)
     End Sub
 
-    Private Sub CmdHomeEncoders_Click(sender As Object, e As EventArgs)
+    Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
+        Try
+            Me.Scanning = ChkScan.Checked
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
+        End Try
+    End Sub
+
+    Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles CmdHome.Click
         Try
             EncoderStatusStrip1.ResetAll()
         Catch ex As Exception
             MessageBox.Show("Error homing encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub CmdSetTip_Click(sender As Object, e As EventArgs) Handles CmdSetTip.Click
+
+    End Sub
+
+    Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles CmdZero.Click
+
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -315,25 +331,5 @@ Public Class Form1
         Catch ex As Exception
             MessageBox.Show("Error adding new job details record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-
-    Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
-        Try
-            Me.Scanning = ChkScan.Checked
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
-        End Try
-    End Sub
-
-    Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles CmdHome.Click
-
-    End Sub
-
-    Private Sub CmdSetTip_Click(sender As Object, e As EventArgs) Handles CmdSetTip.Click
-
-    End Sub
-
-    Private Sub CmdZero_Click(sender As Object, e As EventArgs) Handles CmdZero.Click
-
     End Sub
 End Class
