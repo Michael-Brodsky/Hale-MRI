@@ -244,7 +244,7 @@ Public Class FrmJobs
         Dim ofd As New OpenFileDialog With {
             .Title = "Select Scan Data File",
             .Filter = "ScanData Files (*.txt)|*.txt|All Files (*.*)|*.*",
-            .InitialDirectory = If(Database.Settings.Local.FirstOrDefault()?.ApplicationDefaultFolder, Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
+            .InitialDirectory = If(SettingsGet(Database, STR_SETTING_APPLICATION_DEFAULT_FOLDER), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         }
         If ofd.ShowDialog() = DialogResult.OK Then TxtScanDataFile.Text = ofd.FileName
     End Sub
@@ -472,6 +472,7 @@ Public Class FrmJobs
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         ' Handles Navigator events so we can update our control states accordingly.
+        ' TODO: Record Nav Bar should send control as NavigationEventArgs parameter.
         Select Case e.EventName
             Case "AddNew"
                 ' No action required. Handled in JobsBindingSource_AddingNew.

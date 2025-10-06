@@ -262,7 +262,7 @@ Public Class RecordNavigationBar
                 If value Then
                     AddHandler MasterSource.AddingNew, AddressOf DataSource_AddingNew
                     AddHandler MasterSource.PositionChanged, AddressOf DataSource_PositionChanged
-                    ' Set our initial controls' states.
+                    ' Set our initial control states.
                     ShowPosition()
                     ControlsEnable()
                 Else

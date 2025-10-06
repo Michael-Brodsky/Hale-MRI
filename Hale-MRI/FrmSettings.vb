@@ -1,44 +1,34 @@
 ﻿Imports LibDatabase.Contexts
+Imports LibDatabase.StoredProcedures
 Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 
 Public Class FrmSettings
     Inherits FrmDatabaseForm
 #Region "Private Members"
-    Private mBoundControls As List(Of Control) = Nothing    ' List of Controls bound to the MasterSource.
+    Private mSettingsControls As New List(Of Tuple(Of String, Control))
 #End Region
 #Region "Public Interface"
     Public Overrides Property Database As HaleMRIContext
 #End Region
 #Region "Private Interface"
-    Protected Overrides Sub BindDataSources()
-        SettingsBindingSource.DataSource = Database.Settings.Local.ToBindingList()
+    Private Sub HandleControl(ByVal aControl As Control)
+        ' Assigns "change" event handlers to any settings controls 
+        ' to notify us when a record is being editted.
+        If aControl IsNot Nothing Then
+            Select Case True
+                Case TypeOf aControl Is TextBox
+                    AddHandler CType(aControl, TextBox).TextChanged, AddressOf Bound_TextChanged
+                Case TypeOf aControl Is ComboBox
+                    AddHandler CType(aControl, ComboBox).SelectionChangeCommitted, AddressOf Bound_SelectionChangeCommitted
+                Case TypeOf aControl Is CheckBox
+                    AddHandler CType(aControl, CheckBox).CheckedChanged, AddressOf Bound_CheckChanged
+                Case TypeOf aControl Is DataGridView
+                    AddHandler CType(aControl, DataGridView).CellBeginEdit, AddressOf Bound_CellBeginEdit
+                Case Else
+                    ' Handle other control types if necessary.
+            End Select
+        End If
     End Sub
-    Private Property BoundControls As List(Of Control)
-        Get
-            Return mBoundControls
-        End Get
-        Set(controls As List(Of Control))
-            ' Assigns "change" event handlers to any bound controls. 
-            ' This notifies us when a record is being editted.
-            If controls IsNot Nothing Then
-                For Each ctrl In controls
-                    Select Case True
-                        Case TypeOf ctrl Is TextBox
-                            AddHandler CType(ctrl, TextBox).TextChanged, AddressOf Bound_TextChanged
-                        Case TypeOf ctrl Is ComboBox
-                            AddHandler CType(ctrl, ComboBox).SelectionChangeCommitted, AddressOf Bound_SelectionChangeCommitted
-                        Case TypeOf ctrl Is CheckBox
-                            AddHandler CType(ctrl, CheckBox).CheckedChanged, AddressOf Bound_CheckChanged
-                        Case TypeOf ctrl Is DataGridView
-                            AddHandler CType(ctrl, DataGridView).CellBeginEdit, AddressOf Bound_CellBeginEdit
-                        Case Else
-                            ' Handle other control types if necessary.
-                    End Select
-                Next
-            End If
-            mBoundControls = controls
-        End Set
-    End Property
 
     Private Property SaveUndoControlsEnabled As Boolean
         Get
@@ -51,12 +41,10 @@ Public Class FrmSettings
     End Property
 
     Private Sub SaveSettings()
-        BindingSourceSave(Database, SettingsBindingSource)
         SaveUndoControlsEnabled = False
     End Sub
 
     Private Sub UndoSettings()
-        BindingSourceUndo(Database, SettingsBindingSource)
         SaveUndoControlsEnabled = False
     End Sub
 #End Region
@@ -110,18 +98,19 @@ Public Class FrmSettings
     End Sub
 
     Private Sub FrmSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        BoundControls = New List(Of Control) From {
-            ComboDatabaseMaintenance,
-            TxtCompanyName,
-            TxtCompanyAddress,
-            TxtCompanyWebsite,
-            TxtCompanyEmail,
-            TxtCompanyPhone,
-            TxtCompanyContact,
-            TxtDatabaseFile,
-            TxtConnectionString,
-            TxtDefaultFolder
-        }
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_NAME, TxtCompanyName))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_ADDRESS, TxtCompanyAddress))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_PHONE, TxtCompanyPhone))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_CONTACT, TxtCompanyContact))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_EMAIL, TxtCompanyEmail))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_WEBSITE, TxtCompanyWebsite))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_DATABASE_FILE, TxtDatabaseFile))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_CONNECTION_STRING, TxtConnectionString))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_DEFAULT_FOLDER, TxtDefaultFolder))
+        For Each settingControl As Tuple(Of String, Control) In mSettingsControls
+            HandleControl(settingControl.Item2)
+            If Database IsNot Nothing Then settingControl.Item2.Text = SettingsGet(Database, settingControl.Item1)
+        Next
     End Sub
 #End Region
 End Class

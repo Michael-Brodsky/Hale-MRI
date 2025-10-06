@@ -6,6 +6,7 @@ Imports System.Linq.Expressions
 Imports Microsoft.EntityFrameworkCore.Query.Internal
 Imports System.Reflection
 Imports System.ComponentModel
+Imports Microsoft.EntityFrameworkCore.Storage
 
 Public Module StoredProcedures
 #Region "Miscellaneous Functions"
@@ -83,6 +84,9 @@ Public Module StoredProcedures
         Return qry.Where(exp).ToList()
     End Function
 
+    Public Function SettingsGet(dB As HaleMRIContext, ByVal settingName As String) As String
+        Return dB.Settings.Where(Function(s) s.SettingName = settingName.ToString()).Select(Function(s) s.SettingValue).FirstOrDefault()
+    End Function
 #Region "Customer Queries"
     Public Function QryCustomerNameExists(ByVal db As HaleMRIContext, ByVal customerName As FormattableString) As Boolean
         'Returns TRUE if a customer with the specified name exists in the database,

@@ -22,9 +22,8 @@ Partial Class FrmSettings
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmSettings))
-        TabControl1 = New TabControl()
+        TabEncoders = New TabControl()
         TabPageShop = New TabPage()
         LabCompanyPhone = New Label()
         Label5 = New Label()
@@ -33,7 +32,6 @@ Partial Class FrmSettings
         LabCompanyAddress = New Label()
         LabCompanyName = New Label()
         TxtCompanyPhone = New TextBox()
-        SettingsBindingSource = New BindingSource(components)
         TxtCompanyEmail = New TextBox()
         TxtCompanyWebsite = New TextBox()
         TxtCompanyContact = New TextBox()
@@ -53,23 +51,24 @@ Partial Class FrmSettings
         TxtDatabaseFile = New TextBox()
         CmdUndo = New Button()
         CmdSave = New Button()
-        TabControl1.SuspendLayout()
+        TabPageEncoders = New TabPage()
+        TabEncoders.SuspendLayout()
         TabPageShop.SuspendLayout()
-        CType(SettingsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         TabPageApplication.SuspendLayout()
         TabPageDatabase.SuspendLayout()
         SuspendLayout()
         ' 
-        ' TabControl1
+        ' TabEncoders
         ' 
-        TabControl1.Controls.Add(TabPageShop)
-        TabControl1.Controls.Add(TabPageApplication)
-        TabControl1.Controls.Add(TabPageDatabase)
-        TabControl1.Location = New Point(32, 29)
-        TabControl1.Name = "TabControl1"
-        TabControl1.SelectedIndex = 0
-        TabControl1.Size = New Size(597, 356)
-        TabControl1.TabIndex = 6
+        TabEncoders.Controls.Add(TabPageShop)
+        TabEncoders.Controls.Add(TabPageApplication)
+        TabEncoders.Controls.Add(TabPageDatabase)
+        TabEncoders.Controls.Add(TabPageEncoders)
+        TabEncoders.Location = New Point(32, 29)
+        TabEncoders.Name = "TabEncoders"
+        TabEncoders.SelectedIndex = 0
+        TabEncoders.Size = New Size(597, 356)
+        TabEncoders.TabIndex = 6
         ' 
         ' TabPageShop
         ' 
@@ -149,19 +148,13 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyPhone
         ' 
-        TxtCompanyPhone.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyContact", True))
         TxtCompanyPhone.Location = New Point(158, 224)
         TxtCompanyPhone.Name = "TxtCompanyPhone"
         TxtCompanyPhone.Size = New Size(164, 23)
         TxtCompanyPhone.TabIndex = 11
         ' 
-        ' SettingsBindingSource
-        ' 
-        SettingsBindingSource.DataSource = GetType(LibDatabase.Models.Setting)
-        ' 
         ' TxtCompanyEmail
         ' 
-        TxtCompanyEmail.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyWebsite", True))
         TxtCompanyEmail.Location = New Point(158, 137)
         TxtCompanyEmail.Name = "TxtCompanyEmail"
         TxtCompanyEmail.Size = New Size(320, 23)
@@ -169,7 +162,6 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyWebsite
         ' 
-        TxtCompanyWebsite.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyEmail", True))
         TxtCompanyWebsite.Location = New Point(158, 166)
         TxtCompanyWebsite.Name = "TxtCompanyWebsite"
         TxtCompanyWebsite.Size = New Size(320, 23)
@@ -177,7 +169,6 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyContact
         ' 
-        TxtCompanyContact.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyPhone", True))
         TxtCompanyContact.Location = New Point(158, 195)
         TxtCompanyContact.Name = "TxtCompanyContact"
         TxtCompanyContact.Size = New Size(164, 23)
@@ -185,7 +176,6 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyAddress
         ' 
-        TxtCompanyAddress.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyAddress", True))
         TxtCompanyAddress.Location = New Point(158, 108)
         TxtCompanyAddress.Name = "TxtCompanyAddress"
         TxtCompanyAddress.Size = New Size(320, 23)
@@ -193,7 +183,6 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyName
         ' 
-        TxtCompanyName.DataBindings.Add(New Binding("Text", SettingsBindingSource, "CompanyName", True))
         TxtCompanyName.Location = New Point(158, 79)
         TxtCompanyName.Name = "TxtCompanyName"
         TxtCompanyName.Size = New Size(320, 23)
@@ -233,7 +222,6 @@ Partial Class FrmSettings
         ' 
         ' TxtDefaultFolder
         ' 
-        TxtDefaultFolder.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationDefaultFolder", True))
         TxtDefaultFolder.Location = New Point(170, 68)
         TxtDefaultFolder.Name = "TxtDefaultFolder"
         TxtDefaultFolder.Size = New Size(320, 23)
@@ -304,7 +292,6 @@ Partial Class FrmSettings
         ' 
         ' TxtConnectionString
         ' 
-        TxtConnectionString.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationConnectionString", True))
         TxtConnectionString.Location = New Point(170, 97)
         TxtConnectionString.Name = "TxtConnectionString"
         TxtConnectionString.Size = New Size(320, 23)
@@ -312,7 +299,6 @@ Partial Class FrmSettings
         ' 
         ' TxtDatabaseFile
         ' 
-        TxtDatabaseFile.DataBindings.Add(New Binding("Text", SettingsBindingSource, "ApplicationDatabaseFile", True))
         TxtDatabaseFile.Location = New Point(170, 68)
         TxtDatabaseFile.Name = "TxtDatabaseFile"
         TxtDatabaseFile.Size = New Size(320, 23)
@@ -340,6 +326,16 @@ Partial Class FrmSettings
         CmdSave.TabIndex = 12
         CmdSave.UseVisualStyleBackColor = True
         ' 
+        ' TabPageEncoders
+        ' 
+        TabPageEncoders.Location = New Point(4, 24)
+        TabPageEncoders.Name = "TabPageEncoders"
+        TabPageEncoders.Padding = New Padding(3)
+        TabPageEncoders.Size = New Size(589, 328)
+        TabPageEncoders.TabIndex = 3
+        TabPageEncoders.Text = "Encoders"
+        TabPageEncoders.UseVisualStyleBackColor = True
+        ' 
         ' FrmSettings
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -347,13 +343,12 @@ Partial Class FrmSettings
         ClientSize = New Size(673, 454)
         Controls.Add(CmdUndo)
         Controls.Add(CmdSave)
-        Controls.Add(TabControl1)
+        Controls.Add(TabEncoders)
         Name = "FrmSettings"
         Text = "Settings"
-        TabControl1.ResumeLayout(False)
+        TabEncoders.ResumeLayout(False)
         TabPageShop.ResumeLayout(False)
         TabPageShop.PerformLayout()
-        CType(SettingsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         TabPageApplication.ResumeLayout(False)
         TabPageApplication.PerformLayout()
         TabPageDatabase.ResumeLayout(False)
@@ -361,7 +356,7 @@ Partial Class FrmSettings
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents TabControl1 As TabControl
+    Friend WithEvents TabEncoders As TabControl
     Friend WithEvents TabPageShop As TabPage
     Friend WithEvents TxtCompanyPhone As TextBox
     Friend WithEvents TxtCompanyEmail As TextBox
@@ -376,7 +371,6 @@ Partial Class FrmSettings
     Friend WithEvents LabCompanyEmail As Label
     Friend WithEvents LabCompanyAddress As Label
     Friend WithEvents LabCompanyName As Label
-    Friend WithEvents SettingsBindingSource As BindingSource
     Friend WithEvents LabDefaultFolder As Label
     Friend WithEvents TxtDefaultFolder As TextBox
     Friend WithEvents CmdDefaultFolder As Button
@@ -390,4 +384,5 @@ Partial Class FrmSettings
     Friend WithEvents TxtDatabaseFile As TextBox
     Friend WithEvents LabDatabaseMaintenance As Label
     Friend WithEvents ComboDatabaseMaintenance As ComboBox
+    Friend WithEvents TabPageEncoders As TabPage
 End Class
