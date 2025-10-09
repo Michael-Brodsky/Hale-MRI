@@ -23,7 +23,7 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle7 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
@@ -37,8 +37,8 @@ Partial Class Form1
         PerformedBy = New DataGridViewComboBoxColumn()
         EmployeesBindingSource = New BindingSource(components)
         Description = New DataGridViewTextBoxColumn()
-        TxtJobNumber = New TextBox()
         PanelJob = New Panel()
+        TxtJobNumber = New TextBox()
         TableLayoutPanel1 = New TableLayoutPanel()
         TxtVessel = New TextBox()
         TxtManufacturer = New TextBox()
@@ -49,6 +49,11 @@ Partial Class Form1
         TxtBore = New TextBox()
         TxtCustomer = New TextBox()
         PanelMeasurements = New Panel()
+        CmdZero = New Button()
+        CmdSetTip = New Button()
+        CmdHome = New Button()
+        Label1 = New Label()
+        ChkScan = New CheckBox()
         LabAngle = New Label()
         LabWheelPitch = New Label()
         LabRadiusPercent = New Label()
@@ -65,11 +70,12 @@ Partial Class Form1
         TxtAngle = New TextBox()
         GridBladebyRadius = New DataGridView()
         PictureBoxLogo = New PictureBox()
-        ChkScan = New CheckBox()
-        Label1 = New Label()
-        CmdHome = New Button()
-        CmdSetTip = New Button()
-        CmdZero = New Button()
+        Panel1 = New Panel()
+        PanelPlot = New Panel()
+        LabTrackPanel = New Label()
+        LabPanelPlot = New Label()
+        LabPanelMeasurements = New Label()
+        LabPanelJob = New Label()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -90,7 +96,7 @@ Partial Class Form1
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(522, 11)
+        RecordNavigationBar1.Location = New Point(462, 12)
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
@@ -100,10 +106,11 @@ Partial Class Form1
         ' EncoderStatusStrip1
         ' 
         EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        EncoderStatusStrip1.Dock = DockStyle.Bottom
         EncoderStatusStrip1.Hardware = Nothing
-        EncoderStatusStrip1.Location = New Point(-1, 648)
+        EncoderStatusStrip1.Location = New Point(0, 732)
         EncoderStatusStrip1.Name = "EncoderStatusStrip1"
-        EncoderStatusStrip1.Size = New Size(1145, 23)
+        EncoderStatusStrip1.Size = New Size(1116, 23)
         EncoderStatusStrip1.TabIndex = 1
         EncoderStatusStrip1.TimerInterval = 100L
         EncoderStatusStrip1.TimerOn = False
@@ -122,7 +129,7 @@ Partial Class Form1
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDate, MeasurementTypeDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedBy, Description})
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridJobDetails.Location = New Point(522, 48)
+        DataGridJobDetails.Location = New Point(462, 48)
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.ScrollBars = ScrollBars.None
         DataGridJobDetails.Size = New Size(635, 50)
@@ -195,26 +202,26 @@ Partial Class Form1
         Description.Name = "Description"
         Description.Width = 200
         ' 
-        ' TxtJobNumber
-        ' 
-        TxtJobNumber.BackColor = SystemColors.Control
-        TxtJobNumber.BorderStyle = BorderStyle.None
-        TxtJobNumber.Font = New Font("Segoe UI", 14F, FontStyle.Bold)
-        TxtJobNumber.Location = New Point(258, 11)
-        TxtJobNumber.Name = "TxtJobNumber"
-        TxtJobNumber.Size = New Size(258, 25)
-        TxtJobNumber.TabIndex = 6
-        TxtJobNumber.TextAlign = HorizontalAlignment.Right
-        ' 
         ' PanelJob
         ' 
         PanelJob.AutoSizeMode = AutoSizeMode.GrowAndShrink
         PanelJob.BorderStyle = BorderStyle.Fixed3D
+        PanelJob.Controls.Add(TxtJobNumber)
         PanelJob.Controls.Add(TableLayoutPanel1)
-        PanelJob.Location = New Point(12, 111)
+        PanelJob.Location = New Point(12, 131)
         PanelJob.Name = "PanelJob"
-        PanelJob.Size = New Size(191, 531)
+        PanelJob.Size = New Size(191, 595)
         PanelJob.TabIndex = 7
+        ' 
+        ' TxtJobNumber
+        ' 
+        TxtJobNumber.BackColor = SystemColors.Control
+        TxtJobNumber.BorderStyle = BorderStyle.None
+        TxtJobNumber.Font = New Font("Segoe UI", 27.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        TxtJobNumber.Location = New Point(3, 0)
+        TxtJobNumber.Name = "TxtJobNumber"
+        TxtJobNumber.Size = New Size(184, 50)
+        TxtJobNumber.TabIndex = 7
         ' 
         ' TableLayoutPanel1
         ' 
@@ -231,8 +238,7 @@ Partial Class Form1
         TableLayoutPanel1.Controls.Add(TxtDiameter, 0, 6)
         TableLayoutPanel1.Controls.Add(TxtBore, 0, 7)
         TableLayoutPanel1.Controls.Add(TxtCustomer, 0, 0)
-        TableLayoutPanel1.Dock = DockStyle.Top
-        TableLayoutPanel1.Location = New Point(0, 0)
+        TableLayoutPanel1.Location = New Point(3, 56)
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 8
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
@@ -243,7 +249,7 @@ Partial Class Form1
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
-        TableLayoutPanel1.Size = New Size(187, 120)
+        TableLayoutPanel1.Size = New Size(183, 120)
         TableLayoutPanel1.TabIndex = 6
         ' 
         ' TxtVessel
@@ -357,15 +363,76 @@ Partial Class Form1
         PanelMeasurements.Controls.Add(TxtDepth)
         PanelMeasurements.Controls.Add(TxtAngle)
         PanelMeasurements.Controls.Add(GridBladebyRadius)
-        PanelMeasurements.Location = New Point(215, 111)
+        PanelMeasurements.Location = New Point(209, 131)
         PanelMeasurements.Name = "PanelMeasurements"
-        PanelMeasurements.Size = New Size(942, 531)
+        PanelMeasurements.Size = New Size(588, 410)
         PanelMeasurements.TabIndex = 8
+        ' 
+        ' CmdZero
+        ' 
+        CmdZero.Image = My.Resources.Resources.SendtoBack
+        CmdZero.ImageAlign = ContentAlignment.MiddleRight
+        CmdZero.Location = New Point(509, 161)
+        CmdZero.Name = "CmdZero"
+        CmdZero.Size = New Size(70, 25)
+        CmdZero.TabIndex = 21
+        CmdZero.Text = "Zero"
+        CmdZero.TextAlign = ContentAlignment.MiddleLeft
+        CmdZero.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdZero.UseVisualStyleBackColor = True
+        ' 
+        ' CmdSetTip
+        ' 
+        CmdSetTip.Image = My.Resources.Resources.SettingsPanel
+        CmdSetTip.ImageAlign = ContentAlignment.MiddleRight
+        CmdSetTip.Location = New Point(433, 161)
+        CmdSetTip.Name = "CmdSetTip"
+        CmdSetTip.Size = New Size(70, 25)
+        CmdSetTip.TabIndex = 20
+        CmdSetTip.Text = "Set Tip"
+        CmdSetTip.TextAlign = ContentAlignment.MiddleLeft
+        CmdSetTip.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdSetTip.UseVisualStyleBackColor = True
+        ' 
+        ' CmdHome
+        ' 
+        CmdHome.Image = My.Resources.Resources.Home
+        CmdHome.ImageAlign = ContentAlignment.MiddleRight
+        CmdHome.Location = New Point(357, 161)
+        CmdHome.Name = "CmdHome"
+        CmdHome.Size = New Size(70, 25)
+        CmdHome.TabIndex = 19
+        CmdHome.Text = "Home"
+        CmdHome.TextAlign = ContentAlignment.MiddleLeft
+        CmdHome.TextImageRelation = TextImageRelation.ImageBeforeText
+        CmdHome.UseVisualStyleBackColor = True
+        ' 
+        ' Label1
+        ' 
+        Label1.AutoSize = True
+        Label1.Location = New Point(3, 208)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(90, 15)
+        Label1.TabIndex = 18
+        Label1.Text = "Avg Blade Pitch"
+        ' 
+        ' ChkScan
+        ' 
+        ChkScan.Appearance = Appearance.Button
+        ChkScan.Image = My.Resources.Resources.Timer
+        ChkScan.ImageAlign = ContentAlignment.MiddleRight
+        ChkScan.Location = New Point(251, 161)
+        ChkScan.Name = "ChkScan"
+        ChkScan.Size = New Size(70, 25)
+        ChkScan.TabIndex = 17
+        ChkScan.Text = " Scan"
+        ChkScan.TextImageRelation = TextImageRelation.ImageBeforeText
+        ChkScan.UseVisualStyleBackColor = True
         ' 
         ' LabAngle
         ' 
         LabAngle.AutoSize = True
-        LabAngle.Location = New Point(14, 12)
+        LabAngle.Location = New Point(3, 7)
         LabAngle.Name = "LabAngle"
         LabAngle.Size = New Size(38, 15)
         LabAngle.TabIndex = 16
@@ -374,7 +441,7 @@ Partial Class Form1
         ' LabWheelPitch
         ' 
         LabWheelPitch.AutoSize = True
-        LabWheelPitch.Location = New Point(429, 83)
+        LabWheelPitch.Location = New Point(418, 78)
         LabWheelPitch.Name = "LabWheelPitch"
         LabWheelPitch.Size = New Size(70, 15)
         LabWheelPitch.TabIndex = 15
@@ -383,7 +450,7 @@ Partial Class Form1
         ' LabRadiusPercent
         ' 
         LabRadiusPercent.AutoSize = True
-        LabRadiusPercent.Location = New Point(262, 83)
+        LabRadiusPercent.Location = New Point(251, 78)
         LabRadiusPercent.Name = "LabRadiusPercent"
         LabRadiusPercent.Size = New Size(85, 15)
         LabRadiusPercent.TabIndex = 14
@@ -392,7 +459,7 @@ Partial Class Form1
         ' LabOffsetToHub
         ' 
         LabOffsetToHub.AutoSize = True
-        LabOffsetToHub.Location = New Point(14, 83)
+        LabOffsetToHub.Location = New Point(3, 78)
         LabOffsetToHub.Name = "LabOffsetToHub"
         LabOffsetToHub.Size = New Size(81, 15)
         LabOffsetToHub.TabIndex = 13
@@ -401,7 +468,7 @@ Partial Class Form1
         ' LabDepth
         ' 
         LabDepth.AutoSize = True
-        LabDepth.Location = New Point(429, 12)
+        LabDepth.Location = New Point(418, 7)
         LabDepth.Name = "LabDepth"
         LabDepth.Size = New Size(39, 15)
         LabDepth.TabIndex = 12
@@ -410,7 +477,7 @@ Partial Class Form1
         ' LabRadius
         ' 
         LabRadius.AutoSize = True
-        LabRadius.Location = New Point(262, 12)
+        LabRadius.Location = New Point(251, 7)
         LabRadius.Name = "LabRadius"
         LabRadius.Size = New Size(42, 15)
         LabRadius.TabIndex = 11
@@ -419,7 +486,7 @@ Partial Class Form1
         ' LabBlade
         ' 
         LabBlade.AutoSize = True
-        LabBlade.Location = New Point(181, 12)
+        LabBlade.Location = New Point(170, 7)
         LabBlade.Name = "LabBlade"
         LabBlade.Size = New Size(36, 15)
         LabBlade.TabIndex = 10
@@ -427,14 +494,14 @@ Partial Class Form1
         ' 
         ' TxtWheelPitch
         ' 
-        TxtWheelPitch.Location = New Point(429, 101)
+        TxtWheelPitch.Location = New Point(418, 96)
         TxtWheelPitch.Name = "TxtWheelPitch"
         TxtWheelPitch.Size = New Size(161, 23)
         TxtWheelPitch.TabIndex = 7
         ' 
         ' TxtRadiusPercent
         ' 
-        TxtRadiusPercent.Location = New Point(262, 101)
+        TxtRadiusPercent.Location = New Point(251, 96)
         TxtRadiusPercent.Name = "TxtRadiusPercent"
         TxtRadiusPercent.Size = New Size(161, 23)
         TxtRadiusPercent.TabIndex = 6
@@ -442,35 +509,35 @@ Partial Class Form1
         ' ComboOffsetToHub
         ' 
         ComboOffsetToHub.FormattingEnabled = True
-        ComboOffsetToHub.Location = New Point(14, 101)
+        ComboOffsetToHub.Location = New Point(3, 96)
         ComboOffsetToHub.Name = "ComboOffsetToHub"
         ComboOffsetToHub.Size = New Size(161, 23)
         ComboOffsetToHub.TabIndex = 5
         ' 
         ' TxtBlade
         ' 
-        TxtBlade.Location = New Point(181, 30)
+        TxtBlade.Location = New Point(170, 25)
         TxtBlade.Name = "TxtBlade"
         TxtBlade.Size = New Size(75, 23)
         TxtBlade.TabIndex = 4
         ' 
         ' TxtRadius
         ' 
-        TxtRadius.Location = New Point(262, 30)
+        TxtRadius.Location = New Point(251, 25)
         TxtRadius.Name = "TxtRadius"
         TxtRadius.Size = New Size(161, 23)
         TxtRadius.TabIndex = 3
         ' 
         ' TxtDepth
         ' 
-        TxtDepth.Location = New Point(429, 30)
+        TxtDepth.Location = New Point(418, 25)
         TxtDepth.Name = "TxtDepth"
         TxtDepth.Size = New Size(161, 23)
         TxtDepth.TabIndex = 2
         ' 
         ' TxtAngle
         ' 
-        TxtAngle.Location = New Point(14, 30)
+        TxtAngle.Location = New Point(3, 25)
         TxtAngle.Name = "TxtAngle"
         TxtAngle.Size = New Size(161, 23)
         TxtAngle.TabIndex = 1
@@ -480,18 +547,18 @@ Partial Class Form1
         GridBladebyRadius.AllowUserToAddRows = False
         GridBladebyRadius.AllowUserToDeleteRows = False
         GridBladebyRadius.AllowUserToOrderColumns = True
-        DataGridViewCellStyle7.Alignment = DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle7.BackColor = SystemColors.Control
-        DataGridViewCellStyle7.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle7.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle7.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle7.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle7.WrapMode = DataGridViewTriState.True
-        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle7
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        GridBladebyRadius.Location = New Point(14, 248)
+        GridBladebyRadius.Location = New Point(3, 226)
         GridBladebyRadius.Name = "GridBladebyRadius"
-        GridBladebyRadius.Size = New Size(576, 181)
+        GridBladebyRadius.Size = New Size(576, 177)
         GridBladebyRadius.TabIndex = 0
         ' 
         ' PictureBoxLogo
@@ -505,76 +572,77 @@ Partial Class Form1
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
         ' 
-        ' ChkScan
+        ' Panel1
         ' 
-        ChkScan.Appearance = Appearance.Button
-        ChkScan.Image = My.Resources.Resources.Timer
-        ChkScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkScan.Location = New Point(262, 166)
-        ChkScan.Name = "ChkScan"
-        ChkScan.Size = New Size(70, 25)
-        ChkScan.TabIndex = 17
-        ChkScan.Text = " Scan"
-        ChkScan.TextImageRelation = TextImageRelation.ImageBeforeText
-        ChkScan.UseVisualStyleBackColor = True
+        Panel1.BorderStyle = BorderStyle.Fixed3D
+        Panel1.Location = New Point(209, 562)
+        Panel1.Name = "Panel1"
+        Panel1.Size = New Size(588, 164)
+        Panel1.TabIndex = 10
         ' 
-        ' Label1
+        ' PanelPlot
         ' 
-        Label1.AutoSize = True
-        Label1.Location = New Point(14, 230)
-        Label1.Name = "Label1"
-        Label1.Size = New Size(90, 15)
-        Label1.TabIndex = 18
-        Label1.Text = "Avg Blade Pitch"
+        PanelPlot.BorderStyle = BorderStyle.Fixed3D
+        PanelPlot.Location = New Point(803, 131)
+        PanelPlot.Name = "PanelPlot"
+        PanelPlot.Size = New Size(294, 410)
+        PanelPlot.TabIndex = 11
         ' 
-        ' CmdHome
+        ' LabTrackPanel
         ' 
-        CmdHome.Image = My.Resources.Resources.Home
-        CmdHome.ImageAlign = ContentAlignment.MiddleRight
-        CmdHome.Location = New Point(368, 166)
-        CmdHome.Name = "CmdHome"
-        CmdHome.Size = New Size(70, 25)
-        CmdHome.TabIndex = 19
-        CmdHome.Text = "Home"
-        CmdHome.TextAlign = ContentAlignment.MiddleLeft
-        CmdHome.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdHome.UseVisualStyleBackColor = True
+        LabTrackPanel.BackColor = SystemColors.ActiveCaption
+        LabTrackPanel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabTrackPanel.Location = New Point(209, 544)
+        LabTrackPanel.Name = "LabTrackPanel"
+        LabTrackPanel.Size = New Size(588, 15)
+        LabTrackPanel.TabIndex = 12
+        LabTrackPanel.Text = "Track"
         ' 
-        ' CmdSetTip
+        ' LabPanelPlot
         ' 
-        CmdSetTip.Image = My.Resources.Resources.SettingsPanel
-        CmdSetTip.ImageAlign = ContentAlignment.MiddleRight
-        CmdSetTip.Location = New Point(444, 166)
-        CmdSetTip.Name = "CmdSetTip"
-        CmdSetTip.Size = New Size(70, 25)
-        CmdSetTip.TabIndex = 20
-        CmdSetTip.Text = "Set Tip"
-        CmdSetTip.TextAlign = ContentAlignment.MiddleLeft
-        CmdSetTip.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdSetTip.UseVisualStyleBackColor = True
+        LabPanelPlot.BackColor = SystemColors.ActiveCaption
+        LabPanelPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelPlot.Location = New Point(803, 113)
+        LabPanelPlot.Name = "LabPanelPlot"
+        LabPanelPlot.Size = New Size(295, 15)
+        LabPanelPlot.TabIndex = 13
+        LabPanelPlot.Text = "Plot"
         ' 
-        ' CmdZero
+        ' LabPanelMeasurements
         ' 
-        CmdZero.Image = My.Resources.Resources.SendtoBack
-        CmdZero.ImageAlign = ContentAlignment.MiddleRight
-        CmdZero.Location = New Point(520, 166)
-        CmdZero.Name = "CmdZero"
-        CmdZero.Size = New Size(70, 25)
-        CmdZero.TabIndex = 21
-        CmdZero.Text = "Zero"
-        CmdZero.TextAlign = ContentAlignment.MiddleLeft
-        CmdZero.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdZero.UseVisualStyleBackColor = True
+        LabPanelMeasurements.BackColor = SystemColors.ActiveCaption
+        LabPanelMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelMeasurements.Location = New Point(209, 113)
+        LabPanelMeasurements.Name = "LabPanelMeasurements"
+        LabPanelMeasurements.Size = New Size(588, 15)
+        LabPanelMeasurements.TabIndex = 14
+        LabPanelMeasurements.Text = "Measurements"
+        ' 
+        ' LabPanelJob
+        ' 
+        LabPanelJob.BackColor = SystemColors.ActiveCaption
+        LabPanelJob.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelJob.Location = New Point(12, 113)
+        LabPanelJob.Name = "LabPanelJob"
+        LabPanelJob.Size = New Size(191, 15)
+        LabPanelJob.TabIndex = 15
+        LabPanelJob.Text = "Job"
         ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1193, 671)
+        BackColor = SystemColors.Control
+        ClientSize = New Size(1116, 755)
+        Controls.Add(LabPanelJob)
+        Controls.Add(LabPanelMeasurements)
+        Controls.Add(LabPanelPlot)
+        Controls.Add(LabTrackPanel)
+        Controls.Add(PanelPlot)
+        Controls.Add(Panel1)
         Controls.Add(PictureBoxLogo)
         Controls.Add(PanelMeasurements)
         Controls.Add(PanelJob)
-        Controls.Add(TxtJobNumber)
         Controls.Add(DataGridJobDetails)
         Controls.Add(EncoderStatusStrip1)
         Controls.Add(RecordNavigationBar1)
@@ -603,7 +671,6 @@ Partial Class Form1
     Friend WithEvents DataGridJobDetails As DataGridView
     Friend WithEvents EmployeesBindingSource As BindingSource
     Friend WithEvents ClassBindingSource As BindingSource
-    Friend WithEvents TxtJobNumber As TextBox
     Friend WithEvents PanelJob As Panel
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents TxtVessel As TextBox
@@ -642,4 +709,11 @@ Partial Class Form1
     Friend WithEvents CmdSetTip As Button
     Friend WithEvents CmdHome As Button
     Friend WithEvents Label1 As Label
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents PanelPlot As Panel
+    Friend WithEvents LabTrackPanel As Label
+    Friend WithEvents LabPanelPlot As Label
+    Friend WithEvents LabPanelMeasurements As Label
+    Friend WithEvents LabPanelJob As Label
+    Friend WithEvents TxtJobNumber As TextBox
 End Class

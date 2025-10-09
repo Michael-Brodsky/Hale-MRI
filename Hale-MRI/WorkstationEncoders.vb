@@ -39,7 +39,7 @@ Public Class WorkstationEncoders
         mEncoders = New EncoderHardware(New USDigital())
         Using dbContext As New HaleMRIContext()
             Me.Workstation = QryWorkstationCalibration(dbContext, FormatString(My.Computer.Name))
-            Me.PollingInterval = Integer.Parse(SettingsGet(dbContext, STR_SETTING_ENCODER_DEFAULT_SAMPLE_RATE))
+            Me.PollingInterval = Integer.Parse(SettingsGet(dbContext, STR_SETTING_ENCODER_DEFAULT_SAMPLE_PERIOD))
         End Using
     End Sub
 #End Region

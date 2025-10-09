@@ -63,7 +63,7 @@ Public Class FrmJobs
         Dim result As Job = Nothing
         Dim pos As Integer = BindingSourceFind(JobsBindingSource, item)
         If pos <> kNoCurrentRecord Then
-            JobsBindingSource.Position = pos
+            SelectedJob = item
             result = CurrentJob
         End If
         Return result

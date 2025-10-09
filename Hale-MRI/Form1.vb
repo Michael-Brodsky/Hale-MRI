@@ -6,17 +6,28 @@ Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
-
+#Const NO_ENCODERS = True
 Public Class Form1
     Inherits FrmDatabaseForm
-
-    Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this will be a database Setting).
+#Region "Private Members"
+    Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this is a database Setting).
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
-
+    ' Other forms we can open.
+    Private mFrmCustomers As FrmCustomers
+    Private mFrmJobs As FrmJobs
+    Private mFrmManufacturers As FrmManufacturers
+    Private mFrmVessels As FrmVessels
+#If NO_ENCODERS Then
+    Private mCm As Integer = 0
+    Private mEncoderData As List(Of RadiusMeasurement) = Nothing
+    Private mRd As Integer = 0
+#End If
+#End Region
+#Region "Public Interface"
     Public ReadOnly Property Current
         Get
             Return BindingSourceCurrent(JobDetailsBindingSource)
@@ -32,11 +43,11 @@ Public Class Form1
         Set(value As WorkstationEncoders)
             ' Assigns the given value to EncoderStatusStrip1, retrieves and assigns
             ' the scan sampling rate from the database and, if not already,
-            ' intializes the encoder hardware.
+            ' initializes the encoder hardware.
             With EncoderStatusStrip1
                 .Hardware = value
                 If .Hardware IsNot Nothing Then
-                    EncoderStatusStrip1.TimerInterval = Integer.Parse(SettingsGet(Database, STR_SETTING_ENCODER_DEFAULT_SAMPLE_RATE))
+                    EncoderStatusStrip1.TimerInterval = Integer.Parse(SettingsGet(Database, STR_SETTING_ENCODER_DEFAULT_SAMPLE_PERIOD))
                     If .Hardware.Encoders IsNot Nothing AndAlso Not .Hardware.Encoders.Initialized Then EncoderStatusStrip1.Initialize()
                 End If
             End With
@@ -61,6 +72,9 @@ Public Class Form1
                         .ThenInclude(Function(em) em.ExtremeMeasurements) _
                         .AsSplitQuery().ToList()
                     )
+#If NO_ENCODERS Then
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 5).Include(Function(m) m.CellMeasurements).ToList()
+#End If
                 ShowJobInfo()
             End If
         End Set
@@ -84,11 +98,15 @@ Public Class Form1
                     .ThenInclude(Function(m) m.ExtremeMeasurements) _
                     .AsSplitQuery().ToList()
                 )
+#If NO_ENCODERS Then
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 5).Include(Function(m) m.CellMeasurements).ToList()
+#End If
                 ShowJobInfo()
             End If
         End Set
     End Property
-
+#End Region
+#Region "Private Interface"
     Private Function CreateNewJobDetail() As JobDetail
         Return New JobDetail With {
             .Job = mJob,
@@ -104,7 +122,28 @@ Public Class Form1
     Private Sub DeleteJobDetail()
         BindingSourceRemove(Database, JobDetailsBindingSource, Database.JobDetails)
     End Sub
-
+#If NO_ENCODERS Then
+    Private Sub MeasurementsGet()
+        Dim rand As New System.Random()
+        Dim offset As Double = rand.Next(-500, 500 + 1) / 1000.0
+        Dim angle As Double = mEncoderData(mRd).CellMeasurements(mCm).Angle
+        Dim depth As Double = mEncoderData(mRd).CellMeasurements(mCm).Depth
+        Dim radius As New IEncoderHardware.RadiusMeasurement With {.Value = mEncoderData(mRd).Radius + offset, .Percent = .Value / Job?.PropellerDiameter / 2.0}
+        Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
+        TxtBlade.Text = blade
+        TxtAngle.Text = angle.ToString()
+        TxtRadius.Text = radius.Value.ToString()
+        TxtDepth.Text = depth.ToString()
+        TxtRadiusPercent.Text = (radius.Percent * 50).ToString()
+        MeasurementsSave(angle, depth, radius)
+        mCm += 1
+        If mCm = mEncoderData(mRd).CellMeasurements.Count Then
+            ChkScan.Checked = False
+            'Scanning = False
+            mCm = 0
+        End If
+    End Sub
+#Else
     Private Sub MeasurementsGet()
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required.
@@ -118,9 +157,30 @@ Public Class Form1
             TxtRadius.Text = radius.Value.ToString()
             TxtDepth.Text = depth.ToString()
             TxtRadiusPercent.Text = (radius.Value * 100).ToString()
-            'MeasurementsSave(angle, depth, radius)
+            MeasurementsSave(angle, depth, radius)
         End With
     End Sub
+
+    Private Sub MeasurementsGet(byval reset as boolean)
+        ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
+        ' values as required. Saves the measurements if the angle measurement 
+        ' changes by more than some specified amount.
+        static lastAngle as double = 0.0
+        if reset then lastAngle=0.0
+        With EncoderStatusStrip1
+            Dim angle As Double = .Angle()
+            Dim depth As Double = .Depth()
+            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
+            TxtBlade.Text = blade
+            TxtAngle.Text = angle.ToString()
+            TxtRadius.Text = radius.Value.ToString()
+            TxtDepth.Text = depth.ToString()
+            TxtRadiusPercent.Text = (radius.Value * 100).ToString()
+            if Math.Abs(angle - lastAngle) > 1.0 then MeasurementsSave(angle, depth, radius)
+        End With
+    End Sub
+#End If
 
     Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
@@ -176,6 +236,10 @@ Public Class Form1
                 mSampleCount = 0
                 EncoderStatusStrip1.TimerOn = True
             Else
+#If NO_ENCODERS Then
+                mRd += 1
+                If mRd = mEncoderData.Count Then mRd = 0
+#End If
                 EncoderStatusStrip1.TimerOn = False
                 SaveRadiusMeasurement()
             End If
@@ -203,22 +267,26 @@ Public Class Form1
         For i As Integer = 1 To mJob.PropellerBlades
             bsBlades.Add(i)
         Next
+        Dim strBlades As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerBlades), $"Blades = {Job?.PropellerBlades}", "")
+        Dim strDiameter As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerDiameter), $"Dia = {Job?.PropellerDiameter}", "")
+        Dim strBore As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerBore), $"Dia = {Job?.PropellerBore}", "")
         TxtJobNumber.Text = Job?.JobNumber.ToString()
         TxtCustomer.Text = Job?.Vessel?.Customer?.CustomerName
         TxtVessel.Text = Job?.Vessel?.VesselName
         TxtManufacturer.Text = Job?.PropellerManufacturer?.ManufacturerName
         TxtStyle.Text = Job?.PropellerStyleNavigation?.Style1
         TxtMaterial.Text = Job?.PropellerMaterialNavigation?.Material1
-        TxtBlades.Text = $"Blades = {Job?.PropellerBlades}"
-        TxtDiameter.Text = $"Dia = {Job?.PropellerDiameter}"
-        TxtBore.Text = $"Bore = {Job?.PropellerBore}"
+        TxtBlades.Text = strBlades
+        TxtDiameter.Text = strDiameter
+        TxtBore.Text = strBore
     End Sub
 
     Private Sub ShowJobDetailsInfo()
         ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitchByRadiusPercent(True)
     End Sub
-
+#End Region
+#Region "Event Handlers"
     Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
         Try
             Me.Scanning = ChkScan.Checked
@@ -333,4 +401,33 @@ Public Class Form1
             MessageBox.Show("Error adding new job details record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
+
+    Private Sub TxtCustomer_DoubleClick(sender As Object, e As EventArgs) Handles TxtCustomer.DoubleClick
+        If Job IsNot Nothing Then
+            ShowForm(mFrmCustomers, Database, User)
+            mFrmCustomers.Find(Job?.Vessel?.Customer)
+        End If
+    End Sub
+
+    Private Sub TxtJobNumber_DoubleClick(sender As Object, e As EventArgs) Handles TxtJobNumber.DoubleClick
+        If Job IsNot Nothing Then
+            ShowForm(mFrmJobs, Database, User)
+            mFrmJobs.Find(Job)
+        End If
+    End Sub
+
+    Private Sub TxtManufacturer_DoubleClick(sender As Object, e As EventArgs) Handles TxtManufacturer.DoubleClick
+        If Job IsNot Nothing Then
+            ShowForm(mFrmManufacturers, Database, User)
+            'mFrmManufacturers.Find(Job?.Propeller?.Manufacturer)   ' Need to implement Propeller has a Manufacturer database relationship.
+        End If
+    End Sub
+
+    Private Sub TxtVessel_DoubleClick(sender As Object, e As EventArgs) Handles TxtVessel.DoubleClick
+        If Job IsNot Nothing Then
+            ShowForm(mFrmVessels, Database, User)
+            mFrmVessels.Find(Job?.Vessel)
+        End If
+    End Sub
+#End Region
 End Class

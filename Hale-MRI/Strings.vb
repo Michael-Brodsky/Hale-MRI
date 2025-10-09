@@ -18,10 +18,10 @@ Module Strings
     Public Const STR_SETTING_COMPANY_CONTACT As String = "Company Contact"
     Public Const STR_SETTING_COMPANY_EMAIL As String = "Company Email"
     Public Const STR_SETTING_COMPANY_WEBSITE As String = "Company Website"
-    Public Const STR_SETTING_APPLICATION_DATABASE_FILE As String = "Application Database File"
-    Public Const STR_SETTING_APPLICATION_CONNECTION_STRING As String = "Application Connection String"
     Public Const STR_SETTING_APPLICATION_DEFAULT_FOLDER As String = "Application Default Folder"
+    Public Const STR_SETTING_DATABASE_FILE As String = "Application Database File"
+    Public Const STR_SETTING_DATABASE_CONNECTION_STRING As String = "Application Connection String"
     Public Const STR_SETTING_ENCODER_DATA_DEFAULT_FOLDER As String = "Encoder Data Default Folder"
-    Public Const STR_SETTING_ENCODER_DEFAULT_SAMPLE_RATE As String = "Encoder Default Sample Interval"
+    Public Const STR_SETTING_ENCODER_DEFAULT_SAMPLE_PERIOD As String = "Encoder Default Sample Interval"
     Public Const STR_SETTING_ENCODER_MAX_SAMPLES_PER_SCAN As String = "Encoder Max Samples Per Scan"
 End Module

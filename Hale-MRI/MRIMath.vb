@@ -31,7 +31,8 @@ Module MRIMath
 
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
         'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))
-        Return If(Blades <> 0, Blades - CInt(Math.Ceiling(Angle / (360 / Blades))), 0)
+        Return CInt(Math.Ceiling(Angle / (360 / Blades)))
+        'Return If(Blades <> 0, Blades - CInt(Math.Ceiling(Angle / (360 / Blades))), 0)
     End Function
 
     Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement)) As Double

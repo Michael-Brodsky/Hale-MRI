@@ -70,7 +70,7 @@ Public Class FrmVessels
         VesselServiceTypeBindingSource.DataSource = Database.VesselServiceTypes.Local.ToBindingList()
         ' These DataSources query the database, as they may change while
         ' the application is open.
-        CustomerBindingSource.DataSource = Database.Customers.Local.ToBindingList()
+        CustomerBindingSource.DataSource = New BindingList(Of Customer)(Database.Customers.OrderBy(Function(c) c.CustomerName).ToList())
         ManufacturerBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(e) e.ManufacturerName).ToList())
         ' Order the Customer Vessels list by VesselName ...
         Dim vessels = Database.Vessels.Include(Function(v) v.Jobs).OrderBy(Function(v) v.VesselName).ToList()

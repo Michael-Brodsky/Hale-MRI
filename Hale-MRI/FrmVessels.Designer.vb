@@ -216,9 +216,9 @@ Partial Class FrmVessels
         ' 
         VesselNameDataGridViewTextBoxColumn.DataPropertyName = "VesselName"
         VesselNameDataGridViewTextBoxColumn.HeaderText = "Vessel Name"
-        VesselNameDataGridViewTextBoxColumn.MinimumWidth = 200
+        VesselNameDataGridViewTextBoxColumn.MinimumWidth = 180
         VesselNameDataGridViewTextBoxColumn.Name = "VesselNameDataGridViewTextBoxColumn"
-        VesselNameDataGridViewTextBoxColumn.Width = 200
+        VesselNameDataGridViewTextBoxColumn.Width = 180
         ' 
         ' CustomerDataGridViewTextBoxColumn
         ' 
@@ -226,37 +226,37 @@ Partial Class FrmVessels
         CustomerDataGridViewTextBoxColumn.DataSource = CustomerBindingSource
         CustomerDataGridViewTextBoxColumn.DisplayMember = "CustomerName"
         CustomerDataGridViewTextBoxColumn.HeaderText = "Customer"
-        CustomerDataGridViewTextBoxColumn.MinimumWidth = 200
+        CustomerDataGridViewTextBoxColumn.MinimumWidth = 180
         CustomerDataGridViewTextBoxColumn.Name = "CustomerDataGridViewTextBoxColumn"
         CustomerDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         CustomerDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         CustomerDataGridViewTextBoxColumn.ValueMember = "Id"
-        CustomerDataGridViewTextBoxColumn.Width = 200
+        CustomerDataGridViewTextBoxColumn.Width = 180
         ' 
         ' PrimaryVesselNumberDataGridViewTextBoxColumn
         ' 
         PrimaryVesselNumberDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCellsExceptHeader
         PrimaryVesselNumberDataGridViewTextBoxColumn.DataPropertyName = "PrimaryVesselNumber"
         PrimaryVesselNumberDataGridViewTextBoxColumn.HeaderText = "Primary Vessel Number"
-        PrimaryVesselNumberDataGridViewTextBoxColumn.MinimumWidth = 160
+        PrimaryVesselNumberDataGridViewTextBoxColumn.MinimumWidth = 170
         PrimaryVesselNumberDataGridViewTextBoxColumn.Name = "PrimaryVesselNumberDataGridViewTextBoxColumn"
-        PrimaryVesselNumberDataGridViewTextBoxColumn.Width = 160
+        PrimaryVesselNumberDataGridViewTextBoxColumn.Width = 170
         ' 
         ' HullIdNumberDataGridViewTextBoxColumn
         ' 
         HullIdNumberDataGridViewTextBoxColumn.DataPropertyName = "HullIdNumber"
         HullIdNumberDataGridViewTextBoxColumn.HeaderText = "Hull Id Number"
-        HullIdNumberDataGridViewTextBoxColumn.MinimumWidth = 160
+        HullIdNumberDataGridViewTextBoxColumn.MinimumWidth = 150
         HullIdNumberDataGridViewTextBoxColumn.Name = "HullIdNumberDataGridViewTextBoxColumn"
-        HullIdNumberDataGridViewTextBoxColumn.Width = 160
+        HullIdNumberDataGridViewTextBoxColumn.Width = 150
         ' 
         ' CallSignDataGridViewTextBoxColumn
         ' 
         CallSignDataGridViewTextBoxColumn.DataPropertyName = "CallSign"
         CallSignDataGridViewTextBoxColumn.HeaderText = "Call Sign"
-        CallSignDataGridViewTextBoxColumn.MinimumWidth = 160
+        CallSignDataGridViewTextBoxColumn.MinimumWidth = 150
         CallSignDataGridViewTextBoxColumn.Name = "CallSignDataGridViewTextBoxColumn"
-        CallSignDataGridViewTextBoxColumn.Width = 160
+        CallSignDataGridViewTextBoxColumn.Width = 150
         ' 
         ' FlagDataGridViewTextBoxColumn
         ' 
@@ -264,18 +264,20 @@ Partial Class FrmVessels
         FlagDataGridViewTextBoxColumn.DataSource = CountryCodeBindingSource
         FlagDataGridViewTextBoxColumn.DisplayMember = "Country"
         FlagDataGridViewTextBoxColumn.HeaderText = "Flag"
-        FlagDataGridViewTextBoxColumn.MinimumWidth = 100
+        FlagDataGridViewTextBoxColumn.MinimumWidth = 160
         FlagDataGridViewTextBoxColumn.Name = "FlagDataGridViewTextBoxColumn"
         FlagDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         FlagDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         FlagDataGridViewTextBoxColumn.ValueMember = "Alpha2Code"
+        FlagDataGridViewTextBoxColumn.Width = 160
         ' 
         ' BuildYearDataGridViewTextBoxColumn
         ' 
         BuildYearDataGridViewTextBoxColumn.DataPropertyName = "BuildYear"
         BuildYearDataGridViewTextBoxColumn.HeaderText = "Build Year"
-        BuildYearDataGridViewTextBoxColumn.MinimumWidth = 100
+        BuildYearDataGridViewTextBoxColumn.MinimumWidth = 90
         BuildYearDataGridViewTextBoxColumn.Name = "BuildYearDataGridViewTextBoxColumn"
+        BuildYearDataGridViewTextBoxColumn.Width = 90
         ' 
         ' ServiceTypeDataGridViewTextBoxColumn
         ' 

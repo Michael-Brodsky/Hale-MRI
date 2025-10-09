@@ -1,11 +1,10 @@
 ﻿Imports LibDatabase.Contexts
 Imports LibDatabase.StoredProcedures
-Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 
 Public Class FrmSettings
     Inherits FrmDatabaseForm
 #Region "Private Members"
-    Private mSettingsControls As New List(Of Tuple(Of String, Control))
+    Private mSettingsControls As New List(Of Tuple(Of String, Control)) ' List of settings and associated controls.
 #End Region
 #Region "Public Interface"
     Public Overrides Property Database As HaleMRIContext
@@ -13,7 +12,7 @@ Public Class FrmSettings
 #Region "Private Interface"
     Private Sub HandleControl(ByVal aControl As Control)
         ' Assigns "change" event handlers to any settings controls 
-        ' to notify us when a record is being editted.
+        ' to notify us when a setting has been editted.
         If aControl IsNot Nothing Then
             Select Case True
                 Case TypeOf aControl Is TextBox
@@ -40,11 +39,26 @@ Public Class FrmSettings
         End Set
     End Property
 
+    Private Sub GetSettings()
+        If Database IsNot Nothing Then
+            For Each settingControl As Tuple(Of String, Control) In mSettingsControls
+                settingControl.Item2.Text = SettingsGet(Database, settingControl.Item1)
+            Next
+        End If
+    End Sub
+
     Private Sub SaveSettings()
+        If Database IsNot Nothing Then
+            For Each settingControl As Tuple(Of String, Control) In mSettingsControls
+                SettingsSave(Database, settingControl.Item1, settingControl.Item2.Text)
+            Next
+            Database.SaveChanges()
+        End If
         SaveUndoControlsEnabled = False
     End Sub
 
     Private Sub UndoSettings()
+        GetSettings()
         SaveUndoControlsEnabled = False
     End Sub
 #End Region
@@ -86,7 +100,7 @@ Public Class FrmSettings
             .Description = "Select Default Application Folder",
             .RootFolder = Environment.SpecialFolder.MyComputer
         }
-        If ofd.ShowDialog() = DialogResult.OK Then TxtDefaultFolder.Text = ofd.SelectedPath
+        If ofd.ShowDialog() = DialogResult.OK Then TxtApplicationDefaultFolder.Text = ofd.SelectedPath
     End Sub
 
     Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
@@ -98,19 +112,34 @@ Public Class FrmSettings
     End Sub
 
     Private Sub FrmSettings_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ' Initialize our list of settings and associated controls. For new controls,
+        ' add another mSettingsControls.Add(New Tuple(Of String, Control)(Item1, Item2),
+        ' where Item1 is the [~Settings].[Setting Name] and Item2 is the new control name.
+        '
+        ' *** NOTE: for some reason
+        '   mSettingsControls = New List(Of Tuple(Of String, Control)) From {
+        '       New Tuple(Of String, Control)(STR_SETTING_COMPANY_NAME, TxtCompanyName),
+        '       ...
+        '   }
+        ' doesn't work. The string element is assigned, but the Control is always Nothing
+        ' regardless of how or where it's referenced????? So, we have to do this here:
+        '''''''
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_NAME, TxtCompanyName))
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_ADDRESS, TxtCompanyAddress))
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_PHONE, TxtCompanyPhone))
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_CONTACT, TxtCompanyContact))
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_EMAIL, TxtCompanyEmail))
         mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_COMPANY_WEBSITE, TxtCompanyWebsite))
-        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_DATABASE_FILE, TxtDatabaseFile))
-        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_CONNECTION_STRING, TxtConnectionString))
-        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_DEFAULT_FOLDER, TxtDefaultFolder))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_APPLICATION_DEFAULT_FOLDER, TxtApplicationDefaultFolder))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_DATABASE_FILE, TxtDatabaseFile))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_DATABASE_CONNECTION_STRING, TxtDatabaseConnectionString))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_ENCODER_DEFAULT_SAMPLE_PERIOD, TxtEncodersSamplePeriod))
+        mSettingsControls.Add(New Tuple(Of String, Control)(STR_SETTING_ENCODER_MAX_SAMPLES_PER_SCAN, TxtEncodersMaxSamplesPerScan))
+        '''''''
         For Each settingControl As Tuple(Of String, Control) In mSettingsControls
             HandleControl(settingControl.Item2)
-            If Database IsNot Nothing Then settingControl.Item2.Text = SettingsGet(Database, settingControl.Item1)
         Next
+        GetSettings()
     End Sub
 #End Region
 End Class

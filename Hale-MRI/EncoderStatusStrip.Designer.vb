@@ -104,6 +104,7 @@ Partial Class EncoderStatusStrip
         ' 
         ' TSLabelEncodersStatus
         ' 
+        TSLabelEncodersStatus.AutoSize = False
         TSLabelEncodersStatus.Name = "TSLabelEncodersStatus"
         TSLabelEncodersStatus.Size = New Size(90, 17)
         TSLabelEncodersStatus.Text = "Encoders Status"

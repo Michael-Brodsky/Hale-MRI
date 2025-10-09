@@ -40,22 +40,28 @@ Partial Class FrmSettings
         TabPageApplication = New TabPage()
         CmdDefaultFolder = New Button()
         LabDefaultFolder = New Label()
-        TxtDefaultFolder = New TextBox()
+        TxtApplicationDefaultFolder = New TextBox()
         TabPageDatabase = New TabPage()
         LabDatabaseMaintenance = New Label()
         ComboDatabaseMaintenance = New ComboBox()
         CmdDatabaseFile = New Button()
         Label1 = New Label()
         LabDatabasePath = New Label()
-        TxtConnectionString = New TextBox()
+        TxtDatabaseConnectionString = New TextBox()
         TxtDatabaseFile = New TextBox()
+        TabPageEncoders = New TabPage()
+        LabEncodersSamplePeriodUnits = New Label()
+        LabEncodersMaxSamplesPerScan = New Label()
+        LabEncodersSamplePeriod = New Label()
+        TxtEncodersMaxSamplesPerScan = New TextBox()
+        TxtEncodersSamplePeriod = New TextBox()
         CmdUndo = New Button()
         CmdSave = New Button()
-        TabPageEncoders = New TabPage()
         TabEncoders.SuspendLayout()
         TabPageShop.SuspendLayout()
         TabPageApplication.SuspendLayout()
         TabPageDatabase.SuspendLayout()
+        TabPageEncoders.SuspendLayout()
         SuspendLayout()
         ' 
         ' TabEncoders
@@ -95,7 +101,7 @@ Partial Class FrmSettings
         ' LabCompanyPhone
         ' 
         LabCompanyPhone.AutoSize = True
-        LabCompanyPhone.Location = New Point(103, 227)
+        LabCompanyPhone.Location = New Point(115, 216)
         LabCompanyPhone.Name = "LabCompanyPhone"
         LabCompanyPhone.Size = New Size(49, 15)
         LabCompanyPhone.TabIndex = 17
@@ -104,7 +110,7 @@ Partial Class FrmSettings
         ' Label5
         ' 
         Label5.AutoSize = True
-        Label5.Location = New Point(103, 198)
+        Label5.Location = New Point(115, 187)
         Label5.Name = "Label5"
         Label5.Size = New Size(41, 15)
         Label5.TabIndex = 16
@@ -113,7 +119,7 @@ Partial Class FrmSettings
         ' LabCompanyWebsite
         ' 
         LabCompanyWebsite.AutoSize = True
-        LabCompanyWebsite.Location = New Point(103, 169)
+        LabCompanyWebsite.Location = New Point(115, 158)
         LabCompanyWebsite.Name = "LabCompanyWebsite"
         LabCompanyWebsite.Size = New Size(36, 15)
         LabCompanyWebsite.TabIndex = 15
@@ -122,7 +128,7 @@ Partial Class FrmSettings
         ' LabCompanyEmail
         ' 
         LabCompanyEmail.AutoSize = True
-        LabCompanyEmail.Location = New Point(103, 140)
+        LabCompanyEmail.Location = New Point(115, 129)
         LabCompanyEmail.Name = "LabCompanyEmail"
         LabCompanyEmail.Size = New Size(49, 15)
         LabCompanyEmail.TabIndex = 14
@@ -131,7 +137,7 @@ Partial Class FrmSettings
         ' LabCompanyAddress
         ' 
         LabCompanyAddress.AutoSize = True
-        LabCompanyAddress.Location = New Point(103, 111)
+        LabCompanyAddress.Location = New Point(115, 100)
         LabCompanyAddress.Name = "LabCompanyAddress"
         LabCompanyAddress.Size = New Size(49, 15)
         LabCompanyAddress.TabIndex = 13
@@ -140,7 +146,7 @@ Partial Class FrmSettings
         ' LabCompanyName
         ' 
         LabCompanyName.AutoSize = True
-        LabCompanyName.Location = New Point(103, 82)
+        LabCompanyName.Location = New Point(115, 71)
         LabCompanyName.Name = "LabCompanyName"
         LabCompanyName.Size = New Size(39, 15)
         LabCompanyName.TabIndex = 12
@@ -148,42 +154,42 @@ Partial Class FrmSettings
         ' 
         ' TxtCompanyPhone
         ' 
-        TxtCompanyPhone.Location = New Point(158, 224)
+        TxtCompanyPhone.Location = New Point(170, 213)
         TxtCompanyPhone.Name = "TxtCompanyPhone"
         TxtCompanyPhone.Size = New Size(164, 23)
         TxtCompanyPhone.TabIndex = 11
         ' 
         ' TxtCompanyEmail
         ' 
-        TxtCompanyEmail.Location = New Point(158, 137)
+        TxtCompanyEmail.Location = New Point(170, 126)
         TxtCompanyEmail.Name = "TxtCompanyEmail"
         TxtCompanyEmail.Size = New Size(320, 23)
         TxtCompanyEmail.TabIndex = 10
         ' 
         ' TxtCompanyWebsite
         ' 
-        TxtCompanyWebsite.Location = New Point(158, 166)
+        TxtCompanyWebsite.Location = New Point(170, 155)
         TxtCompanyWebsite.Name = "TxtCompanyWebsite"
         TxtCompanyWebsite.Size = New Size(320, 23)
         TxtCompanyWebsite.TabIndex = 9
         ' 
         ' TxtCompanyContact
         ' 
-        TxtCompanyContact.Location = New Point(158, 195)
+        TxtCompanyContact.Location = New Point(170, 184)
         TxtCompanyContact.Name = "TxtCompanyContact"
         TxtCompanyContact.Size = New Size(164, 23)
         TxtCompanyContact.TabIndex = 8
         ' 
         ' TxtCompanyAddress
         ' 
-        TxtCompanyAddress.Location = New Point(158, 108)
+        TxtCompanyAddress.Location = New Point(170, 97)
         TxtCompanyAddress.Name = "TxtCompanyAddress"
         TxtCompanyAddress.Size = New Size(320, 23)
         TxtCompanyAddress.TabIndex = 7
         ' 
         ' TxtCompanyName
         ' 
-        TxtCompanyName.Location = New Point(158, 79)
+        TxtCompanyName.Location = New Point(170, 68)
         TxtCompanyName.Name = "TxtCompanyName"
         TxtCompanyName.Size = New Size(320, 23)
         TxtCompanyName.TabIndex = 6
@@ -192,7 +198,7 @@ Partial Class FrmSettings
         ' 
         TabPageApplication.Controls.Add(CmdDefaultFolder)
         TabPageApplication.Controls.Add(LabDefaultFolder)
-        TabPageApplication.Controls.Add(TxtDefaultFolder)
+        TabPageApplication.Controls.Add(TxtApplicationDefaultFolder)
         TabPageApplication.Location = New Point(4, 24)
         TabPageApplication.Name = "TabPageApplication"
         TabPageApplication.Padding = New Padding(3)
@@ -220,12 +226,12 @@ Partial Class FrmSettings
         LabDefaultFolder.TabIndex = 5
         LabDefaultFolder.Text = "Default Folder"
         ' 
-        ' TxtDefaultFolder
+        ' TxtApplicationDefaultFolder
         ' 
-        TxtDefaultFolder.Location = New Point(170, 68)
-        TxtDefaultFolder.Name = "TxtDefaultFolder"
-        TxtDefaultFolder.Size = New Size(320, 23)
-        TxtDefaultFolder.TabIndex = 2
+        TxtApplicationDefaultFolder.Location = New Point(170, 68)
+        TxtApplicationDefaultFolder.Name = "TxtApplicationDefaultFolder"
+        TxtApplicationDefaultFolder.Size = New Size(320, 23)
+        TxtApplicationDefaultFolder.TabIndex = 2
         ' 
         ' TabPageDatabase
         ' 
@@ -234,7 +240,7 @@ Partial Class FrmSettings
         TabPageDatabase.Controls.Add(CmdDatabaseFile)
         TabPageDatabase.Controls.Add(Label1)
         TabPageDatabase.Controls.Add(LabDatabasePath)
-        TabPageDatabase.Controls.Add(TxtConnectionString)
+        TabPageDatabase.Controls.Add(TxtDatabaseConnectionString)
         TabPageDatabase.Controls.Add(TxtDatabaseFile)
         TabPageDatabase.Location = New Point(4, 24)
         TabPageDatabase.Name = "TabPageDatabase"
@@ -290,12 +296,12 @@ Partial Class FrmSettings
         LabDatabasePath.TabIndex = 267
         LabDatabasePath.Text = "Database File"
         ' 
-        ' TxtConnectionString
+        ' TxtDatabaseConnectionString
         ' 
-        TxtConnectionString.Location = New Point(170, 97)
-        TxtConnectionString.Name = "TxtConnectionString"
-        TxtConnectionString.Size = New Size(320, 23)
-        TxtConnectionString.TabIndex = 266
+        TxtDatabaseConnectionString.Location = New Point(170, 97)
+        TxtDatabaseConnectionString.Name = "TxtDatabaseConnectionString"
+        TxtDatabaseConnectionString.Size = New Size(320, 23)
+        TxtDatabaseConnectionString.TabIndex = 266
         ' 
         ' TxtDatabaseFile
         ' 
@@ -303,6 +309,62 @@ Partial Class FrmSettings
         TxtDatabaseFile.Name = "TxtDatabaseFile"
         TxtDatabaseFile.Size = New Size(320, 23)
         TxtDatabaseFile.TabIndex = 265
+        ' 
+        ' TabPageEncoders
+        ' 
+        TabPageEncoders.Controls.Add(LabEncodersSamplePeriodUnits)
+        TabPageEncoders.Controls.Add(LabEncodersMaxSamplesPerScan)
+        TabPageEncoders.Controls.Add(LabEncodersSamplePeriod)
+        TabPageEncoders.Controls.Add(TxtEncodersMaxSamplesPerScan)
+        TabPageEncoders.Controls.Add(TxtEncodersSamplePeriod)
+        TabPageEncoders.Location = New Point(4, 24)
+        TabPageEncoders.Name = "TabPageEncoders"
+        TabPageEncoders.Padding = New Padding(3)
+        TabPageEncoders.Size = New Size(589, 328)
+        TabPageEncoders.TabIndex = 3
+        TabPageEncoders.Text = "Encoders"
+        TabPageEncoders.UseVisualStyleBackColor = True
+        ' 
+        ' LabEncodersSamplePeriodUnits
+        ' 
+        LabEncodersSamplePeriodUnits.AutoSize = True
+        LabEncodersSamplePeriodUnits.Location = New Point(275, 71)
+        LabEncodersSamplePeriodUnits.Name = "LabEncodersSamplePeriodUnits"
+        LabEncodersSamplePeriodUnits.Size = New Size(23, 15)
+        LabEncodersSamplePeriodUnits.TabIndex = 4
+        LabEncodersSamplePeriodUnits.Text = "ms"
+        ' 
+        ' LabEncodersMaxSamplesPerScan
+        ' 
+        LabEncodersMaxSamplesPerScan.AutoSize = True
+        LabEncodersMaxSamplesPerScan.Location = New Point(40, 100)
+        LabEncodersMaxSamplesPerScan.Name = "LabEncodersMaxSamplesPerScan"
+        LabEncodersMaxSamplesPerScan.Size = New Size(124, 15)
+        LabEncodersMaxSamplesPerScan.TabIndex = 3
+        LabEncodersMaxSamplesPerScan.Text = "Max Samples Per Scan"
+        ' 
+        ' LabEncodersSamplePeriod
+        ' 
+        LabEncodersSamplePeriod.AutoSize = True
+        LabEncodersSamplePeriod.Location = New Point(40, 71)
+        LabEncodersSamplePeriod.Name = "LabEncodersSamplePeriod"
+        LabEncodersSamplePeriod.Size = New Size(83, 15)
+        LabEncodersSamplePeriod.TabIndex = 2
+        LabEncodersSamplePeriod.Text = "Sample Period"
+        ' 
+        ' TxtEncodersMaxSamplesPerScan
+        ' 
+        TxtEncodersMaxSamplesPerScan.Location = New Point(170, 97)
+        TxtEncodersMaxSamplesPerScan.Name = "TxtEncodersMaxSamplesPerScan"
+        TxtEncodersMaxSamplesPerScan.Size = New Size(100, 23)
+        TxtEncodersMaxSamplesPerScan.TabIndex = 1
+        ' 
+        ' TxtEncodersSamplePeriod
+        ' 
+        TxtEncodersSamplePeriod.Location = New Point(170, 68)
+        TxtEncodersSamplePeriod.Name = "TxtEncodersSamplePeriod"
+        TxtEncodersSamplePeriod.Size = New Size(100, 23)
+        TxtEncodersSamplePeriod.TabIndex = 0
         ' 
         ' CmdUndo
         ' 
@@ -326,16 +388,6 @@ Partial Class FrmSettings
         CmdSave.TabIndex = 12
         CmdSave.UseVisualStyleBackColor = True
         ' 
-        ' TabPageEncoders
-        ' 
-        TabPageEncoders.Location = New Point(4, 24)
-        TabPageEncoders.Name = "TabPageEncoders"
-        TabPageEncoders.Padding = New Padding(3)
-        TabPageEncoders.Size = New Size(589, 328)
-        TabPageEncoders.TabIndex = 3
-        TabPageEncoders.Text = "Encoders"
-        TabPageEncoders.UseVisualStyleBackColor = True
-        ' 
         ' FrmSettings
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -353,6 +405,8 @@ Partial Class FrmSettings
         TabPageApplication.PerformLayout()
         TabPageDatabase.ResumeLayout(False)
         TabPageDatabase.PerformLayout()
+        TabPageEncoders.ResumeLayout(False)
+        TabPageEncoders.PerformLayout()
         ResumeLayout(False)
     End Sub
 
@@ -372,7 +426,7 @@ Partial Class FrmSettings
     Friend WithEvents LabCompanyAddress As Label
     Friend WithEvents LabCompanyName As Label
     Friend WithEvents LabDefaultFolder As Label
-    Friend WithEvents TxtDefaultFolder As TextBox
+    Friend WithEvents TxtApplicationDefaultFolder As TextBox
     Friend WithEvents CmdDefaultFolder As Button
     Friend WithEvents CmdUndo As Button
     Friend WithEvents CmdSave As Button
@@ -380,9 +434,14 @@ Partial Class FrmSettings
     Friend WithEvents CmdDatabaseFile As Button
     Friend WithEvents Label1 As Label
     Friend WithEvents LabDatabasePath As Label
-    Friend WithEvents TxtConnectionString As TextBox
+    Friend WithEvents TxtDatabaseConnectionString As TextBox
     Friend WithEvents TxtDatabaseFile As TextBox
     Friend WithEvents LabDatabaseMaintenance As Label
     Friend WithEvents ComboDatabaseMaintenance As ComboBox
     Friend WithEvents TabPageEncoders As TabPage
+    Friend WithEvents LabEncodersSamplePeriodUnits As Label
+    Friend WithEvents LabEncodersMaxSamplesPerScan As Label
+    Friend WithEvents LabEncodersSamplePeriod As Label
+    Friend WithEvents TxtEncodersMaxSamplesPerScan As TextBox
+    Friend WithEvents TxtEncodersSamplePeriod As TextBox
 End Class
