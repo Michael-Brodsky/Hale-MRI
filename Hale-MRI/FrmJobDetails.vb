@@ -3,8 +3,8 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
 ''' <summary>
-''' This form provides a user inteface for editing
-''' JobDetial records.
+''' This form provides a user interface for editing
+''' JobDetail records.
 ''' </summary>
 
 Public Class FrmJobDetails
@@ -73,7 +73,7 @@ Public Class FrmJobDetails
         Next
     End Sub
 
-    Private Property MasterSource As BindingSource
+    Protected Overrides Property MasterSource As BindingSource
         Get
             Return mMasterSource
         End Get

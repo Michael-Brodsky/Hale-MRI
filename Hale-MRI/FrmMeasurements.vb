@@ -481,6 +481,8 @@ Public Class FrmMeasurements
     '    End Sub
 #End Region
 #Region "NEW PRIVATE INTERFACE"
+    Protected Overrides Property MasterSource As BindingSource
+
     Private Sub MeasurementsGet()
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required.

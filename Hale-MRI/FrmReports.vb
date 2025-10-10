@@ -9,4 +9,6 @@ Public Class FrmReports
     Inherits FrmDatabaseForm
 
     Public Overrides Property Database As HaleMRIContext
+
+    Protected Overrides Property MasterSource As BindingSource
 End Class

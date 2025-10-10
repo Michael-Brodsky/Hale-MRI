@@ -94,7 +94,7 @@ Public Class FrmManufacturers
     End Sub
 
 
-    Private Property MasterSource As BindingSource
+    Protected Overrides Property MasterSource As BindingSource
         Get
             Return mMasterSource
         End Get

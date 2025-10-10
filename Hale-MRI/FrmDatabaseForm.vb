@@ -15,18 +15,22 @@ Partial Public Class FrmDatabaseForm
     ''' should be MustOverride. However, that would make this
     ''' an abstract class and prevent any derived forms from
     ''' being edited in the VS Designer.
-    Public Overridable Property Database As HaleMRIContext  ' This property MUST be overridden in derived forms.
+    Public Overridable Property Database As HaleMRIContext          ' This property MUST be overridden in derived forms.
 
     Public Overrides Sub Refresh()
-
+        ' This method allows forms to refresh other forms that may display related data.
+        If MasterSource IsNot Nothing Then MasterSource.ResetBindings(False)
+        MyBase.Refresh()
     End Sub
 
-    Public Property User As Employee                        ' This property should not be overridden, as all derived forms should share the same user.
+    Public Property User As Employee                                ' This property should not be overridden, as all derived forms should share the same user.
 
     Protected Overridable Sub BindDataSources()
         ' Derived forms MUST override this method to perform any 
         ' automatic, implementation-specific binding. 
     End Sub
+
+    Protected Overridable Property MasterSource As BindingSource    ' This property MUST be overridden in derived forms.
 
     Private Sub FrmDatabaseForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' The Database property will be changed in all open derived forms, 

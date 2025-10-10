@@ -48,11 +48,13 @@ Partial Public Class FrmCustomers
         End If
         Return result
     End Function
-    Public Overrides Sub Refresh()
-        If MasterSource IsNot Nothing Then MasterSource.ResetBindings(False)
-        MyBase.Refresh()
-    End Sub
 
+    Public Overrides Sub Refresh()
+        MyBase.Refresh()
+        VesselBindingSource.ResetBindings(False)
+        BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
+        DataGridVesselJobs.Refresh()
+    End Sub
 #End Region
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
@@ -71,7 +73,8 @@ Partial Public Class FrmCustomers
         StateCodeBindingSource.DataSource = Database.StateCodes.Local.ToBindingList()
         ' Bind: Customers (master) -> Vessels (details), Vessels (master) -> Jobs (details)).
         BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
-        If VesselBindingSource.Count > 0 Then BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
+        BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
+        'If VesselBindingSource.Count > 0 Then BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
     End Sub
 
     Private Function DeleteConfirm() As Boolean
@@ -91,7 +94,7 @@ Partial Public Class FrmCustomers
         Next
     End Sub
 
-    Private Property MasterSource As BindingSource
+    Protected Overrides Property MasterSource As BindingSource
         Get
             Return mMasterSource
         End Get

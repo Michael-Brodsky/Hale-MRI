@@ -71,6 +71,12 @@ Public Class FrmJobs
     End Function
 
     Public Property Hardware As WorkstationEncoders ' We need to pass this to the measurements form.
+
+    Public Overrides Sub Refresh()
+        FiltersRemove()
+        If mFilterOn AndAlso mFilter IsNot Nothing Then FiltersApply()
+        MyBase.Refresh()
+    End Sub
 #End Region
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
@@ -89,6 +95,8 @@ Public Class FrmJobs
         BindMasterDetails(JobsBindingSource, JobDetailsBindingSource, "JobDetails")
         'End If
     End Sub
+
+    Protected Overrides Property MasterSource As BindingSource
 
     Private Function NewJobCreate() As Job
         ' Returns a new Job with a unique job number, the currently selected Vessel

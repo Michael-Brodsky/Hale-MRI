@@ -94,10 +94,9 @@ Public Class FrmVessels
             DataGridVessels.Rows.Remove(row)
         Next
         Database.SaveChanges()
-        RefreshForm(mFrmCustomers, Database)
     End Sub
 
-    Private Property MasterSource As BindingSource
+    Protected Overrides Property MasterSource As BindingSource
         Get
             Return mMasterSource
         End Get
@@ -132,7 +131,12 @@ Public Class FrmVessels
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
-                If DeleteConfirm() Then DeleteSelectedVessels()
+                If DeleteConfirm() Then
+                    DeleteSelectedVessels()
+                    Me.Refresh()
+                    RefreshForm(mFrmCustomers)
+                    RefreshForm(mFrmJobs)
+                End If
             Case "FilterOff"
             Case "FilterOn"
             Case "GotoFirst"
@@ -140,6 +144,8 @@ Public Class FrmVessels
             Case "GotoNext"
             Case "GotoPrev"
             Case "Save"
+                RefreshForm(mFrmCustomers)
+                RefreshForm(mFrmJobs)
             Case "Undo"
             Case Else
         End Select
