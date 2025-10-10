@@ -134,7 +134,7 @@ Public Class Form1
         TxtAngle.Text = angle.ToString()
         TxtRadius.Text = radius.Value.ToString()
         TxtDepth.Text = depth.ToString()
-        TxtRadiusPercent.Text = (radius.Percent * 50).ToString()
+        TxtRadiusPercent.Text = (radius.Percent * 100).ToString()
         MeasurementsSave(angle, depth, radius)
         mCm += 1
         If mCm = mEncoderData(mRd).CellMeasurements.Count Then

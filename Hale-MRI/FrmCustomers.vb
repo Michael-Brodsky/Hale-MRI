@@ -6,7 +6,7 @@ Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.ChangeTracking.Internal
 
 ''' <summary>
-''' This form provides a user inteface for editing 
+''' This form provides a user interface for editing 
 ''' Customer records and accessing related Vessel and
 ''' Job records.
 ''' </summary>
@@ -48,15 +48,13 @@ Partial Public Class FrmCustomers
         End If
         Return result
     End Function
-#End Region
-#Region "Private Interface"
-    Private Property AddingNew As Boolean = False
-
-    Private Sub AddNewCustomer()
-        Database.Customers.Add(BindingSourceCurrent(CustomerBindingSource))
-        AddingNew = False
+    Public Overrides Sub Refresh()
+        If MasterSource IsNot Nothing Then MasterSource.ResetBindings(False)
+        MyBase.Refresh()
     End Sub
 
+#End Region
+#Region "Private Interface"
     Protected Overrides Sub BindDataSources()
         ' Master list is Customers sorted by CustomerName.
         Dim customers = Database.Customers.Include(Function(c) c.Vessels).OrderBy(Function(c) c.CustomerName).ToList()
@@ -74,6 +72,23 @@ Partial Public Class FrmCustomers
         ' Bind: Customers (master) -> Vessels (details), Vessels (master) -> Jobs (details)).
         BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
         If VesselBindingSource.Count > 0 Then BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
+    End Sub
+
+    Private Function DeleteConfirm() As Boolean
+        Return (
+            MessageBox.Show(
+                $"Delete {DataGridCustomers.SelectedRows.Count} row(s)?",
+                STR_TITLE_DEFAULT,
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question) = DialogResult.OK
+            )
+    End Function
+
+    Private Sub DeleteSelectedCustomers()
+        For Each row As DataGridViewRow In DataGridCustomers.SelectedRows
+            Dim c As Customer = CType(row.DataBoundItem, Customer)
+            If c IsNot Nothing Then CustomerBindingSource.Remove(c)
+        Next
     End Sub
 
     Private Property MasterSource As BindingSource
@@ -97,7 +112,7 @@ Partial Public Class FrmCustomers
     End Property
 #End Region
 #Region "Event Handlers"
-    Private Sub DatagridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
+    Private Sub DataGridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
         ' Open the Vessels form with the selected vessel as the current record.
         Try
             ShowForm(mFrmVessels, Database, User)
@@ -125,11 +140,13 @@ Partial Public Class FrmCustomers
         }
         MasterSource = CustomerBindingSource
         AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        DataGridCustomers.ClearSelection()
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
+                If DeleteConfirm() Then DeleteSelectedCustomers()
             Case "FilterOff"
             Case "FilterOn"
             Case "GotoFirst"
@@ -137,14 +154,19 @@ Partial Public Class FrmCustomers
             Case "GotoNext"
             Case "GotoPrev"
             Case "Save"
-                If AddingNew Then AddNewCustomer()
             Case "Undo"
             Case Else
         End Select
     End Sub
 
     Private Sub CustomerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles CustomerBindingSource.AddingNew
-        AddingNew = True
+        Dim newCustomer As New Customer()
+        e.NewObject = newCustomer
+        Database.Customers.Add(newCustomer)
+    End Sub
+
+    Private Sub DatagridCustomerVessels_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DatagridCustomerVessels.MouseDoubleClick
+
     End Sub
 #End Region
 End Class

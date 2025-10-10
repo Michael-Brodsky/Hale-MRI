@@ -15,6 +15,7 @@ Public Class FrmJobs
 #Region "Private Members"
     Private mFilter As Object = Nothing          ' The current form filter object, if any.
     Private mFilterOn As Boolean = False         ' Flag indicating whether the current form filter is active.
+    Private mNewJob As Job = Nothing
     ' Declare all forms this form can open.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
@@ -74,29 +75,53 @@ Public Class FrmJobs
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
         ' Populate all drop down lists and bind JobsBindingSource (master) to JobDetailsBindingSource (details).
-        If Database IsNot Nothing Then
-            ComboBlades.DataSource = Database.Blades.Local.ToBindingList
-            ComboCup.DataSource = Database.Cups.Local.ToBindingList
-            ComboLEExclusion.DataSource = Database.Exclusions.Local.ToBindingList
-            ComboMaterial.DataSource = Database.Materials.Local.ToBindingList
-            ComboManufacturer.DataSource = Database.Manufacturers.Local.ToBindingList
-            ComboRotation.DataSource = Database.Rotations.Local.ToBindingList
-            ComboStyle.DataSource = Database.Styles.Local.ToBindingList
-            ComboTeExclusion.DataSource = Database.Exclusions.Local.ToBindingList
-            EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
-            FiltersRemove()
-            BindMasterDetails(JobsBindingSource, JobDetailsBindingSource, "JobDetails")
-        End If
+        'If Database IsNot Nothing Then
+        ComboBlades.DataSource = Database.Blades.Local.ToBindingList
+        ComboCup.DataSource = Database.Cups.Local.ToBindingList
+        ComboLEExclusion.DataSource = New BindingList(Of Exclusion)(Database.Exclusions.Local.ToList()) ' LE & TE Exclusion combos need individual BindingLists.
+        ComboMaterial.DataSource = Database.Materials.Local.ToBindingList
+        ComboManufacturer.DataSource = Database.Manufacturers.Local.ToBindingList
+        ComboRotation.DataSource = Database.Rotations.Local.ToBindingList
+        ComboStyle.DataSource = Database.Styles.Local.ToBindingList
+        ComboTeExclusion.DataSource = New BindingList(Of Exclusion)(Database.Exclusions.Local.ToList()) ' LE & TE Exclusion combos need individual BindingLists.
+        EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
+        FiltersRemove()
+        BindMasterDetails(JobsBindingSource, JobDetailsBindingSource, "JobDetails")
+        'End If
     End Sub
 
-    Private Function CreateNewJob() As Job
-        ' Returns a new Job with a unique job number and the currently selected Vessel.
+    Private Function NewJobCreate() As Job
+        ' Returns a new Job with a unique job number, the currently selected Vessel
+        ' and current StartDate.
         Return New Job With {
             .Vessel = SelectedVessel,
             .StartDate = Date.Now,
             .JobNumber = If(Database.Jobs.Any(), Database.Jobs.Max(Function(job) job.JobNumber) + 1, 1)
         }
     End Function
+
+    Private Sub NewJobUpdate()
+        ' Updates the new Job's parameters from the bound controls.
+        Dim unused As Double
+        With mNewJob
+            .Cup = ComboCup.SelectedValue
+            If Not String.IsNullOrEmpty(TxtDAR.Text) Then .Dar = If(Double.TryParse(TxtDAR.Text, unused), unused, Nothing)
+            If Not String.IsNullOrEmpty(TxtDesiredPitch.Text) Then .DesiredPitch = If(Double.TryParse(TxtDesiredPitch.Text, unused), unused, Nothing)
+            .LeExclusion = ComboLEExclusion.SelectedValue
+            If Not String.IsNullOrEmpty(TxtMarkedPitch.Text) Then .MarkedPitch = If(Double.TryParse(TxtMarkedPitch.Text, unused), unused, Nothing)
+            .PropellerBlades = ComboBlades.SelectedValue
+            .PropellerBore = If(Not String.IsNullOrEmpty(TxtBore.Text), TxtBore.Text, Nothing)
+            If Not String.IsNullOrEmpty(TxtDiameter.Text) Then .PropellerDiameter = If(Double.TryParse(TxtDiameter.Text, unused), unused, Nothing)
+            .PropellerManufacturerId = ComboManufacturer.SelectedValue
+            .PropellerMaterial = ComboMaterial.SelectedValue
+            .PropellerPartNumber = If(Not String.IsNullOrEmpty(TxtPartNumber.Text), TxtPartNumber.Text, Nothing)
+            .PropellerRotation = ComboRotation.SelectedValue
+            .PropellerStyle = ComboStyle.SelectedValue
+            .SerialNumber = If(Not String.IsNullOrEmpty(TxtSerialNumber.Text), TxtSerialNumber.Text, Nothing)
+            .StampNumber = If(Not String.IsNullOrEmpty(TxtStampNumber.Text), TxtStampNumber.Text, Nothing)
+            .TeExclusion = ComboTeExclusion.SelectedValue
+        End With
+    End Sub
 
     Private ReadOnly Property CurrentJob As Job
         Get
@@ -282,7 +307,8 @@ Public Class FrmJobs
         End Get
         Set(value As Vessel)
             ComboVessels.SelectedItem = value
-            If ComboVessels.SelectedItem IsNot Nothing AndAlso JobsBindingSource.Count = 0 Then Navigator.CmdAddNew.Enabled = True
+            If Not JobSelected And Not (Navigator Is Nothing OrElse SelectedVessel Is Nothing) Then Navigator.CmdAddNew.Enabled = True
+            'If ComboVessels.SelectedItem IsNot Nothing AndAlso JobsBindingSource.Count = 0 Then Navigator.CmdAddNew.Enabled = True
         End Set
     End Property
 #End Region
@@ -358,7 +384,7 @@ Public Class FrmJobs
     End Sub
 
     Private Sub ComboStyle_SelectionChangeCommitted(sender As Object, e As EventArgs) Handles ComboStyle.SelectionChangeCommitted
-        ' Automatically chnage the blade count for certain propeller styles.
+        ' Automatically changes the blade count for certain propeller styles.
         If ComboStyle.SelectedItem IsNot Nothing Then
             Select Case ComboStyle.SelectedValue
                 Case "3-Blade"
@@ -385,7 +411,7 @@ Public Class FrmJobs
     Private Sub ComboVessels_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboVessels.SelectedIndexChanged
         If SelectedVessel IsNot Nothing Then
             SelectedCustomer = SelectedVessel?.Customer
-            If JobsBindingSource.Count = 0 And Navigator IsNot Nothing Then Navigator.CmdAddNew.Enabled = True
+            If Not JobSelected And Not (Navigator Is Nothing OrElse SelectedVessel Is Nothing) Then Navigator.CmdAddNew.Enabled = True
         End If
     End Sub
 
@@ -441,6 +467,7 @@ Public Class FrmJobs
             }
             Navigator.Database = Database
             Navigator.MasterSource = JobsBindingSource  ' The Navigator manages the Job records and notifies us when changes occur.
+            Navigator.NoUpdates = True                  ' We handle record updates ourselves because adding new Jobs requires extra steps.
             JobSelected = False                         ' Nothing is initially selected when this form loads.
             AddHandler JobsBindingSource.CurrentChanged, AddressOf JobsBindingSource_CurrentChanged
             AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
@@ -460,10 +487,10 @@ Public Class FrmJobs
 
     Private Sub JobsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobsBindingSource.AddingNew
         Try
-            Dim newJob As Job = CreateNewJob()
+            mNewJob = NewJobCreate()
             PreviousJob = SelectedJob
-            e.NewObject = newJob
-            Database.Jobs.Add(newJob)
+            e.NewObject = mNewJob
+            Database.Jobs.Add(mNewJob)
             JobSelectionEnabled = False
         Catch ex As Exception
             MessageBox.Show("Error adding a new job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -478,6 +505,7 @@ Public Class FrmJobs
                 ' No action required. Handled in JobsBindingSource_AddingNew.
             Case "Delete"
                 If DeleteConfirm() Then DeleteJob()
+                If Not JobSelected And Not (Navigator Is Nothing OrElse SelectedVessel Is Nothing) Then Navigator.CmdAddNew.Enabled = True
             Case "Editing"
                 JobSelectionEnabled = Not e.Value
             Case "FilterOff"
@@ -486,13 +514,17 @@ Public Class FrmJobs
                 FilterOn = True
             Case "Find"
                 ' Not implemented. Receives a parameter of type Object from the Navigator
-                ' that can be used to search the JobsBindingSource.
+                ' that can be used to search the JobBindingSource.
             Case "GotoFirst", "GotoNext", "GotoPrev"
                 If JobsBindingSource.IsBindingSuspended Then InitialJob = GetAJob.First
             Case "GotoLast"
                 If JobsBindingSource.IsBindingSuspended Then InitialJob = GetAJob.Last
             Case "Save"
+                ' If we're adding a new Job, update the record fields from our controls.
+                If mNewJob IsNot Nothing Then NewJobUpdate()
+                BindingSourceSave(Database, JobsBindingSource)
                 JobSelectionEnabled = True
+                mNewJob = Nothing
             Case "Undo"
                 If PreviousJob IsNot Nothing Then SelectedJob = PreviousJob
                 JobSelectionEnabled = True

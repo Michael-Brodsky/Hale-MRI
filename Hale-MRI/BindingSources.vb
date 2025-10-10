@@ -65,12 +65,12 @@ Public Module BindingSources
         ' Saves the current BindingSource record to the Database.
         bs.EndEdit()
         db.SaveChanges()
-        bs.ResetBindings(False)
+        bs.ResetCurrentItem()
     End Sub
 
     Public Sub BindingSourceUndo(db As HaleMRIContext, ByRef bs As BindingSource)
         ' Undoes changes made to the current BindingSource record and
-        ' rollsback any associated pending Database changes.
+        ' rolls back any associated pending Database changes.
         bs.CancelEdit()
         Rollback(db, bs.DataSource)
         If BindingSourceCurrent(bs) IsNot Nothing Then bs.ResetCurrentItem()

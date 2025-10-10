@@ -48,6 +48,14 @@ Module FormInstances
             End If
         End If
     End Sub
+
+    Public Sub RefreshForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext)
+        frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
+        If frm IsNot Nothing AndAlso frm.IsHandleCreated Then
+            frm.Refresh()
+        End If
+    End Sub
+
     Public Sub CloseForm(Of F As {Form, New})(ByRef frm As F)
         If frm IsNot Nothing AndAlso frm.IsHandleCreated Then
             ' Close the form if it is open

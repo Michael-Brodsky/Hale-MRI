@@ -8,8 +8,6 @@ Namespace Models
 
         Public Property VesselId As Integer
 
-        Public Property PropellerId As Integer?
-
         Public Property InspectedBy As Integer?
 
         Public Property JobNumber As Integer

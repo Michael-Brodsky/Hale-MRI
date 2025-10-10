@@ -1,9 +1,10 @@
 ﻿Imports System.ComponentModel
+Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
 ''' <summary>
-''' This form provides a user inteface for editing 
+''' This form provides a user interface for editing 
 ''' Manufacturer records and accessing related 
 ''' Propeller records.
 ''' </summary>
@@ -75,6 +76,24 @@ Public Class FrmManufacturers
         MasterSource = ManufacturersBindingSource
     End Sub
 
+    Private Function DeleteConfirm() As Boolean
+        Return (
+            MessageBox.Show(
+                $"Delete {DataGridManufacturers.SelectedRows.Count} row(s)?",
+                STR_TITLE_DEFAULT,
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question) = DialogResult.OK
+            )
+    End Function
+
+    Private Sub DeleteSelectedManufacturers()
+        For Each row As DataGridViewRow In DataGridManufacturers.SelectedRows
+            Dim m As Manufacturer = CType(row.DataBoundItem, Manufacturer)
+            If m IsNot Nothing Then ManufacturersBindingSource.Remove(m)
+        Next
+    End Sub
+
+
     Private Property MasterSource As BindingSource
         Get
             Return mMasterSource
@@ -106,7 +125,35 @@ Public Class FrmManufacturers
         End Try
     End Sub
     Private Sub FrmManufacturers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Navigator = RecordNavigationBar1
+        Navigator.BoundControls = New List(Of Control) From {
+           DataGridManufacturers
+        }
+        MasterSource = ManufacturersBindingSource
+        AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        DataGridManufacturers.ClearSelection()
+    End Sub
 
+    Private Sub ManufacturersBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles ManufacturersBindingSource.AddingNew
+        Dim newManufacturer As New Manufacturer()
+        e.NewObject = newManufacturer
+        Database.Manufacturers.Add(newManufacturer)
+    End Sub
+
+    Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
+        Select Case e.EventName
+            Case "Delete"
+                If DeleteConfirm() Then DeleteSelectedManufacturers()
+            Case "FilterOff"
+            Case "FilterOn"
+            Case "GotoFirst"
+            Case "GotoLast"
+            Case "GotoNext"
+            Case "GotoPrev"
+            Case "Save"
+            Case "Undo"
+            Case Else
+        End Select
     End Sub
 #End Region
 End Class

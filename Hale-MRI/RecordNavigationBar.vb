@@ -33,6 +33,7 @@ Public Class RecordNavigationBar
                             AddHandler CType(ctrl, CheckBox).CheckedChanged, AddressOf Bound_CheckChanged
                         Case TypeOf ctrl Is DataGridView
                             AddHandler CType(ctrl, DataGridView).CellBeginEdit, AddressOf Bound_CellBeginEdit
+                            AddHandler CType(ctrl, DataGridView).SelectionChanged, AddressOf Bound_SelectionChanged
                         Case Else
                             ' Handle other control types if necessary.
                     End Select
@@ -73,6 +74,8 @@ Public Class RecordNavigationBar
             Me.Enabled = Database IsNot Nothing AndAlso MasterSource IsNot Nothing
         End Set
     End Property
+
+    Public Property NoUpdates As Boolean = False
 
     Public Overloads Property Enabled As Boolean
         Get
@@ -156,6 +159,11 @@ Public Class RecordNavigationBar
         End If
     End Sub
 
+    Private Sub Bound_SelectionChanged(sender As Object, e As EventArgs)
+        Dim dgv As DataGridView = CType(sender, DataGridView)
+        Me.CmdDelete.Enabled = dgv.SelectedRows.Count > 0
+    End Sub
+
     Private Sub Bound_TextChanged(sender As Object, e As EventArgs)
         Dim txtbox As TextBox = CType(sender, TextBox)
         If txtbox.Modified Then
@@ -207,9 +215,9 @@ Public Class RecordNavigationBar
     End Sub
 
     Private Sub CmdSave_Click(sender As Object, e As EventArgs) Handles CmdSave.Click
-        BindingSourceSave(Database, MasterSource)
-        SaveUndoControlsEnabled = False
+        If Not NoUpdates Then BindingSourceSave(Database, MasterSource)
         RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Save"))
+        SaveUndoControlsEnabled = False
     End Sub
 
     Private Sub CmdUndo_Click(sender As Object, e As EventArgs) Handles CmdUndo.Click

@@ -17,8 +17,6 @@ Namespace Contexts
 
         Public Overridable Property Blades As DbSet(Of Blade)
 
-        Public Overridable Property BladeMeasurements As DbSet(Of BladeMeasurement)
-
         Public Overridable Property CellMeasurements As DbSet(Of CellMeasurement)
 
         Public Overridable Property CountryCodes As DbSet(Of CountryCode)
@@ -80,30 +78,6 @@ Namespace Contexts
                     entity.Property(Function(e) e.BladeCount).
                         ValueGeneratedNever().
                         HasColumnName("Blade Count")
-                End Sub)
-
-            modelBuilder.Entity(Of BladeMeasurement)(
-                Sub(entity)
-                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
-
-                    entity.ToTable("Blade Measurements")
-
-                    entity.HasIndex(Function(e) e.BladeId, "Blade ID")
-
-                    entity.HasIndex(Function(e) e.Id, "ID")
-
-                    entity.HasIndex(Function(e) e.JobDetailsId, "Job ID")
-
-                    entity.Property(Function(e) e.Id).
-                        HasColumnType("counter").
-                        HasColumnName("ID")
-                    entity.Property(Function(e) e.AveragePitch).HasColumnName("Average Pitch")
-                    entity.Property(Function(e) e.BladeId).HasColumnName("Blade ID")
-                    entity.Property(Function(e) e.JobDetailsId).HasColumnName("Job Details ID")
-
-                    entity.HasOne(Function(d) d.JobDetails).WithMany(Function(p) p.BladeMeasurements).
-                        HasForeignKey(Function(d) d.JobDetailsId).
-                        HasConstraintName("Job DetailsBlade Measurements")
                 End Sub)
 
             modelBuilder.Entity(Of CellMeasurement)(
@@ -251,8 +225,6 @@ Namespace Contexts
 
                     entity.HasIndex(Function(e) e.PropellerManufacturerId, "Manufacturer ID")
 
-                    entity.HasIndex(Function(e) e.PropellerId, "Propeller ID")
-
                     entity.HasIndex(Function(e) e.VesselId, "Vessel ID")
 
                     entity.Property(Function(e) e.Id).
@@ -273,7 +245,6 @@ Namespace Contexts
                         HasMaxLength(64).
                         HasColumnName("Propeller Description")
                     entity.Property(Function(e) e.PropellerDiameter).HasColumnName("Propeller Diameter")
-                    entity.Property(Function(e) e.PropellerId).HasColumnName("Propeller ID")
                     entity.Property(Function(e) e.PropellerManufacturerId).HasColumnName("Propeller Manufacturer ID")
                     entity.Property(Function(e) e.PropellerMaterial).
                         HasMaxLength(16).
@@ -480,6 +451,7 @@ Namespace Contexts
 
                     entity.HasOne(Function(d) d.Manufacturer).WithMany(Function(p) p.Propellers).
                         HasForeignKey(Function(d) d.ManufacturerId).
+                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("ManufacturersPropellers")
                 End Sub)
 
@@ -583,6 +555,17 @@ Namespace Contexts
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
                         HasColumnName("Tolerance Class")
+                    entity.Property(Function(e) e.DisplayColor).
+                        HasMaxLength(16).
+                        HasColumnName("Display Color")
+                    entity.Property(Function(e) e.LocalPitchMinimum).HasColumnName("Local Pitch Minimum")
+                    entity.Property(Function(e) e.LocalPitchPercent).HasColumnName("Local Pitch Percent")
+                    entity.Property(Function(e) e.MeanPitchForPropeller).HasColumnName("Mean Pitch For Propeller")
+                    entity.Property(Function(e) e.MeanPitchPerBlade).
+                        HasDefaultValue(0.0).
+                        HasColumnName("Mean Pitch Per Blade")
+                    entity.Property(Function(e) e.MeanPitchPerRadiusMinimum).HasColumnName("Mean Pitch Per Radius Minimum")
+                    entity.Property(Function(e) e.MeanPitchPerRadiusPercent).HasColumnName("Mean Pitch Per Radius Percent")
                 End Sub)
 
             modelBuilder.Entity(Of Vessel)(

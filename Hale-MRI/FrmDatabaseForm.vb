@@ -6,28 +6,27 @@ Imports LibDatabase.Models
 ''' from the database.
 ''' </summary>
 ''' 
-
+''' <summary>
+''' Base class for all forms that access the database.
+''' </summary>
 Partial Public Class FrmDatabaseForm
     Inherits Form
-    Public Overridable Property Database As HaleMRIContext
+    ''' NOTE: Properties and methods qualified as Overridable
+    ''' should be MustOverride. However, that would make this
+    ''' an abstract class and prevent any derived forms from
+    ''' being edited in the VS Designer.
+    Public Overridable Property Database As HaleMRIContext  ' This property MUST be overridden in derived forms.
 
-    Public Property User As Employee
+    Public Overrides Sub Refresh()
+
+    End Sub
+
+    Public Property User As Employee                        ' This property should not be overridden, as all derived forms should share the same user.
 
     Protected Overridable Sub BindDataSources()
         ' Derived forms MUST override this method to perform any 
-        ' implementation-specific binding. Note: this method
-        ' should be qualified as "MustOverride", but that makes
-        ' this class abstract and prevents opening any derived
-        ' forms in the designer.
+        ' automatic, implementation-specific binding. 
     End Sub
-
-    'Protected Overridable Sub FrmDatabaseForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-    '    ' Derived forms with a DataGridView.SelectionChanged event will fire
-    '    ' after the FormClosing event, resulting in an error. So, we set the
-    '    ' Database property to Nothing. Derived forms should check Database
-    '    ' Is Nothing in the SelectionChanged events to avoid errors.
-    '    Database = Nothing
-    'End Sub
 
     Private Sub FrmDatabaseForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' The Database property will be changed in all open derived forms, 

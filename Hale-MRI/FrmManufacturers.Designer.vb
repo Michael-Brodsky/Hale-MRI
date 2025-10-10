@@ -162,14 +162,16 @@ Partial Class FrmManufacturers
         ' RecordNavigationBar1
         ' 
         RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         RecordNavigationBar1.BoundControls = Nothing
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(12, 12)
+        RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Size = New Size(729, 30)
+        RecordNavigationBar1.Size = New Size(635, 24)
         RecordNavigationBar1.TabIndex = 1
         ' 
         ' PropellersBindingSource

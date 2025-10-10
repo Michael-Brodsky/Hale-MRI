@@ -24,15 +24,15 @@ Module MRIMath
         Dim arclength = adjusteddiameter * Math.PI * deltaangle / 360 'Gets the length of the arc/flat of the radial chord
 
         Dim squared = Math.Pow(deltadepth, 2) + Math.Pow(arclength, 2)
-        chordlength = Math.Sqrt(squared) 'Pythagorean theorum to get chord length from change in depth and arc length
+        chordlength = Math.Sqrt(squared) 'Pythagorean theorem to get chord length from change in depth and arc length
 
         Return chordlength
     End Function
 
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
         'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))
-        Return CInt(Math.Ceiling(Angle / (360 / Blades)))
-        'Return If(Blades <> 0, Blades - CInt(Math.Ceiling(Angle / (360 / Blades))), 0)
+        ' Return CInt(Math.Ceiling(Angle / (360 / Blades)))
+        Return If(Blades <> 0, Blades - CInt(Math.Ceiling(Angle / (360 / Blades))), 0) + 1
     End Function
 
     Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement)) As Double

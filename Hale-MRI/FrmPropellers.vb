@@ -1,12 +1,12 @@
 ﻿Imports System.ComponentModel
+Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
 ''' <summary>
-''' This form provides a user inteface for editing
+''' This form provides a user interface for editing
 ''' Propeller records.
 ''' </summary>
-
 Public Class FrmPropellers
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -72,6 +72,23 @@ Public Class FrmPropellers
         MasterSource = PropellerBindingSource
     End Sub
 
+    Private Function DeleteConfirm() As Boolean
+        Return (
+            MessageBox.Show(
+                $"Delete {DataGridPropellers.SelectedRows.Count} row(s)?",
+                STR_TITLE_DEFAULT,
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question) = DialogResult.OK
+            )
+    End Function
+
+    Private Sub DeleteSelectedPropellers()
+        For Each row As DataGridViewRow In DataGridPropellers.SelectedRows
+            Dim p As Propeller = CType(row.DataBoundItem, Propeller)
+            If p IsNot Nothing Then PropellerBindingSource.Remove(p)
+        Next
+    End Sub
+
     Private Property MasterSource As BindingSource
         Get
             Return mMasterSource
@@ -97,8 +114,31 @@ Public Class FrmPropellers
         Navigator = RecordNavigationBar1
         Navigator.BoundControls = New List(Of Control) From {
            DataGridPropellers
-       }
+        }
         MasterSource = PropellerBindingSource
+        DataGridPropellers.ClearSelection()
+    End Sub
+
+    Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
+        Select Case e.EventName
+            Case "Delete"
+                If DeleteConfirm() Then DeleteSelectedPropellers()
+            Case "FilterOff"
+            Case "FilterOn"
+            Case "GotoFirst"
+            Case "GotoLast"
+            Case "GotoNext"
+            Case "GotoPrev"
+            Case "Save"
+            Case "Undo"
+            Case Else
+        End Select
+    End Sub
+
+    Private Sub PropellerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles PropellerBindingSource.AddingNew
+        Dim newPropeller As New Propeller()
+        e.NewObject = newPropeller
+        Database.Propellers.Add(newPropeller)
     End Sub
 #End Region
 End Class

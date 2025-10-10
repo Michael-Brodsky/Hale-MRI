@@ -478,6 +478,7 @@ Partial Class FrmJobs
         ' ComboBlades
         ' 
         ComboBlades.DataBindings.Add(New Binding("SelectedValue", JobsBindingSource, "PropellerBlades", True))
+        ComboBlades.DataBindings.Add(New Binding("SelectedItem", JobsBindingSource, "PropellerBladesNavigation", True))
         ComboBlades.DisplayMember = "BladeCount"
         ComboBlades.FormattingEnabled = True
         ComboBlades.Location = New Point(529, 191)

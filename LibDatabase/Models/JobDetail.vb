@@ -22,8 +22,6 @@ Namespace Models
 
         Public Property MeasurementTypeId As Integer?
 
-        Public Overridable Property BladeMeasurements As ICollection(Of BladeMeasurement) = New List(Of BladeMeasurement)()
-
         Public Overridable Property Job As Job
 
         Public Overridable Property MeasurementType As MeasurementType

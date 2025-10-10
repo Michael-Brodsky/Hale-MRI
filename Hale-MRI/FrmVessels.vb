@@ -10,10 +10,11 @@ Public Class FrmVessels
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
-    ' Define all forms this form can open.
+    ' Define all forms this form can work with.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
     Private mFrmJobs As FrmJobs
+    Private mFrmCustomers As FrmCustomers
 #End Region
 #Region "Public Interface"
     Public ReadOnly Property Current
@@ -56,13 +57,6 @@ Public Class FrmVessels
     End Function
 #End Region
 #Region "Private Interface"
-    Private Property AddingNew As Boolean = False
-
-    Private Sub AddNewVessel()
-        Database.Vessels.Add(BindingSourceCurrent(VesselBindingSource))
-        AddingNew = False
-    End Sub
-
     Protected Overrides Sub BindDataSources()
         ' These DataSources use LocalViews, which are loaded on application
         ' startup, and not expected to change.
@@ -81,6 +75,26 @@ Public Class FrmVessels
         ' Bind the master BindingSource (Vessels) to the details BindingSource (Jobs).
         VesselBindingSource.DataSource = New BindingList(Of Vessel)(vessels)
         BindMasterDetails(VesselBindingSource, JobsBindingSource, "Jobs")
+    End Sub
+
+    Private Function DeleteConfirm() As Boolean
+        Return (
+            MessageBox.Show(
+                $"Delete {DataGridVessels.SelectedRows.Count} row(s)?",
+                STR_TITLE_DEFAULT,
+                MessageBoxButtons.OKCancel,
+                MessageBoxIcon.Question) = DialogResult.OK
+            )
+    End Function
+
+    Private Sub DeleteSelectedVessels()
+        For Each row As DataGridViewRow In DataGridVessels.SelectedRows
+            Dim v As Vessel = CType(row.DataBoundItem, Vessel)
+            If v IsNot Nothing Then Database.Remove(v)
+            DataGridVessels.Rows.Remove(row)
+        Next
+        Database.SaveChanges()
+        RefreshForm(mFrmCustomers, Database)
     End Sub
 
     Private Property MasterSource As BindingSource
@@ -118,6 +132,7 @@ Public Class FrmVessels
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         Select Case e.EventName
             Case "Delete"
+                If DeleteConfirm() Then DeleteSelectedVessels()
             Case "FilterOff"
             Case "FilterOn"
             Case "GotoFirst"
@@ -125,7 +140,6 @@ Public Class FrmVessels
             Case "GotoNext"
             Case "GotoPrev"
             Case "Save"
-                If AddingNew Then AddNewVessel()
             Case "Undo"
             Case Else
         End Select
@@ -135,13 +149,16 @@ Public Class FrmVessels
         Navigator = RecordNavigationBar1
         Navigator.BoundControls = New List(Of Control) From {
            DataGridVessels
-       }
+        }
         MasterSource = VesselBindingSource
         AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        DataGridVessels.ClearSelection()
     End Sub
 
     Private Sub VesselBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles VesselBindingSource.AddingNew
-        AddingNew = True
+        Dim newVessel As New Vessel()
+        e.NewObject = newVessel
+        Database.Vessels.Add(newVessel)
     End Sub
 
     Private Sub DataGridVessels_DefaultValuesNeeded(sender As Object, e As DataGridViewRowEventArgs)
