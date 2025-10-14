@@ -13,6 +13,7 @@ Public Class RecordNavigationBar
     Private mDatabase As HaleMRIContext = Nothing           ' The current database context.
     Private mFilter As Object = Nothing                     ' The current filter object, if any.
     Private mMasterSource As BindingSource = Nothing        ' The current master BindingSource.
+    Private mToolTip As New ToolTip()                       ' ToolTip for the Control buttons.
 #End Region
 #Region "Public Inteface"
     Public Property BoundControls As List(Of Control)
@@ -21,7 +22,7 @@ Public Class RecordNavigationBar
         End Get
         Set(controls As List(Of Control))
             ' Assigns "change" event handlers to any bound controls. 
-            ' This notifies us when a record is being editted.
+            ' This notifies us when a record is being edited.
             If controls IsNot Nothing Then
                 For Each ctrl In controls
                     Select Case True
@@ -75,8 +76,6 @@ Public Class RecordNavigationBar
         End Set
     End Property
 
-    Public Property NoUpdates As Boolean = False
-
     Public Overloads Property Enabled As Boolean
         Get
             Return MyBase.Enabled
@@ -123,6 +122,8 @@ Public Class RecordNavigationBar
     Public Delegate Sub NavigationEventHandler(sender As Object, e As NavigationEventArgs)
 
     Public Event NavigationEvent As NavigationEventHandler
+
+    Public Property NoUpdates As Boolean = False
 
     Public Property Position As Integer
         Set(value As Integer)
@@ -190,8 +191,9 @@ Public Class RecordNavigationBar
         RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Delete"))
     End Sub
 
-    Private Sub CmdFind_Click(sender As Object, e As EventArgs) Handles CmdFind.Click
-        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Find", TxtFind.Text))
+    Private Sub CmdRefresh_Click(sender As Object, e As EventArgs) Handles CmdRefresh.Click
+        MasterSource.ResetBindings(False)
+        RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Refresh"))
     End Sub
 
     Private Sub CmdGotoFirst_Click(sender As Object, e As EventArgs) Handles CmdGotoFirst.Click
@@ -256,11 +258,28 @@ Public Class RecordNavigationBar
         CmdGotoNext.Enabled = CmdGotoFirst.Enabled
         CmdGotoPrevious.Enabled = CmdGotoFirst.Enabled
         CmdDelete.Enabled = CmdAddNew.Enabled
-        CmdFind.Enabled = CmdGotoFirst.Enabled
-        TxtFind.Enabled = CmdFind.Enabled
+        CmdRefresh.Enabled = CmdGotoFirst.Enabled
+        TxtFind.Enabled = CmdRefresh.Enabled
         If Not CmdUndo.Enabled Then CmdSave.Enabled = False
         ' BoundControls are enabled only if the MasterSource has records and a record is currently selected.
         BoundControlsEnabled = Me.Position <> kNoCurrentRecord AndAlso Me.Count > 0
+    End Sub
+
+    Private Sub RecordNavigationBar_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            mToolTip.SetToolTip(CmdAddNew, "Add New Record")
+            mToolTip.SetToolTip(CmdDelete, "Delete Current Record")
+            mToolTip.SetToolTip(CmdRefresh, "Refresh Records")
+            mToolTip.SetToolTip(CmdGotoFirst, "Go to First Record")
+            mToolTip.SetToolTip(CmdGotoLast, "Go to Last Record")
+            mToolTip.SetToolTip(CmdGotoNext, "Go to Next Record")
+            mToolTip.SetToolTip(CmdGotoPrevious, "Go to Previous Record")
+            mToolTip.SetToolTip(ChkToggleFilter, "Toggle Filter")
+            mToolTip.SetToolTip(CmdSave, "Save Changes")
+            mToolTip.SetToolTip(CmdUndo, "Undo Changes")
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_OBJECT_LOAD, "navigation bar", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private WriteOnly Property HandleDataSourceEvents As Boolean
@@ -291,12 +310,12 @@ Public Class RecordNavigationBar
             CmdGotoFirst.Enabled = Not CmdSave.Enabled
             CmdAddNew.Enabled = Not CmdSave.Enabled
 
-            CmdFind.Enabled = CmdGotoFirst.Enabled
+            CmdRefresh.Enabled = CmdGotoFirst.Enabled
             CmdGotoLast.Enabled = CmdGotoFirst.Enabled
             CmdGotoNext.Enabled = CmdGotoFirst.Enabled
             CmdGotoPrevious.Enabled = CmdGotoFirst.Enabled
             CmdDelete.Enabled = CmdAddNew.Enabled
-            TxtFind.Enabled = CmdFind.Enabled
+            TxtFind.Enabled = CmdRefresh.Enabled
             RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Editing",, value))
         End Set
     End Property

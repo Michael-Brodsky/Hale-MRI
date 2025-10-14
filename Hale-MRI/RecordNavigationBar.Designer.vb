@@ -30,7 +30,7 @@ Partial Class RecordNavigationBar
         CmdGotoLast = New Button()
         CmdAddNew = New Button()
         CmdDelete = New Button()
-        CmdFind = New Button()
+        CmdRefresh = New Button()
         TxtFind = New TextBox()
         CmdSave = New Button()
         CmdUndo = New Button()
@@ -116,16 +116,16 @@ Partial Class RecordNavigationBar
         CmdDelete.TabIndex = 6
         CmdDelete.UseVisualStyleBackColor = True
         ' 
-        ' CmdFind
+        ' CmdRefresh
         ' 
-        CmdFind.Enabled = False
-        CmdFind.Image = CType(resources.GetObject("CmdFind.Image"), Image)
-        CmdFind.Location = New Point(377, 0)
-        CmdFind.Margin = New Padding(0)
-        CmdFind.Name = "CmdFind"
-        CmdFind.Size = New Size(38, 24)
-        CmdFind.TabIndex = 8
-        CmdFind.UseVisualStyleBackColor = True
+        CmdRefresh.Enabled = False
+        CmdRefresh.Image = My.Resources.Resources.Refresh
+        CmdRefresh.Location = New Point(377, 0)
+        CmdRefresh.Margin = New Padding(0)
+        CmdRefresh.Name = "CmdRefresh"
+        CmdRefresh.Size = New Size(38, 24)
+        CmdRefresh.TabIndex = 8
+        CmdRefresh.UseVisualStyleBackColor = True
         ' 
         ' TxtFind
         ' 
@@ -183,7 +183,7 @@ Partial Class RecordNavigationBar
         TableLayoutPanel1.Controls.Add(TxtCurrentPosition, 3, 0)
         TableLayoutPanel1.Controls.Add(TxtFind, 10, 0)
         TableLayoutPanel1.Controls.Add(CmdGotoNext, 4, 0)
-        TableLayoutPanel1.Controls.Add(CmdFind, 9, 0)
+        TableLayoutPanel1.Controls.Add(CmdRefresh, 9, 0)
         TableLayoutPanel1.Controls.Add(CmdGotoLast, 5, 0)
         TableLayoutPanel1.Controls.Add(CmdAddNew, 6, 0)
         TableLayoutPanel1.Controls.Add(CmdDelete, 7, 0)
@@ -236,7 +236,7 @@ Partial Class RecordNavigationBar
     Friend WithEvents CmdGotoLast As Button
     Friend WithEvents CmdAddNew As Button
     Friend WithEvents CmdDelete As Button
-    Friend WithEvents CmdFind As Button
+    Friend WithEvents CmdRefresh As Button
     Friend WithEvents TxtFind As TextBox
     Friend WithEvents CmdSave As Button
     Friend WithEvents CmdUndo As Button

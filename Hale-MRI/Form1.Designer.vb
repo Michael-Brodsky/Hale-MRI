@@ -100,6 +100,7 @@ Partial Class Form1
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.NoUpdates = False
         RecordNavigationBar1.Size = New Size(635, 24)
         RecordNavigationBar1.TabIndex = 0
         ' 

@@ -8,8 +8,14 @@ Module Strings
     Public Const STR_TITLE_APPLICATION_ERROR As String = "Application Error"
     Public Const STR_TITLE_ENCODER_ERROR As String = "Encoder Error"
     Public Const STR_TITLE_DATABASE_ERROR As String = "Database Error"
-    Public Const STR_ERR_INVALID_SELECTION As String = "The selected item is not in the list. Please select a valid item."
+
+    Public Const STR_ERR_ADDNEW As String = "Error adding new {0}: {1}"
     Public Const STR_ERR_CALIBRATION_DEFAULT As String = "Default"
+    Public Const STR_ERR_FORM_OPEN As String = "Error opening the {0} form: {1}"
+    Public Const STR_ERR_INVALID_SELECTION As String = "The selected item is not in the list. Please select a valid item."
+    Public Const STR_ERR_NAVIGATION As String = "Navigation error: {0}"
+    Public Const STR_ERR_NO_DEFAULT_VALUE As String = "Error no default value: {0}"
+    Public Const STR_ERR_OBJECT_LOAD As String = "Error loading the {0}: {1}"
 
     ' Setting names used in ~Settings table.
     Public Const STR_SETTING_COMPANY_NAME As String = "Company Name"

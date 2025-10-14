@@ -13,10 +13,12 @@ Public Class Form1
     Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this is a database Setting).
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
+    Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
+    Private mNavigator As RecordNavigationBar = Nothing         ' The form's RecordNavigationBar.
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
-    ' Other forms we can open.
+    ' Other forms we can work with.
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
@@ -28,7 +30,7 @@ Public Class Form1
 #End If
 #End Region
 #Region "Public Interface"
-    Public ReadOnly Property Current
+    Public ReadOnly Property Current As JobDetail
         Get
             Return BindingSourceCurrent(JobDetailsBindingSource)
         End Get
@@ -193,7 +195,26 @@ Public Class Form1
         Database.CellMeasurements.Add(cm)
     End Sub
 
+    Protected Overrides Property MasterSource As BindingSource
+        Get
+            Return mMasterSource
+        End Get
+        Set(value As BindingSource)
+            mMasterSource = value
+            If Navigator IsNot Nothing Then Navigator.MasterSource = mMasterSource
+        End Set
+    End Property
+
     Private Property Navigator As RecordNavigationBar
+        Get
+            Return mNavigator
+        End Get
+        Set(value As RecordNavigationBar)
+            mNavigator = value
+            If mNavigator IsNot Nothing Then mNavigator.Database = Database
+        End Set
+    End Property
+
 
     Private Sub NewRadiusMeasurement()
         ' RadiusMeasurement is now parent (PK) of Cell and ExtremeMeasurements
@@ -326,9 +347,8 @@ Public Class Form1
 
             ' Initialize the Navigator
             Navigator = RecordNavigationBar1
-            Navigator.Database = Database
-            Navigator.MasterSource = JobDetailsBindingSource
             Navigator.BoundControls = New List(Of Control) From {DataGridJobDetails}
+            MasterSource = JobDetailsBindingSource
 
             ' EncoderStatusStrip1 handles the encoder hardware and its controls automatically. 
             ' It raises events notifying clients of anything relevant. These events can, for
@@ -342,7 +362,7 @@ Public Class Form1
     End Sub
 
     Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
-        ' Handles EncoderStausStrip events so we can update our controls accordingly.
+        ' Handles EncoderStatusStrip events so we can update our controls accordingly.
     End Sub
 
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
@@ -354,26 +374,29 @@ Public Class Form1
         ' Handles Navigator events so we can update our controls accordingly.
         Select Case e.EventName
             Case "AddNew"
-                ' Disable the PanelMeasurements when the user is adding a new JobDetails record.
+                ' Disable PanelMeasurements when the user is adding a new JobDetails record.
                 PanelMeasurements.Enabled = False
             Case "Delete"
-                If DeleteConfirm() Then DeleteJobDetail()
+                If DeleteConfirm() Then
+                    DeleteJobDetail()
+                    RefreshAll(New List(Of FrmDatabaseForm) From {mFrmJobs})
+                End If
             Case "Editing"
-                ' Disable the PanelMeasurements when the user is editing the JobDetails record, 
-                ' unless it's the wheel pitch TextBox, which is also bound to the JobDetailsBindingSource.
-                'If Me.ActiveControl Is DataGridJobDetails Then PanelMeasurements.Enabled = False
+                ' Disable the PanelMeasurements when the user is editing the JobDetails record. 
+                PanelMeasurements.Enabled = False
             Case "FilterOff"
             Case "FilterOn"
             Case "Find"
             Case "GotoFirst", "GotoNext", "GotoPrev"
             Case "GotoLast"
             Case "Save"
-                ' Enable the PanelMeasurements when the user has saved the JobDetails record.
+                ' Refresh any open database forms affected by our changes and enable PanelMeasurements.
+                RefreshAll(New List(Of FrmDatabaseForm) From {mFrmJobs})
                 PanelMeasurements.Enabled = True
             Case "Undo"
                 ' Enable the PanelMeasurements when the user has cancelled the JobDetails record changes.
                 If Me.Current IsNot Nothing Then
-                    JobDetailsBindingSource.ResetCurrentItem()
+                    'JobDetailsBindingSource.ResetCurrentItem() ' This should be handled in BindingSourceUndo()
                     ShowJobDetailsInfo()
                     PanelMeasurements.Enabled = True
                 End If
@@ -415,11 +438,11 @@ Public Class Form1
             mFrmJobs.Find(Job)
         End If
     End Sub
-
-    Private Sub TxtManufacturer_DoubleClick(sender As Object, e As EventArgs) Handles TxtManufacturer.DoubleClick
+    Private Sub TxtManufacturer_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles TxtManufacturer.MouseDoubleClick
         If Job IsNot Nothing Then
             ShowForm(mFrmManufacturers, Database, User)
-            'mFrmManufacturers.Find(Job?.Propeller?.Manufacturer)   ' Need to implement Propeller has a Manufacturer database relationship.
+            'mFrmManufacturers.Find(Job?.Propeller?.Manufacturer)   ' Need to implement Job has a Propeller, and Propeller has a Manufacturer database relationship.
+            mFrmManufacturers.Find(Job?.PropellerManufacturer)
         End If
     End Sub
 
@@ -429,5 +452,6 @@ Public Class Form1
             mFrmVessels.Find(Job?.Vessel)
         End If
     End Sub
+
 #End Region
 End Class

@@ -18,7 +18,7 @@ Public Class FrmPropellers
 #Region "Public Interface"
     Public ReadOnly Property Current
         Get
-            Return BindingSourceCurrent(mMasterSource)
+            Return BindingSourceCurrent(MasterSource)
         End Get
     End Property
 
@@ -30,7 +30,7 @@ Public Class FrmPropellers
         End Get
         Set(value As Object)
             mFilter = value
-            If mNavigator IsNot Nothing Then mNavigator.Filter = mFilter
+            If Navigator IsNot Nothing Then Navigator.Filter = mFilter
             FilterOn = mFilter IsNot Nothing
         End Set
     End Property
@@ -41,7 +41,7 @@ Public Class FrmPropellers
         End Get
         Set(value As Boolean)
             mFilterOn = value
-            If mNavigator IsNot Nothing Then mNavigator.FilterOn = mFilterOn
+            If Navigator IsNot Nothing Then Navigator.FilterOn = mFilterOn
         End Set
     End Property
 
@@ -57,19 +57,15 @@ Public Class FrmPropellers
 #End Region
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
-        ' These DataSources query the database, as they may change while
-        ' the application is open.
-        PropellerBindingSource.DataSource = New BindingList(Of Propeller)(Database.Propellers.OrderBy(Function(e) e.Description).ToList())
-        ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(e) e.ManufacturerName).ToList())
-        ' These DataSources use LocalViews, which are loaded on application
-        ' startup, and not expected to change.
+        ' These DataSources are used by ComboBox lists in the grids and need to be loaded first.
         BladesBindingSource.DataSource = Database.Blades.Local.ToBindingList()
         StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList()
         MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList()
         RotationsBindingSource.DataSource = Database.Rotations.Local.ToBindingList()
-        ' Configure the RecordNavigator.
-        Navigator = RecordNavigationBar1
-        MasterSource = PropellerBindingSource
+        ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(e) e.ManufacturerName).ToList())
+        ' These DataSources query the database, as they may change while
+        ' the application is open.
+        PropellerBindingSource.DataSource = New BindingList(Of Propeller)(Database.Propellers.OrderBy(Function(e) e.Description).ToList())
     End Sub
 
     Private Function DeleteConfirm() As Boolean
@@ -85,8 +81,12 @@ Public Class FrmPropellers
     Private Sub DeleteSelectedPropellers()
         For Each row As DataGridViewRow In DataGridPropellers.SelectedRows
             Dim p As Propeller = CType(row.DataBoundItem, Propeller)
-            If p IsNot Nothing Then PropellerBindingSource.Remove(p)
+            If p IsNot Nothing Then
+                Database.Remove(p)
+                DataGridPropellers.Rows.Remove(row)
+            End If
         Next
+        Database.SaveChanges()
     End Sub
 
     Protected Overrides Property MasterSource As BindingSource
@@ -95,7 +95,7 @@ Public Class FrmPropellers
         End Get
         Set(value As BindingSource)
             mMasterSource = value
-            If mNavigator IsNot Nothing Then mNavigator.MasterSource = mMasterSource
+            If Navigator IsNot Nothing Then Navigator.MasterSource = mMasterSource
         End Set
     End Property
 
@@ -111,34 +111,49 @@ Public Class FrmPropellers
 #End Region
 #Region "Event Handlers"
     Private Sub FrmPropellers_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Navigator = RecordNavigationBar1
-        Navigator.BoundControls = New List(Of Control) From {
-           DataGridPropellers
-        }
-        MasterSource = PropellerBindingSource
-        DataGridPropellers.ClearSelection()
+        Try
+            Navigator = RecordNavigationBar1
+            Navigator.BoundControls = New List(Of Control) From {DataGridPropellers}
+            MasterSource = PropellerBindingSource
+            AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "propellers", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
-        Select Case e.EventName
-            Case "Delete"
-                If DeleteConfirm() Then DeleteSelectedPropellers()
-            Case "FilterOff"
-            Case "FilterOn"
-            Case "GotoFirst"
-            Case "GotoLast"
-            Case "GotoNext"
-            Case "GotoPrev"
-            Case "Save"
-            Case "Undo"
-            Case Else
-        End Select
+        Try
+            Select Case e.EventName
+                Case "Delete"
+                    If DeleteConfirm() Then
+                        DeleteSelectedPropellers()
+                        RefreshAll()
+                    End If
+                Case "FilterOff"
+                Case "FilterOn"
+                Case "GotoFirst"
+                Case "GotoLast"
+                Case "GotoNext"
+                Case "GotoPrev"
+                Case "Refresh"
+                Case "Save"
+                    RefreshAll()
+                Case "Undo"
+                Case Else
+            End Select
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_NAVIGATION, ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub PropellerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles PropellerBindingSource.AddingNew
-        Dim newPropeller As New Propeller()
-        e.NewObject = newPropeller
-        Database.Propellers.Add(newPropeller)
+        Try
+            Dim newPropeller As New Propeller()
+            e.NewObject = newPropeller
+            Database.Propellers.Add(newPropeller)
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_ADDNEW, "propeller", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 End Class

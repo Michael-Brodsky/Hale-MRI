@@ -26,9 +26,10 @@ Partial Class FrmDatabaseForm
         ' 
         ' FrmDatabaseForm
         ' 
-        AutoScaleDimensions = New SizeF(13.0F, 32.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(800, 450)
+        ClientSize = New Size(431, 211)
+        Margin = New Padding(2, 1, 2, 1)
         Name = "FrmDatabaseForm"
         Text = "FrmDatabaseForm"
         ResumeLayout(False)

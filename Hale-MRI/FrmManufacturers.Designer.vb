@@ -23,6 +23,8 @@ Partial Class FrmManufacturers
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         DataGridManufacturers = New DataGridView()
         ManufacturerNameDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         AddressDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
@@ -30,9 +32,9 @@ Partial Class FrmManufacturers
         State = New DataGridViewComboBoxColumn()
         StatesBindingSource = New BindingSource(components)
         PostalCodeDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        TelephoneDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         CountryCode = New DataGridViewComboBoxColumn()
         CountryCodesBindingSource = New BindingSource(components)
+        TelephoneDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         EmailDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         WebsiteDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         ManufacturersBindingSource = New BindingSource(components)
@@ -66,8 +68,16 @@ Partial Class FrmManufacturers
         ' 
         DataGridManufacturers.AllowUserToOrderColumns = True
         DataGridManufacturers.AutoGenerateColumns = False
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridManufacturers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridManufacturers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridManufacturers.Columns.AddRange(New DataGridViewColumn() {ManufacturerNameDataGridViewTextBoxColumn, AddressDataGridViewTextBoxColumn, CityDataGridViewTextBoxColumn, State, PostalCodeDataGridViewTextBoxColumn, TelephoneDataGridViewTextBoxColumn, CountryCode, EmailDataGridViewTextBoxColumn, WebsiteDataGridViewTextBoxColumn})
+        DataGridManufacturers.Columns.AddRange(New DataGridViewColumn() {ManufacturerNameDataGridViewTextBoxColumn, AddressDataGridViewTextBoxColumn, CityDataGridViewTextBoxColumn, State, PostalCodeDataGridViewTextBoxColumn, CountryCode, TelephoneDataGridViewTextBoxColumn, EmailDataGridViewTextBoxColumn, WebsiteDataGridViewTextBoxColumn})
         DataGridManufacturers.DataSource = ManufacturersBindingSource
         DataGridManufacturers.Location = New Point(12, 48)
         DataGridManufacturers.Name = "DataGridManufacturers"
@@ -78,17 +88,17 @@ Partial Class FrmManufacturers
         ' 
         ManufacturerNameDataGridViewTextBoxColumn.DataPropertyName = "ManufacturerName"
         ManufacturerNameDataGridViewTextBoxColumn.HeaderText = "Manufacturer Name"
-        ManufacturerNameDataGridViewTextBoxColumn.MinimumWidth = 220
+        ManufacturerNameDataGridViewTextBoxColumn.MinimumWidth = 160
         ManufacturerNameDataGridViewTextBoxColumn.Name = "ManufacturerNameDataGridViewTextBoxColumn"
-        ManufacturerNameDataGridViewTextBoxColumn.Width = 220
+        ManufacturerNameDataGridViewTextBoxColumn.Width = 160
         ' 
         ' AddressDataGridViewTextBoxColumn
         ' 
         AddressDataGridViewTextBoxColumn.DataPropertyName = "Address"
         AddressDataGridViewTextBoxColumn.HeaderText = "Address"
-        AddressDataGridViewTextBoxColumn.MinimumWidth = 240
+        AddressDataGridViewTextBoxColumn.MinimumWidth = 200
         AddressDataGridViewTextBoxColumn.Name = "AddressDataGridViewTextBoxColumn"
-        AddressDataGridViewTextBoxColumn.Width = 240
+        AddressDataGridViewTextBoxColumn.Width = 200
         ' 
         ' CityDataGridViewTextBoxColumn
         ' 
@@ -104,8 +114,10 @@ Partial Class FrmManufacturers
         State.DataSource = StatesBindingSource
         State.DisplayMember = "StateName"
         State.HeaderText = "State"
+        State.MinimumWidth = 140
         State.Name = "State"
         State.ValueMember = "StateCode1"
+        State.Width = 140
         ' 
         ' StatesBindingSource
         ' 
@@ -118,25 +130,28 @@ Partial Class FrmManufacturers
         PostalCodeDataGridViewTextBoxColumn.MinimumWidth = 100
         PostalCodeDataGridViewTextBoxColumn.Name = "PostalCodeDataGridViewTextBoxColumn"
         ' 
-        ' TelephoneDataGridViewTextBoxColumn
-        ' 
-        TelephoneDataGridViewTextBoxColumn.DataPropertyName = "Telephone"
-        TelephoneDataGridViewTextBoxColumn.HeaderText = "Telephone"
-        TelephoneDataGridViewTextBoxColumn.MinimumWidth = 100
-        TelephoneDataGridViewTextBoxColumn.Name = "TelephoneDataGridViewTextBoxColumn"
-        ' 
         ' CountryCode
         ' 
         CountryCode.DataPropertyName = "CountryCode"
         CountryCode.DataSource = CountryCodesBindingSource
         CountryCode.DisplayMember = "Alpha3Code"
         CountryCode.HeaderText = "Country Code"
+        CountryCode.MinimumWidth = 180
         CountryCode.Name = "CountryCode"
         CountryCode.ValueMember = "Alpha2Code"
+        CountryCode.Width = 180
         ' 
         ' CountryCodesBindingSource
         ' 
         CountryCodesBindingSource.DataSource = GetType(LibDatabase.Models.CountryCode)
+        ' 
+        ' TelephoneDataGridViewTextBoxColumn
+        ' 
+        TelephoneDataGridViewTextBoxColumn.DataPropertyName = "Telephone"
+        TelephoneDataGridViewTextBoxColumn.HeaderText = "Telephone"
+        TelephoneDataGridViewTextBoxColumn.MinimumWidth = 120
+        TelephoneDataGridViewTextBoxColumn.Name = "TelephoneDataGridViewTextBoxColumn"
+        TelephoneDataGridViewTextBoxColumn.Width = 120
         ' 
         ' EmailDataGridViewTextBoxColumn
         ' 
@@ -171,6 +186,7 @@ Partial Class FrmManufacturers
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.NoUpdates = False
         RecordNavigationBar1.Size = New Size(635, 24)
         RecordNavigationBar1.TabIndex = 1
         ' 
@@ -211,6 +227,14 @@ Partial Class FrmManufacturers
         DataGridPropellers.AllowUserToAddRows = False
         DataGridPropellers.AllowUserToDeleteRows = False
         DataGridPropellers.AutoGenerateColumns = False
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Control
+        DataGridViewCellStyle2.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
+        DataGridPropellers.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         DataGridPropellers.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridPropellers.Columns.AddRange(New DataGridViewColumn() {PartNumberDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn, StyleDataGridViewTextBoxColumn, MaterialDataGridViewTextBoxColumn, BladesDataGridViewTextBoxColumn, DiameterDataGridViewTextBoxColumn, HubDataGridViewTextBoxColumn, RotationDataGridViewTextBoxColumn, BoreDataGridViewTextBoxColumn, BladeWidthDataGridViewTextBoxColumn, BladeAreaDataGridViewTextBoxColumn, WeightDataGridViewTextBoxColumn})
         DataGridPropellers.DataSource = PropellersBindingSource
@@ -355,8 +379,8 @@ Partial Class FrmManufacturers
     Friend WithEvents CityDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents State As DataGridViewComboBoxColumn
     Friend WithEvents PostalCodeDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
-    Friend WithEvents TelephoneDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents CountryCode As DataGridViewComboBoxColumn
+    Friend WithEvents TelephoneDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents EmailDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
     Friend WithEvents WebsiteDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
 End Class
