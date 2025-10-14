@@ -30,11 +30,11 @@ Partial Class RecordNavigationBar
         CmdGotoLast = New Button()
         CmdAddNew = New Button()
         CmdDelete = New Button()
-        CmdRefresh = New Button()
         TxtFind = New TextBox()
         CmdSave = New Button()
         CmdUndo = New Button()
         TableLayoutPanel1 = New TableLayoutPanel()
+        CmdRefresh = New Button()
         ChkToggleFilter = New CheckBox()
         TableLayoutPanel1.SuspendLayout()
         SuspendLayout()
@@ -116,22 +116,11 @@ Partial Class RecordNavigationBar
         CmdDelete.TabIndex = 6
         CmdDelete.UseVisualStyleBackColor = True
         ' 
-        ' CmdRefresh
-        ' 
-        CmdRefresh.Enabled = False
-        CmdRefresh.Image = My.Resources.Resources.Refresh
-        CmdRefresh.Location = New Point(377, 0)
-        CmdRefresh.Margin = New Padding(0)
-        CmdRefresh.Name = "CmdRefresh"
-        CmdRefresh.Size = New Size(38, 24)
-        CmdRefresh.TabIndex = 8
-        CmdRefresh.UseVisualStyleBackColor = True
-        ' 
         ' TxtFind
         ' 
         TxtFind.Enabled = False
-        TxtFind.Location = New Point(415, 0)
-        TxtFind.Margin = New Padding(0)
+        TxtFind.Location = New Point(421, 0)
+        TxtFind.Margin = New Padding(3, 0, 3, 0)
         TxtFind.Name = "TxtFind"
         TxtFind.Size = New Size(141, 23)
         TxtFind.TabIndex = 9
@@ -140,7 +129,7 @@ Partial Class RecordNavigationBar
         ' 
         CmdSave.Enabled = False
         CmdSave.Image = CType(resources.GetObject("CmdSave.Image"), Image)
-        CmdSave.Location = New Point(559, 0)
+        CmdSave.Location = New Point(568, 0)
         CmdSave.Margin = New Padding(3, 0, 0, 0)
         CmdSave.Name = "CmdSave"
         CmdSave.Size = New Size(38, 24)
@@ -151,7 +140,7 @@ Partial Class RecordNavigationBar
         ' 
         CmdUndo.Enabled = False
         CmdUndo.Image = CType(resources.GetObject("CmdUndo.Image"), Image)
-        CmdUndo.Location = New Point(597, 0)
+        CmdUndo.Location = New Point(606, 0)
         CmdUndo.Margin = New Padding(0)
         CmdUndo.Name = "CmdUndo"
         CmdUndo.Size = New Size(38, 24)
@@ -162,7 +151,8 @@ Partial Class RecordNavigationBar
         ' 
         TableLayoutPanel1.AutoSize = True
         TableLayoutPanel1.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        TableLayoutPanel1.ColumnCount = 13
+        TableLayoutPanel1.ColumnCount = 14
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
         TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle())
@@ -193,8 +183,19 @@ Partial Class RecordNavigationBar
         TableLayoutPanel1.Name = "TableLayoutPanel1"
         TableLayoutPanel1.RowCount = 1
         TableLayoutPanel1.RowStyles.Add(New RowStyle())
-        TableLayoutPanel1.Size = New Size(635, 24)
+        TableLayoutPanel1.Size = New Size(644, 24)
         TableLayoutPanel1.TabIndex = 12
+        ' 
+        ' CmdRefresh
+        ' 
+        CmdRefresh.Enabled = False
+        CmdRefresh.Image = My.Resources.Resources.Refresh
+        CmdRefresh.Location = New Point(377, 0)
+        CmdRefresh.Margin = New Padding(0, 0, 3, 0)
+        CmdRefresh.Name = "CmdRefresh"
+        CmdRefresh.Size = New Size(38, 24)
+        CmdRefresh.TabIndex = 8
+        CmdRefresh.UseVisualStyleBackColor = True
         ' 
         ' ChkToggleFilter
         ' 
@@ -222,7 +223,7 @@ Partial Class RecordNavigationBar
         Controls.Add(TableLayoutPanel1)
         Margin = New Padding(0)
         Name = "RecordNavigationBar"
-        Size = New Size(635, 24)
+        Size = New Size(644, 24)
         TableLayoutPanel1.ResumeLayout(False)
         TableLayoutPanel1.PerformLayout()
         ResumeLayout(False)
@@ -236,11 +237,11 @@ Partial Class RecordNavigationBar
     Friend WithEvents CmdGotoLast As Button
     Friend WithEvents CmdAddNew As Button
     Friend WithEvents CmdDelete As Button
-    Friend WithEvents CmdRefresh As Button
     Friend WithEvents TxtFind As TextBox
     Friend WithEvents CmdSave As Button
     Friend WithEvents CmdUndo As Button
     Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents ChkToggleFilter As CheckBox
+    Friend WithEvents CmdRefresh As Button
 
 End Class

@@ -3,6 +3,11 @@ Imports System.ComponentModel
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Hale_MRI.RecordNavigationBar
+
+''' <summary>
+''' This form provides a user interface for editing 
+''' Vessel records and accessing related Job records.
+''' </summary>
 Public Class FrmVessels
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -10,6 +15,7 @@ Public Class FrmVessels
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
+    Private mNewVessel As Vessel = Nothing              ' The new Vessel being added, if any.
     ' Define all forms this form can open.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
@@ -17,14 +23,30 @@ Public Class FrmVessels
     Private mFrmCustomers As FrmCustomers
 #End Region
 #Region "Public Interface"
+    Public Sub AddNew(ByVal customer As Customer)
+        mNewVessel = New Vessel With {.Customer = customer}
+        VesselBindingSource.AddNew()
+    End Sub
+
+    ''' <summary>
+    ''' Returns the currently selected Vessel,
+    ''' or Nothing if there is no selected record.
+    ''' </summary>
     Public ReadOnly Property Current As Vessel
         Get
             Return BindingSourceCurrent(MasterSource)
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the current database context used 
+    ''' to access data. Overrides MyBase.Database.
+    ''' </summary>
     Public Overrides Property Database As HaleMRIContext
 
+    ''' <summary>
+    ''' Gets or sets the current filter object.
+    ''' </summary>
     Public Property Filter As Object
         Get
             Return mFilter
@@ -36,6 +58,9 @@ Public Class FrmVessels
         End Set
     End Property
 
+    ''' <summary>
+    ''' Gets or sets a flag indicating whether the current filter is active.
+    ''' </summary>
     Public Property FilterOn As Boolean
         Get
             Return mFilterOn
@@ -46,6 +71,11 @@ Public Class FrmVessels
         End Set
     End Property
 
+    ''' <summary>
+    ''' Finds the given Vessel in the MasterSource and, if found, makes it the current record.
+    ''' </summary>
+    ''' <param name="item">The Vessel to find.</param>
+    ''' <returns>The found Vessel, or Nothing if not found.</returns>
     Public Function Find(item As Vessel) As Vessel
         Dim result As Vessel = Nothing
         Dim pos As Integer = BindingSourceFind(MasterSource, item)
@@ -80,7 +110,7 @@ Public Class FrmVessels
 
     Private Function DeleteConfirm() As Boolean
         Dim prompt As String = If(DataGridVessels.SelectedRows.Count = 1,
-            $"Delete vessel '{Current.VesselName}'?",
+            $"Delete vessel '{Current?.VesselName}'?",
             $"Delete the {DataGridVessels.SelectedRows.Count} selected vessels?")
         Return (
             MessageBox.Show(
@@ -131,13 +161,29 @@ Public Class FrmVessels
     End Property
 #End Region
 #Region "Event Handlers"
-    Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
-        ' Open the Jobs form with the selected Job as the current record.
+    Private Sub DataGridVessels_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridVessels.MouseDoubleClick
+        ' Open the Customers form with the selected Customer as the current record.
         Try
-            ShowForm(mFrmJobs, Database, User)
-            mFrmJobs.Find(BindingSourceCurrent(JobsBindingSource))
+            ShowForm(mFrmCustomers, Database, User)
+            mFrmCustomers.Find(Current?.Customer)
         Catch ex As Exception
-            MessageBox.Show("Error opening vessel job: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub DataGridVesselJobs_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridVesselJobs.MouseDoubleClick
+        ' Open the Jobs form with the selected Job as the current record or,
+        ' if the Vessel has no Jobs, create a new Job for the Vessel
+        ' and make it the current record.
+        Try
+            If Current IsNot Nothing Then
+                ShowForm(mFrmJobs, Database, User)
+                If mFrmJobs.Find(BindingSourceCurrent(JobsBindingSource)) Is Nothing Then
+                    mFrmJobs.AddNew(Current)
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -151,6 +197,8 @@ Public Class FrmVessels
                     End If
                 Case "FilterOff"
                 Case "FilterOn"
+                Case "Find"
+                    Find(Database.Vessels.Local.OrderBy(Function(v) v.VesselName).Where(Function(v) v.VesselName.StartsWith(e.Key)).FirstOrDefault())
                 Case "GotoFirst"
                 Case "GotoLast"
                 Case "GotoNext"
@@ -185,19 +233,9 @@ Public Class FrmVessels
         End Try
     End Sub
 
-    Private Sub DataGridVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVessels.CellMouseDoubleClick
-        ' Open the Customers form with the selected Customer as the current record.
-        Try
-            ShowForm(mFrmCustomers, Database, User)
-            mFrmCustomers.Find(Current?.Customer)
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
     Private Sub VesselBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles VesselBindingSource.AddingNew
         Try
-            Dim newVessel As New Vessel()
+            Dim newVessel As Vessel = If(mNewVessel, New Vessel())
             e.NewObject = newVessel
             Database.Vessels.Add(newVessel)
         Catch ex As Exception

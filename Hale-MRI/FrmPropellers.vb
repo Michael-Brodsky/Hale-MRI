@@ -14,14 +14,27 @@ Public Class FrmPropellers
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
+    Private mNewPropeller As Propeller = Nothing              ' The new Vessel being added, if any.
 #End Region
 #Region "Public Interface"
-    Public ReadOnly Property Current
+    Public Sub AddNew(ByVal manufacturer As Manufacturer)
+        mNewPropeller = New Propeller With {.Manufacturer = manufacturer}
+        PropellerBindingSource.AddNew()
+    End Sub
+    ''' <summary>
+    ''' Returns the currently selected Propeller,
+    ''' or Nothing if there is no selected record.
+    ''' </summary>
+    Public ReadOnly Property Current As Propeller
         Get
             Return BindingSourceCurrent(MasterSource)
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the current database context used 
+    ''' to access data. Overrides MyBase.Database.
+    ''' </summary>
     Public Overrides Property Database As HaleMRIContext
 
     Public Property Filter As Object
@@ -62,13 +75,15 @@ Public Class FrmPropellers
         StylesBindingSource.DataSource = Database.Styles.Local.ToBindingList()
         MaterialsBindingSource.DataSource = Database.Materials.Local.ToBindingList()
         RotationsBindingSource.DataSource = Database.Rotations.Local.ToBindingList()
-        ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(e) e.ManufacturerName).ToList())
-        ' These DataSources query the database, as they may change while
-        ' the application is open.
-        PropellerBindingSource.DataSource = New BindingList(Of Propeller)(Database.Propellers.OrderBy(Function(e) e.Description).ToList())
+        ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.Local.OrderBy(Function(p) p.ManufacturerName).ToList())
+        ' These DataSources query the database, as they may change while the application is open.
+        PropellerBindingSource.DataSource = New BindingList(Of Propeller)(Database.Propellers.Local.OrderBy(Function(p) p.PartNumber).ToList())
     End Sub
 
     Private Function DeleteConfirm() As Boolean
+        Dim prompt As String = If(DataGridPropellers.SelectedRows.Count = 1,
+            $"Delete propeller '{Current?.PartNumber}'?",
+            $"Delete the {DataGridPropellers.SelectedRows.Count} selected propellers?")
         Return (
             MessageBox.Show(
                 $"Delete {DataGridPropellers.SelectedRows.Count} row(s)?",
@@ -131,6 +146,8 @@ Public Class FrmPropellers
                     End If
                 Case "FilterOff"
                 Case "FilterOn"
+                Case "Find"
+                    Find(Database.Propellers.Local.OrderBy(Function(p) p.PartNumber).Where(Function(p) p.PartNumber.StartsWith(e.Key)).FirstOrDefault())
                 Case "GotoFirst"
                 Case "GotoLast"
                 Case "GotoNext"
@@ -148,11 +165,19 @@ Public Class FrmPropellers
 
     Private Sub PropellerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles PropellerBindingSource.AddingNew
         Try
-            Dim newPropeller As New Propeller()
+            Dim newPropeller = If(mNewPropeller, New Propeller())
             e.NewObject = newPropeller
             Database.Propellers.Add(newPropeller)
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_ADDNEW, "propeller", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub DataGridPropellers_DefaultValuesNeeded(sender As Object, e As DataGridViewRowEventArgs) Handles DataGridPropellers.DefaultValuesNeeded
+        Try
+            e.Row.Cells("Manufacturer").Value = "" ' Default to "Unknown" manufacturer.
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_NO_DEFAULT_VALUE, ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region

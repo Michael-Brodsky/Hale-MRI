@@ -25,25 +25,25 @@ Partial Class FrmPropellers
         components = New ComponentModel.Container()
         RecordNavigationBar1 = New RecordNavigationBar()
         DataGridPropellers = New DataGridView()
-        Manufacturer = New DataGridViewComboBoxColumn()
         ManufacturersBindingSource = New BindingSource(components)
+        StylesBindingSource = New BindingSource(components)
+        BladesBindingSource = New BindingSource(components)
+        RotationsBindingSource = New BindingSource(components)
+        MaterialsBindingSource = New BindingSource(components)
+        PropellerBindingSource = New BindingSource(components)
+        Manufacturer = New DataGridViewComboBoxColumn()
         PartNumberDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         DescriptionDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         Style = New DataGridViewComboBoxColumn()
-        StylesBindingSource = New BindingSource(components)
         Blades = New DataGridViewComboBoxColumn()
-        BladesBindingSource = New BindingSource(components)
         Rotation = New DataGridViewComboBoxColumn()
-        RotationsBindingSource = New BindingSource(components)
         Material = New DataGridViewComboBoxColumn()
-        MaterialsBindingSource = New BindingSource(components)
         Diameter = New DataGridViewTextBoxColumn()
         HubDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         BoreDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         BladeWidthDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         BladeAreaDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
         WeightDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
-        PropellerBindingSource = New BindingSource(components)
         CType(DataGridPropellers, ComponentModel.ISupportInitialize).BeginInit()
         CType(ManufacturersBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(StylesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -65,7 +65,8 @@ Partial Class FrmPropellers
         RecordNavigationBar1.Margin = New Padding(0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
-        RecordNavigationBar1.Size = New Size(635, 24)
+        RecordNavigationBar1.NoUpdates = False
+        RecordNavigationBar1.Size = New Size(644, 24)
         RecordNavigationBar1.TabIndex = 0
         ' 
         ' DataGridPropellers
@@ -79,21 +80,42 @@ Partial Class FrmPropellers
         DataGridPropellers.Size = New Size(1413, 579)
         DataGridPropellers.TabIndex = 1
         ' 
+        ' ManufacturersBindingSource
+        ' 
+        ManufacturersBindingSource.DataSource = GetType(LibDatabase.Models.Manufacturer)
+        ManufacturersBindingSource.Sort = "ManufacturerName ASC"
+        ' 
+        ' StylesBindingSource
+        ' 
+        StylesBindingSource.DataSource = GetType(LibDatabase.Models.Style)
+        ' 
+        ' BladesBindingSource
+        ' 
+        BladesBindingSource.DataSource = GetType(LibDatabase.Models.Blade)
+        ' 
+        ' RotationsBindingSource
+        ' 
+        RotationsBindingSource.DataSource = GetType(LibDatabase.Models.Rotation)
+        ' 
+        ' MaterialsBindingSource
+        ' 
+        MaterialsBindingSource.DataSource = GetType(LibDatabase.Models.Material)
+        ' 
+        ' PropellerBindingSource
+        ' 
+        PropellerBindingSource.DataSource = GetType(LibDatabase.Models.Propeller)
+        PropellerBindingSource.Sort = "ManufacturerID ASC"
+        ' 
         ' Manufacturer
         ' 
         Manufacturer.DataPropertyName = "ManufacturerId"
         Manufacturer.DataSource = ManufacturersBindingSource
         Manufacturer.DisplayMember = "ManufacturerName"
         Manufacturer.HeaderText = "Manufacturer"
-        Manufacturer.MinimumWidth = 120
+        Manufacturer.MinimumWidth = 160
         Manufacturer.Name = "Manufacturer"
         Manufacturer.ValueMember = "Id"
-        Manufacturer.Width = 120
-        ' 
-        ' ManufacturersBindingSource
-        ' 
-        ManufacturersBindingSource.DataSource = GetType(LibDatabase.Models.Manufacturer)
-        ManufacturersBindingSource.Sort = "ManufacturerName ASC"
+        Manufacturer.Width = 160
         ' 
         ' PartNumberDataGridViewTextBoxColumn
         ' 
@@ -106,9 +128,9 @@ Partial Class FrmPropellers
         ' 
         DescriptionDataGridViewTextBoxColumn.DataPropertyName = "Description"
         DescriptionDataGridViewTextBoxColumn.HeaderText = "Description"
-        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 250
+        DescriptionDataGridViewTextBoxColumn.MinimumWidth = 210
         DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
-        DescriptionDataGridViewTextBoxColumn.Width = 250
+        DescriptionDataGridViewTextBoxColumn.Width = 210
         ' 
         ' Style
         ' 
@@ -119,10 +141,6 @@ Partial Class FrmPropellers
         Style.MinimumWidth = 100
         Style.Name = "Style"
         Style.ValueMember = "Style1"
-        ' 
-        ' StylesBindingSource
-        ' 
-        StylesBindingSource.DataSource = GetType(LibDatabase.Models.Style)
         ' 
         ' Blades
         ' 
@@ -135,10 +153,6 @@ Partial Class FrmPropellers
         Blades.ValueMember = "BladeCount"
         Blades.Width = 80
         ' 
-        ' BladesBindingSource
-        ' 
-        BladesBindingSource.DataSource = GetType(LibDatabase.Models.Blade)
-        ' 
         ' Rotation
         ' 
         Rotation.DataPropertyName = "Rotation"
@@ -150,10 +164,6 @@ Partial Class FrmPropellers
         Rotation.ValueMember = "Rotation1"
         Rotation.Width = 80
         ' 
-        ' RotationsBindingSource
-        ' 
-        RotationsBindingSource.DataSource = GetType(LibDatabase.Models.Rotation)
-        ' 
         ' Material
         ' 
         Material.DataPropertyName = "Material"
@@ -162,10 +172,6 @@ Partial Class FrmPropellers
         Material.HeaderText = "Material"
         Material.Name = "Material"
         Material.ValueMember = "Material1"
-        ' 
-        ' MaterialsBindingSource
-        ' 
-        MaterialsBindingSource.DataSource = GetType(LibDatabase.Models.Material)
         ' 
         ' Diameter
         ' 
@@ -208,11 +214,6 @@ Partial Class FrmPropellers
         WeightDataGridViewTextBoxColumn.DataPropertyName = "Weight"
         WeightDataGridViewTextBoxColumn.HeaderText = "Weight"
         WeightDataGridViewTextBoxColumn.Name = "WeightDataGridViewTextBoxColumn"
-        ' 
-        ' PropellerBindingSource
-        ' 
-        PropellerBindingSource.DataSource = GetType(LibDatabase.Models.Propeller)
-        PropellerBindingSource.Sort = "ManufacturerID ASC"
         ' 
         ' FrmPropellers
         ' 

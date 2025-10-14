@@ -6,7 +6,7 @@ Namespace Models
     Partial Public Class Propeller
         Public Property Id As Integer?
 
-        Public Property ManufacturerId As Integer
+        Public Property ManufacturerId As Integer?
 
         Public Property PartNumber As String
 
@@ -16,7 +16,7 @@ Namespace Models
 
         Public Property Material As String
 
-        Public Property Blades As Short
+        Public Property Blades As Short?
 
         Public Property Diameter As Double?
 

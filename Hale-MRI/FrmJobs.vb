@@ -4,6 +4,10 @@ Imports LibDatabase
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
+''' <summary>
+''' This form provides a user interface for editing 
+''' Job records and accessing related JobDetails records.
+''' </summary>
 Public Class FrmJobs
     Inherits FrmDatabaseForm
 #Region "Types and Constants"
@@ -28,12 +32,25 @@ Public Class FrmJobs
     'Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
+    Public Sub AddNew(ByVal vessel As Vessel)
+        SelectedVessel = vessel
+        JobsBindingSource.AddNew()
+    End Sub
+
+    ''' <summary>
+    ''' Returns the currently selected Job,
+    ''' or Nothing if there is no selected record.
+    ''' </summary>
     Public ReadOnly Property Current As Job
         Get
             Return CurrentJob
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the current database context used 
+    ''' to access data. Overrides MyBase.Database.
+    ''' </summary>
     Public Overrides Property Database As HaleMRIContext
 
     Public Property Filter As Object
@@ -562,8 +579,7 @@ Public Class FrmJobs
                 Case "FilterOn"
                     FilterOn = True
                 Case "Find"
-                ' Not implemented. Receives a parameter of type Object from the Navigator
-                ' that can be used to search the JobBindingSource.
+                    Find(Database.Jobs.Local.OrderBy(Function(j) j.JobNumber).Where(Function(j) j.JobNumber.ToString().StartsWith(e.Key)).FirstOrDefault())
                 Case "GotoFirst", "GotoNext", "GotoPrev"
                     If JobsBindingSource.IsBindingSuspended Then InitialJob = GetAJob.First
                 Case "GotoLast"

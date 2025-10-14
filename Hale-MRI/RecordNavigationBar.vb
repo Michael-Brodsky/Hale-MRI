@@ -251,13 +251,13 @@ Public Class RecordNavigationBar
         ' Enables our Controls according to the master BindingSource's
         ' current state.
         CmdGotoFirst.Enabled = Not CmdUndo.Enabled AndAlso Me.Count > 0                 ' Navigation allowed only if MasterSource has records.
-        CmdAddNew.Enabled = Not CmdUndo.Enabled AndAlso Me.Position <> kNoCurrentRecord ' Adding allowed only if a record is currently selected and not being editted.
+        CmdAddNew.Enabled = Not CmdUndo.Enabled AndAlso Me.MasterSource IsNot Nothing   ' Adding allowed only if a record is currently selected and not being editted.
+        CmdDelete.Enabled = CmdAddNew.Enabled AndAlso Me.Current IsNot Nothing          ' Deletion allowed only if a record is currently selected and not being editted.
         TxtCurrentPosition.Enabled = Me.Position <> kNoCurrentRecord                    ' Position Control enabled only if a record is currently selected.
         ' The remaining Control states can be computed.
         CmdGotoLast.Enabled = CmdGotoFirst.Enabled
         CmdGotoNext.Enabled = CmdGotoFirst.Enabled
         CmdGotoPrevious.Enabled = CmdGotoFirst.Enabled
-        CmdDelete.Enabled = CmdAddNew.Enabled
         CmdRefresh.Enabled = CmdGotoFirst.Enabled
         TxtFind.Enabled = CmdRefresh.Enabled
         If Not CmdUndo.Enabled Then CmdSave.Enabled = False
@@ -280,6 +280,10 @@ Public Class RecordNavigationBar
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_OBJECT_LOAD, "navigation bar", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub TxtFind_TextChanged(sender As Object, e As EventArgs) Handles TxtFind.TextChanged
+        If Not String.IsNullOrEmpty(TxtFind.Text) Then RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Find", TxtFind.Text))
     End Sub
 
     Private WriteOnly Property HandleDataSourceEvents As Boolean

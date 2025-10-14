@@ -11,7 +11,6 @@ Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 ''' Customer records and accessing related Vessel and
 ''' Job records.
 ''' </summary>
-
 Partial Public Class FrmCustomers
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -107,7 +106,7 @@ Partial Public Class FrmCustomers
         )
         ' Sort the Customers' Vessels and Jobs.
         FormSort(customers)
-        CustomerBindingSource.DataSource = customers 'New BindingList(Of Customer)(customers)
+        CustomerBindingSource.DataSource = customers
         ' Bind: Customers (master) -> Vessels (details), Vessels (master) -> Jobs (details).
         BindMasterDetails(CustomerBindingSource, VesselBindingSource, "Vessels")
         BindMasterDetails(VesselBindingSource, JobBindingSource, "Jobs")
@@ -115,7 +114,7 @@ Partial Public Class FrmCustomers
 
     Private Function DeleteConfirm() As Boolean
         Dim prompt As String = If(DataGridCustomers.SelectedRows.Count = 1,
-            $"Delete customer '{Current.CustomerName}'?",
+            $"Delete customer '{Current?.CustomerName}'?",
             $"Delete the {DataGridCustomers.SelectedRows.Count} selected customers?")
         Return (
             MessageBox.Show(
@@ -145,6 +144,7 @@ Partial Public Class FrmCustomers
     End Sub
 
     Private Sub FormSort(ByRef customers As BindingList(Of Customer))
+        'Sort each Customer's Vessels by VesselName and each Vessel's Jobs by JobNumber.
         For Each c As Customer In customers
             If c?.Vessels IsNot Nothing Then
                 If c.Vessels.Count > 1 Then
@@ -182,21 +182,43 @@ Partial Public Class FrmCustomers
     End Property
 #End Region
 #Region "Event Handlers"
-    Private Sub DataGridCustomerVessels_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DatagridCustomerVessels.CellMouseDoubleClick
-        ' Open the Vessels form with the selected vessel as the current record.
+    Private Sub CustomerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles CustomerBindingSource.AddingNew
         Try
-            ShowForm(mFrmVessels, Database, User)
-            mFrmVessels.Find(BindingSourceCurrent(VesselBindingSource))
+            Dim newCustomer As New Customer()
+            e.NewObject = newCustomer
+            Database.Customers.Add(newCustomer)
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_ADDNEW, "customer", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub DatagridCustomerVessels_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DatagridCustomerVessels.MouseDoubleClick
+        ' Open the Vessels form with the selected Vessel as the current record or,
+        ' if the Customer has no Vessels, create a new Vessel for the Customer
+        ' and make it the current record.
+        Try
+            If Current IsNot Nothing Then
+                ShowForm(mFrmVessels, Database, User)
+                If mFrmVessels.Find(BindingSourceCurrent(VesselBindingSource)) Is Nothing Then
+                    mFrmVessels.AddNew(Current)
+                End If
+            End If
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
-    Private Sub DataGridVesselJobs_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridVesselJobs.CellMouseDoubleClick
-        ' Open the Jobs form with the selected Job as the current record.
+    Private Sub DataGridVesselJobs_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridVesselJobs.MouseDoubleClick
+        ' Open the Jobs form with the selected Job as the current record or,
+        ' if the Vessel has no Jobs, create a new Job for the Vessel
+        ' and make it the current record.
         Try
-            ShowForm(mFrmJobs, Database, User)
-            mFrmJobs.Find(JobBindingSource.Current)
+            If BindingSourceCurrent(VesselBindingSource) IsNot Nothing Then
+                ShowForm(mFrmJobs, Database, User)
+                If mFrmJobs.Find(BindingSourceCurrent(JobBindingSource)) Is Nothing Then
+                    mFrmJobs.AddNew(BindingSourceCurrent(VesselBindingSource))
+                End If
+            End If
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -229,6 +251,8 @@ Partial Public Class FrmCustomers
                     End If
                 Case "FilterOff"
                 Case "FilterOn"
+                Case "Find"
+                    Find(Database.Customers.Local.OrderBy(Function(c) c.CustomerName).Where(Function(c) c.CustomerName.StartsWith(e.Key)).FirstOrDefault())
                 Case "GotoFirst"
                 Case "GotoLast"
                 Case "GotoNext"
@@ -241,16 +265,6 @@ Partial Public Class FrmCustomers
             End Select
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_NAVIGATION, ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub CustomerBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles CustomerBindingSource.AddingNew
-        Try
-            Dim newCustomer As New Customer()
-            e.NewObject = newCustomer
-            Database.Customers.Add(newCustomer)
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_ADDNEW, "customer", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region

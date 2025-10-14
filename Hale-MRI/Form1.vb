@@ -288,15 +288,15 @@ Public Class Form1
         For i As Integer = 1 To mJob.PropellerBlades
             bsBlades.Add(i)
         Next
-        Dim strBlades As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerBlades), $"Blades = {Job?.PropellerBlades}", "")
-        Dim strDiameter As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerDiameter), $"Dia = {Job?.PropellerDiameter}", "")
-        Dim strBore As String = If(Not String.IsNullOrWhiteSpace(Job?.PropellerBore), $"Dia = {Job?.PropellerBore}", "")
+        Dim strBlades As String = If(Job?.PropellerBlades IsNot Nothing, $"Blades = {Job?.PropellerBlades}", "")
+        Dim strDiameter As String = If(Job?.PropellerDiameter IsNot Nothing, $"Dia = {Job?.PropellerDiameter}", "")
+        Dim strBore As String = If(Job?.PropellerBore IsNot Nothing, $"Dia = {Job?.PropellerBore}", "")
         TxtJobNumber.Text = Job?.JobNumber.ToString()
         TxtCustomer.Text = Job?.Vessel?.Customer?.CustomerName
         TxtVessel.Text = Job?.Vessel?.VesselName
-        TxtManufacturer.Text = Job?.PropellerManufacturer?.ManufacturerName
-        TxtStyle.Text = Job?.PropellerStyleNavigation?.Style1
-        TxtMaterial.Text = Job?.PropellerMaterialNavigation?.Material1
+        TxtManufacturer.Text = If(Job?.PropellerManufacturer?.ManufacturerName, "")
+        TxtStyle.Text = If(Job?.PropellerStyleNavigation?.Style1, "")
+        TxtMaterial.Text = If(Job?.PropellerMaterialNavigation?.Material1, "")
         TxtBlades.Text = strBlades
         TxtDiameter.Text = strDiameter
         TxtBore.Text = strBore
@@ -441,7 +441,6 @@ Public Class Form1
     Private Sub TxtManufacturer_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles TxtManufacturer.MouseDoubleClick
         If Job IsNot Nothing Then
             ShowForm(mFrmManufacturers, Database, User)
-            'mFrmManufacturers.Find(Job?.Propeller?.Manufacturer)   ' Need to implement Job has a Propeller, and Propeller has a Manufacturer database relationship.
             mFrmManufacturers.Find(Job?.PropellerManufacturer)
         End If
     End Sub
@@ -452,6 +451,5 @@ Public Class Form1
             mFrmVessels.Find(Job?.Vessel)
         End If
     End Sub
-
 #End Region
 End Class

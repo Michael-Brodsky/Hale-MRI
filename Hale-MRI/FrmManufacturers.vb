@@ -98,6 +98,7 @@ Public Class FrmManufacturers
             .OrderBy(Function(m) m.ManufacturerName) _
             .Include(Function(m) m.Propellers).ToList()
         )
+        ' Sort each Manufacturer's Propellers by PartNumber.
         FormSort(manufacturers)
         ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(manufacturers)
         ' Bind the master BindingSource (Manufacturers) to the details BindingSource (Propellers).
@@ -106,7 +107,7 @@ Public Class FrmManufacturers
 
     Private Function DeleteConfirm() As Boolean
         Dim prompt As String = If(DataGridManufacturers.SelectedRows.Count = 1,
-            $"Delete manufacturer '{Current.ManufacturerName}'?",
+            $"Delete manufacturer '{Current?.ManufacturerName}'?",
             $"Delete the {DataGridManufacturers.SelectedRows.Count} selected manufacturers?")
         Return (
             MessageBox.Show(
@@ -195,6 +196,8 @@ Public Class FrmManufacturers
                     End If
                 Case "FilterOff"
                 Case "FilterOn"
+                Case "Find"
+                    Find(Database.Manufacturers.Local.OrderBy(Function(m) m.ManufacturerName).Where(Function(m) m.ManufacturerName.StartsWith(e.Key)).FirstOrDefault())
                 Case "GotoFirst"
                 Case "GotoLast"
                 Case "GotoNext"
