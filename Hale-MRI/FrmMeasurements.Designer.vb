@@ -304,7 +304,7 @@ Partial Class FrmMeasurements
         GridBladebyRadius.AllowUserToOrderColumns = True
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
@@ -388,10 +388,10 @@ Partial Class FrmMeasurements
         tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
         tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Percent, 7.14285564F))
         tloMeasurements.RowStyles.Add(New RowStyle())
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
-        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tloMeasurements.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
         tloMeasurements.Size = New Size(1104, 571)
         tloMeasurements.TabIndex = 22
         ' 
@@ -412,16 +412,16 @@ Partial Class FrmMeasurements
         ' tloPlotGraph
         ' 
         tloPlotGraph.ColumnCount = 2
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30.0F))
-        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70.0F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30F))
+        tloPlotGraph.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 70F))
         tloPlotGraph.Controls.Add(PlotGraph, 1, 0)
         tloPlotGraph.Dock = DockStyle.Fill
         tloPlotGraph.Location = New Point(3, 19)
         tloPlotGraph.Margin = New Padding(0)
         tloPlotGraph.Name = "tloPlotGraph"
         tloPlotGraph.RowCount = 2
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85.0F))
-        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15.0F))
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 85F))
+        tloPlotGraph.RowStyles.Add(New RowStyle(SizeType.Percent, 15F))
         tloPlotGraph.Size = New Size(339, 212)
         tloPlotGraph.TabIndex = 0
         ' 
@@ -431,17 +431,17 @@ Partial Class FrmMeasurements
         ChartArea1.AxisX.LabelStyle.Enabled = False
         ChartArea1.AxisX.MajorGrid.Enabled = False
         ChartArea1.AxisX.MajorTickMark.Enabled = False
-        ChartArea1.AxisX.Maximum = 1.0R
-        ChartArea1.AxisX.MaximumAutoSize = 100.0F
-        ChartArea1.AxisX.Minimum = -1.0R
+        ChartArea1.AxisX.Maximum = 1R
+        ChartArea1.AxisX.MaximumAutoSize = 100F
+        ChartArea1.AxisX.Minimum = -1R
         ChartArea1.AxisX2.Enabled = DataVisualization.Charting.AxisEnabled.False
-        ChartArea1.AxisY.Interval = 10.0R
+        ChartArea1.AxisY.Interval = 10R
         ChartArea1.AxisY.IsStartedFromZero = False
         ChartArea1.AxisY.LabelStyle.Enabled = False
         ChartArea1.AxisY.MajorGrid.Enabled = False
-        ChartArea1.AxisY.Maximum = 1.0R
-        ChartArea1.AxisY.MaximumAutoSize = 100.0F
-        ChartArea1.AxisY.Minimum = -1.0R
+        ChartArea1.AxisY.Maximum = 1R
+        ChartArea1.AxisY.MaximumAutoSize = 100F
+        ChartArea1.AxisY.Minimum = -1R
         ChartArea1.AxisY2.Enabled = DataVisualization.Charting.AxisEnabled.False
         ChartArea1.Name = "ChartArea1"
         PlotGraph.ChartAreas.Add(ChartArea1)

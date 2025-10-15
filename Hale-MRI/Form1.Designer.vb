@@ -25,6 +25,12 @@ Partial Class Form1
         components = New ComponentModel.Container()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -71,6 +77,17 @@ Partial Class Form1
         GridBladebyRadius = New DataGridView()
         PictureBoxLogo = New PictureBox()
         Panel1 = New Panel()
+        TableLayoutPanel2 = New TableLayoutPanel()
+        Chart1 = New DataVisualization.Charting.Chart()
+        Chart2 = New DataVisualization.Charting.Chart()
+        Label2 = New Label()
+        ComboReferenceBlade = New ComboBox()
+        Label3 = New Label()
+        Label4 = New Label()
+        ComboReferenceRadius = New ComboBox()
+        Label5 = New Label()
+        ComboRake = New ComboBox()
+        ComboReferencePoint = New ComboBox()
         PanelPlot = New Panel()
         LabTrackPanel = New Label()
         LabPanelPlot = New Label()
@@ -86,6 +103,10 @@ Partial Class Form1
         PanelMeasurements.SuspendLayout()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
+        Panel1.SuspendLayout()
+        TableLayoutPanel2.SuspendLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' RecordNavigationBar1
@@ -101,7 +122,7 @@ Partial Class Form1
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.NoUpdates = False
-        RecordNavigationBar1.Size = New Size(635, 24)
+        RecordNavigationBar1.Size = New Size(644, 24)
         RecordNavigationBar1.TabIndex = 0
         ' 
         ' EncoderStatusStrip1
@@ -109,7 +130,7 @@ Partial Class Form1
         EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         EncoderStatusStrip1.Dock = DockStyle.Bottom
         EncoderStatusStrip1.Hardware = Nothing
-        EncoderStatusStrip1.Location = New Point(0, 732)
+        EncoderStatusStrip1.Location = New Point(0, 780)
         EncoderStatusStrip1.Name = "EncoderStatusStrip1"
         EncoderStatusStrip1.Size = New Size(1116, 23)
         EncoderStatusStrip1.TabIndex = 1
@@ -211,7 +232,7 @@ Partial Class Form1
         PanelJob.Controls.Add(TableLayoutPanel1)
         PanelJob.Location = New Point(12, 131)
         PanelJob.Name = "PanelJob"
-        PanelJob.Size = New Size(191, 595)
+        PanelJob.Size = New Size(191, 641)
         PanelJob.TabIndex = 7
         ' 
         ' TxtJobNumber
@@ -576,10 +597,157 @@ Partial Class Form1
         ' Panel1
         ' 
         Panel1.BorderStyle = BorderStyle.Fixed3D
+        Panel1.Controls.Add(TableLayoutPanel2)
         Panel1.Location = New Point(209, 562)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(588, 164)
+        Panel1.Size = New Size(588, 212)
         Panel1.TabIndex = 10
+        ' 
+        ' TableLayoutPanel2
+        ' 
+        TableLayoutPanel2.ColumnCount = 3
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
+        TableLayoutPanel2.Controls.Add(Chart1, 0, 1)
+        TableLayoutPanel2.Controls.Add(Chart2, 2, 1)
+        TableLayoutPanel2.Controls.Add(Label2, 1, 1)
+        TableLayoutPanel2.Controls.Add(ComboReferenceBlade, 1, 2)
+        TableLayoutPanel2.Controls.Add(Label3, 1, 3)
+        TableLayoutPanel2.Controls.Add(Label4, 1, 5)
+        TableLayoutPanel2.Controls.Add(ComboReferenceRadius, 1, 6)
+        TableLayoutPanel2.Controls.Add(Label5, 1, 7)
+        TableLayoutPanel2.Controls.Add(ComboRake, 1, 8)
+        TableLayoutPanel2.Controls.Add(ComboReferencePoint, 1, 4)
+        TableLayoutPanel2.Dock = DockStyle.Fill
+        TableLayoutPanel2.Location = New Point(0, 0)
+        TableLayoutPanel2.Name = "TableLayoutPanel2"
+        TableLayoutPanel2.RowCount = 9
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.RowStyles.Add(New RowStyle(SizeType.Percent, 11.1111116F))
+        TableLayoutPanel2.Size = New Size(584, 208)
+        TableLayoutPanel2.TabIndex = 0
+        ' 
+        ' Chart1
+        ' 
+        ChartArea1.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea1)
+        Chart1.Dock = DockStyle.Fill
+        Legend1.Name = "Legend1"
+        Chart1.Legends.Add(Legend1)
+        Chart1.Location = New Point(3, 26)
+        Chart1.Name = "Chart1"
+        TableLayoutPanel2.SetRowSpan(Chart1, 8)
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Chart1.Series.Add(Series1)
+        Chart1.Size = New Size(227, 179)
+        Chart1.TabIndex = 0
+        Chart1.Text = "Chart1"
+        ' 
+        ' Chart2
+        ' 
+        ChartArea2.Name = "ChartArea1"
+        Chart2.ChartAreas.Add(ChartArea2)
+        Chart2.Dock = DockStyle.Fill
+        Legend2.Name = "Legend1"
+        Chart2.Legends.Add(Legend2)
+        Chart2.Location = New Point(352, 26)
+        Chart2.Name = "Chart2"
+        TableLayoutPanel2.SetRowSpan(Chart2, 8)
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Chart2.Series.Add(Series2)
+        Chart2.Size = New Size(229, 179)
+        Chart2.TabIndex = 1
+        Chart2.Text = "Chart2"
+        ' 
+        ' Label2
+        ' 
+        Label2.AutoSize = True
+        Label2.Dock = DockStyle.Bottom
+        Label2.Location = New Point(236, 31)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(110, 15)
+        Label2.TabIndex = 2
+        Label2.Text = "Blade"
+        ' 
+        ' ComboReferenceBlade
+        ' 
+        ComboReferenceBlade.Dock = DockStyle.Top
+        ComboReferenceBlade.FormattingEnabled = True
+        ComboReferenceBlade.Location = New Point(236, 46)
+        ComboReferenceBlade.Margin = New Padding(3, 0, 3, 0)
+        ComboReferenceBlade.Name = "ComboReferenceBlade"
+        ComboReferenceBlade.Size = New Size(110, 23)
+        ComboReferenceBlade.TabIndex = 3
+        ' 
+        ' Label3
+        ' 
+        Label3.AutoSize = True
+        Label3.Dock = DockStyle.Bottom
+        Label3.Location = New Point(236, 77)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(110, 15)
+        Label3.TabIndex = 4
+        Label3.Text = "Point"
+        ' 
+        ' Label4
+        ' 
+        Label4.AutoSize = True
+        Label4.Dock = DockStyle.Bottom
+        Label4.Location = New Point(236, 123)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(110, 15)
+        Label4.TabIndex = 6
+        Label4.Text = "Radius"
+        ' 
+        ' ComboReferenceRadius
+        ' 
+        ComboReferenceRadius.FormattingEnabled = True
+        ComboReferenceRadius.Location = New Point(236, 138)
+        ComboReferenceRadius.Margin = New Padding(3, 0, 3, 0)
+        ComboReferenceRadius.Name = "ComboReferenceRadius"
+        ComboReferenceRadius.Size = New Size(110, 23)
+        ComboReferenceRadius.TabIndex = 7
+        ' 
+        ' Label5
+        ' 
+        Label5.AutoSize = True
+        Label5.Dock = DockStyle.Bottom
+        Label5.Location = New Point(236, 169)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(110, 15)
+        Label5.TabIndex = 8
+        Label5.Text = "Rake"
+        ' 
+        ' ComboRake
+        ' 
+        ComboRake.FormattingEnabled = True
+        ComboRake.Location = New Point(236, 184)
+        ComboRake.Margin = New Padding(3, 0, 3, 0)
+        ComboRake.Name = "ComboRake"
+        ComboRake.Size = New Size(110, 23)
+        ComboRake.TabIndex = 9
+        ' 
+        ' ComboReferencePoint
+        ' 
+        ComboReferencePoint.FormattingEnabled = True
+        ComboReferencePoint.Items.AddRange(New Object() {"LE", "Mid", "TE"})
+        ComboReferencePoint.Location = New Point(236, 92)
+        ComboReferencePoint.Margin = New Padding(3, 0, 3, 0)
+        ComboReferencePoint.Name = "ComboReferencePoint"
+        ComboReferencePoint.Size = New Size(110, 23)
+        ComboReferencePoint.TabIndex = 5
         ' 
         ' PanelPlot
         ' 
@@ -634,7 +802,7 @@ Partial Class Form1
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.Control
-        ClientSize = New Size(1116, 755)
+        ClientSize = New Size(1116, 803)
         Controls.Add(LabPanelJob)
         Controls.Add(LabPanelMeasurements)
         Controls.Add(LabPanelPlot)
@@ -662,6 +830,11 @@ Partial Class Form1
         PanelMeasurements.PerformLayout()
         CType(GridBladebyRadius, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
+        Panel1.ResumeLayout(False)
+        TableLayoutPanel2.ResumeLayout(False)
+        TableLayoutPanel2.PerformLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -717,4 +890,15 @@ Partial Class Form1
     Friend WithEvents LabPanelMeasurements As Label
     Friend WithEvents LabPanelJob As Label
     Friend WithEvents TxtJobNumber As TextBox
+    Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
+    Friend WithEvents Chart1 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart2 As DataVisualization.Charting.Chart
+    Friend WithEvents Label2 As Label
+    Friend WithEvents ComboReferenceBlade As ComboBox
+    Friend WithEvents Label3 As Label
+    Friend WithEvents ComboReferencePoint As ComboBox
+    Friend WithEvents Label4 As Label
+    Friend WithEvents ComboReferenceRadius As ComboBox
+    Friend WithEvents Label5 As Label
+    Friend WithEvents ComboRake As ComboBox
 End Class

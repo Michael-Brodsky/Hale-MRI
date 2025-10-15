@@ -505,7 +505,6 @@ Public Class FrmJobs
     Private Sub FormJobs_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             DataGridJobDetails.AutoGenerateColumns = False
-            'DataGridJobDetails.DataSource = Nothing
             Navigator = RecordNavigationBar1
             ' These are the controls bound to the JobsBindingSource that the Navigator will enable automatically
             ' and notify us when any changes are made.
@@ -609,6 +608,19 @@ Public Class FrmJobs
         Catch ex As Exception
             MessageBox.Show("Error selecting scan data file: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub ComboJobs_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboJobs.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            e.Handled = True
+            If ComboJobs.Text.Length > 0 Then
+                Dim jobNumber As Integer
+                If Integer.TryParse(ComboJobs.Text, jobNumber) Then
+                    Find(Database.Jobs.Local.OrderBy(Function(j) j.JobNumber).Where(Function(j) j.JobNumber = jobNumber).FirstOrDefault())
+                End If
+            End If
+        End If
     End Sub
 #End Region
 End Class

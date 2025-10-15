@@ -7,9 +7,8 @@ Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
 
 ''' <summary>
-''' This form provides a user inteface for taking, 
-''' computing, saving, displaying and inserting 
-''' blade measurements.
+''' This form provides a user interface for taking, 
+''' computing, saving, displaying blade measurements.
 ''' </summary>
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
@@ -35,7 +34,7 @@ Public Class FrmMeasurements
         Set(value As WorkstationEncoders)
             ' Assigns the given value to EncoderStatusStrip1, retrieves and assigns
             ' the scan sampling rate from the database and, if not already,
-            ' intializes the encoder hardware.
+            ' initializes the encoder hardware.
             With EncoderStatusStrip1
                 .Hardware = value
                 If .Hardware IsNot Nothing Then
@@ -591,7 +590,7 @@ Public Class FrmMeasurements
             Case "Error", "NoEncoders", "NotInitialized"
                 ' Place the form controls in a state that disables any encoder calls, 
                 ' e.g. start/stop scanning, home, etc. EncoderStatusStrip1 provides
-                ' a control to intialize the encoders.
+                ' a control to initialize the encoders.
 
                 chkMeasurements.Checked = False ' Stop scanning, lest ye create a domino effect of cascading exceptions :)
 
@@ -637,11 +636,11 @@ Public Class FrmMeasurements
     End Sub
 
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
-        ' This event fires anytime the user selects a new JobDetails record (Intial, Interim, Final, etc.)
+        ' This event fires anytime the user selects a new JobDetails record (Initial, Interim, Final, etc.)
         ' For now it just keeps the form's JobDetails property current.
         mJobDetails = Me.Current
 
-        ' Show any existing data for the current JobDeatils record.
+        ' Show any existing data for the current JobDetails record.
         If mJobDetails IsNot Nothing Then ShowBladePitchByRadiusPercent(True)
     End Sub
 

@@ -67,6 +67,15 @@ Public Class FrmPropellers
         End If
         Return result
     End Function
+
+    ''' <summary>
+    ''' Refreshes all form data bindings, including sorting the
+    ''' Customers' Vessels and Jobs.
+    ''' </summary>
+    Public Overrides Sub Refresh()
+        MyBase.Refresh()
+        MasterSource.DataSource = FormSort(MasterSource?.DataSource)
+    End Sub
 #End Region
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
@@ -77,7 +86,8 @@ Public Class FrmPropellers
         RotationsBindingSource.DataSource = Database.Rotations.Local.ToBindingList()
         ManufacturersBindingSource.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.Local.OrderBy(Function(p) p.ManufacturerName).ToList())
         ' These DataSources query the database, as they may change while the application is open.
-        PropellerBindingSource.DataSource = New BindingList(Of Propeller)(Database.Propellers.Local.OrderBy(Function(p) p.PartNumber).ToList())
+        Dim propellers = Database.Propellers.Local.ToBindingList()
+        PropellerBindingSource.DataSource = FormSort(propellers)
     End Sub
 
     Private Function DeleteConfirm() As Boolean
@@ -104,6 +114,11 @@ Public Class FrmPropellers
         Database.SaveChanges()
     End Sub
 
+    Private Function FormSort(ByVal propellers As BindingList(Of Propeller)) As BindingList(Of Propeller)
+        Return New BindingList(Of Propeller)(propellers _
+            .OrderBy(Function(p) p.Manufacturer?.ManufacturerName) _
+            .ThenBy(Function(p) p.PartNumber).ToList())
+    End Function
     Protected Overrides Property MasterSource As BindingSource
         Get
             Return mMasterSource
@@ -153,6 +168,7 @@ Public Class FrmPropellers
                 Case "GotoNext"
                 Case "GotoPrev"
                 Case "Refresh"
+                    Me.Refresh()
                 Case "Save"
                     RefreshAll()
                 Case "Undo"

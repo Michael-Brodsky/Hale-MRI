@@ -231,6 +231,17 @@ Public Class Form1
         Database.RadiusMeasurements.Add(mRadiusMeasurement)
     End Sub
 
+    Private Function ReferenceRadiiGet(ByVal blade As Integer) As List(Of Double)
+        ' Returns a list of reference radii for the given blade.
+        Dim radii As New List(Of Double)
+        If mJobDetails?.RadiusMeasurements IsNot Nothing Then
+            For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements
+                If rm.BladeId = blade Then radii.Add(Math.Round(CType(rm.Radius, Double)).ToString("F2"))
+            Next
+        End If
+        Return radii
+    End Function
+
     Private Sub SaveRadiusMeasurement()
         ' Update and save the current RadiusMeasurement with the moving average
         ' we collected while scanning.
@@ -284,10 +295,12 @@ Public Class Form1
 
     Private Sub ShowJobInfo()
         ' Show the current Customer, Vessel, Job and Propeller info.
-        Dim bsBlades As New BindingList(Of Integer)
+        Dim bsReferenceBlades As New BindingList(Of Integer)
         For i As Integer = 1 To mJob.PropellerBlades
-            bsBlades.Add(i)
+            bsReferenceBlades.Add(i)
         Next
+        ComboReferenceBlade.DataSource = bsReferenceBlades
+        ComboReferenceBlade.SelectedItem = Nothing
         Dim strBlades As String = If(Job?.PropellerBlades IsNot Nothing, $"Blades = {Job?.PropellerBlades}", "")
         Dim strDiameter As String = If(Job?.PropellerDiameter IsNot Nothing, $"Dia = {Job?.PropellerDiameter}", "")
         Dim strBore As String = If(Job?.PropellerBore IsNot Nothing, $"Dia = {Job?.PropellerBore}", "")
@@ -305,6 +318,11 @@ Public Class Form1
     Private Sub ShowJobDetailsInfo()
         ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitchByRadiusPercent(True)
+        ShowTrack()
+    End Sub
+
+    Private Sub ShowTrack()
+
     End Sub
 #End Region
 #Region "Event Handlers"
@@ -396,7 +414,6 @@ Public Class Form1
             Case "Undo"
                 ' Enable the PanelMeasurements when the user has cancelled the JobDetails record changes.
                 If Me.Current IsNot Nothing Then
-                    'JobDetailsBindingSource.ResetCurrentItem() ' This should be handled in BindingSourceUndo()
                     ShowJobDetailsInfo()
                     PanelMeasurements.Enabled = True
                 End If
@@ -450,6 +467,11 @@ Public Class Form1
             ShowForm(mFrmVessels, Database, User)
             mFrmVessels.Find(Job?.Vessel)
         End If
+    End Sub
+
+    Private Sub ComboReferenceBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceBlade.SelectedIndexChanged
+        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
+        ComboReferenceRadius.SelectedItem = Nothing
     End Sub
 #End Region
 End Class

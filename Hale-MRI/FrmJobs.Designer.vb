@@ -605,7 +605,7 @@ Partial Class FrmJobs
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.NoUpdates = False
-        RecordNavigationBar1.Size = New Size(635, 24)
+        RecordNavigationBar1.Size = New Size(644, 24)
         RecordNavigationBar1.TabIndex = 266
         ' 
         ' LabMeasurements
