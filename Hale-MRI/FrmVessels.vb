@@ -171,6 +171,14 @@ Public Class FrmVessels
         End Try
     End Sub
 
+    Private Sub DataGridVessels_DefaultValuesNeeded(sender As Object, e As DataGridViewRowEventArgs)
+        Try
+            e.Row.Cells("CustomerId").Value = VesselBindingSource.Current.Customer?.Id
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_NO_DEFAULT_VALUE, ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
     Private Sub DataGridVesselJobs_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridVesselJobs.MouseDoubleClick
         ' Open the Jobs form with the selected Job as the current record or,
         ' if the Vessel has no Jobs, create a new Job for the Vessel
@@ -184,6 +192,17 @@ Public Class FrmVessels
             End If
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub FrmVessels_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Try
+            Navigator = RecordNavigationBar1
+            Navigator.BoundControls = New List(Of Control) From {DataGridVessels}
+            MasterSource = VesselBindingSource
+            AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -214,30 +233,12 @@ Public Class FrmVessels
         End Try
     End Sub
 
-    Private Sub FrmVessels_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Try
-            Navigator = RecordNavigationBar1
-            Navigator.BoundControls = New List(Of Control) From {DataGridVessels}
-            MasterSource = VesselBindingSource
-            AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub DataGridVessels_DefaultValuesNeeded(sender As Object, e As DataGridViewRowEventArgs)
-        Try
-            e.Row.Cells("CustomerId").Value = VesselBindingSource.Current.Customer?.Id
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_NO_DEFAULT_VALUE, ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
     Private Sub VesselBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles VesselBindingSource.AddingNew
         Try
             Dim newVessel As Vessel = If(mNewVessel, New Vessel())
             e.NewObject = newVessel
             Database.Vessels.Add(newVessel)
+            mNewVessel = Nothing
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_ADDNEW, "vessel", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

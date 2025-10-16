@@ -23,8 +23,8 @@ Partial Class FrmJobs
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmJobs))
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         JobsBindingSource = New BindingSource(components)
         JobDetailsBindingSource = New BindingSource(components)
         LabJob = New Label()
@@ -33,11 +33,7 @@ Partial Class FrmJobs
         ComboJobs = New ComboBox()
         ComboVessels = New ComboBox()
         ComboCustomers = New ComboBox()
-        DataGridJobDetails = New DataGridView()
-        DateStarted = New DataGridViewTextBoxColumn()
-        PerformedBy = New DataGridViewComboBoxColumn()
         EmployeesBindingSource = New BindingSource(components)
-        Description = New DataGridViewTextBoxColumn()
         TxtBore = New TextBox()
         TxtDiameter = New TextBox()
         TxtPartNumber = New TextBox()
@@ -78,14 +74,20 @@ Partial Class FrmJobs
         labCalibrationFile = New Label()
         TxtScanDataFile = New TextBox()
         RecordNavigationBar1 = New RecordNavigationBar()
-        LabMeasurements = New Label()
         PictureBoxLogo = New PictureBox()
         Panel1 = New Panel()
+        TableLayoutPanel1 = New TableLayoutPanel()
+        DataGridJobDetails = New DataGridView()
+        DateStarted = New DataGridViewTextBoxColumn()
+        PerformedBy = New DataGridViewComboBoxColumn()
+        Description = New DataGridViewTextBoxColumn()
+        LabMeasurements = New Label()
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
+        TableLayoutPanel1.SuspendLayout()
+        CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' JobsBindingSource
@@ -162,65 +164,10 @@ Partial Class FrmJobs
         ComboCustomers.TabIndex = 187
         ComboCustomers.ValueMember = "Id"
         ' 
-        ' DataGridJobDetails
-        ' 
-        DataGridJobDetails.AllowUserToAddRows = False
-        DataGridJobDetails.AllowUserToDeleteRows = False
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
-        DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {DateStarted, PerformedBy, Description})
-        DataGridJobDetails.Location = New Point(444, 349)
-        DataGridJobDetails.Margin = New Padding(0)
-        DataGridJobDetails.Name = "DataGridJobDetails"
-        DataGridJobDetails.ReadOnly = True
-        DataGridJobDetails.RowHeadersWidth = 82
-        DataGridJobDetails.Size = New Size(635, 282)
-        DataGridJobDetails.TabIndex = 193
-        ' 
-        ' DateStarted
-        ' 
-        DateStarted.DataPropertyName = "StartDate"
-        DateStarted.HeaderText = "Date Started"
-        DateStarted.MinimumWidth = 140
-        DateStarted.Name = "DateStarted"
-        DateStarted.ReadOnly = True
-        DateStarted.Width = 140
-        ' 
-        ' PerformedBy
-        ' 
-        PerformedBy.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        PerformedBy.DataPropertyName = "PerformedBy"
-        PerformedBy.DataSource = EmployeesBindingSource
-        PerformedBy.DisplayMember = "EmployeeName"
-        PerformedBy.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
-        PerformedBy.HeaderText = "Performed By"
-        PerformedBy.MinimumWidth = 120
-        PerformedBy.Name = "PerformedBy"
-        PerformedBy.ReadOnly = True
-        PerformedBy.ValueMember = "Id"
-        PerformedBy.Width = 120
-        ' 
         ' EmployeesBindingSource
         ' 
         EmployeesBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
         EmployeesBindingSource.Sort = ""
-        ' 
-        ' Description
-        ' 
-        Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
-        Description.DataPropertyName = "Description"
-        Description.HeaderText = "Description"
-        Description.MinimumWidth = 290
-        Description.Name = "Description"
-        Description.ReadOnly = True
-        Description.Width = 290
         ' 
         ' TxtBore
         ' 
@@ -608,16 +555,6 @@ Partial Class FrmJobs
         RecordNavigationBar1.Size = New Size(644, 24)
         RecordNavigationBar1.TabIndex = 266
         ' 
-        ' LabMeasurements
-        ' 
-        LabMeasurements.AutoSize = True
-        LabMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabMeasurements.Location = New Point(444, 334)
-        LabMeasurements.Name = "LabMeasurements"
-        LabMeasurements.Size = New Size(90, 15)
-        LabMeasurements.TabIndex = 267
-        LabMeasurements.Text = "Measurements"
-        ' 
         ' PictureBoxLogo
         ' 
         PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), Image)
@@ -634,17 +571,98 @@ Partial Class FrmJobs
         Panel1.BorderStyle = BorderStyle.FixedSingle
         Panel1.Location = New Point(76, 349)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(228, 282)
+        Panel1.Size = New Size(228, 297)
         Panel1.TabIndex = 269
+        ' 
+        ' TableLayoutPanel1
+        ' 
+        TableLayoutPanel1.ColumnCount = 1
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        TableLayoutPanel1.Controls.Add(DataGridJobDetails, 0, 1)
+        TableLayoutPanel1.Controls.Add(LabMeasurements, 0, 0)
+        TableLayoutPanel1.Location = New Point(444, 349)
+        TableLayoutPanel1.Name = "TableLayoutPanel1"
+        TableLayoutPanel1.RowCount = 2
+        TableLayoutPanel1.RowStyles.Add(New RowStyle())
+        TableLayoutPanel1.RowStyles.Add(New RowStyle())
+        TableLayoutPanel1.Size = New Size(635, 299)
+        TableLayoutPanel1.TabIndex = 270
+        ' 
+        ' DataGridJobDetails
+        ' 
+        DataGridJobDetails.AllowUserToAddRows = False
+        DataGridJobDetails.AllowUserToDeleteRows = False
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {DateStarted, PerformedBy, Description})
+        DataGridJobDetails.Location = New Point(0, 15)
+        DataGridJobDetails.Margin = New Padding(0)
+        DataGridJobDetails.Name = "DataGridJobDetails"
+        DataGridJobDetails.ReadOnly = True
+        DataGridJobDetails.RowHeadersWidth = 82
+        DataGridJobDetails.Size = New Size(635, 282)
+        DataGridJobDetails.TabIndex = 269
+        ' 
+        ' DateStarted
+        ' 
+        DateStarted.DataPropertyName = "StartDate"
+        DateStarted.HeaderText = "Date Started"
+        DateStarted.MinimumWidth = 140
+        DateStarted.Name = "DateStarted"
+        DateStarted.ReadOnly = True
+        DateStarted.Width = 140
+        ' 
+        ' PerformedBy
+        ' 
+        PerformedBy.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        PerformedBy.DataPropertyName = "PerformedBy"
+        PerformedBy.DataSource = EmployeesBindingSource
+        PerformedBy.DisplayMember = "EmployeeName"
+        PerformedBy.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+        PerformedBy.HeaderText = "Performed By"
+        PerformedBy.MinimumWidth = 120
+        PerformedBy.Name = "PerformedBy"
+        PerformedBy.ReadOnly = True
+        PerformedBy.ValueMember = "Id"
+        PerformedBy.Width = 120
+        ' 
+        ' Description
+        ' 
+        Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        Description.DataPropertyName = "Description"
+        Description.HeaderText = "Description"
+        Description.MinimumWidth = 290
+        Description.Name = "Description"
+        Description.ReadOnly = True
+        Description.Width = 290
+        ' 
+        ' LabMeasurements
+        ' 
+        LabMeasurements.AutoSize = True
+        LabMeasurements.BackColor = SystemColors.ActiveCaption
+        LabMeasurements.Dock = DockStyle.Fill
+        LabMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMeasurements.Location = New Point(3, 0)
+        LabMeasurements.Name = "LabMeasurements"
+        LabMeasurements.Size = New Size(629, 15)
+        LabMeasurements.TabIndex = 268
+        LabMeasurements.Text = "Measurements"
         ' 
         ' FrmJobs
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1091, 644)
+        ClientSize = New Size(1091, 660)
+        Controls.Add(TableLayoutPanel1)
         Controls.Add(Panel1)
         Controls.Add(PictureBoxLogo)
-        Controls.Add(LabMeasurements)
         Controls.Add(RecordNavigationBar1)
         Controls.Add(CmdScanDataPick)
         Controls.Add(CmdScanDataExport)
@@ -685,7 +703,6 @@ Partial Class FrmJobs
         Controls.Add(ComboMaterial)
         Controls.Add(ComboStyle)
         Controls.Add(ComboManufacturer)
-        Controls.Add(DataGridJobDetails)
         Controls.Add(LabJob)
         Controls.Add(LabVessel)
         Controls.Add(LabCustomer)
@@ -696,9 +713,11 @@ Partial Class FrmJobs
         Text = "Jobs"
         CType(JobsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).EndInit()
+        TableLayoutPanel1.ResumeLayout(False)
+        TableLayoutPanel1.PerformLayout()
+        CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -711,7 +730,6 @@ Partial Class FrmJobs
     Friend WithEvents ComboJobs As ComboBox
     Friend WithEvents ComboVessels As ComboBox
     Friend WithEvents ComboCustomers As ComboBox
-    Friend WithEvents DataGridJobDetails As DataGridView
     Friend WithEvents TxtBore As TextBox
     Friend WithEvents TxtDiameter As TextBox
     Friend WithEvents TxtPartNumber As TextBox
@@ -753,10 +771,12 @@ Partial Class FrmJobs
     Friend WithEvents TxtScanDataFile As TextBox
     Friend WithEvents EmployeesBindingSource As BindingSource
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
+    Friend WithEvents PictureBoxLogo As PictureBox
+    Friend WithEvents Panel1 As Panel
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
     Friend WithEvents LabMeasurements As Label
+    Friend WithEvents DataGridJobDetails As DataGridView
     Friend WithEvents DateStarted As DataGridViewTextBoxColumn
     Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
     Friend WithEvents Description As DataGridViewTextBoxColumn
-    Friend WithEvents PictureBoxLogo As PictureBox
-    Friend WithEvents Panel1 As Panel
 End Class

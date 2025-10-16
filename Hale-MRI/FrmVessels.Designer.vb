@@ -23,8 +23,8 @@ Partial Class FrmVessels
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
         CustomerBindingSource = New BindingSource(components)
         CountryCodeBindingSource = New BindingSource(components)
         VesselServiceTypeBindingSource = New BindingSource(components)
@@ -114,14 +114,14 @@ Partial Class FrmVessels
         DataGridVessels.AutoGenerateColumns = False
         DataGridVessels.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.DisplayedCellsExceptHeader
         DataGridVessels.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.DisplayedCellsExceptHeaders
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        DataGridVessels.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = SystemColors.Control
+        DataGridViewCellStyle5.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle5.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = DataGridViewTriState.True
+        DataGridVessels.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle5
         DataGridVessels.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridVessels.Columns.AddRange(New DataGridViewColumn() {VesselNameDataGridViewTextBoxColumn, CustomerDataGridViewTextBoxColumn, PrimaryVesselNumberDataGridViewTextBoxColumn, HullIdNumberDataGridViewTextBoxColumn, CallSignDataGridViewTextBoxColumn, FlagDataGridViewTextBoxColumn, BuildYearDataGridViewTextBoxColumn, ServiceTypeDataGridViewTextBoxColumn})
         DataGridVessels.DataSource = VesselBindingSource
@@ -215,14 +215,14 @@ Partial Class FrmVessels
         DataGridVesselJobs.AllowUserToAddRows = False
         DataGridVesselJobs.AllowUserToDeleteRows = False
         DataGridVesselJobs.AutoGenerateColumns = False
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
-        DataGridVesselJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle6.BackColor = SystemColors.Control
+        DataGridViewCellStyle6.Font = New Font("Segoe UI Semibold", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle6.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle6.WrapMode = DataGridViewTriState.True
+        DataGridVesselJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
         DataGridVesselJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridVesselJobs.Columns.AddRange(New DataGridViewColumn() {JobNumberDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, DescriptionDataGridViewTextBoxColumn})
         DataGridVesselJobs.DataSource = JobsBindingSource
@@ -263,11 +263,13 @@ Partial Class FrmVessels
         ' labVesselJobsTitle
         ' 
         labVesselJobsTitle.AutoSize = True
+        labVesselJobsTitle.BackColor = SystemColors.ActiveCaption
+        labVesselJobsTitle.Dock = DockStyle.Fill
         labVesselJobsTitle.Font = New Font("Segoe UI", 11F, FontStyle.Bold)
         labVesselJobsTitle.Location = New Point(0, 0)
         labVesselJobsTitle.Margin = New Padding(0, 0, 2, 1)
         labVesselJobsTitle.Name = "labVesselJobsTitle"
-        labVesselJobsTitle.Size = New Size(41, 20)
+        labVesselJobsTitle.Size = New Size(925, 20)
         labVesselJobsTitle.TabIndex = 0
         labVesselJobsTitle.Text = "Jobs"
         ' 

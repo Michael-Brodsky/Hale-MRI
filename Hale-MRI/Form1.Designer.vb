@@ -651,7 +651,7 @@ Partial Class Form1
         Chart1.Series.Add(Series1)
         Chart1.Size = New Size(227, 179)
         Chart1.TabIndex = 0
-        Chart1.Text = "Chart1"
+        Chart1.Text = "Track"
         ' 
         ' Chart2
         ' 
@@ -669,7 +669,7 @@ Partial Class Form1
         Chart2.Series.Add(Series2)
         Chart2.Size = New Size(229, 179)
         Chart2.TabIndex = 1
-        Chart2.Text = "Chart2"
+        Chart2.Text = "Track"
         ' 
         ' Label2
         ' 

@@ -79,6 +79,11 @@ Public Class FrmJobs
         End Set
     End Property
 
+    ''' <summary>
+    ''' Finds the given Job and, if found, makes it the current record.
+    ''' </summary>
+    ''' <param name="item">The Job to find.</param>
+    ''' <returns>The found Job, or Nothing if not found.</returns>
     Public Function Find(item As Job) As Job
         ' Searches for the given Job and, if found, selects and returns it.
         Dim result As Job = Nothing
@@ -93,10 +98,11 @@ Public Class FrmJobs
     Public Property Hardware As WorkstationEncoders ' We need to pass this to the measurements form.
 
     Public Overrides Sub Refresh()
+        MyBase.Refresh()
+        'JobDetailsBindingSource.ResetBindings(False)
         ListsRefresh(False)
         FiltersRemove()
         If mFilterOn AndAlso mFilter IsNot Nothing Then FiltersApply()
-        MyBase.Refresh()
     End Sub
 #End Region
 #Region "Private Interface"
@@ -486,7 +492,7 @@ Public Class FrmJobs
         End Try
     End Sub
 
-    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridJobDetails.CellMouseDoubleClick
+    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs)
         ' Open the measurements form with the clicked JobDetail record.
         Try
             ShowForm(mFrmMeasurements, Database, User)
@@ -621,6 +627,24 @@ Public Class FrmJobs
                 End If
             End If
         End If
+    End Sub
+
+    Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
+        ' Open the JobDetails (Measurements) form with the selected Vessel as the current record or,
+        ' if the Customer has no Vessels, create a new Vessel for the Customer
+        ' and make it the current record.
+        Try
+            If Current IsNot Nothing Then
+                ShowForm(mFrmMeasurements, Database, User)
+                mFrmMeasurements.Hardware = Hardware
+                mFrmMeasurements.Job = CurrentJob
+                If mFrmMeasurements.Find(BindingSourceCurrent(JobDetailsBindingSource)) Is Nothing Then
+                    mFrmMeasurements.AddNew(Current)
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 #End Region
 End Class

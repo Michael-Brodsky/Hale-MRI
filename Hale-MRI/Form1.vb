@@ -15,6 +15,7 @@ Public Class Form1
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing         ' The form's RecordNavigationBar.
+    Private mNewJobDetail As JobDetail = Nothing                ' The new JobDetail record being added.
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
@@ -30,13 +31,44 @@ Public Class Form1
 #End If
 #End Region
 #Region "Public Interface"
+    Public Sub AddNew(ByVal job As Job)
+        mNewJobDetail = New JobDetail With {
+            .Job = job,
+            .StartDate = Date.Now,
+            .PerformedByNavigation = Me.User
+        }
+        MasterSource.AddNew()
+    End Sub
+    ''' <summary>
+    ''' Returns the currently selected Job,
+    ''' or Nothing if there is no selected record.
+    ''' </summary>
     Public ReadOnly Property Current As JobDetail
         Get
             Return BindingSourceCurrent(JobDetailsBindingSource)
         End Get
     End Property
 
+    ''' <summary>
+    ''' Gets or sets the current database context used 
+    ''' to access data. Overrides MyBase.Database.
+    ''' </summary>
     Public Overrides Property Database As HaleMRIContext
+
+    ''' <summary>
+    ''' Finds the given JobDetail and, if found, makes it the current record.
+    ''' </summary>
+    ''' <param name="item">The JobDetail to find.</param>
+    ''' <returns>The found JobDetail, or Nothing if not found.</returns>
+    Public Function Find(item As JobDetail) As JobDetail
+        Dim result As JobDetail = Nothing
+        Dim pos As Integer = BindingSourceFind(MasterSource, item)
+        If pos <> kNoCurrentRecord Then
+            MasterSource.Position = pos
+            result = Current
+        End If
+        Return result
+    End Function
 
     Public Property Hardware As WorkstationEncoders
         Get
@@ -350,6 +382,11 @@ Public Class Form1
 
     End Sub
 
+    Private Sub ComboReferenceBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceBlade.SelectedIndexChanged
+        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
+        ComboReferenceRadius.SelectedItem = Nothing
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ' Initialize form controls. This method needs to initialize all form controls
@@ -374,6 +411,7 @@ Public Class Form1
             ' See Encoders_EncoderEvent() and ScanTimer_Tick() for examples.
             AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
+            AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
         Catch ex As Exception
             MessageBox.Show("Error loading measurements form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -381,6 +419,16 @@ Public Class Form1
 
     Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
         ' Handles EncoderStatusStrip events so we can update our controls accordingly.
+    End Sub
+
+    Private Sub JobDetailsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobDetailsBindingSource.AddingNew
+        Try
+            Dim newJobDetail As JobDetail = If(mNewJobDetail, CreateNewJobDetail())
+            e.NewObject = newJobDetail
+            Database.JobDetails.Add(newJobDetail)
+        Catch ex As Exception
+            MessageBox.Show("Error adding new job details record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
@@ -397,7 +445,7 @@ Public Class Form1
             Case "Delete"
                 If DeleteConfirm() Then
                     DeleteJobDetail()
-                    RefreshAll(New List(Of FrmDatabaseForm) From {mFrmJobs})
+                    RefreshAll()
                 End If
             Case "Editing"
                 ' Disable the PanelMeasurements when the user is editing the JobDetails record. 
@@ -409,7 +457,7 @@ Public Class Form1
             Case "GotoLast"
             Case "Save"
                 ' Refresh any open database forms affected by our changes and enable PanelMeasurements.
-                RefreshAll(New List(Of FrmDatabaseForm) From {mFrmJobs})
+                RefreshAll()
                 PanelMeasurements.Enabled = True
             Case "Undo"
                 ' Enable the PanelMeasurements when the user has cancelled the JobDetails record changes.
@@ -429,16 +477,6 @@ Public Class Form1
         Catch ex As Exception
             Scanning = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub JobDetailsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobDetailsBindingSource.AddingNew
-        Try
-            Dim newJobDetail As JobDetail = CreateNewJobDetail()
-            e.NewObject = newJobDetail
-            Database.JobDetails.Add(newJobDetail)
-        Catch ex As Exception
-            MessageBox.Show("Error adding new job details record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -467,11 +505,6 @@ Public Class Form1
             ShowForm(mFrmVessels, Database, User)
             mFrmVessels.Find(Job?.Vessel)
         End If
-    End Sub
-
-    Private Sub ComboReferenceBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceBlade.SelectedIndexChanged
-        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
-        ComboReferenceRadius.SelectedItem = Nothing
     End Sub
 #End Region
 End Class
