@@ -31,6 +31,8 @@ Partial Class Form1
         Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -86,13 +88,14 @@ Partial Class Form1
         Label4 = New Label()
         ComboReferenceRadius = New ComboBox()
         Label5 = New Label()
-        ComboRake = New ComboBox()
         ComboReferencePoint = New ComboBox()
         PanelPlot = New Panel()
+        Chart3 = New DataVisualization.Charting.Chart()
         LabTrackPanel = New Label()
         LabPanelPlot = New Label()
         LabPanelMeasurements = New Label()
         LabPanelJob = New Label()
+        TxtRake = New TextBox()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -107,6 +110,8 @@ Partial Class Form1
         TableLayoutPanel2.SuspendLayout()
         CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
+        PanelPlot.SuspendLayout()
+        CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' RecordNavigationBar1
@@ -617,8 +622,8 @@ Partial Class Form1
         TableLayoutPanel2.Controls.Add(Label4, 1, 5)
         TableLayoutPanel2.Controls.Add(ComboReferenceRadius, 1, 6)
         TableLayoutPanel2.Controls.Add(Label5, 1, 7)
-        TableLayoutPanel2.Controls.Add(ComboRake, 1, 8)
         TableLayoutPanel2.Controls.Add(ComboReferencePoint, 1, 4)
+        TableLayoutPanel2.Controls.Add(TxtRake, 1, 8)
         TableLayoutPanel2.Dock = DockStyle.Fill
         TableLayoutPanel2.Location = New Point(0, 0)
         TableLayoutPanel2.Name = "TableLayoutPanel2"
@@ -730,15 +735,6 @@ Partial Class Form1
         Label5.TabIndex = 8
         Label5.Text = "Rake"
         ' 
-        ' ComboRake
-        ' 
-        ComboRake.FormattingEnabled = True
-        ComboRake.Location = New Point(236, 184)
-        ComboRake.Margin = New Padding(3, 0, 3, 0)
-        ComboRake.Name = "ComboRake"
-        ComboRake.Size = New Size(110, 23)
-        ComboRake.TabIndex = 9
-        ' 
         ' ComboReferencePoint
         ' 
         ComboReferencePoint.FormattingEnabled = True
@@ -752,10 +748,27 @@ Partial Class Form1
         ' PanelPlot
         ' 
         PanelPlot.BorderStyle = BorderStyle.Fixed3D
+        PanelPlot.Controls.Add(Chart3)
         PanelPlot.Location = New Point(803, 131)
         PanelPlot.Name = "PanelPlot"
-        PanelPlot.Size = New Size(294, 410)
+        PanelPlot.Size = New Size(294, 294)
         PanelPlot.TabIndex = 11
+        ' 
+        ' Chart3
+        ' 
+        ChartArea3.Name = "ChartArea1"
+        Chart3.ChartAreas.Add(ChartArea3)
+        Chart3.Dock = DockStyle.Fill
+        Chart3.Location = New Point(0, 0)
+        Chart3.Name = "Chart3"
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
+        Series3.IsVisibleInLegend = False
+        Series3.Name = "Series1"
+        Chart3.Series.Add(Series3)
+        Chart3.Size = New Size(290, 290)
+        Chart3.TabIndex = 0
+        Chart3.Text = "ChartPlot"
         ' 
         ' LabTrackPanel
         ' 
@@ -797,6 +810,14 @@ Partial Class Form1
         LabPanelJob.TabIndex = 15
         LabPanelJob.Text = "Job"
         ' 
+        ' TxtRake
+        ' 
+        TxtRake.Location = New Point(236, 184)
+        TxtRake.Margin = New Padding(3, 0, 3, 0)
+        TxtRake.Name = "TxtRake"
+        TxtRake.Size = New Size(110, 23)
+        TxtRake.TabIndex = 9
+        ' 
         ' Form1
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -835,6 +856,8 @@ Partial Class Form1
         TableLayoutPanel2.PerformLayout()
         CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
+        PanelPlot.ResumeLayout(False)
+        CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -900,5 +923,6 @@ Partial Class Form1
     Friend WithEvents Label4 As Label
     Friend WithEvents ComboReferenceRadius As ComboBox
     Friend WithEvents Label5 As Label
-    Friend WithEvents ComboRake As ComboBox
+    Friend WithEvents Chart3 As DataVisualization.Charting.Chart
+    Friend WithEvents TxtRake As TextBox
 End Class

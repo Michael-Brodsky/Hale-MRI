@@ -282,7 +282,7 @@ Public Class Form1
         ' we collected while scanning.
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
-        ShowBladePitchByRadiusPercent(True)
+        ShowBladePitch(True)
     End Sub
 
     Private Sub ScanControlsEnabled(ByVal isScanning As Boolean)
@@ -314,7 +314,7 @@ Public Class Form1
         End Set
     End Property
 
-    Private Sub ShowBladePitchByRadiusPercent(ByVal show As Boolean)
+    Private Sub ShowBladePitch(ByVal show As Boolean)
         Dim dtBladePitchByRadius As New DataTable()
         Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
         Dim rowBlade As DataRow
@@ -351,9 +351,10 @@ Public Class Form1
 
     Private Sub ShowJobDetailsInfo()
         ' Update any controls that consume data from the current JobDetail record.
-        ShowBladePitchByRadiusPercent(True)
+        ShowBladePitch(True)
         ShowTrack()
         ShowAngularPosition()
+        ShowPlot()
     End Sub
 
     Private Sub ShowTrack()
@@ -449,6 +450,10 @@ Public Class Form1
                 Chart2.Series(s.Name).Points(i).Color = barColors(i Mod barColors.Length)
             Next
         End If
+    End Sub
+
+    Private Sub ShowPlot()
+
     End Sub
 
     Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
@@ -556,7 +561,6 @@ Public Class Form1
             AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
             AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
-            'AddHandler JobDetailsBindingSource.CurrentChanged, AddressOf JobDetailsBindingSource_CurrentChanged
         Catch ex As Exception
             MessageBox.Show("Error loading measurements form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
