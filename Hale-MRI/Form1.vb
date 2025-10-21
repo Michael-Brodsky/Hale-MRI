@@ -1,6 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports System.Diagnostics.Contracts
-Imports System.Security.Cryptography
 Imports System.Windows.Forms.DataVisualization.Charting
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
@@ -347,113 +345,71 @@ Public Class Form1
         TxtBlades.Text = strBlades
         TxtDiameter.Text = strDiameter
         TxtBore.Text = strBore
+        ComboReferencePoint.SelectedItem = "LE"
+        ComboPitchBasis.SelectedItem = "Mean"
+        ComboTolerance.SelectedItem = JobDetails?.ToleranceClass
+        ShowPitchBasis()
     End Sub
 
     Private Sub ShowJobDetailsInfo()
         ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitch(True)
         ShowTrack()
-        ShowAngularPosition()
         ShowPlot()
     End Sub
 
-    Private Sub ShowTrack()
-        ' Calculate and show the bladeHeight for each blade at the given point and radius.
-        Dim refBlade As Integer? = ComboReferenceBlade.SelectedValue
-        Dim refPoint As String = ComboReferencePoint.SelectedValue
-        Dim refRadius As Double = ComboReferenceRadius.SelectedValue
-        ' If all three reference values are given, calculate and show the bladeHeight for each blade.
-        If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ' Use a two-column DataTable as the Chart's data source.
-            ' The first column is the blade number (X axis) and the second
-            ' column is the bladeHeight (Y axis).
-            Dim dt As New DataTable()
-            Dim colBlade As DataColumn = dt.Columns.Add("Blade", GetType(String))
-            Dim colHeight As DataColumn = dt.Columns.Add("Height", GetType(Double))
-            Dim rowBlade As DataRow
-            Dim s As New Series With {
-                .Name = "BladeHeight",
-                .ChartType = SeriesChartType.Column,
-                .XValueMember = colBlade.ColumnName,
-                .YValueMembers = colHeight.ColumnName,
-                .IsXValueIndexed = True,
-                .IsVisibleInLegend = False
-            }
-            Dim barColors As Color() = {Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Purple} ' Teletubbies!
-            Chart1.DataSource = dt
-            Chart1.Series.Clear()
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-
-            ' Get the depth for the reference blade at the given radius and point (LE, Mid or TE).
-            ' (RadiusMeasurement is the parent of CellMeasurements. To find the right one, match the blade number and the closest radius rounded to a whole number)
-            Dim refRm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = refBlade AndAlso Math.Round(CType(r.Radius, Double)) = refRadius)
-            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)
-            For i As Integer = 1 To Job?.PropellerBlades
-                ' Don't plot the reference blade.
-                If i = refBlade Then Continue For
-                ' Get the depth for this blade at the given point (LE, Mid or TE).
-                Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = i)    'Gives BC42324 warning, prob can suppress
-                Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
-                ' bladeHeight is the difference in depth between the two blades at the same radius and point.
-                Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth)   ' + offset (0.2)??? Also, sometimes getting negative values. Is this the rotation thing???
-                rowBlade = dt.Rows.Add($"{i}", bladeHeight)
-            Next
-
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
-            ' Bind the data and bedazzle the chart.
-            Chart1.Series.Add(s)
-            Chart1.DataBind()
-            For i As Integer = 0 To Chart1.Series(s.Name).Points.Count - 1
-                Chart1.Series(s.Name).Points(i).Color = barColors(i Mod barColors.Length)
-            Next
-        End If
+    Private Sub ShowPitchBasis()
+        Select Case ComboPitchBasis.SelectedItem.ToString()
+            Case "Mean"
+                TxtBasis.Text = ((Job?.MarkedPitch + Job?.DesiredPitch) / 2.0).ToString()
+            Case "Marked"
+                TxtBasis.Text = Job?.MarkedPitch.ToString()
+            Case "Desired"
+                TxtBasis.Text = Job?.DesiredPitch.ToString()
+            Case Else
+        End Select
     End Sub
 
-    Private Sub ShowAngularPosition()
-        ' Exactly like ShowTrack(), but shows the angular position of each blade.
-        ' This uses refAngle like refBlade in ShowTrack(). I know it should be
-        ' adjacent blade, but I ran out of coffee. (also, which is adjacent?)
+    Private Sub ShowTrack()
+        Const kHeightOffset As Double = 0.2 ' Offset to add to bladeHeight for visual comparison? 
         Dim refBlade As Integer? = ComboReferenceBlade.SelectedValue
         Dim refPoint As String = ComboReferencePoint.SelectedValue
         Dim refRadius As Double = ComboReferenceRadius.SelectedValue
+        ' If all three reference values are given, calculate and plot the data.
         If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
-            Dim dt As New DataTable()
-            Dim colBlade As DataColumn = dt.Columns.Add("Blade", GetType(String))
-            Dim colPosition As DataColumn = dt.Columns.Add("Position", GetType(Double))
-            Dim rowBlade As DataRow
-            Dim s As New Series With {
-                .Name = "AngularPosition",
-                .ChartType = SeriesChartType.Column,
-                .XValueMember = colBlade.ColumnName,
-                .YValueMembers = colPosition.ColumnName,
-                .IsXValueIndexed = True,
-                .IsVisibleInLegend = False
-            }
-            Dim barColors As Color() = {Color.Red, Color.Blue, Color.Green, Color.Orange, Color.Purple}
-            Chart2.DataSource = dt
-            Chart2.Series.Clear()
+            Dim seriesHeight As Series = ChartCreateSeries(ChartBladeHeight, "BladeHeight", "Blade", "Height")
+            Dim seriesPosition As Series = ChartCreateSeries(ChartAngularPosition, "AngularPosition", "Blade", "Position")
             Dim refRm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = refBlade AndAlso Math.Round(CType(r.Radius, Double)) = refRadius)
+            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)
             Dim refAngle As Double = TrackGetAngle(refRm, refPoint)
             For i As Integer = 1 To Job?.PropellerBlades
-                If i = refBlade Then Continue For
                 Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = i)    'Gives BC42324 warning, prob can suppress
+                Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
                 Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
-                Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle - CType((360 / Job?.PropellerBlades), Double)) ' + offset???
-                rowBlade = dt.Rows.Add($"{i}", bladePosition)
+                Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
+                Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle - CType((360 / Job?.PropellerBlades), Double))
+                ChartAddPoint(ChartBladeHeight, seriesHeight, $"{i}", bladeHeight, (i = refBlade))
+                ChartAddPoint(ChartAngularPosition, seriesPosition, $"{i}", bladePosition, (i = refBlade))
             Next
-            Chart2.Series.Add(s)
-            Chart2.DataBind()
-            For i As Integer = 0 To Chart2.Series(s.Name).Points.Count - 1
-                Chart2.Series(s.Name).Points(i).Color = barColors(i Mod barColors.Length)
-            Next
+            ShowRake(refRadius) ' Assuming the 'radius' argument is the currently selected one in the combo box?
         End If
     End Sub
 
     Private Sub ShowPlot()
 
+    End Sub
+
+    Private Sub ShowRake(ByVal radius As Double)
+        ' Need specific definitions for these values so they can be translated dB calls to retrieve proper values.
+        Dim innerDepth As Double = 0.0
+        Dim outerDepth As Double = 0.0
+        Dim innerRadius As Double = 0.0
+        Dim outerRadius As Double = 0.0
+        ''''''''''''''''''''''''''''''''''''''''''
+        Dim deltaDepth As Double = innerDepth - outerDepth
+        Dim lengthRadius As Double = (radius * outerRadius / 100.0) - (radius * innerRadius / 100.0)
+        Dim rake As Double = Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI)
+        TxtRake.Text = rake.ToString("F2")
     End Sub
 
     Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
@@ -515,23 +471,21 @@ Public Class Form1
 
     End Sub
 
+    Private Sub ComboPitchBasis_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboPitchBasis.SelectedIndexChanged
+        ShowPitchBasis()
+    End Sub
+
     Private Sub ComboReferenceBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceBlade.SelectedIndexChanged
-        Debug.Print($"ComboReferenceBlade_SelectedIndexChanged: {ComboReferenceBlade.SelectedValue}")
         ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
         ShowTrack()
-        ShowAngularPosition()
     End Sub
 
     Private Sub ComboReferencePoint_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferencePoint.SelectedIndexChanged
-        Debug.Print($"ComboReferencePoint_SelectedIndexChanged: {ComboReferencePoint.SelectedValue}")
         ShowTrack()
-        ShowAngularPosition()
     End Sub
 
     Private Sub ComboReferenceRadius_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceRadius.SelectedIndexChanged
-        Debug.Print($"ComboReferenceRadius_SelectedIndexChanged: {ComboReferenceRadius.SelectedValue}")
         ShowTrack()
-        ShowAngularPosition()
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
@@ -540,8 +494,11 @@ Public Class Form1
             ' based on some predefined "states". For example: if no encoders are detected,
             ' they're not initialized or in an error state, then disable all controls that 
             ' can access the encoders. 
+            Dim tolerances As List(Of Tolerance) = Database.Tolerances.Local.ToList()
+            tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
+            ComboTolerance.DataSource = tolerances
             ComboReferencePoint.DataSource = New List(Of String) From {"LE", "Mid", "TE"}
-            ComboReferencePoint.SelectedItem = "LE"
+            ComboPitchBasis.DataSource = New List(Of String) From {"Mean", "Marked", "Desired"}
 
             ' Initialize the DataGridJobDetails.
             DataGridJobDetails.AutoGenerateColumns = False

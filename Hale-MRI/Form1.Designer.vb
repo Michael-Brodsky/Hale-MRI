@@ -80,8 +80,8 @@ Partial Class Form1
         PictureBoxLogo = New PictureBox()
         Panel1 = New Panel()
         TableLayoutPanel2 = New TableLayoutPanel()
-        Chart1 = New DataVisualization.Charting.Chart()
-        Chart2 = New DataVisualization.Charting.Chart()
+        ChartBladeHeight = New DataVisualization.Charting.Chart()
+        ChartAngularPosition = New DataVisualization.Charting.Chart()
         Label2 = New Label()
         ComboReferenceBlade = New ComboBox()
         Label3 = New Label()
@@ -89,13 +89,19 @@ Partial Class Form1
         ComboReferenceRadius = New ComboBox()
         Label5 = New Label()
         ComboReferencePoint = New ComboBox()
+        TxtRake = New TextBox()
         PanelPlot = New Panel()
         Chart3 = New DataVisualization.Charting.Chart()
         LabTrackPanel = New Label()
         LabPanelPlot = New Label()
         LabPanelMeasurements = New Label()
         LabPanelJob = New Label()
-        TxtRake = New TextBox()
+        ComboPitchBasis = New ComboBox()
+        ComboTolerance = New ComboBox()
+        LabPitchBasis = New Label()
+        LabTolerance = New Label()
+        TxtBasis = New TextBox()
+        LabBasis = New Label()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -108,8 +114,8 @@ Partial Class Form1
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         Panel1.SuspendLayout()
         TableLayoutPanel2.SuspendLayout()
-        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
-        CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
         PanelPlot.SuspendLayout()
         CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
@@ -614,8 +620,8 @@ Partial Class Form1
         TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
         TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
         TableLayoutPanel2.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
-        TableLayoutPanel2.Controls.Add(Chart1, 0, 1)
-        TableLayoutPanel2.Controls.Add(Chart2, 2, 1)
+        TableLayoutPanel2.Controls.Add(ChartBladeHeight, 0, 1)
+        TableLayoutPanel2.Controls.Add(ChartAngularPosition, 2, 1)
         TableLayoutPanel2.Controls.Add(Label2, 1, 1)
         TableLayoutPanel2.Controls.Add(ComboReferenceBlade, 1, 2)
         TableLayoutPanel2.Controls.Add(Label3, 1, 3)
@@ -640,41 +646,41 @@ Partial Class Form1
         TableLayoutPanel2.Size = New Size(584, 208)
         TableLayoutPanel2.TabIndex = 0
         ' 
-        ' Chart1
+        ' ChartBladeHeight
         ' 
         ChartArea1.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea1)
-        Chart1.Dock = DockStyle.Fill
+        ChartBladeHeight.ChartAreas.Add(ChartArea1)
+        ChartBladeHeight.Dock = DockStyle.Fill
         Legend1.Name = "Legend1"
-        Chart1.Legends.Add(Legend1)
-        Chart1.Location = New Point(3, 26)
-        Chart1.Name = "Chart1"
-        TableLayoutPanel2.SetRowSpan(Chart1, 8)
+        ChartBladeHeight.Legends.Add(Legend1)
+        ChartBladeHeight.Location = New Point(3, 26)
+        ChartBladeHeight.Name = "ChartBladeHeight"
+        TableLayoutPanel2.SetRowSpan(ChartBladeHeight, 8)
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
         Series1.Name = "Series1"
-        Chart1.Series.Add(Series1)
-        Chart1.Size = New Size(227, 179)
-        Chart1.TabIndex = 0
-        Chart1.Text = "Track"
+        ChartBladeHeight.Series.Add(Series1)
+        ChartBladeHeight.Size = New Size(227, 179)
+        ChartBladeHeight.TabIndex = 0
+        ChartBladeHeight.Text = "Track"
         ' 
-        ' Chart2
+        ' ChartAngularPosition
         ' 
         ChartArea2.Name = "ChartArea1"
-        Chart2.ChartAreas.Add(ChartArea2)
-        Chart2.Dock = DockStyle.Fill
+        ChartAngularPosition.ChartAreas.Add(ChartArea2)
+        ChartAngularPosition.Dock = DockStyle.Fill
         Legend2.Name = "Legend1"
-        Chart2.Legends.Add(Legend2)
-        Chart2.Location = New Point(352, 26)
-        Chart2.Name = "Chart2"
-        TableLayoutPanel2.SetRowSpan(Chart2, 8)
+        ChartAngularPosition.Legends.Add(Legend2)
+        ChartAngularPosition.Location = New Point(352, 26)
+        ChartAngularPosition.Name = "ChartAngularPosition"
+        TableLayoutPanel2.SetRowSpan(ChartAngularPosition, 8)
         Series2.ChartArea = "ChartArea1"
         Series2.Legend = "Legend1"
         Series2.Name = "Series1"
-        Chart2.Series.Add(Series2)
-        Chart2.Size = New Size(229, 179)
-        Chart2.TabIndex = 1
-        Chart2.Text = "Track"
+        ChartAngularPosition.Series.Add(Series2)
+        ChartAngularPosition.Size = New Size(229, 179)
+        ChartAngularPosition.TabIndex = 1
+        ChartAngularPosition.Text = "Track"
         ' 
         ' Label2
         ' 
@@ -745,6 +751,14 @@ Partial Class Form1
         ComboReferencePoint.Size = New Size(110, 23)
         ComboReferencePoint.TabIndex = 5
         ' 
+        ' TxtRake
+        ' 
+        TxtRake.Location = New Point(236, 184)
+        TxtRake.Margin = New Padding(3, 0, 3, 0)
+        TxtRake.Name = "TxtRake"
+        TxtRake.Size = New Size(110, 23)
+        TxtRake.TabIndex = 9
+        ' 
         ' PanelPlot
         ' 
         PanelPlot.BorderStyle = BorderStyle.Fixed3D
@@ -810,13 +824,57 @@ Partial Class Form1
         LabPanelJob.TabIndex = 15
         LabPanelJob.Text = "Job"
         ' 
-        ' TxtRake
+        ' ComboPitchBasis
         ' 
-        TxtRake.Location = New Point(236, 184)
-        TxtRake.Margin = New Padding(3, 0, 3, 0)
-        TxtRake.Name = "TxtRake"
-        TxtRake.Size = New Size(110, 23)
-        TxtRake.TabIndex = 9
+        ComboPitchBasis.FormattingEnabled = True
+        ComboPitchBasis.Location = New Point(803, 448)
+        ComboPitchBasis.Name = "ComboPitchBasis"
+        ComboPitchBasis.Size = New Size(121, 23)
+        ComboPitchBasis.TabIndex = 16
+        ' 
+        ' ComboTolerance
+        ' 
+        ComboTolerance.DisplayMember = "ToleranceClass"
+        ComboTolerance.FormattingEnabled = True
+        ComboTolerance.Location = New Point(974, 448)
+        ComboTolerance.Name = "ComboTolerance"
+        ComboTolerance.Size = New Size(121, 23)
+        ComboTolerance.TabIndex = 17
+        ComboTolerance.ValueMember = "ToleranceClass"
+        ' 
+        ' LabPitchBasis
+        ' 
+        LabPitchBasis.AutoSize = True
+        LabPitchBasis.Location = New Point(803, 430)
+        LabPitchBasis.Name = "LabPitchBasis"
+        LabPitchBasis.Size = New Size(34, 15)
+        LabPitchBasis.TabIndex = 18
+        LabPitchBasis.Text = "Pitch"
+        ' 
+        ' LabTolerance
+        ' 
+        LabTolerance.AutoSize = True
+        LabTolerance.Location = New Point(972, 431)
+        LabTolerance.Name = "LabTolerance"
+        LabTolerance.Size = New Size(58, 15)
+        LabTolerance.TabIndex = 19
+        LabTolerance.Text = "Tolerance"
+        ' 
+        ' TxtBasis
+        ' 
+        TxtBasis.Location = New Point(803, 496)
+        TxtBasis.Name = "TxtBasis"
+        TxtBasis.Size = New Size(121, 23)
+        TxtBasis.TabIndex = 20
+        ' 
+        ' LabBasis
+        ' 
+        LabBasis.AutoSize = True
+        LabBasis.Location = New Point(803, 478)
+        LabBasis.Name = "LabBasis"
+        LabBasis.Size = New Size(33, 15)
+        LabBasis.TabIndex = 21
+        LabBasis.Text = "Basis"
         ' 
         ' Form1
         ' 
@@ -824,6 +882,12 @@ Partial Class Form1
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.Control
         ClientSize = New Size(1116, 803)
+        Controls.Add(LabBasis)
+        Controls.Add(TxtBasis)
+        Controls.Add(LabTolerance)
+        Controls.Add(LabPitchBasis)
+        Controls.Add(ComboTolerance)
+        Controls.Add(ComboPitchBasis)
         Controls.Add(LabPanelJob)
         Controls.Add(LabPanelMeasurements)
         Controls.Add(LabPanelPlot)
@@ -854,8 +918,8 @@ Partial Class Form1
         Panel1.ResumeLayout(False)
         TableLayoutPanel2.ResumeLayout(False)
         TableLayoutPanel2.PerformLayout()
-        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
-        CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
+        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).EndInit()
+        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).EndInit()
         PanelPlot.ResumeLayout(False)
         CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
@@ -914,8 +978,8 @@ Partial Class Form1
     Friend WithEvents LabPanelJob As Label
     Friend WithEvents TxtJobNumber As TextBox
     Friend WithEvents TableLayoutPanel2 As TableLayoutPanel
-    Friend WithEvents Chart1 As DataVisualization.Charting.Chart
-    Friend WithEvents Chart2 As DataVisualization.Charting.Chart
+    Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
+    Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
     Friend WithEvents Label2 As Label
     Friend WithEvents ComboReferenceBlade As ComboBox
     Friend WithEvents Label3 As Label
@@ -925,4 +989,10 @@ Partial Class Form1
     Friend WithEvents Label5 As Label
     Friend WithEvents Chart3 As DataVisualization.Charting.Chart
     Friend WithEvents TxtRake As TextBox
+    Friend WithEvents ComboPitchBasis As ComboBox
+    Friend WithEvents ComboTolerance As ComboBox
+    Friend WithEvents LabPitchBasis As Label
+    Friend WithEvents LabTolerance As Label
+    Friend WithEvents TxtBasis As TextBox
+    Friend WithEvents LabBasis As Label
 End Class
