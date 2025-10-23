@@ -6,6 +6,7 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
+'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
 #Const NO_ENCODERS = True
 Public Class Form1
@@ -100,18 +101,26 @@ Public Class Form1
                 JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) _
                     (Database.JobDetails _
                         .Where(Function(jd) jd.Job Is mJob) _
-                        .OrderBy(Function(jd) jd.StartDate) _
                         .Include(Function(jd) jd.RadiusMeasurements) _
                         .ThenInclude(Function(cm) cm.CellMeasurements) _
                         .Include(Function(jd) jd.RadiusMeasurements) _
                         .ThenInclude(Function(em) em.ExtremeMeasurements) _
+                        .OrderBy(Function(jd) jd.StartDate) _
                         .AsSplitQuery().ToList()
                     )
+                FormSort(JobDetailsBindingSource?.DataSource)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 5).Include(Function(m) m.CellMeasurements).ToList()
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
+            Dim rm1 As RadiusMeasurement = mJobDetails.RadiusMeasurements.FirstOrDefault()
+            Dim cm1 As List(Of CellMeasurement) = rm1?.CellMeasurements.OrderBy(Function(x) x.Id).ToList()
+            For Each cm As CellMeasurement In cm1
+                Dim id As Integer = cm.Id
+                Dim angle As Double = cm.Angle
+                Dim depth As Double = cm.Depth
+            Next
         End Set
     End Property
 
@@ -133,6 +142,7 @@ Public Class Form1
                     .ThenInclude(Function(m) m.ExtremeMeasurements) _
                     .AsSplitQuery().ToList()
                 )
+                FormSort(JobDetailsBindingSource?.DataSource)
 #If NO_ENCODERS Then
                 mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 5).Include(Function(m) m.CellMeasurements).ToList()
 #End If
@@ -156,6 +166,15 @@ Public Class Form1
 
     Private Sub DeleteJobDetail()
         BindingSourceRemove(Database, JobDetailsBindingSource, Database.JobDetails)
+    End Sub
+
+    Private Sub FormSort(ByRef jobDetails As BindingList(Of JobDetail))
+        For Each jd As JobDetail In jobDetails
+            For Each rm As RadiusMeasurement In jd?.RadiusMeasurements
+                rm.CellMeasurements = rm.CellMeasurements.OrderBy(Function(cm) cm.Id).ToList()
+                rm.ExtremeMeasurements = rm.ExtremeMeasurements.OrderBy(Function(em) em.Id).ToList()
+            Next
+        Next
     End Sub
 #If NO_ENCODERS Then
     Private Sub MeasurementsGet()
@@ -280,7 +299,9 @@ Public Class Form1
         ' we collected while scanning.
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
+        Database.SaveChanges()
         ShowBladePitch(True)
+        ' 1. Check rm values
     End Sub
 
     Private Sub ScanControlsEnabled(ByVal isScanning As Boolean)
@@ -401,10 +422,10 @@ Public Class Form1
 
     Private Sub ShowRake(ByVal radius As Double)
         ' Need specific definitions for these values so they can be translated dB calls to retrieve proper values.
-        Dim innerDepth As Double = 0.0
-        Dim outerDepth As Double = 0.0
-        Dim innerRadius As Double = 0.0
-        Dim outerRadius As Double = 0.0
+        Dim innerDepth As Double = 0.0  'Innermost depth is the Depth at the smallest recorded radius percent at the selected reference point on the selected reference blade
+        Dim outerDepth As Double = 0.0  'Outermost depth is the Depth at the largest recorded radius percent at the selected reference point on the selected reference blade
+        Dim innerRadius As Double = 0.0 'Inner and outer most radii are the smallest and largest recorded radii percent on a selected reference blade
+        Dim outerRadius As Double = 0.0 'Inner and outer most radii are the smallest and largest recorded radii percent on a selected reference blade
         ''''''''''''''''''''''''''''''''''''''''''
         Dim deltaDepth As Double = innerDepth - outerDepth
         Dim lengthRadius As Double = (radius * outerRadius / 100.0) - (radius * innerRadius / 100.0)

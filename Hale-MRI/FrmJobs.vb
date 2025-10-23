@@ -637,10 +637,16 @@ Public Class FrmJobs
             If Current IsNot Nothing Then
                 ShowForm(mFrmMeasurements, Database, User)
                 mFrmMeasurements.Hardware = Hardware
-                mFrmMeasurements.Job = CurrentJob
-                If mFrmMeasurements.Find(BindingSourceCurrent(JobDetailsBindingSource)) Is Nothing Then
+                If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
+                    mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+                Else
+                    mFrmMeasurements.Job = CurrentJob
                     mFrmMeasurements.AddNew(Current)
                 End If
+                'mFrmMeasurements.Job = CurrentJob
+                'If mFrmMeasurements.Find(BindingSourceCurrent(JobDetailsBindingSource)) Is Nothing Then
+                '    mFrmMeasurements.AddNew(Current)
+                'End If
             End If
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
