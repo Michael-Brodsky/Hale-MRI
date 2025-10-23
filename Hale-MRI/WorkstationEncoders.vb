@@ -50,6 +50,7 @@ Public Class WorkstationEncoders
             mEncoders.AngleCalibration = mWorkstation.AngleCalibration
             mEncoders.DepthCalibration = mWorkstation.DepthCalibration
             mEncoders.RadiusCalibration = mWorkstation.RadiusCalibration
+            mEncoders.RadiusOffset = mWorkstation.RadiusOffset
         End If
     End Sub
 #End Region

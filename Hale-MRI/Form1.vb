@@ -6,9 +6,9 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-#Const NO_ENCODERS = True
+Imports Microsoft.Win32
+#Const NO_ENCODERS = False
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -21,6 +21,8 @@ Public Class Form1
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
+    Private ScanIncrement As Double = 1.8                     ' The angle increment between samples in degrees(this will be recalculated on form load but this is the default value).
+    Private LastScannedAngle As Double = 1000               ' The last angle measurement saved during scanning (Used with scanincrement to determine when to save a new measurement).
     ' Other forms we can work with.
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
@@ -140,6 +142,7 @@ Public Class Form1
                     .ThenInclude(Function(m) m.CellMeasurements) _
                     .Include(Function(rm) rm.RadiusMeasurements) _
                     .ThenInclude(Function(m) m.ExtremeMeasurements) _
+                    .OrderBy(Function(jd) jd.StartDate) _
                     .AsSplitQuery().ToList()
                 )
                 FormSort(JobDetailsBindingSource?.DataSource)
@@ -200,51 +203,54 @@ Public Class Form1
 #Else
     Private Sub MeasurementsGet()
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
-        ' values as required.
+        ' values as required. This one doesn't save Measurements.
         With EncoderStatusStrip1
             Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
             Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
             Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
             TxtBlade.Text = blade
-            TxtAngle.Text = angle.ToString()
+            TxtAngle.Text = Math.Round(angle, 2).ToString()
             TxtRadius.Text = radius.Value.ToString()
             TxtDepth.Text = depth.ToString()
-            TxtRadiusPercent.Text = (radius.Value * 100).ToString()
-            MeasurementsSave(angle, depth, radius)
+            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
         End With
     End Sub
 
-    Private Sub MeasurementsGet(byval reset as boolean)
+    Private Sub MeasurementsGet(lastAngle As Double)
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required. Saves the measurements if the angle measurement 
         ' changes by more than some specified amount.
-        static lastAngle as double = 0.0
-        if reset then lastAngle=0.0
+        ' Doesn't change the Blade Number textbox as it wouldn't change during scanning.
         With EncoderStatusStrip1
             Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
             Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
-            Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
-            TxtBlade.Text = blade
-            TxtAngle.Text = angle.ToString()
+            TxtAngle.Text = Math.Round(angle, 2).ToString()
             TxtRadius.Text = radius.Value.ToString()
             TxtDepth.Text = depth.ToString()
-            TxtRadiusPercent.Text = (radius.Value * 100).ToString()
-            if Math.Abs(angle - lastAngle) > 1.0 then MeasurementsSave(angle, depth, radius)
+            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
+            If (lastAngle - angle) > ScanIncrement Then
+                MeasurementsSave(angle, depth, radius)
+                mSampleCount += 1
+            End If
         End With
     End Sub
 #End If
 
     Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
-        mRadiusPercent.Input(radius.Value)
+        If TxtBlade.Text = "1" And angle > 180.0 Then 'this is a simple way to handle overscan when crossing 0 degrees on blade 1
+            angle -= 360.0                                           ' this will make the change in angle consistent when crossing 0 degrees
+        End If
+        mRadiusPercent.Input(radius.Percent * 100)
         Dim cm As New CellMeasurement With {
             .RadiusMeasurement = mRadiusMeasurement,
             .Angle = angle,
             .Depth = depth
         }
         Database.CellMeasurements.Add(cm)
+        LastScannedAngle = angle
     End Sub
 
     Protected Overrides Property MasterSource As BindingSource
@@ -297,8 +303,12 @@ Public Class Form1
     Private Sub SaveRadiusMeasurement()
         ' Update and save the current RadiusMeasurement with the moving average
         ' we collected while scanning.
+        If Database.RadiusMeasurements.Contains(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First()) Then
+            Database.RadiusMeasurements.Remove(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First())
+        End If
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
+        mRadiusMeasurement.TeCell = mSampleCount - 1
         Database.SaveChanges()
         ShowBladePitch(True)
         ' 1. Check rm values
@@ -314,19 +324,17 @@ Public Class Form1
 
     Private Property Scanning As Boolean
         Get
-            Return EncoderStatusStrip1.TimerOn
+            Return ChkScan.Checked
         End Get
         Set(value As Boolean)
             If value Then
                 NewRadiusMeasurement()
                 mSampleCount = 0
-                EncoderStatusStrip1.TimerOn = True
             Else
 #If NO_ENCODERS Then
                 mRd += 1
                 If mRd = mEncoderData.Count Then mRd = 0
 #End If
-                EncoderStatusStrip1.TimerOn = False
                 SaveRadiusMeasurement()
             End If
             ScanControlsEnabled(value)
@@ -404,13 +412,16 @@ Public Class Form1
             Dim refDepth As Double = TrackGetDepth(refRm, refPoint)
             Dim refAngle As Double = TrackGetAngle(refRm, refPoint)
             For i As Integer = 1 To Job?.PropellerBlades
-                Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = i)    'Gives BC42324 warning, prob can suppress
-                Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
-                Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
-                Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
-                Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle - CType((360 / Job?.PropellerBlades), Double))
-                ChartAddPoint(ChartBladeHeight, seriesHeight, $"{i}", bladeHeight, (i = refBlade))
-                ChartAddPoint(ChartAngularPosition, seriesPosition, $"{i}", bladePosition, (i = refBlade))
+                Dim b As Integer = i
+                Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
+                If rm IsNot Nothing Then
+                    Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
+                    Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
+                    Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
+                    Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle) - ((360 / Job?.PropellerBlades) * Math.Abs(refBlade.Value - rm.BladeId.Value)) + kHeightOffset
+                    ChartAddPoint(ChartBladeHeight, seriesHeight, $"{b}", bladeHeight, (b = refBlade))
+                    ChartAddPoint(ChartAngularPosition, seriesPosition, $"{b}", bladePosition, (b = refBlade))
+                End If
             Next
             ShowRake(refRadius) ' Assuming the 'radius' argument is the currently selected one in the combo box?
         End If
@@ -536,9 +547,11 @@ Public Class Form1
             ' It raises events notifying clients of anything relevant. These events can, for
             ' instance, be used to update this form's state and take periodic measurements.
             ' See Encoders_EncoderEvent() and ScanTimer_Tick() for examples.
+            AddHandler EncoderStatusStrip1.Load, AddressOf EncoderStatusStrip1_Load
             AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
             AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+            EncoderStatusStrip1.TimerOn = True
         Catch ex As Exception
             MessageBox.Show("Error loading measurements form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -598,13 +611,20 @@ Public Class Form1
 
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
         Try
-            MeasurementsGet()
-            mSampleCount += 1
-            If mSampleCount = kMaxSamplesPerScan Then Scanning = False
+            If Scanning Then
+                MeasurementsGet(LastScannedAngle)
+                If mSampleCount = kMaxSamplesPerScan Then Scanning = False
+            Else
+                MeasurementsGet()
+            End If
         Catch ex As Exception
             Scanning = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub EncoderStatusStrip1_Load(sender As Object, e As EventArgs)
+        ScanIncrement = EncoderStatusStrip1.Hardware.Workstation.ScanIncrement / EncoderStatusStrip1.Hardware.Workstation.AngleResolution
     End Sub
 
     Private Sub TxtCustomer_DoubleClick(sender As Object, e As EventArgs) Handles TxtCustomer.DoubleClick
