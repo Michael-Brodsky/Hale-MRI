@@ -7,7 +7,8 @@ Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
-#Const NO_ENCODERS = True
+Imports Microsoft.Win32
+#Const NO_ENCODERS = False
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -283,9 +284,13 @@ Public Class Form1
     Private Sub SaveRadiusMeasurement()
         ' Update and save the current RadiusMeasurement with the moving average
         ' we collected while scanning.
+        If Database.RadiusMeasurements.Contains(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First()) Then
+            Database.RadiusMeasurements.Remove(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First())
+        End If
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement.TeCell = mSampleCount - 1
+        Database.SaveChanges()
         ShowBladePitch(True)
     End Sub
 
@@ -519,9 +524,11 @@ Public Class Form1
             ' It raises events notifying clients of anything relevant. These events can, for
             ' instance, be used to update this form's state and take periodic measurements.
             ' See Encoders_EncoderEvent() and ScanTimer_Tick() for examples.
+            AddHandler EncoderStatusStrip1.Load, AddressOf EncoderStatusStrip1_Load
             AddHandler EncoderStatusStrip1.EncoderEvent, AddressOf Encoders_EncoderEvent
             AddHandler EncoderStatusStrip1.Timer.Tick, AddressOf ScanTimer_Tick
             AddHandler Navigator.NavigationEvent, AddressOf Navigator_NavigationEvent
+            EncoderStatusStrip1.TimerOn = True
         Catch ex As Exception
             MessageBox.Show("Error loading measurements form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -581,13 +588,20 @@ Public Class Form1
 
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
         Try
-            MeasurementsGet()
-            mSampleCount += 1
-            If mSampleCount = kMaxSamplesPerScan Then Scanning = False
+            If Scanning Then
+                MeasurementsGet(LastScannedAngle)
+                If mSampleCount = kMaxSamplesPerScan Then Scanning = False
+            Else
+                MeasurementsGet()
+            End If
         Catch ex As Exception
             Scanning = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Private Sub EncoderStatusStrip1_Load(sender As Object, e As EventArgs)
+        ScanIncrement = EncoderStatusStrip1.Hardware.Workstation.ScanIncrement / EncoderStatusStrip1.Hardware.Workstation.AngleResolution
     End Sub
 
     Private Sub TxtCustomer_DoubleClick(sender As Object, e As EventArgs) Handles TxtCustomer.DoubleClick
