@@ -123,10 +123,10 @@ Public Class FrmJobs
     Private Sub ListsRefresh(ByVal useLocal As Boolean)
         ' Refresh drop down lists subject to dynamic changes.
         If useLocal Then
-            ComboManufacturer.DataSource = Database.Manufacturers.Local.ToBindingList()
+            ComboManufacturer.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.Local.OrderBy(Function(m) m.ManufacturerName).ToList())
             EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.Local.OrderBy(Function(e) e.EmployeeName).ToList()) ' Needs a sorted list.
         Else
-            ComboManufacturer.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.ToList())
+            ComboManufacturer.DataSource = New BindingList(Of Manufacturer)(Database.Manufacturers.OrderBy(Function(m) m.ManufacturerName).ToList())
             EmployeesBindingSource.DataSource = New BindingList(Of Employee)(Database.Employees.OrderBy(Function(e) e.EmployeeName).ToList())
         End If
     End Sub
@@ -215,8 +215,8 @@ Public Class FrmJobs
             If value Then
                 JobsBindingSource.ResumeBinding()
                 DataGridJobDetails.DataSource = JobDetailsBindingSource
-                ' If the no job was selected and user selects the first job in list,
-                ' binding source position won't change and the navigator won't
+                ' If no job was selected and user selects the first job in the list,
+                ' the binding source position won't change and the navigator won't
                 ' enable its controls. So we help it along a bit here.
                 Navigator.Refresh()
             Else
@@ -593,8 +593,8 @@ Public Class FrmJobs
                     ' If we're adding a new Job, update the record fields from our controls.
                     If mNewJob IsNot Nothing Then
                         NewJobUpdate()
-                        BindingSourceSave(Database, JobsBindingSource)
                     End If
+                    BindingSourceSave(Database, JobsBindingSource)
                     RefreshAll()
                     JobSelectionEnabled = True
                     mNewJob = Nothing

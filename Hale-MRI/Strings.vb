@@ -17,6 +17,9 @@ Module Strings
     Public Const STR_ERR_NO_DEFAULT_VALUE As String = "Error no default value: {0}"
     Public Const STR_ERR_OBJECT_LOAD As String = "Error loading the {0}: {1}"
 
+    ' String parameters for functions.
+    Public Const STR_PARAM_DECIMAL_PLACES As String = "F2"  ' This is a ~Settings parameter in new dB.
+
     ' Setting names used in ~Settings table.
     Public Const STR_SETTING_COMPANY_NAME As String = "Company Name"
     Public Const STR_SETTING_COMPANY_ADDRESS As String = "Company Address"

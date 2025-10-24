@@ -22,7 +22,7 @@ Public Class RecordNavigationBar
         End Get
         Set(controls As List(Of Control))
             ' Assigns "change" event handlers to any bound controls. 
-            ' This notifies us when a record is being edited.
+            ' This notifies clients when a record is being edited.
             If controls IsNot Nothing Then
                 For Each ctrl In controls
                     Select Case True

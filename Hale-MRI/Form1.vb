@@ -7,8 +7,7 @@ Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
-Imports Microsoft.Win32
-#Const NO_ENCODERS = False
+#Const NO_ENCODERS = True
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -21,8 +20,8 @@ Public Class Form1
     Private mRadiusPercent As New MovingAverage(2)              ' Keeps a moving average of RadiusPercent measurements during a scan.
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
-    Private ScanIncrement As Double = 1.8                     ' The angle increment between samples in degrees(this will be recalculated on form load but this is the default value).
-    Private LastScannedAngle As Double = 1000               ' The last angle measurement saved during scanning (Used with scanincrement to determine when to save a new measurement).
+    Private mScanIncrement As Double = 1.8                      ' The angle increment between samples in degrees(this will be recalculated on form load but this is the default value).
+    Private mLastScannedAngle As Double = Double.MaxValue       ' The last angle measurement saved during scanning (Used with mScanIncrement to determine when to save a new measurement).
     ' Other forms we can work with.
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
@@ -35,6 +34,10 @@ Public Class Form1
 #End If
 #End Region
 #Region "Public Interface"
+    ''' <summary>
+    ''' Adds a new JobDetail for the given Job
+    ''' </summary>
+    ''' <param name="job"></param>
     Public Sub AddNew(ByVal job As Job)
         mNewJobDetail = New JobDetail With {
             .Job = job,
@@ -44,7 +47,7 @@ Public Class Form1
         MasterSource.AddNew()
     End Sub
     ''' <summary>
-    ''' Returns the currently selected Job,
+    ''' Returns the currently selected JobDetail,
     ''' or Nothing if there is no selected record.
     ''' </summary>
     Public ReadOnly Property Current As JobDetail
@@ -74,6 +77,10 @@ Public Class Form1
         Return result
     End Function
 
+    ''' <summary>
+    ''' Gets/sets the encoder hardware used by the form.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Hardware As WorkstationEncoders
         Get
             Return EncoderStatusStrip1.Hardware
@@ -92,62 +99,42 @@ Public Class Form1
         End Set
     End Property
 
+    ''' <summary>
+    ''' Loads all JobDetails and their Cell, Extreme and RadiusMeasurements
+    ''' for the given Job.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property Job As Job
         Get
             Return mJob
         End Get
         Set(value As Job)
-            ' Loads all of the given Job's JobDetails and their Cell, Extreme and RadiusMeasurements.
             mJob = value
             If mJob IsNot Nothing Then
-                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) _
-                    (Database.JobDetails _
-                        .Where(Function(jd) jd.Job Is mJob) _
-                        .Include(Function(jd) jd.RadiusMeasurements) _
-                        .ThenInclude(Function(cm) cm.CellMeasurements) _
-                        .Include(Function(jd) jd.RadiusMeasurements) _
-                        .ThenInclude(Function(em) em.ExtremeMeasurements) _
-                        .OrderBy(Function(jd) jd.StartDate) _
-                        .AsSplitQuery().ToList()
-                    )
-                FormSort(JobDetailsBindingSource?.DataSource)
+                JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
 #If NO_ENCODERS Then
                 mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
-            Dim rm1 As RadiusMeasurement = mJobDetails.RadiusMeasurements.FirstOrDefault()
-            Dim cm1 As List(Of CellMeasurement) = rm1?.CellMeasurements.OrderBy(Function(x) x.Id).ToList()
-            For Each cm As CellMeasurement In cm1
-                Dim id As Integer = cm.Id
-                Dim angle As Double = cm.Angle
-                Dim depth As Double = cm.Depth
-            Next
         End Set
     End Property
 
+    ''' <summary>
+    ''' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
+    ''' </summary>
+    ''' <returns></returns>
     Public Property JobDetails As JobDetail
         Get
             Return mJobDetails
         End Get
         Set(value As JobDetail)
-            ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
             mJobDetails = value
             mJob = mJobDetails?.Job
             If mJobDetails IsNot Nothing Then
-                JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail) _
-                    (Database.JobDetails _
-                    .Where(Function(jd) jd Is mJobDetails) _
-                    .Include(Function(rm) rm.RadiusMeasurements) _
-                    .ThenInclude(Function(m) m.CellMeasurements) _
-                    .Include(Function(rm) rm.RadiusMeasurements) _
-                    .ThenInclude(Function(m) m.ExtremeMeasurements) _
-                    .OrderBy(Function(jd) jd.StartDate) _
-                    .AsSplitQuery().ToList()
-                )
-                FormSort(JobDetailsBindingSource?.DataSource)
+                JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 5).Include(Function(m) m.CellMeasurements).ToList()
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
@@ -179,6 +166,35 @@ Public Class Form1
             Next
         Next
     End Sub
+
+    Private Function GetMeasurementData(j As Object) As BindingList(Of JobDetail)
+        Dim data As BindingList(Of JobDetail) = Nothing
+        If TypeOf j Is Job Then
+            data = New BindingList(Of JobDetail)(
+            Database.JobDetails _
+                .Where(Function(jd) jd.Job Is CType(j, Job)) _
+                .Include(Function(rm) rm.RadiusMeasurements) _
+                .ThenInclude(Function(m) m.CellMeasurements) _
+                .Include(Function(rm) rm.RadiusMeasurements) _
+                .ThenInclude(Function(m) m.ExtremeMeasurements) _
+                .OrderBy(Function(jd) jd.StartDate) _
+                .AsSplitQuery().ToList()
+            )
+        ElseIf TypeOf j Is JobDetail Then
+            data = New BindingList(Of JobDetail)(
+            Database.JobDetails _
+                .Where(Function(jd) jd Is CType(j, JobDetail)) _
+                .Include(Function(rm) rm.RadiusMeasurements) _
+                .ThenInclude(Function(m) m.CellMeasurements) _
+                .Include(Function(rm) rm.RadiusMeasurements) _
+                .ThenInclude(Function(m) m.ExtremeMeasurements) _
+                .OrderBy(Function(jd) jd.StartDate) _
+                .AsSplitQuery().ToList()
+            )
+        End If
+        FormSort(data)
+        Return data
+    End Function
 #If NO_ENCODERS Then
     Private Sub MeasurementsGet()
         Dim rand As New System.Random()
@@ -199,6 +215,22 @@ Public Class Form1
             'Scanning = False
             mCm = 0
         End If
+    End Sub
+
+    Private Sub MeasurementsGet(lastAngle As Double)
+        With EncoderStatusStrip1
+            Dim angle As Double = .Angle()
+            Dim depth As Double = .Depth()
+            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
+            TxtAngle.Text = Math.Round(angle, 2).ToString()
+            TxtRadius.Text = radius.Value.ToString()
+            TxtDepth.Text = depth.ToString()
+            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
+            If (lastAngle - angle) > mScanIncrement Then
+                MeasurementsSave(angle, depth, radius)
+                mSampleCount += 1
+            End If
+        End With
     End Sub
 #Else
     Private Sub MeasurementsGet()
@@ -230,7 +262,7 @@ Public Class Form1
             TxtRadius.Text = radius.Value.ToString()
             TxtDepth.Text = depth.ToString()
             TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
-            If (lastAngle - angle) > ScanIncrement Then
+            If (lastAngle - angle) > mScanIncrement Then
                 MeasurementsSave(angle, depth, radius)
                 mSampleCount += 1
             End If
@@ -250,7 +282,7 @@ Public Class Form1
             .Depth = depth
         }
         Database.CellMeasurements.Add(cm)
-        LastScannedAngle = angle
+        mLastScannedAngle = angle
     End Sub
 
     Protected Overrides Property MasterSource As BindingSource
@@ -280,6 +312,7 @@ Public Class Form1
         ' RadiusMeasurement with .Radius = 0, which will be updated at
         ' the end of the scan.
         mRadiusPercent.Clear()
+        'mBladeRake.Blade = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement = New RadiusMeasurement With {
             .JobDetails = Me.JobDetails,
             .Radius = 0.0,
@@ -294,7 +327,7 @@ Public Class Form1
         Dim radii As New List(Of Double)
         If mJobDetails?.RadiusMeasurements IsNot Nothing Then
             For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements
-                If rm.BladeId = blade Then radii.Add(Math.Round(CType(rm.Radius, Double)).ToString("F2"))
+                If rm.BladeId = blade Then radii.Add(Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES))
             Next
         End If
         Return radii
@@ -311,7 +344,6 @@ Public Class Form1
         mRadiusMeasurement.TeCell = mSampleCount - 1
         Database.SaveChanges()
         ShowBladePitch(True)
-        ' 1. Check rm values
     End Sub
 
     Private Sub ScanControlsEnabled(ByVal isScanning As Boolean)
@@ -335,7 +367,7 @@ Public Class Form1
                 mRd += 1
                 If mRd = mEncoderData.Count Then mRd = 0
 #End If
-                SaveRadiusMeasurement()
+                'SaveRadiusMeasurement()
             End If
             ScanControlsEnabled(value)
         End Set
@@ -347,7 +379,7 @@ Public Class Form1
         Dim rowBlade As DataRow
         dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
         For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.OrderBy(Function(b) b.BladeId)
-            Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString("F2")
+            Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
             rowBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
             colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
             rowBlade.Item(colRadius) = GetAverageBladePitch(rm.CellMeasurements.ToList())
@@ -361,7 +393,6 @@ Public Class Form1
         For i As Integer = 1 To mJob.PropellerBlades
             bsReferenceBlades.Add(i)
         Next
-        ComboReferenceBlade.DataSource = bsReferenceBlades
         Dim strBlades As String = If(Job?.PropellerBlades IsNot Nothing, $"Blades = {Job?.PropellerBlades}", "")
         Dim strDiameter As String = If(Job?.PropellerDiameter IsNot Nothing, $"Dia = {Job?.PropellerDiameter}", "")
         Dim strBore As String = If(Job?.PropellerBore IsNot Nothing, $"Bore = {Job?.PropellerBore}", "")
@@ -374,7 +405,9 @@ Public Class Form1
         TxtBlades.Text = strBlades
         TxtDiameter.Text = strDiameter
         TxtBore.Text = strBore
+        ComboReferenceBlade.DataSource = bsReferenceBlades
         ComboReferencePoint.SelectedItem = "LE"
+        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
         ComboPitchBasis.SelectedItem = "Mean"
         ComboTolerance.SelectedItem = JobDetails?.ToleranceClass
         ShowPitchBasis()
@@ -400,7 +433,7 @@ Public Class Form1
     End Sub
 
     Private Sub ShowTrack()
-        Const kHeightOffset As Double = 0.2 ' Offset to add to bladeHeight for visual comparison? 
+        Const kHeightOffset As Double = 0.2 ' Offset to add to data points for visual comparison?
         Dim refBlade As Integer? = ComboReferenceBlade.SelectedValue
         Dim refPoint As String = ComboReferencePoint.SelectedValue
         Dim refRadius As Double = ComboReferenceRadius.SelectedValue
@@ -408,9 +441,15 @@ Public Class Form1
         If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
             Dim seriesHeight As Series = ChartCreateSeries(ChartBladeHeight, "BladeHeight", "Blade", "Height")
             Dim seriesPosition As Series = ChartCreateSeries(ChartAngularPosition, "AngularPosition", "Blade", "Position")
-            Dim refRm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = refBlade AndAlso Math.Round(CType(r.Radius, Double)) = refRadius)
-            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)
-            Dim refAngle As Double = TrackGetAngle(refRm, refPoint)
+            Dim radiusMeasurements As List(Of RadiusMeasurement) = mJobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = refBlade).OrderBy(Function(r) CType(r.Radius, Double)).ToList()
+            Dim innerRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault() ' RadiusMeasurement at smallest radius
+            Dim innerDepth As Double = TrackGetDepth(innerRm, refPoint)             ' Depth at smallest radius and reference point
+            Dim outerRm As RadiusMeasurement = radiusMeasurements?.LastOrDefault()  ' RadiusMeasurement at largest radius
+            Dim outerDepth As Double = TrackGetDepth(outerRm, refPoint)             ' Depth at largest radius and reference point
+            Dim refRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault(Function(r) Math.Round(CType(r.Radius, Double)) = refRadius)    ' RadiusMeasurement at reference radius
+            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)                 ' Depth at reference radius and point
+            Dim refAngle As Double = TrackGetAngle(refRm, refPoint)                 ' Angle at reference radius and point
+            ' Plot each blade's data points
             For i As Integer = 1 To Job?.PropellerBlades
                 Dim b As Integer = i
                 Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
@@ -423,7 +462,7 @@ Public Class Form1
                     ChartAddPoint(ChartAngularPosition, seriesPosition, $"{b}", bladePosition, (b = refBlade))
                 End If
             Next
-            ShowRake(refRadius) ' Assuming the 'radius' argument is the currently selected one in the combo box?
+            ShowRake(innerDepth, outerDepth, innerRm.Radius, outerRm.Radius, refRadius)
         End If
     End Sub
 
@@ -431,17 +470,11 @@ Public Class Form1
 
     End Sub
 
-    Private Sub ShowRake(ByVal radius As Double)
-        ' Need specific definitions for these values so they can be translated dB calls to retrieve proper values.
-        Dim innerDepth As Double = 0.0  'Innermost depth is the Depth at the smallest recorded radius percent at the selected reference point on the selected reference blade
-        Dim outerDepth As Double = 0.0  'Outermost depth is the Depth at the largest recorded radius percent at the selected reference point on the selected reference blade
-        Dim innerRadius As Double = 0.0 'Inner and outer most radii are the smallest and largest recorded radii percent on a selected reference blade
-        Dim outerRadius As Double = 0.0 'Inner and outer most radii are the smallest and largest recorded radii percent on a selected reference blade
-        ''''''''''''''''''''''''''''''''''''''''''
+    Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
         Dim deltaDepth As Double = innerDepth - outerDepth
         Dim lengthRadius As Double = (radius * outerRadius / 100.0) - (radius * innerRadius / 100.0)
         Dim rake As Double = Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI)
-        TxtRake.Text = rake.ToString("F2")
+        TxtRake.Text = rake.ToString(STR_PARAM_DECIMAL_PLACES)
     End Sub
 
     Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
@@ -520,6 +553,19 @@ Public Class Form1
         ShowTrack()
     End Sub
 
+    Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
+        ' Handles EncoderStatusStrip events so we can update our controls accordingly.
+    End Sub
+
+    Private Sub EncoderStatusStrip1_Load(sender As Object, e As EventArgs)
+        mScanIncrement = EncoderStatusStrip1.Hardware.Workstation.ScanIncrement / EncoderStatusStrip1.Hardware.Workstation.AngleResolution
+    End Sub
+
+    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        On Error Resume Next
+        EncoderStatusStrip1.TimerOn = False
+    End Sub
+
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ' Initialize form controls. This method needs to initialize all form controls
@@ -555,10 +601,6 @@ Public Class Form1
         Catch ex As Exception
             MessageBox.Show("Error loading measurements form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-
-    Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
-        ' Handles EncoderStatusStrip events so we can update our controls accordingly.
     End Sub
 
     Private Sub JobDetailsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobDetailsBindingSource.AddingNew
@@ -612,7 +654,7 @@ Public Class Form1
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs)
         Try
             If Scanning Then
-                MeasurementsGet(LastScannedAngle)
+                MeasurementsGet(mLastScannedAngle)
                 If mSampleCount = kMaxSamplesPerScan Then Scanning = False
             Else
                 MeasurementsGet()
@@ -621,10 +663,6 @@ Public Class Form1
             Scanning = False
             MessageBox.Show("Error getting measurements from the encoders: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
-    End Sub
-
-    Private Sub EncoderStatusStrip1_Load(sender As Object, e As EventArgs)
-        ScanIncrement = EncoderStatusStrip1.Hardware.Workstation.ScanIncrement / EncoderStatusStrip1.Hardware.Workstation.AngleResolution
     End Sub
 
     Private Sub TxtCustomer_DoubleClick(sender As Object, e As EventArgs) Handles TxtCustomer.DoubleClick
