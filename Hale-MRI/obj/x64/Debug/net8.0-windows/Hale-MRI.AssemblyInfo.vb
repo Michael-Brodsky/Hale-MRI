@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("Hale-MRI"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3c23f3dc29345c8b5a32fe08a0640ca030341ab"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1339e14c9307a0ae2f3fcdacfa4ccf39bd59bbf7"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("Hale-MRI"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("Hale-MRI"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0"),  _
