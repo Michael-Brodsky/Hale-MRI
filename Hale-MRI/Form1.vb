@@ -9,7 +9,9 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
+'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 #Const NO_ENCODERS = True
 Public Class Form1
     Inherits FrmDatabaseForm
@@ -470,47 +472,67 @@ Public Class Form1
     End Sub
 
     Private Sub ShowPlot()
-        ' Get a list of radius measurements for the current JobDetail,
-        ' ordered by BladeId and Radius.
+        ' Clear any existing chart areas and series.
+        Chart3.ChartAreas.Clear()
+        Chart3.Series.Clear()
+        Chart3.Titles.Clear()
+
+        ' Add a ChartArea for the point graph
+        Dim chartArea1 As New ChartArea()
+        chartArea1.AxisX.MajorGrid.Enabled = False
+        chartArea1.AxisY.MajorGrid.Enabled = False
+        chartArea1.AxisX.LabelStyle.Enabled = False
+        chartArea1.AxisY.LabelStyle.Enabled = False
+        chartArea1.AxisX.MajorTickMark.Enabled = False
+        chartArea1.AxisY.MajorTickMark.Enabled = False
+        chartArea1.AxisX.LineWidth = 0
+        chartArea1.AxisY.LineWidth = 0
+        Chart3.ChartAreas.Add(chartArea1)
+
+        ' Add a Title
+        Chart3.Titles.Add("Point Graph Example")
+
+        ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
             mJobDetails?.RadiusMeasurements _
             .OrderBy(Function(b) b.BladeId) _
             .ThenBy(Function(r) CType(r.Radius, Double)) _
             .ToList()
-        ' For each RadiusMeasurement...
+        ' The chart axes min/max values are the greatest radius value,
+        ' this way the arcs always start at the outside of the chart area.
+        chartArea1.AxisX.Maximum = radiusMeasurements.Max(Function(m) m.Radius)
+        chartArea1.AxisX.Minimum = -chartArea1.AxisX.Maximum
+        chartArea1.AxisY.Maximum = chartArea1.AxisX.Maximum
+        chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
+        ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
+        ' having a radius equal to RadiusMeasurement.Radius. 
         For Each rm As RadiusMeasurement In radiusMeasurements
-            Debug.Print($"Blade {rm.BladeId} Radius {Math.Round(CType(rm.Radius, Double))}")
-            ' For each CellMeasurement in the RadiusMeasurement...
+            Dim s As New Series With {
+                .ChartType = SeriesChartType.Point,
+                .MarkerStyle = MarkerStyle.Circle,
+                .MarkerSize = 2,
+                .MarkerColor = Color.Black
+            }
+            Chart3.Series.Add(s)
             Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
+            ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
+            ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle????
             For i As Integer = 1 To cellMeasurements.Count - 1
-                ' Compute the pitch between each consecutive CellMeasurement.
-                ' *** NOTE: Email dated Oct 7, 2025 states,
-                ' -----> "The values represented here can be gathered using the Get Pitch Function."
-                ' *** GetPitch() takes four arguments: firstangle, secondangle, firstdepth, seconddepth.
-                ' *** So I'm using the same method used in MathMRI.GetAverageBladePitch(), but ignoring any averaging:
+                ' Assumably, pitch, depth, etc. is used to color code arc points
+                ' based on tolerances. Arcs should also be "completed" so as to have
+                ' equal lengths.
                 Dim cmCurrent As CellMeasurement = cellMeasurements(i)
                 Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
                 Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
-                ' *** In addition, the email also mentions the term "pitch" several more times: 
-                ' -----> This graph depicts a top down read out of the "pitch" along each scanned blade radius.
-                ' -----> The Basis is a selection of what "pitch" value to calculate tolerances off, those being Mean, Marked and Desired "Pitch".
-                ' *** The meaning of "pitch" is somewhat vague, so I need clarification so I can write a function y=f(x) for calculations.
-                ' *** The email then states values can be plotted with trigonometry:
-                ' -----> x = Radius * Cosine(Angle) and y = Radius * Sine(Angle)
-                ' *** I'm assuming that "Radius" is the Radius value from the current rm,
-                ' *** The meaning of "Angle" is unclear: is it simply the Angle value from each consecutive cm,
-                ' *** or a function of firstangle and secondangle fed to GetPitch(), the resulting value
-                ' *** returned by the call to GetPitch(), or something else entirely????
-                ' *** Not sure how to proceed.
-                Dim x As Double = rm.Radius * Math.Cos(cmCurrent.Angle)
-                Dim y As Double = rm.Radius * Math.Sin(cmCurrent.Angle)
-                Dim x2 As Double = rm.Radius * Math.Cos(pitch)
-                Dim y2 As Double = rm.Radius * Math.Sin(pitch)
-                Debug.Print($"  CM {i} Angle {Math.Round(CType(cmCurrent.Angle, Double), 2)} Depth {Math.Round(CType(cmCurrent.Depth, Double), 2)} Pitch {Math.Round(pitch, 2)}")
-                Debug.Print($"    X {Math.Round(x, 2)} Y {Math.Round(y, 2)}  X2 {Math.Round(x2, 2)} Y2 {Math.Round(y2, 2)}")
+                Dim angle As Double = cmCurrent?.Angle - cmPrevious?.Angle
+                Dim theta As Double = cmPrevious.Angle * Math.PI / 180
+                Dim x As Integer = CInt(rm.Radius * Math.Cos(theta))
+                Dim y As Integer = CInt(rm.Radius * Math.Sin(theta))
+                s.Points.AddXY(x, y)
             Next
         Next
     End Sub
+
 
     Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
         Dim deltaDepth As Double = innerDepth - outerDepth
