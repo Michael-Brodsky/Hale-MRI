@@ -510,10 +510,10 @@ Public Class Form1
             Dim s As New Series With {
                 .ChartType = SeriesChartType.Point,
                 .MarkerStyle = MarkerStyle.Circle,
-                .MarkerSize = 2,
-                .MarkerColor = Color.Black
+                .MarkerSize = 3
             }
-            Chart3.Series.Add(s)
+            'DrawPlotArcs(Job.PropellerBlades, rm.BladeId, rm.Radius, s)
+            's.MarkerSize = 3
             Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
             ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
             ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle????
@@ -526,13 +526,29 @@ Public Class Form1
                 Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
                 Dim angle As Double = cmCurrent?.Angle - cmPrevious?.Angle
                 Dim theta As Double = cmPrevious.Angle * Math.PI / 180
-                Dim x As Integer = CInt(rm.Radius * Math.Cos(theta))
-                Dim y As Integer = CInt(rm.Radius * Math.Sin(theta))
-                s.Points.AddXY(x, y)
+                Dim coordinates = PolarToCartesian(rm.Radius, cmCurrent?.Angle)
+                Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
+                s.Points(p).Color = Color.LightGreen    ' Need an explicit definition based on data in the dB or functions in MRIMath module color=g(z) ???
             Next
+            Chart3.Series.Add(s)
         Next
     End Sub
 
+    Private Sub DrawPlotArcs(ByVal bladeCount As Integer, ByVal blade As Integer, ByVal radius As Double, ByVal series As Series)
+        ' Draws the base arcs for the given blade number and radius.
+        Const spacingAngle As Double = 8.0 ' Degrees to space between blades
+        Const stepAngle As Double = 4.0    ' Degrees between points on arc
+        Dim startAngle As Double = ((360.0 / bladeCount) * (blade - 1))
+        Dim endAngle As Double = startAngle + (360.0 / bladeCount)
+        For angle As Double = startAngle To endAngle Step stepAngle
+            If angle - startAngle < spacingAngle OrElse endAngle - angle < spacingAngle Then Continue For
+            Dim theta As Double = angle * Math.PI / 180.0
+            Dim x As Integer = CInt(radius * Math.Cos(theta))
+            Dim y As Integer = CInt(radius * Math.Sin(theta))
+            Dim p As Integer = series.Points.AddXY(x, y)
+            series.Points(p).Color = Color.Gray
+        Next
+    End Sub
 
     Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
         Dim deltaDepth As Double = innerDepth - outerDepth
@@ -678,8 +694,10 @@ Public Class Form1
     End Sub
 
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
-        mJobDetails = Me.Current
-        If Me.JobDetails IsNot Nothing Then ShowJobDetailsInfo()
+        If mJobDetails IsNot Me.Current Then
+            mJobDetails = Me.Current
+            If Me.JobDetails IsNot Nothing Then ShowJobDetailsInfo()
+        End If
     End Sub
 
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)

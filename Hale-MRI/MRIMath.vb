@@ -50,4 +50,11 @@ Module MRIMath
         If pitch.Count > 0 Then avgPitch = pitch.Average()
         Return avgPitch
     End Function
+
+    Public Function PolarToCartesian(radius As Double, angleDegrees As Double) As (x As Double, y As Double)
+        Dim angleRadians As Double = angleDegrees * (Math.PI / 180.0)
+        Dim x As Double = radius * Math.Cos(angleRadians)
+        Dim y As Double = radius * Math.Sin(angleRadians)
+        Return (x, y)
+    End Function
 End Module
