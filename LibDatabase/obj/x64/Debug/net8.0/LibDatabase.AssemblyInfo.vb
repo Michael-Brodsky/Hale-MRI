@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("LibDatabase"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+36f0881183086b98777f5e0c94c04de8f0a85b87"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+628254a24f45077fd1047195af293ca760db6a67"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("LibDatabase"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("LibDatabase"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")> 

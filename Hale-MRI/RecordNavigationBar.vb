@@ -1,5 +1,8 @@
-﻿Imports LibDatabase.Contexts
-Imports System.ComponentModel
+﻿Imports System.ComponentModel
+Imports LibDatabase.Contexts
+Imports LibDatabase.Models
+Imports Microsoft.EntityFrameworkCore.Infrastructure
+Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 ''' <summary>
 ''' Form Control that can be used by data consumers (forms
 ''' that derive from FrmDatabaseForm) to visually navigate
@@ -14,6 +17,7 @@ Public Class RecordNavigationBar
     Private mFilter As Object = Nothing                     ' The current filter object, if any.
     Private mMasterSource As BindingSource = Nothing        ' The current master BindingSource.
     Private mToolTip As New ToolTip()                       ' ToolTip for the Control buttons.
+    Private mValid As Boolean = False                  ' Flag indicating whether all required fields are non-NULL. 
 #End Region
 #Region "Public Inteface"
     Public Property BoundControls As List(Of Control)
@@ -124,6 +128,12 @@ Public Class RecordNavigationBar
     Public Event NavigationEvent As NavigationEventHandler
 
     Public Property NoUpdates As Boolean = False
+
+    Public ReadOnly Property IsValid As Boolean
+        Get
+            Return mValid
+        End Get
+    End Property
 
     Public Property Position As Integer
         Set(value As Integer)
@@ -251,8 +261,8 @@ Public Class RecordNavigationBar
         ' Enables our Controls according to the master BindingSource's
         ' current state.
         CmdGotoFirst.Enabled = Not CmdUndo.Enabled AndAlso Me.Count > 0                 ' Navigation allowed only if MasterSource has records.
-        CmdAddNew.Enabled = Not CmdUndo.Enabled AndAlso Me.MasterSource IsNot Nothing   ' Adding allowed only if a record is currently selected and not being editted.
-        CmdDelete.Enabled = CmdAddNew.Enabled AndAlso Me.Current IsNot Nothing          ' Deletion allowed only if a record is currently selected and not being editted.
+        CmdAddNew.Enabled = Not CmdUndo.Enabled AndAlso Me.MasterSource IsNot Nothing   ' Adding allowed only if a record is currently selected and not being edited.
+        CmdDelete.Enabled = CmdAddNew.Enabled AndAlso Me.Current IsNot Nothing          ' Deletion allowed only if a record is currently selected and not being edited.
         TxtCurrentPosition.Enabled = Me.Position <> kNoCurrentRecord                    ' Position Control enabled only if a record is currently selected.
         ' The remaining Control states can be computed.
         CmdGotoLast.Enabled = CmdGotoFirst.Enabled
@@ -306,7 +316,18 @@ Public Class RecordNavigationBar
     End Property
 
     Public WriteOnly Property SaveUndoControlsEnabled As Boolean
-        ' The Save and Undo Controls are enabled only when the current record is being editted. 
+        ' The Save and Undo Controls are enabled only when the current record is being edited. 
+        ' This will also enable any navigation and modification Controls accordingly.
+        Set(value As Boolean)
+            CmdSave.Enabled = value
+            CmdUndo.Enabled = CmdSave.Enabled
+            ControlsEnable()
+            RaiseEvent NavigationEvent(Me, New NavigationEventArgs("Editing",, value))
+        End Set
+    End Property
+
+    Public WriteOnly Property SaveUndoControlsEnabled2 As Boolean
+        ' The Save and Undo Controls are enabled only when the current record is being edited. 
         ' This will also enable any navigation and modification Controls accordingly.
         Set(value As Boolean)
             CmdSave.Enabled = value

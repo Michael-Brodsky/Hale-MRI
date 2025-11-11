@@ -1,8 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports Microsoft.VisualBasic
-
-Namespace Models
+﻿Namespace Models
     Partial Public Class Material
         Public Property Material1 As String
 

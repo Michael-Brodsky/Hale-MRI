@@ -1,8 +1,4 @@
-﻿Imports System
-Imports System.Collections.Generic
-Imports Microsoft.VisualBasic
-
-Namespace Models
+﻿Namespace Models
     Partial Public Class Cup
         Public Property Cup1 As Double
 

@@ -415,6 +415,19 @@ Public Class FrmJobs
         End Try
     End Sub
 
+    Private Sub ComboJobs_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboJobs.KeyDown
+        If e.KeyCode = Keys.Enter Then
+            e.SuppressKeyPress = True
+            e.Handled = True
+            If ComboJobs.Text.Length > 0 Then
+                Dim jobNumber As Integer
+                If Integer.TryParse(ComboJobs.Text, jobNumber) Then
+                    Find(Database.Jobs.Local.OrderBy(Function(j) j.JobNumber).Where(Function(j) j.JobNumber = jobNumber).FirstOrDefault())
+                End If
+            End If
+        End If
+    End Sub
+
     Private Sub ComboJobs_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboJobs.MouseClick
         ' Open the measurements form with the clicked Job record.
         Try
@@ -500,6 +513,26 @@ Public Class FrmJobs
             mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
         Catch ex As Exception
             MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
+    End Sub
+
+    Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
+        ' Open the JobDetails (Measurements) form with the selected Vessel as the current record or,
+        ' if the Customer has no Vessels, create a new Vessel for the Customer
+        ' and make it the current record.
+        Try
+            If Current IsNot Nothing Then
+                ShowForm(mFrmMeasurements, Database, User)
+                mFrmMeasurements.Hardware = Hardware
+                If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
+                    mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+                Else
+                    mFrmMeasurements.Job = CurrentJob
+                    mFrmMeasurements.AddNew(Current)
+                End If
+            End If
+        Catch ex As Exception
+            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -613,43 +646,6 @@ Public Class FrmJobs
             ScanDataImexEnabled = (TxtScanDataFile.Text.Length > 0)
         Catch ex As Exception
             MessageBox.Show("Error selecting scan data file: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
-
-    Private Sub ComboJobs_KeyDown(sender As Object, e As KeyEventArgs) Handles ComboJobs.KeyDown
-        If e.KeyCode = Keys.Enter Then
-            e.SuppressKeyPress = True
-            e.Handled = True
-            If ComboJobs.Text.Length > 0 Then
-                Dim jobNumber As Integer
-                If Integer.TryParse(ComboJobs.Text, jobNumber) Then
-                    Find(Database.Jobs.Local.OrderBy(Function(j) j.JobNumber).Where(Function(j) j.JobNumber = jobNumber).FirstOrDefault())
-                End If
-            End If
-        End If
-    End Sub
-
-    Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
-        ' Open the JobDetails (Measurements) form with the selected Vessel as the current record or,
-        ' if the Customer has no Vessels, create a new Vessel for the Customer
-        ' and make it the current record.
-        Try
-            If Current IsNot Nothing Then
-                ShowForm(mFrmMeasurements, Database, User)
-                mFrmMeasurements.Hardware = Hardware
-                If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
-                    mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
-                Else
-                    mFrmMeasurements.Job = CurrentJob
-                    mFrmMeasurements.AddNew(Current)
-                End If
-                'mFrmMeasurements.Job = CurrentJob
-                'If mFrmMeasurements.Find(BindingSourceCurrent(JobDetailsBindingSource)) Is Nothing Then
-                '    mFrmMeasurements.AddNew(Current)
-                'End If
-            End If
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 #End Region

@@ -1,8 +1,5 @@
 ﻿Imports System.ComponentModel
-Imports System.Threading
-Imports System.Windows
 Imports System.Windows.Forms.DataVisualization.Charting
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
@@ -11,7 +8,6 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 #Const NO_ENCODERS = True
 Public Class Form1
     Inherits FrmDatabaseForm
@@ -490,7 +486,7 @@ Public Class Form1
         Chart3.ChartAreas.Add(chartArea1)
 
         ' Add a Title
-        Chart3.Titles.Add("Point Graph Example")
+        Chart3.Titles.Add("Blade Tolerances By Radius")
 
         ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
@@ -500,7 +496,7 @@ Public Class Form1
             .ToList()
         ' The chart axes min/max values are the greatest radius value,
         ' this way the arcs always start at the outside of the chart area.
-        chartArea1.AxisX.Maximum = radiusMeasurements.Max(Function(m) m.Radius)
+        chartArea1.AxisX.Maximum = kBladePlotAxesMax
         chartArea1.AxisX.Minimum = -chartArea1.AxisX.Maximum
         chartArea1.AxisY.Maximum = chartArea1.AxisX.Maximum
         chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
@@ -531,22 +527,6 @@ Public Class Form1
                 s.Points(p).Color = Color.LightGreen    ' Need an explicit definition based on data in the dB or functions in MRIMath module color=g(z) ???
             Next
             Chart3.Series.Add(s)
-        Next
-    End Sub
-
-    Private Sub DrawPlotArcs(ByVal bladeCount As Integer, ByVal blade As Integer, ByVal radius As Double, ByVal series As Series)
-        ' Draws the base arcs for the given blade number and radius.
-        Const spacingAngle As Double = 8.0 ' Degrees to space between blades
-        Const stepAngle As Double = 4.0    ' Degrees between points on arc
-        Dim startAngle As Double = ((360.0 / bladeCount) * (blade - 1))
-        Dim endAngle As Double = startAngle + (360.0 / bladeCount)
-        For angle As Double = startAngle To endAngle Step stepAngle
-            If angle - startAngle < spacingAngle OrElse endAngle - angle < spacingAngle Then Continue For
-            Dim theta As Double = angle * Math.PI / 180.0
-            Dim x As Integer = CInt(radius * Math.Cos(theta))
-            Dim y As Integer = CInt(radius * Math.Sin(theta))
-            Dim p As Integer = series.Points.AddXY(x, y)
-            series.Points(p).Color = Color.Gray
         Next
     End Sub
 
