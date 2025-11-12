@@ -8,7 +8,7 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-#Const NO_ENCODERS = True
+#Const NO_ENCODERS = False
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -313,14 +313,12 @@ Public Class Form1
         ' RadiusMeasurement with .Radius = 0, which will be updated at
         ' the end of the scan.
         mRadiusPercent.Clear()
-        'mBladeRake.Blade = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement = New RadiusMeasurement With {
             .JobDetails = Me.JobDetails,
             .Radius = 0.0,
             .LeCell = 0,
             .TeCell = 0
         }
-        Database.RadiusMeasurements.Add(mRadiusMeasurement)
     End Sub
 
     Private Function ReferenceRadiiGet(ByVal blade As Integer) As List(Of Double)
@@ -337,12 +335,16 @@ Public Class Form1
     Private Sub SaveRadiusMeasurement()
         ' Update and save the current RadiusMeasurement with the moving average
         ' we collected while scanning.
-        If Database.RadiusMeasurements.Contains(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First()) Then
-            Database.RadiusMeasurements.Remove(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First())
-        End If
+        'If mJobDetails?.RadiusMeasurements.Count <> 0 Then
+        '    If Database.RadiusMeasurements.Contains(mJobDetails?.RadiusMeasurements?.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First()) Then
+        '        Database.RadiusMeasurements.Remove(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First())
+        '        Database.SaveChanges()
+        '    End If
+        'End If
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement.TeCell = mSampleCount - 1
+        Database.RadiusMeasurements.Add(mRadiusMeasurement)
         Database.SaveChanges()
         ShowBladePitch(True)
     End Sub
@@ -368,7 +370,7 @@ Public Class Form1
                 mRd += 1
                 If mRd = mEncoderData.Count Then mRd = 0
 #End If
-                'SaveRadiusMeasurement()
+                SaveRadiusMeasurement()
             End If
             ScanControlsEnabled(value)
         End Set
@@ -383,7 +385,7 @@ Public Class Form1
             Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
             rowBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
             colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
-            rowBlade.Item(colRadius) = GetAverageBladePitch(rm.CellMeasurements.ToList())
+            rowBlade.Item(colRadius) = Math.Round(GetAverageBladePitch(rm.CellMeasurements.ToList()), 2)
         Next
         GridBladebyRadius.DataSource = dtBladePitchByRadius
     End Sub
@@ -424,13 +426,14 @@ Public Class Form1
     Private Sub ShowPitchBasis()
         Select Case ComboPitchBasis.SelectedItem.ToString()
             Case "Mean"
-                TxtBasis.Text = ((Job?.MarkedPitch + Job?.DesiredPitch) / 2.0).ToString()
+                TxtBasis.Text = TxtWheelPitch.Text
             Case "Marked"
                 TxtBasis.Text = Job?.MarkedPitch.ToString()
             Case "Desired"
                 TxtBasis.Text = Job?.DesiredPitch.ToString()
             Case Else
         End Select
+        ShowPlot()
     End Sub
 
     Private Sub ShowTrack()
@@ -502,6 +505,14 @@ Public Class Form1
         chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
         ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
         ' having a radius equal to RadiusMeasurement.Radius. 
+        If ComboTolerance.Text = "" Then
+            Return
+        End If
+        If TxtBasis.Text = "" Then
+            Return
+        End If
+        Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
+        Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
         For Each rm As RadiusMeasurement In radiusMeasurements
             Dim s As New Series With {
                 .ChartType = SeriesChartType.Point,
@@ -520,11 +531,31 @@ Public Class Form1
                 Dim cmCurrent As CellMeasurement = cellMeasurements(i)
                 Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
                 Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
-                Dim angle As Double = cmCurrent?.Angle - cmPrevious?.Angle
+                Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
                 Dim theta As Double = cmPrevious.Angle * Math.PI / 180
-                Dim coordinates = PolarToCartesian(rm.Radius, cmCurrent?.Angle)
+                Dim coordinates = PolarToCartesian(rm.Radius, angle)
                 Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
-                s.Points(p).Color = Color.LightGreen    ' Need an explicit definition based on data in the dB or functions in MRIMath module color=g(z) ???
+                Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
+                Select Case pointcolor
+                    Case ToleranceColor.BadData
+                        s.Points(p).Color = Color.Black
+                    Case ToleranceColor.Pass
+                        s.Points(p).Color = Color.LightGreen
+                    Case ToleranceColor.Low
+                        s.Points(p).Color = Color.Turquoise
+                    Case ToleranceColor.VeryLow
+                        s.Points(p).Color = Color.Blue
+                    Case ToleranceColor.ExtraLow
+                        s.Points(p).Color = Color.Gray
+                    Case ToleranceColor.High
+                        s.Points(p).Color = Color.Yellow
+                    Case ToleranceColor.VeryHigh
+                        s.Points(p).Color = Color.DarkRed
+                    Case ToleranceColor.ExtraHigh
+                        s.Points(p).Color = Color.Purple
+                    Case Else
+                        s.Points(p).Color = Color.LightGray
+                End Select    ' Need an explicit definition based on data in the dB or functions in MRIMath module color=g(z) ???
             Next
             Chart3.Series.Add(s)
         Next
@@ -574,7 +605,7 @@ Public Class Form1
 #Region "Event Handlers"
     Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
         Try
-            Me.Scanning = ChkScan.Checked
+            Scanning = ChkScan.Checked
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
         End Try
@@ -752,6 +783,10 @@ Public Class Form1
             ShowForm(mFrmVessels, Database, User)
             mFrmVessels.Find(Job?.Vessel)
         End If
+    End Sub
+
+    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
+        ShowPlot()
     End Sub
 #End Region
 End Class
