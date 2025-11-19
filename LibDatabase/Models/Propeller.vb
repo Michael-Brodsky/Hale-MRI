@@ -1,8 +1,12 @@
-﻿Namespace Models
+﻿Imports System
+Imports System.Collections.Generic
+Imports Microsoft.VisualBasic
+
+Namespace Models
     Partial Public Class Propeller
         Public Property Id As Integer?
 
-        Public Property ManufacturerId As Integer?
+        Public Property ManufacturerId As Integer
 
         Public Property PartNumber As String
 
@@ -12,7 +16,7 @@
 
         Public Property Material As String
 
-        Public Property Blades As Short?
+        Public Property Blades As Short
 
         Public Property Diameter As Double?
 

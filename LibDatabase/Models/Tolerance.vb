@@ -14,11 +14,25 @@ Namespace Models
 
         Public Property MeanPitchPerRadiusMinimum As Double
 
-        Public Property MeanPitchPerBlade As Double?
+        Public Property MeanPitchPerBladePercent As Double
 
-        Public Property MeanPitchForPropeller As Double
+        Public Property MeanPitchForPropellerPercent As Double
 
-        Public Property DisplayColor As String
+        Public Property MeanPitchPerBladeMinimum As Double
+
+        Public Property MeanPitchForPropellerMinimum As Double
+
+        Public Property ExtremeRadiusPercent As Double
+
+        Public Property ExtremeRadiusMinimum As Double
+
+        Public Property BladeThicknessPlus As Double?
+
+        Public Property BladeThicknessMinus As Double?
+
+        Public Property ChordLengthPercent As Double?
+
+        Public Property ChordLengthMinimum As Double?
 
         Public Overridable Property JobDetails As ICollection(Of JobDetail) = New List(Of JobDetail)()
     End Class

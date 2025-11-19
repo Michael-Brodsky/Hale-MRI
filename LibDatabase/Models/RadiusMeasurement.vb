@@ -1,4 +1,8 @@
-﻿Namespace Models
+﻿Imports System
+Imports System.Collections.Generic
+Imports Microsoft.VisualBasic
+
+Namespace Models
     Partial Public Class RadiusMeasurement
         Public Property Id As Integer?
 

@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Threading
 Imports System.Windows.Forms.DataVisualization.Charting
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
@@ -249,7 +250,6 @@ Public Class Form1
             TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
         End With
     End Sub
-
     Private Sub MeasurementsGet(lastAngle As Double)
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required. Saves the measurements if the angle measurement 
@@ -270,7 +270,6 @@ Public Class Form1
         End With
     End Sub
 #End If
-
     Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
         If TxtBlade.Text = "1" And angle > 180.0 Then 'this is a simple way to handle overscan when crossing 0 degrees on blade 1
@@ -319,6 +318,8 @@ Public Class Form1
             .LeCell = 0,
             .TeCell = 0
         }
+        mLastScannedAngle = 1000.0 'ensure first measurement is always saved
+        'mRadiusPercent.Input(Double.Parse(TxtRadiusPercent.Text))
     End Sub
 
     Private Function ReferenceRadiiGet(ByVal blade As Integer) As List(Of Double)
@@ -335,12 +336,9 @@ Public Class Form1
     Private Sub SaveRadiusMeasurement()
         ' Update and save the current RadiusMeasurement with the moving average
         ' we collected while scanning.
-        'If mJobDetails?.RadiusMeasurements.Count <> 0 Then
-        '    If Database.RadiusMeasurements.Contains(mJobDetails?.RadiusMeasurements?.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First()) Then
-        '        Database.RadiusMeasurements.Remove(mJobDetails.RadiusMeasurements.Where(Function(rm) rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).First())
-        '        Database.SaveChanges()
-        '    End If
-        'End If
+        If Database.RadiusMeasurements.Local.Where(Function(rm) rm.JobDetailsId = mJobDetails.Id And rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).Any() Then
+            Database.RadiusMeasurements.Local.Remove(Database.RadiusMeasurements.Local.Where(Function(rm) rm.JobDetailsId = mJobDetails.Id And rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).FirstOrDefault())
+        End If
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement.TeCell = mSampleCount - 1
@@ -376,18 +374,58 @@ Public Class Form1
         End Set
     End Property
 
-    Private Sub ShowBladePitch(ByVal show As Boolean)
+    Private Sub ShowBladePitch(show As Boolean)
+        Dim dtBladePitch As New DataTable()
+        If mJobDetails Is Nothing Then
+            Return
+        End If
+        Dim ToleranceTable As Tolerance = GetToleranceTable(Database, If(mJobDetails?.ToleranceClass, "D"))
+        Dim TotalPitchWheel As Double = 0.0
         Dim dtBladePitchByRadius As New DataTable()
         Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
+        Dim colPitch As DataColumn = dtBladePitch.Columns.Add("Blade", GetType(Double))
         Dim rowBlade As DataRow
+        Dim x As Integer
+        For x = 1 To Job?.PropellerBlades
+            rowBlade = dtBladePitchByRadius.Rows.Add(x)
+            rowBlade = dtBladePitch.Rows.Add(x)
+        Next
+        GridBladebyRadius.DataSource = dtBladePitchByRadius
+        dtBladePitch.PrimaryKey = New DataColumn() {colPitch}
         dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
-        For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.OrderBy(Function(b) b.BladeId)
+        For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.OrderBy(Function(r) r.Radius).ToList()
             Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
             rowBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
             colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
-            rowBlade.Item(colRadius) = Math.Round(GetAverageBladePitch(rm.CellMeasurements.ToList()), 2)
+            Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
+            rowBlade.Item(colRadius) = Math.Round(pitch, 2)
+            Dim textavgbladepitchcolor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch) ' Check tolerance and adjust text color
+            GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textavgbladepitchcolor)
+            TotalPitchWheel += GetAverageBladePitch(rm.CellMeasurements.ToList())
         Next
-        GridBladebyRadius.DataSource = dtBladePitchByRadius
+        mJobDetails.WheelPitch = TotalPitchWheel / mJobDetails.RadiusMeasurements.Count
+        Dim textwheelpitchcolor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, Job.DesiredPitch)
+        TxtWheelPitch.ForeColor = Tolerances.ToColor(textwheelpitchcolor)
+        TxtWheelPitch.Text = mJobDetails.WheelPitch.ToString()
+        GridBladebyRadius.Refresh()
+        GridBladePitch.DataSource = dtBladePitch
+        dtBladePitch.Columns.Add("Avg Pitch", GetType(Double))
+        For Each row As DataRow In dtBladePitchByRadius.Rows
+            Dim totalPitch As Double = 0.0
+            Dim pitchCount As Integer = 0
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+                rowBlade = If(dtBladePitch.Rows.Find(rm.BladeId), dtBladePitch.Rows.Find(1))
+                colPitch = If(dtBladePitch.Columns("Avg Pitch"), dtBladePitch.Columns.Add("Avg Pitch", GetType(Double)))
+                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
+                totalPitch += pitch
+                pitchCount += 1
+            Next
+            Dim avgpitch As Double = totalPitch / pitchCount
+            Dim bladepitchcolor As ToleranceColor = CheckBladePitch(ToleranceTable, avgpitch, Job.DesiredPitch) ' Check tolerance and adjust text color
+            dtBladePitch.Rows(row.Item("Blade") - 1).Item("Avg Pitch") = Math.Round(totalPitch / pitchCount, 2)
+            GridBladePitch.Rows(row.Item("Blade") - 1).Cells(1).Style.ForeColor = Tolerances.ToColor(bladepitchcolor)
+        Next
+        GridBladePitch.Columns(0).Visible = False
     End Sub
 
     Private Sub ShowJobInfo()
@@ -411,7 +449,7 @@ Public Class Form1
         ComboReferenceBlade.DataSource = bsReferenceBlades
         ComboReferencePoint.SelectedItem = "LE"
         ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
-        ComboPitchBasis.SelectedItem = "Mean"
+        ComboPitchBasis.SelectedItem = "Marked"
         ComboTolerance.SelectedItem = JobDetails?.ToleranceClass
         ShowPitchBasis()
     End Sub
@@ -426,7 +464,11 @@ Public Class Form1
     Private Sub ShowPitchBasis()
         Select Case ComboPitchBasis.SelectedItem.ToString()
             Case "Mean"
-                TxtBasis.Text = TxtWheelPitch.Text
+                If TxtWheelPitch.Text <> "NaN" Then
+                    TxtBasis.Text = TxtWheelPitch.Text
+                Else
+                    TxtBasis.Text = Job?.MarkedPitch.ToString()
+                End If
             Case "Marked"
                 TxtBasis.Text = Job?.MarkedPitch.ToString()
             Case "Desired"
@@ -434,6 +476,7 @@ Public Class Form1
             Case Else
         End Select
         ShowPlot()
+        ShowBladePitch(True)
     End Sub
 
     Private Sub ShowTrack()
@@ -471,10 +514,13 @@ Public Class Form1
     End Sub
 
     Private Sub ShowPlot()
+        If mJobDetails Is Nothing Then
+            Return
+        End If
         ' Clear any existing chart areas and series.
-        Chart3.ChartAreas.Clear()
-        Chart3.Series.Clear()
-        Chart3.Titles.Clear()
+        chartPlot.ChartAreas.Clear()
+        chartPlot.Series.Clear()
+        chartPlot.Titles.Clear()
 
         ' Add a ChartArea for the point graph
         Dim chartArea1 As New ChartArea()
@@ -486,10 +532,11 @@ Public Class Form1
         chartArea1.AxisY.MajorTickMark.Enabled = False
         chartArea1.AxisX.LineWidth = 0
         chartArea1.AxisY.LineWidth = 0
-        Chart3.ChartAreas.Add(chartArea1)
+        chartPlot.ChartAreas.Add(chartArea1)
+
 
         ' Add a Title
-        Chart3.Titles.Add("Blade Tolerances By Radius")
+        chartPlot.Titles.Add("Blade Tolerances By Radius")
 
         ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
@@ -517,10 +564,8 @@ Public Class Form1
             Dim s As New Series With {
                 .ChartType = SeriesChartType.Point,
                 .MarkerStyle = MarkerStyle.Circle,
-                .MarkerSize = 3
+                .MarkerSize = 5
             }
-            'DrawPlotArcs(Job.PropellerBlades, rm.BladeId, rm.Radius, s)
-            's.MarkerSize = 3
             Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
             ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
             ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle????
@@ -536,28 +581,9 @@ Public Class Form1
                 Dim coordinates = PolarToCartesian(rm.Radius, angle)
                 Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
                 Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
-                Select Case pointcolor
-                    Case ToleranceColor.BadData
-                        s.Points(p).Color = Color.Black
-                    Case ToleranceColor.Pass
-                        s.Points(p).Color = Color.LightGreen
-                    Case ToleranceColor.Low
-                        s.Points(p).Color = Color.Turquoise
-                    Case ToleranceColor.VeryLow
-                        s.Points(p).Color = Color.Blue
-                    Case ToleranceColor.ExtraLow
-                        s.Points(p).Color = Color.Gray
-                    Case ToleranceColor.High
-                        s.Points(p).Color = Color.Yellow
-                    Case ToleranceColor.VeryHigh
-                        s.Points(p).Color = Color.DarkRed
-                    Case ToleranceColor.ExtraHigh
-                        s.Points(p).Color = Color.Purple
-                    Case Else
-                        s.Points(p).Color = Color.LightGray
-                End Select    ' Need an explicit definition based on data in the dB or functions in MRIMath module color=g(z) ???
+                s.Points(p).Color = ToColor(pointcolor)
             Next
-            Chart3.Series.Add(s)
+            chartPlot.Series.Add(s)
         Next
     End Sub
 
@@ -657,13 +683,13 @@ Public Class Form1
         EncoderStatusStrip1.TimerOn = False
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load, MyBase.Load
         Try
             ' Initialize form controls. This method needs to initialize all form controls
             ' based on some predefined "states". For example: if no encoders are detected,
             ' they're not initialized or in an error state, then disable all controls that 
             ' can access the encoders. 
-            Dim tolerances As List(Of Tolerance) = Database.Tolerances.Local.ToList()
+            Dim tolerances = Database.Tolerances.Local.ToList
             tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
             ComboTolerance.DataSource = tolerances
             ComboReferencePoint.DataSource = New List(Of String) From {"LE", "Mid", "TE"}
@@ -671,9 +697,9 @@ Public Class Form1
 
             ' Initialize the DataGridJobDetails.
             DataGridJobDetails.AutoGenerateColumns = False
-            EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList()
-            ClassBindingSource.DataSource = Database.Tolerances.Local.ToBindingList()
-            MeasurementTypesBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList()
+            EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
+            ClassBindingSource.DataSource = Database.Tolerances.Local.ToBindingList
+            MeasurementTypesBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList
 
             ' Initialize the Navigator
             Navigator = RecordNavigationBar1
@@ -705,9 +731,9 @@ Public Class Form1
     End Sub
 
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
-        If mJobDetails IsNot Me.Current Then
-            mJobDetails = Me.Current
-            If Me.JobDetails IsNot Nothing Then ShowJobDetailsInfo()
+        If mJobDetails IsNot Current Then
+            mJobDetails = Current
+            If JobDetails IsNot Nothing Then ShowJobDetailsInfo()
         End If
     End Sub
 

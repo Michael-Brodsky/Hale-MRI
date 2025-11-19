@@ -1,8 +1,12 @@
-﻿Namespace Models
+﻿Imports System
+Imports System.Collections.Generic
+Imports Microsoft.VisualBasic
+
+Namespace Models
     Partial Public Class Vessel
         Public Property Id As Integer?
 
-        Public Property CustomerId As Integer?
+        Public Property CustomerId As Integer
 
         Public Property ServiceTypeId As Integer?
 
