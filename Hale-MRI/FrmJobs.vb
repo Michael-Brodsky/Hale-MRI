@@ -17,13 +17,14 @@ Public Class FrmJobs
     End Enum
 #End Region
 #Region "Private Members"
+    Private mBindingsComplete As Boolean = False
     Private mFilter As Object = Nothing                 ' The current form filter object, if any.
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
+    Private mMeasurementsEnabled As Boolean = True
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
     Private mNewJob As Job = Nothing                    ' The new Job being added, if any.
     Private mRequiredFields As List(Of Control)
-    Private mMeasurementsEnabled As Boolean = True
     ' Declare all forms this form can open.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
@@ -123,21 +124,23 @@ Public Class FrmJobs
 
     Private Sub CheckRequiredFields()
         ' Ensure all required fields have values before allowing save.
-        Dim lab As Label
-        mMeasurementsEnabled = True
-        For Each ctrl As Control In mRequiredFields
-            If TypeOf ctrl Is ComboBox Then
-                Dim cmb As ComboBox = CType(ctrl, ComboBox)
-                lab = CType(Me.Controls(ctrl.Tag), Label)
-                lab.ForeColor = If(cmb.SelectedItem Is Nothing, Color.Red, SystemColors.ControlText)
-                mMeasurementsEnabled = mMeasurementsEnabled AndAlso cmb.SelectedItem IsNot Nothing
-            ElseIf TypeOf ctrl Is TextBox Then
-                Dim txt As TextBox = CType(ctrl, TextBox)
-                lab = CType(Me.Controls(ctrl.Tag), Label)
-                lab.ForeColor = If(String.IsNullOrEmpty(txt.Text), Color.Red, SystemColors.ControlText)
-                mMeasurementsEnabled = mMeasurementsEnabled AndAlso Not String.IsNullOrEmpty(txt.Text)
-            End If
-        Next
+        If mBindingsComplete Then
+            Dim lab As Label
+            mMeasurementsEnabled = True
+            For Each ctrl As Control In mRequiredFields
+                If TypeOf ctrl Is ComboBox Then
+                    Dim cmb As ComboBox = CType(ctrl, ComboBox)
+                    lab = CType(Me.Controls(ctrl.Tag), Label)
+                    lab.ForeColor = If(cmb.SelectedItem Is Nothing, Color.Red, SystemColors.ControlText)
+                    mMeasurementsEnabled = mMeasurementsEnabled AndAlso cmb.SelectedItem IsNot Nothing
+                ElseIf TypeOf ctrl Is TextBox Then
+                    Dim txt As TextBox = CType(ctrl, TextBox)
+                    lab = CType(Me.Controls(ctrl.Tag), Label)
+                    lab.ForeColor = If(String.IsNullOrEmpty(txt.Text), Color.Red, SystemColors.ControlText)
+                    mMeasurementsEnabled = mMeasurementsEnabled AndAlso Not String.IsNullOrEmpty(txt.Text)
+                End If
+            Next
+        End If
     End Sub
 
     Private Sub ListsRefresh(ByVal useLocal As Boolean)
@@ -237,6 +240,7 @@ Public Class FrmJobs
                 ' which calls CheckRequiredFields() before bindings are completed. 
                 JobsBindingSource.ResumeBinding()
                 ' So we have to make sure the bindings are updated after resuming.
+                mBindingsComplete = True
                 JobsBindingSource.ResetCurrentItem()
                 ' And then call CheckRequiredFields() again to ensure the required fields are correct.
                 CheckRequiredFields()
@@ -459,7 +463,7 @@ Public Class FrmJobs
         Try
             If ComboJobs.DoubleClicked() Then
                 If Not mMeasurementsEnabled Then
-                    MessageBox.Show("All required fields, shown in red, must be completed before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 ElseIf CurrentJob IsNot Nothing Then
                     ShowForm(mFrmMeasurements, Database, User)
                     mFrmMeasurements.Hardware = Hardware
@@ -552,7 +556,7 @@ Public Class FrmJobs
         ' and make it the current record.
         Try
             If Not mMeasurementsEnabled Then
-                MessageBox.Show("All required fields, shown in red, must be completed before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
             ElseIf Current IsNot Nothing Then
                 ShowForm(mFrmMeasurements, Database, User)
                 mFrmMeasurements.Hardware = Hardware
@@ -669,8 +673,8 @@ Public Class FrmJobs
                         NewJobUpdate()
                     End If
                     BindingSourceSave(Database, JobsBindingSource)
-                    RefreshAll()
                     CheckRequiredFields()
+                    RefreshAll()
                     JobSelectionEnabled = True
                     mNewJob = Nothing
                 Case "Undo"
