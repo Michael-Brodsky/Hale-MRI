@@ -3005,23 +3005,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\82002\\.nuget\\packages\\": {},
+    "C:\\Users\\super\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj",
+      "projectUniqueName": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj",
       "projectName": "LibDatabase",
-      "projectPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj",
-      "packagesPath": "C:\\Users\\82002\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDatabase\\obj\\",
+      "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj",
+      "packagesPath": "C:\\Users\\super\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\82002\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\super\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3030,7 +3030,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -3118,7 +3117,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.307/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

@@ -22,6 +22,8 @@ Public Class FrmJobs
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
     Private mNewJob As Job = Nothing                    ' The new Job being added, if any.
+    Private mRequiredFields As List(Of Control)
+    Private mMeasurementsEnabled As Boolean = True
     ' Declare all forms this form can open.
     ' Do not create new instances of forms directly;
     ' use the FormInstances.ShowForm/CloseForm methods.
@@ -29,7 +31,6 @@ Public Class FrmJobs
     Private mFrmVessels As FrmVessels
     Private mFrmManufacturers As FrmManufacturers
     Private mFrmMeasurements As Form1
-    'Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
     Public Sub AddNew(ByVal vessel As Vessel)
@@ -118,6 +119,25 @@ Public Class FrmJobs
         ListsRefresh(True)
         FiltersRemove()
         BindMasterDetails(JobsBindingSource, JobDetailsBindingSource, "JobDetails")
+    End Sub
+
+    Private Sub CheckRequiredFields()
+        ' Ensure all required fields have values before allowing save.
+        Dim lab As Label
+        mMeasurementsEnabled = True
+        For Each ctrl As Control In mRequiredFields
+            If TypeOf ctrl Is ComboBox Then
+                Dim cmb As ComboBox = CType(ctrl, ComboBox)
+                lab = CType(Me.Controls(ctrl.Tag), Label)
+                lab.ForeColor = If(cmb.SelectedItem Is Nothing, Color.Red, SystemColors.ControlText)
+                mMeasurementsEnabled = mMeasurementsEnabled AndAlso cmb.SelectedItem IsNot Nothing
+            ElseIf TypeOf ctrl Is TextBox Then
+                Dim txt As TextBox = CType(ctrl, TextBox)
+                lab = CType(Me.Controls(ctrl.Tag), Label)
+                lab.ForeColor = If(String.IsNullOrEmpty(txt.Text), Color.Red, SystemColors.ControlText)
+                mMeasurementsEnabled = mMeasurementsEnabled AndAlso Not String.IsNullOrEmpty(txt.Text)
+            End If
+        Next
     End Sub
 
     Private Sub ListsRefresh(ByVal useLocal As Boolean)
@@ -213,7 +233,13 @@ Public Class FrmJobs
         End Get
         Set(value As Boolean)
             If value Then
+                ' A job has been selected ResumeBinding() will fire the CurrentChanged event,
+                ' which calls CheckRequiredFields() before bindings are completed. 
                 JobsBindingSource.ResumeBinding()
+                ' So we have to make sure the bindings are updated after resuming.
+                JobsBindingSource.ResetCurrentItem()
+                ' And then call CheckRequiredFields() again to ensure the required fields are correct.
+                CheckRequiredFields()
                 DataGridJobDetails.DataSource = JobDetailsBindingSource
                 ' If no job was selected and user selects the first job in the list,
                 ' the binding source position won't change and the navigator won't
@@ -431,10 +457,14 @@ Public Class FrmJobs
     Private Sub ComboJobs_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboJobs.MouseClick
         ' Open the measurements form with the clicked Job record.
         Try
-            If CurrentJob IsNot Nothing AndAlso ComboJobs.DoubleClicked() Then
-                ShowForm(mFrmMeasurements, Database, User)
-                mFrmMeasurements.Hardware = Hardware
-                mFrmMeasurements.Job = CurrentJob
+            If ComboJobs.DoubleClicked() Then
+                If Not mMeasurementsEnabled Then
+                    MessageBox.Show("All required fields, shown in red, must be completed before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                ElseIf CurrentJob IsNot Nothing Then
+                    ShowForm(mFrmMeasurements, Database, User)
+                    mFrmMeasurements.Hardware = Hardware
+                    mFrmMeasurements.Job = CurrentJob
+                End If
             End If
         Catch ex As Exception
             MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -521,7 +551,9 @@ Public Class FrmJobs
         ' if the Customer has no Vessels, create a new Vessel for the Customer
         ' and make it the current record.
         Try
-            If Current IsNot Nothing Then
+            If Not mMeasurementsEnabled Then
+                MessageBox.Show("All required fields, shown in red, must be completed before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+            ElseIf Current IsNot Nothing Then
                 ShowForm(mFrmMeasurements, Database, User)
                 mFrmMeasurements.Hardware = Hardware
                 If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
@@ -566,6 +598,12 @@ Public Class FrmJobs
                 ComboInspectedBy,
                 TxtDAR
             }
+            mRequiredFields = New List(Of Control) From {
+                ComboBlades,
+                TxtDiameter,
+                TxtDesiredPitch,
+                TxtMarkedPitch
+            }
             MasterSource = JobsBindingSource    ' The Navigator manages the Job records and notifies us when changes occur.
             Navigator.NoUpdates = True          ' We handle record updates ourselves because adding new Jobs requires extra steps.
             JobSelected = False                 ' Nothing is initially selected when this form loads.
@@ -578,8 +616,11 @@ Public Class FrmJobs
 
     Private Sub JobsBindingSource_CurrentChanged(sender As Object, e As EventArgs)
         Try
-            If CurrentJob IsNot Nothing Then SelectedVessel = CurrentJob?.Vessel
-            TxtScanDataFile.Text = String.Empty
+            If CurrentJob IsNot Nothing Then
+                SelectedVessel = CurrentJob?.Vessel
+                TxtScanDataFile.Text = String.Empty
+                CheckRequiredFields()
+            End If
         Catch ex As Exception
             MessageBox.Show("Error moving to the selected record: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -629,6 +670,7 @@ Public Class FrmJobs
                     End If
                     BindingSourceSave(Database, JobsBindingSource)
                     RefreshAll()
+                    CheckRequiredFields()
                     JobSelectionEnabled = True
                     mNewJob = Nothing
                 Case "Undo"

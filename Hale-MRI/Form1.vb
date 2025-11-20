@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports System.Threading
 Imports System.Windows.Forms.DataVisualization.Charting
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
@@ -458,7 +459,7 @@ Public Class Form1
         ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitch(True)
         ShowTrack()
-        ShowPlot()
+        ShowBladePlot()
     End Sub
 
     Private Sub ShowPitchBasis()
@@ -475,7 +476,7 @@ Public Class Form1
                 TxtBasis.Text = Job?.DesiredPitch.ToString()
             Case Else
         End Select
-        ShowPlot()
+        ShowBladePlot()
         ShowBladePitch(True)
     End Sub
 
@@ -513,16 +514,15 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ShowPlot()
-        If mJobDetails Is Nothing Then
-            Return
-        End If
+    Private Sub ShowBladePlot()
+        If mJobDetails Is Nothing Then Return
+
         ' Clear any existing chart areas and series.
         chartPlot.ChartAreas.Clear()
         chartPlot.Series.Clear()
         chartPlot.Titles.Clear()
 
-        ' Add a ChartArea for the point graph
+        ' Add a ChartArea and Title for the point graph
         Dim chartArea1 As New ChartArea()
         chartArea1.AxisX.MajorGrid.Enabled = False
         chartArea1.AxisY.MajorGrid.Enabled = False
@@ -533,9 +533,6 @@ Public Class Form1
         chartArea1.AxisX.LineWidth = 0
         chartArea1.AxisY.LineWidth = 0
         chartPlot.ChartAreas.Add(chartArea1)
-
-
-        ' Add a Title
         chartPlot.Titles.Add("Blade Tolerances By Radius")
 
         ' Get a list of RadiusMeasurements for this JobDetail.
@@ -550,41 +547,36 @@ Public Class Form1
         chartArea1.AxisX.Minimum = -chartArea1.AxisX.Maximum
         chartArea1.AxisY.Maximum = chartArea1.AxisX.Maximum
         chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
-        ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
-        ' having a radius equal to RadiusMeasurement.Radius. 
-        If ComboTolerance.Text = "" Then
-            Return
-        End If
-        If TxtBasis.Text = "" Then
-            Return
-        End If
-        Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
-        Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
-        For Each rm As RadiusMeasurement In radiusMeasurements
-            Dim s As New Series With {
-                .ChartType = SeriesChartType.Point,
-                .MarkerStyle = MarkerStyle.Circle,
-                .MarkerSize = 5
-            }
-            Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
-            ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
-            ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle????
-            For i As Integer = 1 To cellMeasurements.Count - 1
-                ' Assumably, pitch, depth, etc. is used to color code arc points
-                ' based on tolerances. Arcs should also be "completed" so as to have
-                ' equal lengths.
-                Dim cmCurrent As CellMeasurement = cellMeasurements(i)
-                Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
-                Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
-                Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
-                Dim theta As Double = cmPrevious.Angle * Math.PI / 180
-                Dim coordinates = PolarToCartesian(rm.Radius, angle)
-                Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
-                Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
-                s.Points(p).Color = ToColor(pointcolor)
+        If Not (String.IsNullOrEmpty(TxtBasis.Text) Or String.IsNullOrEmpty(ComboTolerance.Text)) Then
+            Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
+            Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
+            ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
+            ' having a radius equal to RadiusMeasurement.Radius. 
+            For Each rm As RadiusMeasurement In radiusMeasurements
+                Dim s As New Series With {
+                    .ChartType = kBladePlotChartType,
+                    .MarkerStyle = kBladePlotMarkerStyle,
+                    .MarkerSize = kBladePlotMarkerSize
+                }
+                Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
+                ' Each CellMeasurement in the RadiusMeasurement defines a Point on the arc.
+                For i As Integer = 1 To cellMeasurements.Count - 1
+                    Dim cmCurrent As CellMeasurement = cellMeasurements(i)
+                    Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
+                    Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
+                    Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
+                    Dim theta As Double = cmPrevious.Angle * Math.PI / 180
+                    Dim coordinates = PolarToCartesian(rm.Radius, angle)
+                    ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
+                    ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle
+                    Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y)
+                    ' Set the point color based on tolerance class, pitch and basis pitch.
+                    Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
+                    s.Points(p).Color = ToColor(pointcolor)
+                Next
+                chartPlot.Series.Add(s)
             Next
-            chartPlot.Series.Add(s)
-        Next
+        End If
     End Sub
 
     Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
@@ -595,7 +587,7 @@ Public Class Form1
     End Sub
 
     Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
-        ' Returns the Depth CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
+        ' Returns the Angle CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
         Dim angle As Double = 0.0
         If rm IsNot Nothing AndAlso Not String.IsNullOrEmpty(point) Then
             Select Case point
@@ -812,7 +804,7 @@ Public Class Form1
     End Sub
 
     Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
-        ShowPlot()
+        ShowBladePlot()
     End Sub
 #End Region
 End Class
