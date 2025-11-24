@@ -23,16 +23,16 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
-        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -91,9 +91,9 @@ Partial Class Form1
         LabRake = New Label()
         ComboReferencePoint = New ComboBox()
         TxtRake = New TextBox()
+        LabTrackPanel = New Label()
         PanelPlot = New Panel()
         chartPlot = New DataVisualization.Charting.Chart()
-        LabTrackPanel = New Label()
         LabPanelPlot = New Label()
         LabPanelMeasurements = New Label()
         LabPanelJob = New Label()
@@ -609,14 +609,14 @@ Partial Class Form1
         GridBladebyRadius.AllowUserToDeleteRows = False
         GridBladebyRadius.AllowUserToOrderColumns = True
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
-        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GridBladebyRadius.Location = New Point(3, 226)
         GridBladebyRadius.Name = "GridBladebyRadius"
@@ -679,36 +679,36 @@ Partial Class Form1
         ' 
         ' ChartBladeHeight
         ' 
-        ChartArea4.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea4)
+        ChartArea1.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea1)
         ChartBladeHeight.Dock = DockStyle.Fill
-        Legend3.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend3)
+        Legend1.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend1)
         ChartBladeHeight.Location = New Point(3, 26)
         ChartBladeHeight.Name = "ChartBladeHeight"
         tLayoutTrack.SetRowSpan(ChartBladeHeight, 8)
-        Series4.ChartArea = "ChartArea1"
-        Series4.Legend = "Legend1"
-        Series4.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series4)
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series1)
         ChartBladeHeight.Size = New Size(227, 179)
         ChartBladeHeight.TabIndex = 0
         ChartBladeHeight.Text = "Track"
         ' 
         ' ChartAngularPosition
         ' 
-        ChartArea5.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea5)
+        ChartArea2.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea2)
         ChartAngularPosition.Dock = DockStyle.Fill
-        Legend4.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend4)
+        Legend2.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend2)
         ChartAngularPosition.Location = New Point(352, 26)
         ChartAngularPosition.Name = "ChartAngularPosition"
         tLayoutTrack.SetRowSpan(ChartAngularPosition, 8)
-        Series5.ChartArea = "ChartArea1"
-        Series5.Legend = "Legend1"
-        Series5.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series5)
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series2)
         ChartAngularPosition.Size = New Size(229, 179)
         ChartAngularPosition.TabIndex = 1
         ChartAngularPosition.Text = "Track"
@@ -790,31 +790,6 @@ Partial Class Form1
         TxtRake.Size = New Size(110, 23)
         TxtRake.TabIndex = 9
         ' 
-        ' PanelPlot
-        ' 
-        PanelPlot.BorderStyle = BorderStyle.Fixed3D
-        PanelPlot.Controls.Add(chartPlot)
-        PanelPlot.Location = New Point(803, 131)
-        PanelPlot.Name = "PanelPlot"
-        PanelPlot.Size = New Size(294, 294)
-        PanelPlot.TabIndex = 11
-        ' 
-        ' chartPlot
-        ' 
-        ChartArea6.Name = "ChartArea1"
-        chartPlot.ChartAreas.Add(ChartArea6)
-        chartPlot.Dock = DockStyle.Fill
-        chartPlot.Location = New Point(0, 0)
-        chartPlot.Name = "chartPlot"
-        Series6.ChartArea = "ChartArea1"
-        Series6.ChartType = DataVisualization.Charting.SeriesChartType.Radar
-        Series6.IsVisibleInLegend = False
-        Series6.Name = "Series1"
-        chartPlot.Series.Add(Series6)
-        chartPlot.Size = New Size(290, 290)
-        chartPlot.TabIndex = 0
-        chartPlot.Text = "ChartPlot"
-        ' 
         ' LabTrackPanel
         ' 
         LabTrackPanel.BackColor = SystemColors.ActiveCaption
@@ -826,6 +801,31 @@ Partial Class Form1
         LabTrackPanel.Size = New Size(578, 15)
         LabTrackPanel.TabIndex = 12
         LabTrackPanel.Text = "Track"
+        ' 
+        ' PanelPlot
+        ' 
+        PanelPlot.BorderStyle = BorderStyle.Fixed3D
+        PanelPlot.Controls.Add(chartPlot)
+        PanelPlot.Location = New Point(803, 131)
+        PanelPlot.Name = "PanelPlot"
+        PanelPlot.Size = New Size(294, 294)
+        PanelPlot.TabIndex = 11
+        ' 
+        ' chartPlot
+        ' 
+        ChartArea3.Name = "ChartArea1"
+        chartPlot.ChartAreas.Add(ChartArea3)
+        chartPlot.Dock = DockStyle.Fill
+        chartPlot.Location = New Point(0, 0)
+        chartPlot.Name = "chartPlot"
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
+        Series3.IsVisibleInLegend = False
+        Series3.Name = "Series1"
+        chartPlot.Series.Add(Series3)
+        chartPlot.Size = New Size(290, 290)
+        chartPlot.TabIndex = 0
+        chartPlot.Text = "ChartPlot"
         ' 
         ' LabPanelPlot
         ' 

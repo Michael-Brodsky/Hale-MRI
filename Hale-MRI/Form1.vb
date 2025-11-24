@@ -29,6 +29,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
+    Private mFrmReports As FrmReports
     Private mFrmVessels As FrmVessels
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -662,6 +663,17 @@ Public Class Form1
         ShowTrack()
     End Sub
 
+    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
+        ShowBladePlot()
+    End Sub
+
+    Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
+        If Current IsNot Nothing Then
+            ShowForm(mFrmReports, Database, User)
+            mFrmReports.JobDetails = Current
+        End If
+    End Sub
+
     Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
         ' Handles EncoderStatusStrip events so we can update our controls accordingly.
     End Sub
@@ -801,10 +813,6 @@ Public Class Form1
             ShowForm(mFrmVessels, Database, User)
             mFrmVessels.Find(Job?.Vessel)
         End If
-    End Sub
-
-    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
-        ShowBladePlot()
     End Sub
 #End Region
 End Class
