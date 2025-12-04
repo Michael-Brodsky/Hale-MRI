@@ -24,18 +24,18 @@ Partial Class FrmReports
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
-        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend5 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend6 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea7 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend7 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series7 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea8 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend8 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series8 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         PrintDocument1 = New Printing.PrintDocument()
         PrintPreviewDialog1 = New PrintPreviewDialog()
         PageSetupDialog1 = New PageSetupDialog()
@@ -53,6 +53,10 @@ Partial Class FrmReports
         TxtManufacturer = New TextBox()
         TxtStyle = New TextBox()
         TxtMaterial = New TextBox()
+        TxtRotation = New TextBox()
+        TxtBlades = New TextBox()
+        TxtDiameter = New TextBox()
+        TxtBore = New TextBox()
         TableCustomerVessel = New TableLayoutPanel()
         TxtVessel = New TextBox()
         TxtCustomer = New TextBox()
@@ -74,10 +78,7 @@ Partial Class FrmReports
         ChartBladeAverages = New DataVisualization.Charting.Chart()
         Chart1 = New DataVisualization.Charting.Chart()
         JobDetailsBindingSource = New BindingSource(components)
-        TxtRotation = New TextBox()
-        TxtBlades = New TextBox()
-        TxtDiameter = New TextBox()
-        TxtBore = New TextBox()
+        TableLayoutPanel1 = New TableLayoutPanel()
         CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
         CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
         PanelHeader.SuspendLayout()
@@ -101,32 +102,32 @@ Partial Class FrmReports
         ' 
         ' ChartBladeHeight
         ' 
-        ChartArea5.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea5)
-        Legend5.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend5)
+        ChartArea1.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend1)
         ChartBladeHeight.Location = New Point(18, 216)
         ChartBladeHeight.Name = "ChartBladeHeight"
-        Series5.ChartArea = "ChartArea1"
-        Series5.Legend = "Legend1"
-        Series5.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series5)
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series1)
         ChartBladeHeight.Size = New Size(221, 179)
         ChartBladeHeight.TabIndex = 2
         ChartBladeHeight.Text = "Track"
         ' 
         ' ChartAngularPosition
         ' 
-        ChartArea6.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea6)
-        Legend6.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend6)
+        ChartArea2.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend2)
         ChartAngularPosition.Location = New Point(245, 216)
         ChartAngularPosition.Name = "ChartAngularPosition"
-        Series6.ChartArea = "ChartArea1"
-        Series6.Legend = "Legend1"
-        Series6.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series6)
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series2)
         ChartAngularPosition.Size = New Size(229, 179)
         ChartAngularPosition.TabIndex = 3
         ChartAngularPosition.Text = "Track"
@@ -138,7 +139,7 @@ Partial Class FrmReports
         PanelHeader.Controls.Add(TableJob)
         PanelHeader.Location = New Point(12, 12)
         PanelHeader.Name = "PanelHeader"
-        PanelHeader.Size = New Size(1181, 143)
+        PanelHeader.Size = New Size(1181, 156)
         PanelHeader.TabIndex = 4
         ' 
         ' TablePropeller
@@ -166,7 +167,7 @@ Partial Class FrmReports
         TablePropeller.Controls.Add(TxtBlades, 4, 1)
         TablePropeller.Controls.Add(TxtDiameter, 5, 1)
         TablePropeller.Controls.Add(TxtBore, 6, 1)
-        TablePropeller.Location = New Point(3, 94)
+        TablePropeller.Location = New Point(3, 106)
         TablePropeller.Name = "TablePropeller"
         TablePropeller.RowCount = 2
         TablePropeller.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
@@ -268,6 +269,38 @@ Partial Class FrmReports
         TxtMaterial.Size = New Size(88, 16)
         TxtMaterial.TabIndex = 11
         ' 
+        ' TxtRotation
+        ' 
+        TxtRotation.BorderStyle = BorderStyle.None
+        TxtRotation.Location = New Point(340, 25)
+        TxtRotation.Name = "TxtRotation"
+        TxtRotation.Size = New Size(55, 16)
+        TxtRotation.TabIndex = 12
+        ' 
+        ' TxtBlades
+        ' 
+        TxtBlades.BorderStyle = BorderStyle.None
+        TxtBlades.Location = New Point(401, 25)
+        TxtBlades.Name = "TxtBlades"
+        TxtBlades.Size = New Size(49, 16)
+        TxtBlades.TabIndex = 13
+        ' 
+        ' TxtDiameter
+        ' 
+        TxtDiameter.BorderStyle = BorderStyle.None
+        TxtDiameter.Location = New Point(456, 25)
+        TxtDiameter.Name = "TxtDiameter"
+        TxtDiameter.Size = New Size(64, 16)
+        TxtDiameter.TabIndex = 14
+        ' 
+        ' TxtBore
+        ' 
+        TxtBore.BorderStyle = BorderStyle.None
+        TxtBore.Location = New Point(526, 25)
+        TxtBore.Name = "TxtBore"
+        TxtBore.Size = New Size(58, 16)
+        TxtBore.TabIndex = 15
+        ' 
         ' TableCustomerVessel
         ' 
         TableCustomerVessel.ColumnCount = 2
@@ -277,7 +310,7 @@ Partial Class FrmReports
         TableCustomerVessel.Controls.Add(TxtCustomer, 0, 1)
         TableCustomerVessel.Controls.Add(LabVessel, 1, 0)
         TableCustomerVessel.Controls.Add(LabCustomer, 0, 0)
-        TableCustomerVessel.Location = New Point(3, 50)
+        TableCustomerVessel.Location = New Point(3, 56)
         TableCustomerVessel.Name = "TableCustomerVessel"
         TableCustomerVessel.RowCount = 2
         TableCustomerVessel.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
@@ -460,32 +493,32 @@ Partial Class FrmReports
         ' 
         ' ChartBladeAverages
         ' 
-        ChartArea7.Name = "ChartArea1"
-        ChartBladeAverages.ChartAreas.Add(ChartArea7)
-        Legend7.Name = "Legend1"
-        ChartBladeAverages.Legends.Add(Legend7)
+        ChartArea3.Name = "ChartArea1"
+        ChartBladeAverages.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        ChartBladeAverages.Legends.Add(Legend3)
         ChartBladeAverages.Location = New Point(480, 216)
         ChartBladeAverages.Name = "ChartBladeAverages"
-        Series7.ChartArea = "ChartArea1"
-        Series7.Legend = "Legend1"
-        Series7.Name = "Series1"
-        ChartBladeAverages.Series.Add(Series7)
+        Series3.ChartArea = "ChartArea1"
+        Series3.Legend = "Legend1"
+        Series3.Name = "Series1"
+        ChartBladeAverages.Series.Add(Series3)
         ChartBladeAverages.Size = New Size(229, 179)
         ChartBladeAverages.TabIndex = 5
         ChartBladeAverages.Text = "Chart1"
         ' 
         ' Chart1
         ' 
-        ChartArea8.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea8)
-        Legend8.Name = "Legend1"
-        Chart1.Legends.Add(Legend8)
+        ChartArea4.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea4)
+        Legend4.Name = "Legend1"
+        Chart1.Legends.Add(Legend4)
         Chart1.Location = New Point(715, 216)
         Chart1.Name = "Chart1"
-        Series8.ChartArea = "ChartArea1"
-        Series8.Legend = "Legend1"
-        Series8.Name = "Series1"
-        Chart1.Series.Add(Series8)
+        Series4.ChartArea = "ChartArea1"
+        Series4.Legend = "Legend1"
+        Series4.Name = "Series1"
+        Chart1.Series.Add(Series4)
         Chart1.Size = New Size(475, 179)
         Chart1.TabIndex = 6
         Chart1.Text = "ChartSummary"
@@ -494,43 +527,25 @@ Partial Class FrmReports
         ' 
         JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
         ' 
-        ' TxtRotation
+        ' TableLayoutPanel1
         ' 
-        TxtRotation.BorderStyle = BorderStyle.None
-        TxtRotation.Location = New Point(340, 25)
-        TxtRotation.Name = "TxtRotation"
-        TxtRotation.Size = New Size(55, 16)
-        TxtRotation.TabIndex = 12
-        ' 
-        ' TxtBlades
-        ' 
-        TxtBlades.BorderStyle = BorderStyle.None
-        TxtBlades.Location = New Point(401, 25)
-        TxtBlades.Name = "TxtBlades"
-        TxtBlades.Size = New Size(49, 16)
-        TxtBlades.TabIndex = 13
-        ' 
-        ' TxtDiameter
-        ' 
-        TxtDiameter.BorderStyle = BorderStyle.None
-        TxtDiameter.Location = New Point(456, 25)
-        TxtDiameter.Name = "TxtDiameter"
-        TxtDiameter.Size = New Size(64, 16)
-        TxtDiameter.TabIndex = 14
-        ' 
-        ' TxtBore
-        ' 
-        TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Location = New Point(526, 25)
-        TxtBore.Name = "TxtBore"
-        TxtBore.Size = New Size(58, 16)
-        TxtBore.TabIndex = 15
+        TableLayoutPanel1.ColumnCount = 2
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TableLayoutPanel1.Location = New Point(18, 425)
+        TableLayoutPanel1.Name = "TableLayoutPanel1"
+        TableLayoutPanel1.RowCount = 2
+        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TableLayoutPanel1.Size = New Size(200, 100)
+        TableLayoutPanel1.TabIndex = 7
         ' 
         ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1205, 613)
+        ClientSize = New Size(1205, 703)
+        Controls.Add(TableLayoutPanel1)
         Controls.Add(Chart1)
         Controls.Add(ChartBladeAverages)
         Controls.Add(PanelHeader)
@@ -595,4 +610,5 @@ Partial Class FrmReports
     Friend WithEvents TxtBlades As TextBox
     Friend WithEvents TxtDiameter As TextBox
     Friend WithEvents TxtBore As TextBox
+    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
 End Class

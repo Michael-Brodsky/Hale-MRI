@@ -29,7 +29,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As FrmReports
+    Private mFrmReports As Form2
     Private mFrmVessels As FrmVessels
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -586,40 +586,6 @@ Public Class Form1
         Dim rake As Double = Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI)
         TxtRake.Text = rake.ToString(STR_PARAM_DECIMAL_PLACES)
     End Sub
-
-    Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
-        ' Returns the Angle CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
-        Dim angle As Double = 0.0
-        If rm IsNot Nothing AndAlso Not String.IsNullOrEmpty(point) Then
-            Select Case point
-                Case "LE"
-                    angle = rm.CellMeasurements.FirstOrDefault()?.Angle
-                Case "Mid"
-                    angle = rm.CellMeasurements.ElementAt(rm.CellMeasurements.Count \ 2)?.Angle
-                Case "TE"
-                    angle = rm.CellMeasurements.LastOrDefault()?.Angle
-                Case Else
-            End Select
-        End If
-        Return angle
-    End Function
-
-    Private Function TrackGetDepth(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
-        ' Returns the Depth CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
-        Dim depth As Double = 0.0
-        If rm IsNot Nothing AndAlso Not String.IsNullOrEmpty(point) Then
-            Select Case point
-                Case "LE"
-                    depth = rm.CellMeasurements.FirstOrDefault()?.Depth
-                Case "Mid"
-                    depth = rm.CellMeasurements.ElementAt(rm.CellMeasurements.Count \ 2)?.Depth
-                Case "TE"
-                    depth = rm.CellMeasurements.LastOrDefault()?.Depth
-                Case Else
-            End Select
-        End If
-        Return depth
-    End Function
 #End Region
 #Region "Event Handlers"
     Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged

@@ -289,5 +289,13 @@ Public Class EncoderStatusStrip
     Private Sub ScanTimer_Tick(sender As Object, e As EventArgs) Handles mScanTimer.Tick
         TSButtonTimer.Visible = Not TSButtonTimer.Visible
     End Sub
+
+    Private Sub DisableToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles DisableToolStripMenuItem1.Click
+        TimerOn = False
+    End Sub
+
+    Private Sub EnableToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles EnableToolStripMenuItem.Click
+        TimerOn = True
+    End Sub
 #End Region
 End Class
