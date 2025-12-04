@@ -780,5 +780,13 @@ Public Class Form1
             mFrmVessels.Find(Job?.Vessel)
         End If
     End Sub
+
+    Private Sub Form1_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+        EncoderStatusStrip1.TimerOn = True
+    End Sub
+
+    Private Sub Form1_Deactivate(sender As Object, e As EventArgs) Handles MyBase.Deactivate
+        EncoderStatusStrip1.TimerOn = False
+    End Sub
 #End Region
 End Class
