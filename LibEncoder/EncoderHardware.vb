@@ -90,4 +90,8 @@ Public Class EncoderHardware
         ' Return the radius value
         Return mEncoder.Radius(diameter)
     End Function
+    Public Function SetEncoderCount(ByVal encoderNo As Integer, ByVal count As Integer) As Boolean
+        ' Set the encoder count value
+        Return mEncoder.SetEncoderCount(encoderNo, count)
+    End Function
 End Class

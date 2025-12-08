@@ -45,6 +45,8 @@ Namespace Contexts
 
         Public Overridable Property RadiusMeasurements As DbSet(Of RadiusMeasurement)
 
+        Public Overridable Property ReferenceCells As DbSet(Of ReferenceCell)
+
         Public Overridable Property Rotations As DbSet(Of Rotation)
 
         Public Overridable Property Settings As DbSet(Of Setting)
@@ -480,6 +482,36 @@ Namespace Contexts
                         HasConstraintName("PropellersRadius Measurements")
                 End Sub)
 
+            modelBuilder.Entity(Of ReferenceCell)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.ToTable("Reference Cell")
+
+                    entity.HasIndex(Function(e) e.Id, "Job DetailsReference Cell").IsUnique()
+
+                    entity.Property(Function(e) e.Id).
+                        ValueGeneratedOnAdd().
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.ReferenceAngle).
+                        HasDefaultValue(0.0).
+                        HasColumnName("Reference Angle")
+                    entity.Property(Function(e) e.ReferenceDepth).
+                        HasDefaultValue(0.0).
+                        HasColumnName("Reference Depth")
+                    entity.Property(Function(e) e.ReferenceDescription).
+                        HasMaxLength(255).
+                        HasColumnName("Reference Description")
+                    entity.Property(Function(e) e.ReferenceRadius).
+                        HasDefaultValue(0.0).
+                        HasColumnName("Reference Radius")
+
+                    entity.HasOne(Function(d) d.IdNavigation).WithOne(Function(p) p.ReferenceCell).
+                        HasForeignKey(Of ReferenceCell)(Function(d) d.Id).
+                        HasConstraintName("Job DetailsReference Cell")
+                End Sub)
+
             modelBuilder.Entity(Of Rotation)(
                 Sub(entity)
                     entity.HasKey(Function(e) e.Rotation1).HasName("PrimaryKey")
@@ -554,29 +586,53 @@ Namespace Contexts
 
                     entity.Property(Function(e) e.ToleranceClass).
                         HasMaxLength(4).
+                        HasDefaultValueSql("""D""").
                         HasColumnName("Tolerance Class")
                     entity.Property(Function(e) e.BladeThicknessMinus).
-                        HasDefaultValue(0.0).
+                        HasDefaultValue(1000.0).
                         HasColumnName("Blade Thickness Minus")
                     entity.Property(Function(e) e.BladeThicknessPlus).
-                        HasDefaultValue(0.0).
+                        HasDefaultValue(1000.0).
                         HasColumnName("Blade Thickness Plus")
                     entity.Property(Function(e) e.ChordLengthMinimum).
-                        HasDefaultValue(0.0).
+                        HasDefaultValue(1000.0).
                         HasColumnName("Chord Length Minimum")
                     entity.Property(Function(e) e.ChordLengthPercent).
-                        HasDefaultValue(0.0).
+                        HasDefaultValue(100.0).
                         HasColumnName("Chord Length Percent")
-                    entity.Property(Function(e) e.ExtremeRadiusMinimum).HasColumnName("Extreme Radius Minimum")
-                    entity.Property(Function(e) e.ExtremeRadiusPercent).HasColumnName("Extreme Radius Percent")
-                    entity.Property(Function(e) e.LocalPitchMinimum).HasColumnName("Local Pitch Minimum")
-                    entity.Property(Function(e) e.LocalPitchPercent).HasColumnName("Local Pitch Percent")
-                    entity.Property(Function(e) e.MeanPitchForPropellerMinimum).HasColumnName("Mean Pitch For Propeller Minimum")
-                    entity.Property(Function(e) e.MeanPitchForPropellerPercent).HasColumnName("Mean Pitch For Propeller Percent")
-                    entity.Property(Function(e) e.MeanPitchPerBladeMinimum).HasColumnName("Mean Pitch Per Blade Minimum")
-                    entity.Property(Function(e) e.MeanPitchPerBladePercent).HasColumnName("Mean Pitch Per Blade Percent")
-                    entity.Property(Function(e) e.MeanPitchPerRadiusMinimum).HasColumnName("Mean Pitch Per Radius Minimum")
-                    entity.Property(Function(e) e.MeanPitchPerRadiusPercent).HasColumnName("Mean Pitch Per Radius Percent")
+                    entity.Property(Function(e) e.ExtremeRadiusMinimum).
+                        HasDefaultValue(1000.0).
+                        HasColumnName("Extreme Radius Minimum")
+                    entity.Property(Function(e) e.ExtremeRadiusPercent).
+                        HasDefaultValue(100.0).
+                        HasColumnName("Extreme Radius Percent")
+                    entity.Property(Function(e) e.LocalPitchMinimum).
+                        HasDefaultValue(1000.0).
+                        HasColumnName("Local Pitch Minimum")
+                    entity.Property(Function(e) e.LocalPitchPercent).
+                        HasDefaultValue(100.0).
+                        HasColumnName("Local Pitch Percent")
+                    entity.Property(Function(e) e.LocalPitchSectors).
+                        HasDefaultValue(1).
+                        HasColumnName("Local Pitch Sectors")
+                    entity.Property(Function(e) e.MeanPitchForPropellerMinimum).
+                        HasDefaultValue(1000.0).
+                        HasColumnName("Mean Pitch For Propeller Minimum")
+                    entity.Property(Function(e) e.MeanPitchForPropellerPercent).
+                        HasDefaultValue(100.0).
+                        HasColumnName("Mean Pitch For Propeller Percent")
+                    entity.Property(Function(e) e.MeanPitchPerBladeMinimum).
+                        HasDefaultValue(1000.0).
+                        HasColumnName("Mean Pitch Per Blade Minimum")
+                    entity.Property(Function(e) e.MeanPitchPerBladePercent).
+                        HasDefaultValue(100.0).
+                        HasColumnName("Mean Pitch Per Blade Percent")
+                    entity.Property(Function(e) e.MeanPitchPerRadiusMinimum).
+                        HasDefaultValue(1000.0).
+                        HasColumnName("Mean Pitch Per Radius Minimum")
+                    entity.Property(Function(e) e.MeanPitchPerRadiusPercent).
+                        HasDefaultValue(100).
+                        HasColumnName("Mean Pitch Per Radius Percent")
                 End Sub)
 
             modelBuilder.Entity(Of Vessel)(

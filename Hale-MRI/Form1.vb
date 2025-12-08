@@ -489,6 +489,7 @@ Public Class Form1
 
     Private Function ShowAngularDeviationTolerance(classes As List(Of Tolerance), radius As Double) As Integer
         Dim passingclass As Integer = 0
+        Dim largestDeviation As Double = 0.0
         For Each tol As Tolerance In classes
             If passingclass < classes.IndexOf(tol) Then
                 Return passingclass
@@ -509,6 +510,9 @@ Public Class Form1
                 End If
                 Dim blademidangle = GetChordMidAngle(radmeas.CellMeasurements) ' need to make all neccessary checks to select a good radius measurement
                 Dim nextblademidangle = GetChordMidAngle(radmeas2.CellMeasurements)
+                If largestDeviation < Math.Abs(blademidangle - nextblademidangle) Then
+                    largestDeviation = Math.Abs(blademidangle - nextblademidangle)
+                End If
                 Dim angDeviationcheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, blademidangle, nextblademidangle)
                 If angDeviationcheck <> ToleranceColor.Pass Then
                     passingclass += 1
@@ -516,11 +520,13 @@ Public Class Form1
                 End If
             Next
         Next
+        TxtAngularDeviation.Text = Math.Round(largestDeviation, 2).ToString() + "°"
         Return passingclass
     End Function
 
     Private Function ShowAxialPositionTolerance(classes As List(Of Tolerance), radius As Double) As Integer
         Dim passingclass As Integer = 0
+        Dim largestDeviation As Double = 0.0
         For Each tol As Tolerance In classes
             If passingclass < classes.IndexOf(tol) Then
                 Return passingclass
@@ -541,6 +547,9 @@ Public Class Form1
                 End If
                 Dim blademiddepth = GetChordMidDepth(radmeas.CellMeasurements) ' need to make all neccessary checks to select a good radius measurement
                 Dim nextblademiddepth = GetChordMidDepth(radmeas2.CellMeasurements)
+                If largestDeviation < Math.Abs(blademiddepth - nextblademiddepth) Then
+                    largestDeviation = Math.Abs(blademiddepth - nextblademiddepth)
+                End If
                 Dim Axialposcheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, blademiddepth, nextblademiddepth)
                 If Axialposcheck <> ToleranceColor.Pass Then
                     passingclass += 1
@@ -548,6 +557,7 @@ Public Class Form1
                 End If
             Next
         Next
+        TxtAxialPosition.Text = Math.Round(largestDeviation, 2).ToString() + " In."
         Return passingclass
     End Function
 
@@ -1354,6 +1364,25 @@ Public Class Form1
 
     Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
 
+    End Sub
+
+    Private Sub CmdSetRef_Click(sender As Object, e As EventArgs) Handles CmdSetRef.Click
+        If mJobDetails Is Nothing Then
+            Return
+        End If
+        Dim userinput As String = InputBox("Describe where the Reference is being taken from (e.g. 'Leading Edge at 70 Radius on Blade 1'):", "Reference Set")
+        mJobDetails.ReferenceCell.ReferenceDescription = userinput
+        mJobDetails.ReferenceCell.ReferenceRadius = Double.Parse(TxtRadius.Text)
+        mJobDetails.ReferenceCell.ReferenceAngle = Double.Parse(TxtAngle.Text)
+        mJobDetails.ReferenceCell.ReferenceDepth = Double.Parse(TxtDepth.Text)
+        Database.SaveChanges()
+    End Sub
+
+    Private Sub CmdGetRef_Click(sender As Object, e As EventArgs) Handles CmdGetRef.Click
+        If mJobDetails Is Nothing Then
+            Return
+        End If
+        'resetting counts is multiplying by calibrations
     End Sub
 #End Region
 End Class

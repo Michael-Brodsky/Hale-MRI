@@ -21,4 +21,5 @@ Public Interface IEncoderHardware
     Function Calibrate(ByVal encoderNo As Integer) As Double
     Function Depth() As Double
     Function Radius(ByVal diameter As Double) As RadiusMeasurement
+    Function SetEncoderCount(ByVal encoderNo As Integer, ByVal count As Integer) As Boolean
 End Interface

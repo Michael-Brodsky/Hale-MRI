@@ -4,6 +4,17 @@
     <RootNamespace>LibEncoder</RootNamespace>
     <TargetFramework>net8.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
+    <ImportedNamespaces>USB4Wrapper=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,LibEncoder=True</ImportedNamespaces>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="USB4Wrapper">
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\US Digital\USB4\Common\USB4Wrapper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Import Include="USB4Wrapper" />
+  </ItemGroup>
 
 </Project>
