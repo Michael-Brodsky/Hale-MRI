@@ -1194,7 +1194,7 @@ Public Class Form1
                 PanelGrids.Enabled = False
                 PanelPlot.Enabled = False
                 PanelTrack.Enabled = False
-                PanelTolerances.Enabled = False
+                PanelLocalPitchDetails.Enabled = False
             Case "Delete"
                 If DeleteConfirm() Then
                     DeleteJobDetail()
@@ -1206,7 +1206,7 @@ Public Class Form1
                 PanelGrids.Enabled = False
                 PanelPlot.Enabled = False
                 PanelTrack.Enabled = False
-                PanelTolerances.Enabled = False
+                PanelLocalPitchDetails.Enabled = False
             Case "FilterOff"
             Case "FilterOn"
             Case "Find"
@@ -1219,7 +1219,7 @@ Public Class Form1
                 PanelGrids.Enabled = True
                 PanelPlot.Enabled = True
                 PanelTrack.Enabled = True
-                PanelTolerances.Enabled = True
+                PanelLocalPitchDetails.Enabled = True
                 ChkScan.Select()
             Case "Undo"
                 ' Enable the PanelMeasurements when the user has cancelled the JobDetails record changes.
@@ -1229,14 +1229,14 @@ Public Class Form1
                     PanelGrids.Enabled = True
                     PanelPlot.Enabled = True
                     PanelTrack.Enabled = True
-                    PanelTolerances.Enabled = True
+                    PanelLocalPitchDetails.Enabled = True
                 End If
             Case Else
                 PanelMeasurements.Enabled = True
                 PanelGrids.Enabled = True
                 PanelPlot.Enabled = True
                 PanelTrack.Enabled = True
-                PanelTolerances.Enabled = True
+                PanelLocalPitchDetails.Enabled = True
         End Select
     End Sub
 
