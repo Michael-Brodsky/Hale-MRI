@@ -2,6 +2,7 @@
 Imports System.Runtime.CompilerServices
 Imports System.Threading
 Imports System.Windows.Forms.DataVisualization.Charting
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
@@ -29,6 +30,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
+    Private mFrmReports As Form2
     Private mFrmVessels As FrmVessels
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -886,7 +888,7 @@ Public Class Form1
         ' Update any controls that consume data from the current JobDetail record.
         ShowBladePitch(True)
         ShowTrack()
-        ShowPlot()
+        ShowBladePlot()
     End Sub
 
     Private Sub ShowPitchBasis()
@@ -903,7 +905,7 @@ Public Class Form1
                 TxtBasis.Text = Job?.DesiredPitch.ToString()
             Case Else
         End Select
-        ShowPlot()
+        ShowBladePlot()
         ShowBladePitch(True)
     End Sub
 
@@ -947,16 +949,15 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ShowPlot()
-        If mJobDetails Is Nothing Then
-            Return
-        End If
+    Private Sub ShowBladePlot()
+        If mJobDetails Is Nothing Then Return
+
         ' Clear any existing chart areas and series.
         ChartPlot.ChartAreas.Clear()
         ChartPlot.Series.Clear()
         ChartPlot.Titles.Clear()
 
-        ' Add a ChartArea for the point graph
+        ' Add a ChartArea and Title for the point graph
         Dim chartArea1 As New ChartArea()
         chartArea1.AxisX.MajorGrid.Enabled = False
         chartArea1.AxisY.MajorGrid.Enabled = False
@@ -966,11 +967,16 @@ Public Class Form1
         chartArea1.AxisY.MajorTickMark.Enabled = False
         chartArea1.AxisX.LineWidth = 0
         chartArea1.AxisY.LineWidth = 0
+<<<<<<< HEAD
         ChartPlot.ChartAreas.Add(chartArea1)
 
 
         ' Add a Title
         ChartPlot.Titles.Add("Blade Tolerances By Radius")
+=======
+        chartPlot.ChartAreas.Add(chartArea1)
+        chartPlot.Titles.Add("Blade Tolerances By Radius")
+>>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
 
         ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
@@ -984,6 +990,7 @@ Public Class Form1
         chartArea1.AxisX.Minimum = -chartArea1.AxisX.Maximum
         chartArea1.AxisY.Maximum = chartArea1.AxisX.Maximum
         chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
+<<<<<<< HEAD
         ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
         ' having a radius equal to RadiusMeasurement.Radius. 
         If ComboTolerance.Text = "" Then
@@ -1019,6 +1026,38 @@ Public Class Form1
             Next
             ChartPlot.Series.Add(s)
         Next
+=======
+        If Not (String.IsNullOrEmpty(TxtBasis.Text) Or String.IsNullOrEmpty(ComboTolerance.Text)) Then
+            Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
+            Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
+            ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
+            ' having a radius equal to RadiusMeasurement.Radius. 
+            For Each rm As RadiusMeasurement In radiusMeasurements
+                Dim s As New Series With {
+                    .ChartType = kBladePlotChartType,
+                    .MarkerStyle = kBladePlotMarkerStyle,
+                    .MarkerSize = kBladePlotMarkerSize
+                }
+                Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
+                ' Each CellMeasurement in the RadiusMeasurement defines a Point on the arc.
+                For i As Integer = 1 To cellMeasurements.Count - 1
+                    Dim cmCurrent As CellMeasurement = cellMeasurements(i)
+                    Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
+                    Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
+                    Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
+                    Dim theta As Double = cmPrevious.Angle * Math.PI / 180
+                    Dim coordinates = PolarToCartesian(rm.Radius, angle)
+                    ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
+                    ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle
+                    Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y)
+                    ' Set the point color based on tolerance class, pitch and basis pitch.
+                    Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
+                    s.Points(p).Color = ToColor(pointcolor)
+                Next
+                chartPlot.Series.Add(s)
+            Next
+        End If
+>>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
     End Sub
 
     Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
@@ -1027,40 +1066,6 @@ Public Class Form1
         Dim rake As Double = Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI)
         TxtRake.Text = rake.ToString(STR_PARAM_DECIMAL_PLACES)
     End Sub
-
-    Private Function TrackGetAngle(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
-        ' Returns the Depth CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
-        Dim angle As Double = 0.0
-        If rm IsNot Nothing AndAlso Not String.IsNullOrEmpty(point) Then
-            Select Case point
-                Case "LE"
-                    angle = rm.CellMeasurements.FirstOrDefault()?.Angle
-                Case "Mid"
-                    angle = rm.CellMeasurements.ElementAt(rm.CellMeasurements.Count \ 2)?.Angle
-                Case "TE"
-                    angle = rm.CellMeasurements.LastOrDefault()?.Angle
-                Case Else
-            End Select
-        End If
-        Return angle
-    End Function
-
-    Private Function TrackGetDepth(ByVal rm As RadiusMeasurement, ByVal point As String) As Double
-        ' Returns the Depth CellMeasurement for the given RadiusMeasurement at the given point (LE, Mid or TE).
-        Dim depth As Double = 0.0
-        If rm IsNot Nothing AndAlso Not String.IsNullOrEmpty(point) Then
-            Select Case point
-                Case "LE"
-                    depth = rm.CellMeasurements.FirstOrDefault()?.Depth
-                Case "Mid"
-                    depth = rm.CellMeasurements.ElementAt(rm.CellMeasurements.Count \ 2)?.Depth
-                Case "TE"
-                    depth = rm.CellMeasurements.LastOrDefault()?.Depth
-                Case Else
-            End Select
-        End If
-        Return depth
-    End Function
 #End Region
 #Region "Event Handlers"
     Private Sub ChkScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkScan.CheckedChanged
@@ -1102,6 +1107,17 @@ Public Class Form1
 
     Private Sub ComboReferenceRadius_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceRadius.SelectedIndexChanged
         ShowTrack()
+    End Sub
+
+    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
+        ShowBladePlot()
+    End Sub
+
+    Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
+        If Current IsNot Nothing Then
+            ShowForm(mFrmReports, Database, User)
+            mFrmReports.JobDetails = Current
+        End If
     End Sub
 
     Private Sub Encoders_EncoderEvent(sender As Object, e As EncoderEventArgs)
@@ -1281,8 +1297,12 @@ Public Class Form1
         End If
     End Sub
 
-    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
-        ShowPlot()
+    Private Sub Form1_Activated(sender As Object, e As EventArgs) Handles MyBase.Activated
+        EncoderStatusStrip1.TimerOn = True
+    End Sub
+
+    Private Sub Form1_Deactivate(sender As Object, e As EventArgs) Handles MyBase.Deactivate
+        EncoderStatusStrip1.TimerOn = False
     End Sub
 
     Private Sub ChkLocalPitch_CheckedChanged(sender As Object, e As EventArgs) Handles ChkLocalPitch.CheckedChanged

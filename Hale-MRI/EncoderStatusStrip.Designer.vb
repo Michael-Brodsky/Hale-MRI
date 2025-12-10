@@ -32,6 +32,9 @@ Partial Class EncoderStatusStrip
         DepthToolStripMenuItem = New ToolStripMenuItem()
         RadiusToolStripMenuItem = New ToolStripMenuItem()
         AllToolStripMenuItem = New ToolStripMenuItem()
+        TimerToolStripMenuItem = New ToolStripMenuItem()
+        EnableToolStripMenuItem = New ToolStripMenuItem()
+        DisableToolStripMenuItem1 = New ToolStripMenuItem()
         TSLabelEncodersStatus = New ToolStripStatusLabel()
         TSButtonTimer = New ToolStripSplitButton()
         StatusStrip1.SuspendLayout()
@@ -57,7 +60,7 @@ Partial Class EncoderStatusStrip
         ' TSButtonEncoders
         ' 
         TSButtonEncoders.DisplayStyle = ToolStripItemDisplayStyle.Image
-        TSButtonEncoders.DropDownItems.AddRange(New ToolStripItem() {InitializeToolStripMenuItem, ResetToolStripMenuItem})
+        TSButtonEncoders.DropDownItems.AddRange(New ToolStripItem() {InitializeToolStripMenuItem, ResetToolStripMenuItem, TimerToolStripMenuItem})
         TSButtonEncoders.Image = CType(resources.GetObject("TSButtonEncoders.Image"), Image)
         TSButtonEncoders.ImageTransparentColor = Color.Magenta
         TSButtonEncoders.Margin = New Padding(10, 2, 10, 0)
@@ -68,14 +71,14 @@ Partial Class EncoderStatusStrip
         ' InitializeToolStripMenuItem
         ' 
         InitializeToolStripMenuItem.Name = "InitializeToolStripMenuItem"
-        InitializeToolStripMenuItem.Size = New Size(117, 22)
+        InitializeToolStripMenuItem.Size = New Size(180, 22)
         InitializeToolStripMenuItem.Text = "Initialize"
         ' 
         ' ResetToolStripMenuItem
         ' 
         ResetToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {AngleToolStripMenuItem, DepthToolStripMenuItem, RadiusToolStripMenuItem, AllToolStripMenuItem})
         ResetToolStripMenuItem.Name = "ResetToolStripMenuItem"
-        ResetToolStripMenuItem.Size = New Size(117, 22)
+        ResetToolStripMenuItem.Size = New Size(180, 22)
         ResetToolStripMenuItem.Text = "Reset"
         ' 
         ' AngleToolStripMenuItem
@@ -101,6 +104,25 @@ Partial Class EncoderStatusStrip
         AllToolStripMenuItem.Name = "AllToolStripMenuItem"
         AllToolStripMenuItem.Size = New Size(109, 22)
         AllToolStripMenuItem.Text = "All"
+        ' 
+        ' TimerToolStripMenuItem
+        ' 
+        TimerToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {EnableToolStripMenuItem, DisableToolStripMenuItem1})
+        TimerToolStripMenuItem.Name = "TimerToolStripMenuItem"
+        TimerToolStripMenuItem.Size = New Size(180, 22)
+        TimerToolStripMenuItem.Text = "Timer"
+        ' 
+        ' EnableToolStripMenuItem
+        ' 
+        EnableToolStripMenuItem.Name = "EnableToolStripMenuItem"
+        EnableToolStripMenuItem.Size = New Size(180, 22)
+        EnableToolStripMenuItem.Text = "Enable"
+        ' 
+        ' DisableToolStripMenuItem1
+        ' 
+        DisableToolStripMenuItem1.Name = "DisableToolStripMenuItem1"
+        DisableToolStripMenuItem1.Size = New Size(180, 22)
+        DisableToolStripMenuItem1.Text = "Disable"
         ' 
         ' TSLabelEncodersStatus
         ' 
@@ -143,5 +165,8 @@ Partial Class EncoderStatusStrip
     Friend WithEvents AllToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents TSLabelEncodersStatus As ToolStripStatusLabel
     Friend WithEvents TSButtonTimer As ToolStripSplitButton
+    Friend WithEvents TimerToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents EnableToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DisableToolStripMenuItem1 As ToolStripMenuItem
 
 End Class

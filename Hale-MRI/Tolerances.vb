@@ -1,15 +1,11 @@
-﻿
-
-Imports Microsoft.EntityFrameworkCore
+﻿Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.Storage
-
-
 
 Module Tolerances
     Enum ToleranceColor
         Pass ' Light Green
         Fail ' Red
-        Low ' Turqoise
+        Low ' Turquoise
         VeryLow ' Blue
         ExtraLow ' Grey
         High ' Yellow

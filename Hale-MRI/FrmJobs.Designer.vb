@@ -184,6 +184,7 @@ Partial Class FrmJobs
         TxtDiameter.Name = "TxtDiameter"
         TxtDiameter.Size = New Size(190, 23)
         TxtDiameter.TabIndex = 257
+        TxtDiameter.Tag = "LabDiameter"
         ' 
         ' TxtPartNumber
         ' 
@@ -218,6 +219,7 @@ Partial Class FrmJobs
         TxtDesiredPitch.Name = "TxtDesiredPitch"
         TxtDesiredPitch.Size = New Size(190, 23)
         TxtDesiredPitch.TabIndex = 253
+        TxtDesiredPitch.Tag = "LabDesiredPitch"
         ' 
         ' TxtMarkedPitch
         ' 
@@ -226,6 +228,7 @@ Partial Class FrmJobs
         TxtMarkedPitch.Name = "TxtMarkedPitch"
         TxtMarkedPitch.Size = New Size(190, 23)
         TxtMarkedPitch.TabIndex = 252
+        TxtMarkedPitch.Tag = "LabMarkedPitch"
         ' 
         ' LabDAR
         ' 
@@ -328,6 +331,7 @@ Partial Class FrmJobs
         LabDiameter.Name = "LabDiameter"
         LabDiameter.Size = New Size(55, 15)
         LabDiameter.TabIndex = 241
+        LabDiameter.Tag = "LabDiameter"
         LabDiameter.Text = "Diameter"
         ' 
         ' LabBlades
@@ -432,6 +436,7 @@ Partial Class FrmJobs
         ComboBlades.Name = "ComboBlades"
         ComboBlades.Size = New Size(190, 23)
         ComboBlades.TabIndex = 230
+        ComboBlades.Tag = "LabBlades"
         ComboBlades.ValueMember = "BladeCount"
         ' 
         ' ComboRotation
