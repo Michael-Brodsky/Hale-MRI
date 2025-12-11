@@ -71,7 +71,9 @@ Public Class Form2
     End Sub
 
     Private Sub ConfigureControls()
-
+        If picLetterhead.Image Is Nothing Then
+            picLetterhead.Size = New Size(0, 0)
+        End If
     End Sub
 
     Private Function GetMeasurementData(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
@@ -173,20 +175,38 @@ Public Class Form2
     End Sub
 
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
-        ' Print only the inside of the form's client area, excluding borders and title bar.
+        ' Create a bitmap of the form's client area for printing, scaled to the page size and margin areas.
+        '
+        ' First we create a rectangle representing the full form.
         Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
         Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + MenuStrip1.Height
         Dim captureWidth As Integer = Me.ClientSize.Width
         Dim captureHeight As Integer = Me.ClientSize.Height
         Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
-        Dim tempBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
+        ' Capture full form into a bitmap
+        Dim tempBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height)
         Me.DrawToBitmap(tempBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
+        ' Now crop the full form to client area, excluding any borders and menus.
         Dim finalBitmap As New Bitmap(captureWidth, captureHeight)
         Using g As Graphics = Graphics.FromImage(finalBitmap)
-            g.DrawImage(tempBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
+            g.DrawImage(tempBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)
         End Using
+        ' Scale the cropped image to fit within the printable and margins area according to the page setup parameters.
+        Dim printableArea As RectangleF = e.PageBounds  ' Start with full page size
+        printableArea.X += e.MarginBounds.Left          ' Adjust for margins
+        printableArea.Y += e.MarginBounds.Top
+        printableArea.Width = e.MarginBounds.Right - e.MarginBounds.Left
+        printableArea.Height = e.MarginBounds.Bottom - e.MarginBounds.Top
+        Dim scale As Single = Math.Min(printableArea.Width / finalBitmap.Width, printableArea.Height / finalBitmap.Height)
+        Dim scaledWidth As Integer = CInt(finalBitmap.Width * scale)
+        Dim scaledHeight As Integer = CInt(finalBitmap.Height * scale)
         tempBitmap.Dispose()
-        e.Graphics.DrawImage(finalBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the margins
+        ' Draw the final, scaled image to the print document
+        e.Graphics.DrawImage(finalBitmap, e.MarginBounds.Left, e.MarginBounds.Top, scaledWidth, scaledHeight)
         e.HasMorePages = False
+    End Sub
+
+    Private Sub HeaderLayoutPanel_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles HeaderLayoutPanel.MouseDoubleClick
+
     End Sub
 End Class
