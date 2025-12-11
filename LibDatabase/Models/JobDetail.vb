@@ -30,6 +30,8 @@ Namespace Models
 
         Public Overridable Property RadiusMeasurements As ICollection(Of RadiusMeasurement) = New List(Of RadiusMeasurement)()
 
+        Public Overridable Property ReferenceCell As ReferenceCell
+
         Public Overridable Property ToleranceClassNavigation As Tolerance
     End Class
 End Namespace

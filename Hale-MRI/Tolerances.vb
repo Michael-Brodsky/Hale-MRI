@@ -37,14 +37,58 @@ Module Tolerances
                 Return Color.Black
         End Select
     End Function
-    Public Function CheckBladePitch(ToleranceTable As LibDatabase.Models.Tolerance, bladepitch As Double, basispitch As Double) As ToleranceColor
+    Public Function CheckAxialPosition(ToleranceTable As LibDatabase.Models.Tolerance, blade1depth As Double, blade2depth As Double) As ToleranceColor
+        'checks the tolerance on the angular deviation between two consecutive blades
+
+        Dim deltadepth = Math.Abs(blade1depth - blade2depth)
+        Dim tolerance As Double
+        Select Case ToleranceTable.ToleranceClass
+            Case "S"
+                tolerance = 0.005
+            Case "I"
+                tolerance = 0.01
+            Case "II"
+                tolerance = 0.015
+            Case "III"
+                tolerance = 0.03
+            Case Else
+                Return ToleranceColor.BadData
+        End Select
+        If deltadepth <= blade1depth * tolerance Then
+            Return ToleranceColor.Pass
+        Else
+            Return ToleranceColor.Fail
+        End If
+    End Function
+    Public Function CheckAngularDeviation(ToleranceTable As LibDatabase.Models.Tolerance, blades As Integer, blade1angle As Double, blade2angle As Double) As ToleranceColor
+        'checks the tolerance on the angular deviation between two consecutive blades
+        Dim angleperblade As Double = 360 / blades
+        Dim angulardeviation = Math.Abs(blade1angle - blade2angle - angleperblade)
+        Dim tolerance As Double
+        Select Case ToleranceTable.ToleranceClass
+            Case "S", "I"
+                tolerance = 0.01
+            Case "II", "III"
+                tolerance = 0.02
+            Case Else
+                Return ToleranceColor.BadData
+        End Select
+        If angulardeviation <= angleperblade * tolerance Then
+            Return ToleranceColor.Pass
+        Else
+            Return ToleranceColor.Fail
+        End If
+    End Function
+    Public Function CheckBladePitch(ToleranceTable As LibDatabase.Models.Tolerance, bladepitch As Double, basispitch As Double, minsApply As Boolean) As ToleranceColor
         ' Checks a Radius measurements average pitch against basis pitch and tolerance to determine color coding
         Dim PitchTolerance As Double
         Select Case ToleranceTable.ToleranceClass
             Case "S", "I", "II", "III", "D"
                 PitchTolerance = (basispitch * (ToleranceTable.MeanPitchPerBladePercent / 100)) ' Make sure Tolerance Class is good
-                If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchPerBladeMinimum Then
-                    PitchTolerance = ToleranceTable.MeanPitchPerBladeMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                If minsApply Then
+                    If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchPerBladeMinimum Then
+                        PitchTolerance = ToleranceTable.MeanPitchPerBladeMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                    End If
                 End If
             Case Else
                 Return ToleranceColor.BadData ' Unknown tolerance class
@@ -59,14 +103,16 @@ Module Tolerances
             Return ToleranceColor.BadData
         End If
     End Function
-    Public Function CheckWheelPitch(ToleranceTable As LibDatabase.Models.Tolerance, wheelpitch As Double, basispitch As Double) As ToleranceColor
+    Public Function CheckWheelPitch(ToleranceTable As LibDatabase.Models.Tolerance, wheelpitch As Double, basispitch As Double, minsApply As Boolean) As ToleranceColor
         ' Checks a jobDetails Wheel Pitch measurement against basis pitch and tolerance to determine color coding
         Dim PitchTolerance As Double
         Select Case ToleranceTable.ToleranceClass
             Case "S", "I", "II", "III", "D"
                 PitchTolerance = (basispitch * (ToleranceTable.MeanPitchForPropellerPercent / 100)) ' Make sure Tolerance Class is good
-                If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchForPropellerMinimum Then
-                    PitchTolerance = ToleranceTable.MeanPitchForPropellerMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                If minsApply Then
+                    If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchForPropellerMinimum Then
+                        PitchTolerance = ToleranceTable.MeanPitchForPropellerMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                    End If
                 End If
             Case Else
                 Return ToleranceColor.BadData ' Unknown tolerance class
@@ -81,14 +127,16 @@ Module Tolerances
             Return ToleranceColor.Pass
         End If
     End Function
-    Public Function CheckBladeRadiusPitch(ToleranceTable As LibDatabase.Models.Tolerance, bladeradiuspitch As Double, basispitch As Double) As ToleranceColor
+    Public Function CheckBladeRadiusPitch(ToleranceTable As LibDatabase.Models.Tolerance, bladeradiuspitch As Double, basispitch As Double, minsApply As Boolean) As ToleranceColor
         ' Checks a Radius measurements average pitch against basis pitch and tolerance to determine color coding
         Dim PitchTolerance As Double
         Select Case ToleranceTable.ToleranceClass
             Case "S", "I", "II", "III", "D"
                 PitchTolerance = (basispitch * (ToleranceTable.MeanPitchPerRadiusPercent / 100)) ' Make sure Tolerance Class is good
-                If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchPerRadiusMinimum Then
-                    PitchTolerance = ToleranceTable.MeanPitchPerRadiusMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                If minsApply Then
+                    If (PitchTolerance * Constants.kInchToMm) < ToleranceTable.MeanPitchPerRadiusMinimum Then
+                        PitchTolerance = ToleranceTable.MeanPitchPerRadiusMinimum * Constants.kMmToInch ' Minimum tolerance converted to inches
+                    End If
                 End If
             Case Else
                 Return ToleranceColor.BadData ' Unknown tolerance class
@@ -103,14 +151,16 @@ Module Tolerances
             Return ToleranceColor.BadData
         End If
     End Function
-    Public Function CheckLocalPitchTolerance(ToleranceTable As LibDatabase.Models.Tolerance, localpitch As Double, basispitch As Double) As ToleranceColor
+    Public Function CheckLocalPitchTolerance(ToleranceTable As LibDatabase.Models.Tolerance, localpitch As Double, basispitch As Double, minsApply As Boolean) As ToleranceColor
         ' Check if the local pitch is within tolerance of the basis pitch based on the tolerance class.
         Dim pitchTolerance As Double
         Select Case ToleranceTable.ToleranceClass
             Case "S", "I", "II"
-                pitchTolerance = (basispitch * (ToleranceTable.LocalPitchPercent / 100)) ' Local Pitch Tolerance for Class S Propellers  Need to pull these percents from database table later
-                If (pitchTolerance * Constants.kInchToMm) < ToleranceTable.LocalPitchMinimum Then
-                    pitchTolerance = ToleranceTable.LocalPitchMinimum * Constants.kMmToInch ' Minimum Tolerance converted to inches
+                pitchTolerance = (basispitch * (ToleranceTable.LocalPitchPercent / 100)) ' Local Pitch Tolerance for Class S Propellers
+                If minsApply Then
+                    If (pitchTolerance * Constants.kInchToMm) < ToleranceTable.LocalPitchMinimum Then
+                        pitchTolerance = ToleranceTable.LocalPitchMinimum * Constants.kMmToInch ' Minimum Tolerance converted to inches
+                    End If
                 End If
             Case "III", "D"
                 pitchTolerance = (basispitch * (0.5))
@@ -146,7 +196,7 @@ Module Tolerances
         If Database.Tolerances.Local.Where(Function(tol) tol.ToleranceClass = toleranceClass).Any() Then
             Return Database.Tolerances.Local.Where(Function(tol) tol.ToleranceClass = toleranceClass).FirstOrDefault()
         Else
-            Return Database.Tolerances.Local.Where(Function(tol) tol.ToleranceClass = "D").FirstOrDefault() ' Return Default Tolerance Class D if not found
+            Return Database.Tolerances.Local.FirstOrDefault() ' Return Default Tolerance Class D if not found
         End If
     End Function
 End Module
