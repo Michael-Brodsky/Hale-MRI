@@ -35,7 +35,6 @@ Partial Class Form1
         Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
-        EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
         DataGridJobDetails = New DataGridView()
         StartDate = New DataGridViewTextBoxColumn()
@@ -109,6 +108,7 @@ Partial Class Form1
         ChkPlotAngularDeviation = New CheckBox()
         ComboPitchBasis = New ComboBox()
         LabPitchBasis = New Label()
+        ComboPlotReferenceBlade = New ComboBox()
         LabPanelPlot = New Label()
         PanelLocalPitchDetails = New Panel()
         tLayoutLocalPitchDetails = New TableLayoutPanel()
@@ -161,6 +161,7 @@ Partial Class Form1
         TxtAngularDeviation = New TextBox()
         TxtAxialPosition = New TextBox()
         TLayoutMeasurement = New TableLayoutPanel()
+        EncoderStatusStrip1 = New EncoderStatusStrip()
         PanelGrids = New Panel()
         TLayoutGrids = New TableLayoutPanel()
         Lab = New Label()
@@ -212,20 +213,6 @@ Partial Class Form1
         RecordNavigationBar1.Size = New Size(569, 33)
         RecordNavigationBar1.TabIndex = 0
         ' 
-        ' EncoderStatusStrip1
-        ' 
-        EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        EncoderStatusStrip1.Dock = DockStyle.Bottom
-        EncoderStatusStrip1.Hardware = Nothing
-        EncoderStatusStrip1.Location = New Point(0, 606)
-        EncoderStatusStrip1.Margin = New Padding(4)
-        EncoderStatusStrip1.Name = "EncoderStatusStrip1"
-        EncoderStatusStrip1.Size = New Size(1184, 30)
-        EncoderStatusStrip1.TabIndex = 1
-        EncoderStatusStrip1.TimerInterval = 100L
-        EncoderStatusStrip1.TimerOn = False
-        EncoderStatusStrip1.WorkstationName = ""
-        ' 
         ' JobDetailsBindingSource
         ' 
         JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
@@ -238,7 +225,7 @@ Partial Class Form1
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
         DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle2.Font = New Font("Segoe UI", 10.0F)
         DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
@@ -250,7 +237,7 @@ Partial Class Form1
         DataGridJobDetails.DataSource = JobDetailsBindingSource
         DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
         DataGridViewCellStyle3.BackColor = SystemColors.Window
-        DataGridViewCellStyle3.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle3.Font = New Font("Segoe UI", 10.0F)
         DataGridViewCellStyle3.ForeColor = SystemColors.ControlText
         DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
@@ -262,7 +249,7 @@ Partial Class Form1
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.RowHeadersVisible = False
         DataGridJobDetails.ScrollBars = ScrollBars.None
-        DataGridJobDetails.Size = New Size(565, 59)
+        DataGridJobDetails.Size = New Size(565, 72)
         DataGridJobDetails.TabIndex = 4
         ' 
         ' StartDate
@@ -339,10 +326,10 @@ Partial Class Form1
         PanelJob.Controls.Add(tLayoutJobInfo)
         PanelJob.Controls.Add(LabPanelJob)
         PanelJob.Dock = DockStyle.Fill
-        PanelJob.Location = New Point(10, 100)
+        PanelJob.Location = New Point(10, 113)
         PanelJob.Margin = New Padding(10, 0, 1, 0)
         PanelJob.Name = "PanelJob"
-        PanelJob.Size = New Size(201, 168)
+        PanelJob.Size = New Size(201, 162)
         PanelJob.TabIndex = 7
         ' 
         ' tLayoutJobInfo
@@ -366,24 +353,24 @@ Partial Class Form1
         tLayoutJobInfo.Margin = New Padding(4)
         tLayoutJobInfo.Name = "tLayoutJobInfo"
         tLayoutJobInfo.RowCount = 10
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.Size = New Size(197, 164)
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10.0F))
+        tLayoutJobInfo.Size = New Size(197, 158)
         tLayoutJobInfo.TabIndex = 6
         ' 
         ' TxtVessel
         ' 
         TxtVessel.BorderStyle = BorderStyle.None
-        TxtVessel.Font = New Font("Segoe UI", 8F)
-        TxtVessel.Location = New Point(4, 48)
+        TxtVessel.Font = New Font("Segoe UI", 8.0F)
+        TxtVessel.Location = New Point(4, 45)
         TxtVessel.Margin = New Padding(4, 0, 4, 0)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
@@ -393,8 +380,8 @@ Partial Class Form1
         ' TxtManufacturer
         ' 
         TxtManufacturer.BorderStyle = BorderStyle.None
-        TxtManufacturer.Font = New Font("Segoe UI", 8F)
-        TxtManufacturer.Location = New Point(4, 64)
+        TxtManufacturer.Font = New Font("Segoe UI", 8.0F)
+        TxtManufacturer.Location = New Point(4, 60)
         TxtManufacturer.Margin = New Padding(4, 0, 4, 0)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
@@ -404,8 +391,8 @@ Partial Class Form1
         ' TxtStyle
         ' 
         TxtStyle.BorderStyle = BorderStyle.None
-        TxtStyle.Font = New Font("Segoe UI", 8F)
-        TxtStyle.Location = New Point(4, 80)
+        TxtStyle.Font = New Font("Segoe UI", 8.0F)
+        TxtStyle.Location = New Point(4, 75)
         TxtStyle.Margin = New Padding(4, 0, 4, 0)
         TxtStyle.Name = "TxtStyle"
         TxtStyle.ReadOnly = True
@@ -415,8 +402,8 @@ Partial Class Form1
         ' TxtMaterial
         ' 
         TxtMaterial.BorderStyle = BorderStyle.None
-        TxtMaterial.Font = New Font("Segoe UI", 8F)
-        TxtMaterial.Location = New Point(4, 96)
+        TxtMaterial.Font = New Font("Segoe UI", 8.0F)
+        TxtMaterial.Location = New Point(4, 90)
         TxtMaterial.Margin = New Padding(4, 0, 4, 0)
         TxtMaterial.Name = "TxtMaterial"
         TxtMaterial.ReadOnly = True
@@ -426,8 +413,8 @@ Partial Class Form1
         ' TxtBlades
         ' 
         TxtBlades.BorderStyle = BorderStyle.None
-        TxtBlades.Font = New Font("Segoe UI", 8F)
-        TxtBlades.Location = New Point(4, 112)
+        TxtBlades.Font = New Font("Segoe UI", 8.0F)
+        TxtBlades.Location = New Point(4, 105)
         TxtBlades.Margin = New Padding(4, 0, 4, 0)
         TxtBlades.Name = "TxtBlades"
         TxtBlades.ReadOnly = True
@@ -437,8 +424,8 @@ Partial Class Form1
         ' TxtDiameter
         ' 
         TxtDiameter.BorderStyle = BorderStyle.None
-        TxtDiameter.Font = New Font("Segoe UI", 8F)
-        TxtDiameter.Location = New Point(4, 128)
+        TxtDiameter.Font = New Font("Segoe UI", 8.0F)
+        TxtDiameter.Location = New Point(4, 120)
         TxtDiameter.Margin = New Padding(4, 0, 4, 0)
         TxtDiameter.Name = "TxtDiameter"
         TxtDiameter.ReadOnly = True
@@ -448,8 +435,8 @@ Partial Class Form1
         ' TxtBore
         ' 
         TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Font = New Font("Segoe UI", 8F)
-        TxtBore.Location = New Point(4, 144)
+        TxtBore.Font = New Font("Segoe UI", 8.0F)
+        TxtBore.Location = New Point(4, 135)
         TxtBore.Margin = New Padding(4, 0, 4, 0)
         TxtBore.Name = "TxtBore"
         TxtBore.ReadOnly = True
@@ -459,8 +446,8 @@ Partial Class Form1
         ' TxtCustomer
         ' 
         TxtCustomer.BorderStyle = BorderStyle.None
-        TxtCustomer.Font = New Font("Segoe UI", 8F)
-        TxtCustomer.Location = New Point(4, 32)
+        TxtCustomer.Font = New Font("Segoe UI", 8.0F)
+        TxtCustomer.Location = New Point(4, 30)
         TxtCustomer.Margin = New Padding(4, 0, 4, 0)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
@@ -481,7 +468,7 @@ Partial Class Form1
         ' LabPanelJob
         ' 
         LabPanelJob.BackColor = SystemColors.ActiveCaption
-        LabPanelJob.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelJob.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPanelJob.Location = New Point(-3, 0)
         LabPanelJob.Margin = New Padding(4, 0, 4, 0)
         LabPanelJob.Name = "LabPanelJob"
@@ -495,10 +482,10 @@ Partial Class Form1
         TLayoutMeasurement.SetColumnSpan(PanelMeasurements, 3)
         PanelMeasurements.Controls.Add(tLayoutMeasurementPanel)
         PanelMeasurements.Dock = DockStyle.Fill
-        PanelMeasurements.Location = New Point(212, 100)
+        PanelMeasurements.Location = New Point(212, 113)
         PanelMeasurements.Margin = New Padding(0)
         PanelMeasurements.Name = "PanelMeasurements"
-        PanelMeasurements.Size = New Size(582, 168)
+        PanelMeasurements.Size = New Size(582, 162)
         PanelMeasurements.TabIndex = 8
         ' 
         ' tLayoutMeasurementPanel
@@ -513,7 +500,7 @@ Partial Class Form1
         tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 9.090908F))
         tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 9.090908F))
         tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 9.090908F))
-        tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 10F))
+        tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 10.0F))
         tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 9.090908F))
         tLayoutMeasurementPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 9.090908F))
         tLayoutMeasurementPanel.Controls.Add(LabPanelMeasurements, 0, 0)
@@ -543,14 +530,14 @@ Partial Class Form1
         tLayoutMeasurementPanel.Margin = New Padding(4)
         tLayoutMeasurementPanel.Name = "tLayoutMeasurementPanel"
         tLayoutMeasurementPanel.RowCount = 7
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 10F))
-        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.Size = New Size(578, 164)
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 10.0F))
+        tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20.0F))
+        tLayoutMeasurementPanel.Size = New Size(578, 158)
         tLayoutMeasurementPanel.TabIndex = 22
         ' 
         ' LabPanelMeasurements
@@ -558,7 +545,7 @@ Partial Class Form1
         LabPanelMeasurements.BackColor = SystemColors.ActiveCaption
         tLayoutMeasurementPanel.SetColumnSpan(LabPanelMeasurements, 12)
         LabPanelMeasurements.Dock = DockStyle.Fill
-        LabPanelMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelMeasurements.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPanelMeasurements.Location = New Point(0, 0)
         LabPanelMeasurements.Margin = New Padding(0)
         LabPanelMeasurements.Name = "LabPanelMeasurements"
@@ -571,7 +558,7 @@ Partial Class Form1
         LabAngle.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabAngle, 2)
         LabAngle.Dock = DockStyle.Bottom
-        LabAngle.Location = New Point(4, 26)
+        LabAngle.Location = New Point(4, 25)
         LabAngle.Margin = New Padding(4, 0, 4, 0)
         LabAngle.Name = "LabAngle"
         LabAngle.Size = New Size(94, 20)
@@ -582,7 +569,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtAngle, 2)
         TxtAngle.Dock = DockStyle.Fill
-        TxtAngle.Location = New Point(4, 50)
+        TxtAngle.Location = New Point(4, 49)
         TxtAngle.Margin = New Padding(4, 4, 0, 4)
         TxtAngle.Name = "TxtAngle"
         TxtAngle.Size = New Size(98, 27)
@@ -595,14 +582,14 @@ Partial Class Form1
         LabBlade.Location = New Point(106, 20)
         LabBlade.Margin = New Padding(4, 0, 4, 0)
         LabBlade.Name = "LabBlade"
-        LabBlade.Size = New Size(43, 26)
+        LabBlade.Size = New Size(43, 25)
         LabBlade.TabIndex = 10
         LabBlade.Text = "Blade"
         ' 
         ' TxtBlade
         ' 
         TxtBlade.Dock = DockStyle.Fill
-        TxtBlade.Location = New Point(102, 50)
+        TxtBlade.Location = New Point(102, 49)
         TxtBlade.Margin = New Padding(0, 4, 0, 4)
         TxtBlade.Name = "TxtBlade"
         TxtBlade.Size = New Size(51, 27)
@@ -613,7 +600,7 @@ Partial Class Form1
         LabOffsetToHub.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabOffsetToHub, 3)
         LabOffsetToHub.Dock = DockStyle.Bottom
-        LabOffsetToHub.Location = New Point(4, 78)
+        LabOffsetToHub.Location = New Point(4, 75)
         LabOffsetToHub.Margin = New Padding(4, 0, 4, 0)
         LabOffsetToHub.Name = "LabOffsetToHub"
         LabOffsetToHub.Size = New Size(145, 20)
@@ -625,7 +612,7 @@ Partial Class Form1
         tLayoutMeasurementPanel.SetColumnSpan(ComboOffsetToHub, 3)
         ComboOffsetToHub.Dock = DockStyle.Fill
         ComboOffsetToHub.FormattingEnabled = True
-        ComboOffsetToHub.Location = New Point(4, 102)
+        ComboOffsetToHub.Location = New Point(4, 99)
         ComboOffsetToHub.Margin = New Padding(4, 4, 0, 4)
         ComboOffsetToHub.Name = "ComboOffsetToHub"
         ComboOffsetToHub.Size = New Size(149, 28)
@@ -636,7 +623,7 @@ Partial Class Form1
         LabRadius.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabRadius, 3)
         LabRadius.Dock = DockStyle.Bottom
-        LabRadius.Location = New Point(157, 26)
+        LabRadius.Location = New Point(157, 25)
         LabRadius.Margin = New Padding(4, 0, 4, 0)
         LabRadius.Name = "LabRadius"
         LabRadius.Size = New Size(145, 20)
@@ -647,7 +634,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtRadius, 3)
         TxtRadius.Dock = DockStyle.Top
-        TxtRadius.Location = New Point(157, 50)
+        TxtRadius.Location = New Point(157, 49)
         TxtRadius.Margin = New Padding(4, 4, 0, 4)
         TxtRadius.Name = "TxtRadius"
         TxtRadius.Size = New Size(149, 27)
@@ -658,7 +645,7 @@ Partial Class Form1
         LabRadiusPercent.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabRadiusPercent, 3)
         LabRadiusPercent.Dock = DockStyle.Bottom
-        LabRadiusPercent.Location = New Point(157, 78)
+        LabRadiusPercent.Location = New Point(157, 75)
         LabRadiusPercent.Margin = New Padding(4, 0, 4, 0)
         LabRadiusPercent.Name = "LabRadiusPercent"
         LabRadiusPercent.Size = New Size(145, 20)
@@ -669,7 +656,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtRadiusPercent, 3)
         TxtRadiusPercent.Dock = DockStyle.Top
-        TxtRadiusPercent.Location = New Point(157, 102)
+        TxtRadiusPercent.Location = New Point(157, 99)
         TxtRadiusPercent.Margin = New Padding(4, 4, 0, 4)
         TxtRadiusPercent.Name = "TxtRadiusPercent"
         TxtRadiusPercent.Size = New Size(149, 27)
@@ -680,7 +667,7 @@ Partial Class Form1
         LabDepth.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabDepth, 3)
         LabDepth.Dock = DockStyle.Bottom
-        LabDepth.Location = New Point(310, 26)
+        LabDepth.Location = New Point(310, 25)
         LabDepth.Margin = New Padding(4, 0, 4, 0)
         LabDepth.Name = "LabDepth"
         LabDepth.Size = New Size(145, 20)
@@ -691,7 +678,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtDepth, 3)
         TxtDepth.Dock = DockStyle.Top
-        TxtDepth.Location = New Point(310, 50)
+        TxtDepth.Location = New Point(310, 49)
         TxtDepth.Margin = New Padding(4, 4, 0, 4)
         TxtDepth.Name = "TxtDepth"
         TxtDepth.Size = New Size(149, 27)
@@ -702,7 +689,7 @@ Partial Class Form1
         LabWheelPitch.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabWheelPitch, 3)
         LabWheelPitch.Dock = DockStyle.Bottom
-        LabWheelPitch.Location = New Point(310, 78)
+        LabWheelPitch.Location = New Point(310, 75)
         LabWheelPitch.Margin = New Padding(4, 0, 4, 0)
         LabWheelPitch.Name = "LabWheelPitch"
         LabWheelPitch.Size = New Size(145, 20)
@@ -713,7 +700,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtWheelPitch, 3)
         TxtWheelPitch.Dock = DockStyle.Top
-        TxtWheelPitch.Location = New Point(310, 102)
+        TxtWheelPitch.Location = New Point(310, 99)
         TxtWheelPitch.Margin = New Padding(4, 4, 0, 4)
         TxtWheelPitch.Name = "TxtWheelPitch"
         TxtWheelPitch.Size = New Size(149, 27)
@@ -725,10 +712,10 @@ Partial Class Form1
         CmdSetTip.Dock = DockStyle.Fill
         CmdSetTip.Image = My.Resources.Resources.SettingsPanel
         CmdSetTip.ImageAlign = ContentAlignment.MiddleRight
-        CmdSetTip.Location = New Point(469, 134)
+        CmdSetTip.Location = New Point(469, 130)
         CmdSetTip.Margin = New Padding(0)
         CmdSetTip.Name = "CmdSetTip"
-        CmdSetTip.Size = New Size(109, 30)
+        CmdSetTip.Size = New Size(109, 28)
         CmdSetTip.TabIndex = 20
         CmdSetTip.Text = "Set tip"
         CmdSetTip.TextAlign = ContentAlignment.MiddleLeft
@@ -741,10 +728,10 @@ Partial Class Form1
         CmdHome.Dock = DockStyle.Fill
         CmdHome.Image = My.Resources.Resources.Home
         CmdHome.ImageAlign = ContentAlignment.MiddleRight
-        CmdHome.Location = New Point(357, 134)
+        CmdHome.Location = New Point(357, 130)
         CmdHome.Margin = New Padding(0)
         CmdHome.Name = "CmdHome"
-        CmdHome.Size = New Size(102, 30)
+        CmdHome.Size = New Size(102, 28)
         CmdHome.TabIndex = 19
         CmdHome.Text = "Home"
         CmdHome.TextAlign = ContentAlignment.MiddleLeft
@@ -758,10 +745,10 @@ Partial Class Form1
         ChkScan.Dock = DockStyle.Fill
         ChkScan.Image = My.Resources.Resources.Timer
         ChkScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkScan.Location = New Point(204, 134)
+        ChkScan.Location = New Point(204, 130)
         ChkScan.Margin = New Padding(0)
         ChkScan.Name = "ChkScan"
-        ChkScan.Size = New Size(102, 30)
+        ChkScan.Size = New Size(102, 28)
         ChkScan.TabIndex = 17
         ChkScan.Text = " Scan"
         ChkScan.TextImageRelation = TextImageRelation.ImageBeforeText
@@ -771,7 +758,7 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtStatus, 4)
         TxtStatus.Dock = DockStyle.Top
-        TxtStatus.Location = New Point(4, 138)
+        TxtStatus.Location = New Point(4, 134)
         TxtStatus.Margin = New Padding(4)
         TxtStatus.Name = "TxtStatus"
         TxtStatus.Size = New Size(196, 27)
@@ -781,10 +768,10 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdSetRef, 2)
         CmdSetRef.Dock = DockStyle.Fill
-        CmdSetRef.Location = New Point(470, 73)
+        CmdSetRef.Location = New Point(470, 71)
         CmdSetRef.Margin = New Padding(1)
         CmdSetRef.Name = "CmdSetRef"
-        CmdSetRef.Size = New Size(107, 24)
+        CmdSetRef.Size = New Size(107, 23)
         CmdSetRef.TabIndex = 23
         CmdSetRef.Text = "Set Ref"
         CmdSetRef.UseVisualStyleBackColor = True
@@ -797,7 +784,7 @@ Partial Class Form1
         CmdMeasureExtremes.Margin = New Padding(1)
         CmdMeasureExtremes.Name = "CmdMeasureExtremes"
         tLayoutMeasurementPanel.SetRowSpan(CmdMeasureExtremes, 2)
-        CmdMeasureExtremes.Size = New Size(107, 50)
+        CmdMeasureExtremes.Size = New Size(107, 48)
         CmdMeasureExtremes.TabIndex = 22
         CmdMeasureExtremes.Text = "Measure Extreme Radii"
         CmdMeasureExtremes.UseVisualStyleBackColor = True
@@ -806,10 +793,10 @@ Partial Class Form1
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdGetRef, 2)
         CmdGetRef.Dock = DockStyle.Fill
-        CmdGetRef.Location = New Point(470, 99)
+        CmdGetRef.Location = New Point(470, 96)
         CmdGetRef.Margin = New Padding(1)
         CmdGetRef.Name = "CmdGetRef"
-        CmdGetRef.Size = New Size(107, 24)
+        CmdGetRef.Size = New Size(107, 23)
         CmdGetRef.TabIndex = 24
         CmdGetRef.Text = "Get Ref"
         CmdGetRef.UseVisualStyleBackColor = True
@@ -825,7 +812,7 @@ Partial Class Form1
         GridBladePitch.Margin = New Padding(0)
         GridBladePitch.Name = "GridBladePitch"
         GridBladePitch.RowHeadersVisible = False
-        GridBladePitch.Size = New Size(101, 145)
+        GridBladePitch.Size = New Size(101, 139)
         GridBladePitch.TabIndex = 22
         ' 
         ' GridBladebyRadius
@@ -836,7 +823,7 @@ Partial Class Form1
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
@@ -848,7 +835,7 @@ Partial Class Form1
         GridBladebyRadius.Margin = New Padding(0)
         GridBladebyRadius.Name = "GridBladebyRadius"
         GridBladebyRadius.RowHeadersVisible = False
-        GridBladebyRadius.Size = New Size(683, 145)
+        GridBladebyRadius.Size = New Size(683, 139)
         GridBladebyRadius.TabIndex = 0
         ' 
         ' PictureBoxLogo
@@ -860,7 +847,7 @@ Partial Class Form1
         PictureBoxLogo.Margin = New Padding(0)
         PictureBoxLogo.Name = "PictureBoxLogo"
         TLayoutMeasurement.SetRowSpan(PictureBoxLogo, 2)
-        PictureBoxLogo.Size = New Size(212, 100)
+        PictureBoxLogo.Size = New Size(212, 113)
         PictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
@@ -871,18 +858,18 @@ Partial Class Form1
         TLayoutMeasurement.SetColumnSpan(PanelTrack, 4)
         PanelTrack.Controls.Add(tLayoutTrack)
         PanelTrack.Dock = DockStyle.Fill
-        PanelTrack.Location = New Point(10, 436)
+        PanelTrack.Location = New Point(10, 437)
         PanelTrack.Margin = New Padding(10, 0, 0, 0)
         PanelTrack.Name = "PanelTrack"
-        PanelTrack.Size = New Size(784, 170)
+        PanelTrack.Size = New Size(784, 162)
         PanelTrack.TabIndex = 10
         ' 
         ' tLayoutTrack
         ' 
         tLayoutTrack.ColumnCount = 3
-        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
-        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
+        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40.0F))
+        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40.0F))
         tLayoutTrack.Controls.Add(ChartBladeHeight, 0, 1)
         tLayoutTrack.Controls.Add(ChartAngularPosition, 2, 1)
         tLayoutTrack.Controls.Add(LabRefBlade, 1, 1)
@@ -899,7 +886,7 @@ Partial Class Form1
         tLayoutTrack.Margin = New Padding(0)
         tLayoutTrack.Name = "tLayoutTrack"
         tLayoutTrack.RowCount = 9
-        tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
@@ -908,7 +895,7 @@ Partial Class Form1
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
-        tLayoutTrack.Size = New Size(780, 166)
+        tLayoutTrack.Size = New Size(780, 158)
         tLayoutTrack.TabIndex = 0
         ' 
         ' ChartBladeHeight
@@ -926,7 +913,7 @@ Partial Class Form1
         Series1.Legend = "Legend1"
         Series1.Name = "Series1"
         ChartBladeHeight.Series.Add(Series1)
-        ChartBladeHeight.Size = New Size(312, 145)
+        ChartBladeHeight.Size = New Size(312, 137)
         ChartBladeHeight.TabIndex = 0
         ChartBladeHeight.Text = "Track"
         ' 
@@ -944,7 +931,7 @@ Partial Class Form1
         Series2.Legend = "Legend1"
         Series2.Name = "Series1"
         ChartAngularPosition.Series.Add(Series2)
-        ChartAngularPosition.Size = New Size(306, 140)
+        ChartAngularPosition.Size = New Size(306, 132)
         ChartAngularPosition.TabIndex = 1
         ChartAngularPosition.Text = "Track"
         ' 
@@ -955,7 +942,7 @@ Partial Class Form1
         LabRefBlade.Location = New Point(316, 20)
         LabRefBlade.Margin = New Padding(4, 0, 4, 0)
         LabRefBlade.Name = "LabRefBlade"
-        LabRefBlade.Size = New Size(148, 18)
+        LabRefBlade.Size = New Size(148, 17)
         LabRefBlade.TabIndex = 2
         LabRefBlade.Text = "Reference Blade"
         ' 
@@ -963,7 +950,7 @@ Partial Class Form1
         ' 
         ComboReferenceBlade.Dock = DockStyle.Top
         ComboReferenceBlade.FormattingEnabled = True
-        ComboReferenceBlade.Location = New Point(316, 38)
+        ComboReferenceBlade.Location = New Point(316, 37)
         ComboReferenceBlade.Margin = New Padding(4, 0, 4, 0)
         ComboReferenceBlade.Name = "ComboReferenceBlade"
         ComboReferenceBlade.Size = New Size(148, 28)
@@ -973,10 +960,10 @@ Partial Class Form1
         ' 
         LabRefPoint.AutoSize = True
         LabRefPoint.Dock = DockStyle.Bottom
-        LabRefPoint.Location = New Point(316, 56)
+        LabRefPoint.Location = New Point(316, 54)
         LabRefPoint.Margin = New Padding(4, 0, 4, 0)
         LabRefPoint.Name = "LabRefPoint"
-        LabRefPoint.Size = New Size(148, 18)
+        LabRefPoint.Size = New Size(148, 17)
         LabRefPoint.TabIndex = 4
         LabRefPoint.Text = "Reference Point"
         ' 
@@ -984,17 +971,17 @@ Partial Class Form1
         ' 
         LabRefRadius.AutoSize = True
         LabRefRadius.Dock = DockStyle.Bottom
-        LabRefRadius.Location = New Point(316, 92)
+        LabRefRadius.Location = New Point(316, 88)
         LabRefRadius.Margin = New Padding(4, 0, 4, 0)
         LabRefRadius.Name = "LabRefRadius"
-        LabRefRadius.Size = New Size(148, 18)
+        LabRefRadius.Size = New Size(148, 17)
         LabRefRadius.TabIndex = 6
         LabRefRadius.Text = "Reference Radius"
         ' 
         ' ComboReferenceRadius
         ' 
         ComboReferenceRadius.FormattingEnabled = True
-        ComboReferenceRadius.Location = New Point(316, 110)
+        ComboReferenceRadius.Location = New Point(316, 105)
         ComboReferenceRadius.Margin = New Padding(4, 0, 4, 0)
         ComboReferenceRadius.Name = "ComboReferenceRadius"
         ComboReferenceRadius.Size = New Size(125, 28)
@@ -1004,10 +991,10 @@ Partial Class Form1
         ' 
         LabRake.AutoSize = True
         LabRake.Dock = DockStyle.Bottom
-        LabRake.Location = New Point(316, 128)
+        LabRake.Location = New Point(316, 122)
         LabRake.Margin = New Padding(4, 0, 4, 0)
         LabRake.Name = "LabRake"
-        LabRake.Size = New Size(148, 18)
+        LabRake.Size = New Size(148, 17)
         LabRake.TabIndex = 8
         LabRake.Text = "Rake"
         ' 
@@ -1015,7 +1002,7 @@ Partial Class Form1
         ' 
         ComboReferencePoint.FormattingEnabled = True
         ComboReferencePoint.Items.AddRange(New Object() {"LE", "Mid", "TE"})
-        ComboReferencePoint.Location = New Point(316, 74)
+        ComboReferencePoint.Location = New Point(316, 71)
         ComboReferencePoint.Margin = New Padding(4, 0, 4, 0)
         ComboReferencePoint.Name = "ComboReferencePoint"
         ComboReferencePoint.Size = New Size(125, 28)
@@ -1023,7 +1010,7 @@ Partial Class Form1
         ' 
         ' TxtRake
         ' 
-        TxtRake.Location = New Point(316, 146)
+        TxtRake.Location = New Point(316, 139)
         TxtRake.Margin = New Padding(4, 0, 4, 0)
         TxtRake.Name = "TxtRake"
         TxtRake.Size = New Size(125, 27)
@@ -1034,7 +1021,7 @@ Partial Class Form1
         LabTrackPanel.BackColor = SystemColors.ActiveCaption
         tLayoutTrack.SetColumnSpan(LabTrackPanel, 3)
         LabTrackPanel.Dock = DockStyle.Top
-        LabTrackPanel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabTrackPanel.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabTrackPanel.Location = New Point(0, 0)
         LabTrackPanel.Margin = New Padding(0)
         LabTrackPanel.Name = "LabTrackPanel"
@@ -1050,14 +1037,14 @@ Partial Class Form1
         PanelPlot.Location = New Point(5, 0)
         PanelPlot.Margin = New Padding(5, 0, 15, 0)
         PanelPlot.Name = "PanelPlot"
-        PanelPlot.Size = New Size(370, 253)
+        PanelPlot.Size = New Size(370, 243)
         PanelPlot.TabIndex = 11
         ' 
         ' tLayoutPlotPanel
         ' 
         tLayoutPlotPanel.ColumnCount = 2
-        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 100F))
-        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 100.0F))
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
         tLayoutPlotPanel.Controls.Add(LabPlot, 0, 0)
         tLayoutPlotPanel.Controls.Add(chartPlot, 1, 1)
         tLayoutPlotPanel.Controls.Add(LabTolerance, 0, 3)
@@ -1067,11 +1054,12 @@ Partial Class Form1
         tLayoutPlotPanel.Controls.Add(ChkPlotAngularDeviation, 0, 7)
         tLayoutPlotPanel.Controls.Add(ComboPitchBasis, 0, 2)
         tLayoutPlotPanel.Controls.Add(LabPitchBasis, 0, 1)
+        tLayoutPlotPanel.Controls.Add(ComboPlotReferenceBlade, 0, 10)
         tLayoutPlotPanel.Dock = DockStyle.Fill
         tLayoutPlotPanel.Location = New Point(0, 0)
         tLayoutPlotPanel.Name = "tLayoutPlotPanel"
-        tLayoutPlotPanel.RowCount = 9
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 15F))
+        tLayoutPlotPanel.RowCount = 11
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 15.0F))
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
@@ -1079,8 +1067,10 @@ Partial Class Form1
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        tLayoutPlotPanel.Size = New Size(366, 249)
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        tLayoutPlotPanel.Size = New Size(366, 239)
         tLayoutPlotPanel.TabIndex = 1
         ' 
         ' LabPlot
@@ -1088,7 +1078,7 @@ Partial Class Form1
         LabPlot.BackColor = SystemColors.ActiveCaption
         tLayoutPlotPanel.SetColumnSpan(LabPlot, 2)
         LabPlot.Dock = DockStyle.Fill
-        LabPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPlot.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPlot.Location = New Point(0, 0)
         LabPlot.Margin = New Padding(0)
         LabPlot.Name = "LabPlot"
@@ -1103,13 +1093,13 @@ Partial Class Form1
         chartPlot.Dock = DockStyle.Fill
         chartPlot.Location = New Point(103, 18)
         chartPlot.Name = "chartPlot"
-        tLayoutPlotPanel.SetRowSpan(chartPlot, 8)
+        tLayoutPlotPanel.SetRowSpan(chartPlot, 10)
         Series3.ChartArea = "ChartArea1"
         Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
         Series3.IsVisibleInLegend = False
         Series3.Name = "Series1"
         chartPlot.Series.Add(Series3)
-        chartPlot.Size = New Size(260, 228)
+        chartPlot.Size = New Size(260, 218)
         chartPlot.TabIndex = 0
         chartPlot.Text = "ChartPlot"
         ' 
@@ -1117,7 +1107,7 @@ Partial Class Form1
         ' 
         LabTolerance.AutoSize = True
         LabTolerance.Dock = DockStyle.Bottom
-        LabTolerance.Location = New Point(3, 85)
+        LabTolerance.Location = New Point(3, 64)
         LabTolerance.Name = "LabTolerance"
         LabTolerance.Size = New Size(94, 20)
         LabTolerance.TabIndex = 17
@@ -1127,7 +1117,7 @@ Partial Class Form1
         ' 
         ComboTolerance.Dock = DockStyle.Top
         ComboTolerance.FormattingEnabled = True
-        ComboTolerance.Location = New Point(3, 108)
+        ComboTolerance.Location = New Point(3, 87)
         ComboTolerance.Name = "ComboTolerance"
         ComboTolerance.Size = New Size(94, 28)
         ComboTolerance.TabIndex = 18
@@ -1136,7 +1126,7 @@ Partial Class Form1
         ' 
         LabBasis.AutoSize = True
         LabBasis.Dock = DockStyle.Bottom
-        LabBasis.Location = New Point(3, 145)
+        LabBasis.Location = New Point(3, 110)
         LabBasis.Name = "LabBasis"
         LabBasis.Size = New Size(94, 20)
         LabBasis.TabIndex = 19
@@ -1145,7 +1135,7 @@ Partial Class Form1
         ' TxtBasis
         ' 
         TxtBasis.Dock = DockStyle.Top
-        TxtBasis.Location = New Point(3, 168)
+        TxtBasis.Location = New Point(3, 133)
         TxtBasis.Name = "TxtBasis"
         TxtBasis.Size = New Size(94, 27)
         TxtBasis.TabIndex = 20
@@ -1154,11 +1144,11 @@ Partial Class Form1
         ' 
         ChkPlotAngularDeviation.AutoSize = True
         ChkPlotAngularDeviation.Dock = DockStyle.Fill
-        ChkPlotAngularDeviation.Location = New Point(15, 198)
+        ChkPlotAngularDeviation.Location = New Point(15, 156)
         ChkPlotAngularDeviation.Margin = New Padding(15, 3, 3, 3)
         ChkPlotAngularDeviation.Name = "ChkPlotAngularDeviation"
         tLayoutPlotPanel.SetRowSpan(ChkPlotAngularDeviation, 2)
-        ChkPlotAngularDeviation.Size = New Size(82, 48)
+        ChkPlotAngularDeviation.Size = New Size(82, 37)
         ChkPlotAngularDeviation.TabIndex = 21
         ChkPlotAngularDeviation.Text = "Angular Deviation"
         ChkPlotAngularDeviation.UseVisualStyleBackColor = True
@@ -1167,7 +1157,7 @@ Partial Class Form1
         ' 
         ComboPitchBasis.Dock = DockStyle.Top
         ComboPitchBasis.FormattingEnabled = True
-        ComboPitchBasis.Location = New Point(3, 48)
+        ComboPitchBasis.Location = New Point(3, 41)
         ComboPitchBasis.Name = "ComboPitchBasis"
         ComboPitchBasis.Size = New Size(94, 28)
         ComboPitchBasis.TabIndex = 16
@@ -1176,17 +1166,25 @@ Partial Class Form1
         ' 
         LabPitchBasis.AutoSize = True
         LabPitchBasis.Dock = DockStyle.Bottom
-        LabPitchBasis.Location = New Point(3, 25)
+        LabPitchBasis.Location = New Point(3, 18)
         LabPitchBasis.Name = "LabPitchBasis"
         LabPitchBasis.Size = New Size(94, 20)
         LabPitchBasis.TabIndex = 22
         LabPitchBasis.Text = "Pitch Basis"
         ' 
+        ' ComboPlotReferenceBlade
+        ' 
+        ComboPlotReferenceBlade.FormattingEnabled = True
+        ComboPlotReferenceBlade.Location = New Point(3, 219)
+        ComboPlotReferenceBlade.Name = "ComboPlotReferenceBlade"
+        ComboPlotReferenceBlade.Size = New Size(94, 28)
+        ComboPlotReferenceBlade.TabIndex = 23
+        ' 
         ' LabPanelPlot
         ' 
         LabPanelPlot.BackColor = SystemColors.ActiveCaption
         LabPanelPlot.Dock = DockStyle.Fill
-        LabPanelPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelPlot.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPanelPlot.Location = New Point(0, 0)
         LabPanelPlot.Margin = New Padding(0)
         LabPanelPlot.Name = "LabPanelPlot"
@@ -1198,10 +1196,10 @@ Partial Class Form1
         ' 
         PanelLocalPitchDetails.Controls.Add(tLayoutLocalPitchDetails)
         PanelLocalPitchDetails.Dock = DockStyle.Fill
-        PanelLocalPitchDetails.Location = New Point(5, 253)
+        PanelLocalPitchDetails.Location = New Point(5, 243)
         PanelLocalPitchDetails.Margin = New Padding(5, 0, 15, 0)
         PanelLocalPitchDetails.Name = "PanelLocalPitchDetails"
-        PanelLocalPitchDetails.Size = New Size(370, 253)
+        PanelLocalPitchDetails.Size = New Size(370, 243)
         PanelLocalPitchDetails.TabIndex = 22
         ' 
         ' tLayoutLocalPitchDetails
@@ -1238,7 +1236,7 @@ Partial Class Form1
         tLayoutLocalPitchDetails.Margin = New Padding(0)
         tLayoutLocalPitchDetails.Name = "tLayoutLocalPitchDetails"
         tLayoutLocalPitchDetails.RowCount = 9
-        tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
@@ -1247,7 +1245,7 @@ Partial Class Form1
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
-        tLayoutLocalPitchDetails.Size = New Size(370, 253)
+        tLayoutLocalPitchDetails.Size = New Size(370, 243)
         tLayoutLocalPitchDetails.TabIndex = 0
         ' 
         ' LabLocalPitchDetails
@@ -1255,7 +1253,7 @@ Partial Class Form1
         LabLocalPitchDetails.BackColor = SystemColors.ActiveCaption
         tLayoutLocalPitchDetails.SetColumnSpan(LabLocalPitchDetails, 7)
         LabLocalPitchDetails.Dock = DockStyle.Fill
-        LabLocalPitchDetails.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabLocalPitchDetails.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabLocalPitchDetails.Location = New Point(0, 0)
         LabLocalPitchDetails.Margin = New Padding(0)
         LabLocalPitchDetails.Name = "LabLocalPitchDetails"
@@ -1271,7 +1269,7 @@ Partial Class Form1
         LabPrintPitch.Location = New Point(4, 20)
         LabPrintPitch.Margin = New Padding(4, 0, 4, 0)
         LabPrintPitch.Name = "LabPrintPitch"
-        LabPrintPitch.Size = New Size(148, 29)
+        LabPrintPitch.Size = New Size(148, 27)
         LabPrintPitch.TabIndex = 0
         LabPrintPitch.Text = "Print Pitch Details"
         LabPrintPitch.TextAlign = ContentAlignment.BottomCenter
@@ -1279,10 +1277,10 @@ Partial Class Form1
         ' CmdPrintClassS
         ' 
         CmdPrintClassS.Dock = DockStyle.Fill
-        CmdPrintClassS.Location = New Point(1, 50)
+        CmdPrintClassS.Location = New Point(1, 48)
         CmdPrintClassS.Margin = New Padding(1)
         CmdPrintClassS.Name = "CmdPrintClassS"
-        CmdPrintClassS.Size = New Size(50, 27)
+        CmdPrintClassS.Size = New Size(50, 25)
         CmdPrintClassS.TabIndex = 1
         CmdPrintClassS.Text = "S"
         CmdPrintClassS.UseVisualStyleBackColor = True
@@ -1290,10 +1288,10 @@ Partial Class Form1
         ' CmdPrintClassI
         ' 
         CmdPrintClassI.Dock = DockStyle.Fill
-        CmdPrintClassI.Location = New Point(53, 50)
+        CmdPrintClassI.Location = New Point(53, 48)
         CmdPrintClassI.Margin = New Padding(1)
         CmdPrintClassI.Name = "CmdPrintClassI"
-        CmdPrintClassI.Size = New Size(50, 27)
+        CmdPrintClassI.Size = New Size(50, 25)
         CmdPrintClassI.TabIndex = 2
         CmdPrintClassI.Text = "I"
         CmdPrintClassI.UseVisualStyleBackColor = True
@@ -1301,10 +1299,10 @@ Partial Class Form1
         ' CmdPrintClassII
         ' 
         CmdPrintClassII.Dock = DockStyle.Fill
-        CmdPrintClassII.Location = New Point(105, 50)
+        CmdPrintClassII.Location = New Point(105, 48)
         CmdPrintClassII.Margin = New Padding(1)
         CmdPrintClassII.Name = "CmdPrintClassII"
-        CmdPrintClassII.Size = New Size(50, 27)
+        CmdPrintClassII.Size = New Size(50, 25)
         CmdPrintClassII.TabIndex = 3
         CmdPrintClassII.Text = "II"
         CmdPrintClassII.UseVisualStyleBackColor = True
@@ -1312,10 +1310,10 @@ Partial Class Form1
         ' CmdPrintClassIII
         ' 
         CmdPrintClassIII.Dock = DockStyle.Fill
-        CmdPrintClassIII.Location = New Point(157, 50)
+        CmdPrintClassIII.Location = New Point(157, 48)
         CmdPrintClassIII.Margin = New Padding(1)
         CmdPrintClassIII.Name = "CmdPrintClassIII"
-        CmdPrintClassIII.Size = New Size(50, 27)
+        CmdPrintClassIII.Size = New Size(50, 25)
         CmdPrintClassIII.TabIndex = 4
         CmdPrintClassIII.Text = "III"
         CmdPrintClassIII.UseVisualStyleBackColor = True
@@ -1323,10 +1321,10 @@ Partial Class Form1
         ' CmdPrintClassCustom
         ' 
         CmdPrintClassCustom.Dock = DockStyle.Fill
-        CmdPrintClassCustom.Location = New Point(209, 50)
+        CmdPrintClassCustom.Location = New Point(209, 48)
         CmdPrintClassCustom.Margin = New Padding(1)
         CmdPrintClassCustom.Name = "CmdPrintClassCustom"
-        CmdPrintClassCustom.Size = New Size(50, 27)
+        CmdPrintClassCustom.Size = New Size(50, 25)
         CmdPrintClassCustom.TabIndex = 5
         CmdPrintClassCustom.Text = "Cust"
         CmdPrintClassCustom.UseVisualStyleBackColor = True
@@ -1339,7 +1337,7 @@ Partial Class Form1
         ChkAllowProgPitch.Location = New Point(160, 24)
         ChkAllowProgPitch.Margin = New Padding(4)
         ChkAllowProgPitch.Name = "ChkAllowProgPitch"
-        ChkAllowProgPitch.Size = New Size(96, 21)
+        ChkAllowProgPitch.Size = New Size(96, 19)
         ChkAllowProgPitch.TabIndex = 6
         ChkAllowProgPitch.Text = "App"
         ChkAllowProgPitch.UseVisualStyleBackColor = True
@@ -1352,7 +1350,7 @@ Partial Class Form1
         ChkMinimumsApply.Location = New Point(264, 24)
         ChkMinimumsApply.Margin = New Padding(4)
         ChkMinimumsApply.Name = "ChkMinimumsApply"
-        ChkMinimumsApply.Size = New Size(102, 21)
+        ChkMinimumsApply.Size = New Size(102, 19)
         ChkMinimumsApply.TabIndex = 7
         ChkMinimumsApply.Text = "Minimums Apply"
         ChkMinimumsApply.UseVisualStyleBackColor = True
@@ -1362,10 +1360,10 @@ Partial Class Form1
         ChkDisplayOnly.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkDisplayOnly, 2)
         ChkDisplayOnly.Dock = DockStyle.Fill
-        ChkDisplayOnly.Location = New Point(264, 53)
+        ChkDisplayOnly.Location = New Point(264, 51)
         ChkDisplayOnly.Margin = New Padding(4)
         ChkDisplayOnly.Name = "ChkDisplayOnly"
-        ChkDisplayOnly.Size = New Size(102, 21)
+        ChkDisplayOnly.Size = New Size(102, 19)
         ChkDisplayOnly.TabIndex = 8
         ChkDisplayOnly.Text = "Display Only"
         ChkDisplayOnly.UseVisualStyleBackColor = True
@@ -1375,10 +1373,10 @@ Partial Class Form1
         ChkAxialPosition.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkAxialPosition, 3)
         ChkAxialPosition.Dock = DockStyle.Fill
-        ChkAxialPosition.Location = New Point(12, 227)
+        ChkAxialPosition.Location = New Point(12, 213)
         ChkAxialPosition.Margin = New Padding(12, 4, 4, 4)
         ChkAxialPosition.Name = "ChkAxialPosition"
-        ChkAxialPosition.Size = New Size(140, 22)
+        ChkAxialPosition.Size = New Size(140, 26)
         ChkAxialPosition.TabIndex = 14
         ChkAxialPosition.Text = "Relative Axial Position of consecutive blades"
         ChkAxialPosition.UseVisualStyleBackColor = True
@@ -1388,10 +1386,10 @@ Partial Class Form1
         ChkAngularDeviation.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkAngularDeviation, 3)
         ChkAngularDeviation.Dock = DockStyle.Fill
-        ChkAngularDeviation.Location = New Point(12, 198)
+        ChkAngularDeviation.Location = New Point(12, 186)
         ChkAngularDeviation.Margin = New Padding(12, 4, 4, 4)
         ChkAngularDeviation.Name = "ChkAngularDeviation"
-        ChkAngularDeviation.Size = New Size(140, 21)
+        ChkAngularDeviation.Size = New Size(140, 19)
         ChkAngularDeviation.TabIndex = 13
         ChkAngularDeviation.Text = "Angular Deviation between consecutive blades"
         ChkAngularDeviation.UseVisualStyleBackColor = True
@@ -1401,10 +1399,10 @@ Partial Class Form1
         ChkMeanPitchPropeller.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchPropeller, 3)
         ChkMeanPitchPropeller.Dock = DockStyle.Fill
-        ChkMeanPitchPropeller.Location = New Point(12, 169)
+        ChkMeanPitchPropeller.Location = New Point(12, 159)
         ChkMeanPitchPropeller.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchPropeller.Name = "ChkMeanPitchPropeller"
-        ChkMeanPitchPropeller.Size = New Size(140, 21)
+        ChkMeanPitchPropeller.Size = New Size(140, 19)
         ChkMeanPitchPropeller.TabIndex = 12
         ChkMeanPitchPropeller.Text = "Mean Pitch of Propeller"
         ChkMeanPitchPropeller.UseVisualStyleBackColor = True
@@ -1414,10 +1412,10 @@ Partial Class Form1
         ChkMeanPitchBlade.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchBlade, 3)
         ChkMeanPitchBlade.Dock = DockStyle.Fill
-        ChkMeanPitchBlade.Location = New Point(12, 140)
+        ChkMeanPitchBlade.Location = New Point(12, 132)
         ChkMeanPitchBlade.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchBlade.Name = "ChkMeanPitchBlade"
-        ChkMeanPitchBlade.Size = New Size(140, 21)
+        ChkMeanPitchBlade.Size = New Size(140, 19)
         ChkMeanPitchBlade.TabIndex = 11
         ChkMeanPitchBlade.Text = "Mean Pitch of Blades"
         ChkMeanPitchBlade.UseVisualStyleBackColor = True
@@ -1427,10 +1425,10 @@ Partial Class Form1
         ChkMeanPitchRadius.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchRadius, 3)
         ChkMeanPitchRadius.Dock = DockStyle.Fill
-        ChkMeanPitchRadius.Location = New Point(12, 111)
+        ChkMeanPitchRadius.Location = New Point(12, 105)
         ChkMeanPitchRadius.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchRadius.Name = "ChkMeanPitchRadius"
-        ChkMeanPitchRadius.Size = New Size(140, 21)
+        ChkMeanPitchRadius.Size = New Size(140, 19)
         ChkMeanPitchRadius.TabIndex = 10
         ChkMeanPitchRadius.Text = "Mean Pitch of Radius"
         ChkMeanPitchRadius.UseVisualStyleBackColor = True
@@ -1440,10 +1438,10 @@ Partial Class Form1
         ChkLocalPitch.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkLocalPitch, 3)
         ChkLocalPitch.Dock = DockStyle.Fill
-        ChkLocalPitch.Location = New Point(12, 82)
+        ChkLocalPitch.Location = New Point(12, 78)
         ChkLocalPitch.Margin = New Padding(12, 4, 4, 4)
         ChkLocalPitch.Name = "ChkLocalPitch"
-        ChkLocalPitch.Size = New Size(140, 21)
+        ChkLocalPitch.Size = New Size(140, 19)
         ChkLocalPitch.TabIndex = 9
         ChkLocalPitch.Text = "Local Pitch"
         ChkLocalPitch.UseVisualStyleBackColor = True
@@ -1452,11 +1450,11 @@ Partial Class Form1
         ' 
         tLayoutLPLabels.ColumnCount = 5
         tLayoutLocalPitchDetails.SetColumnSpan(tLayoutLPLabels, 2)
-        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        tLayoutLPLabels.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
         tLayoutLPLabels.Controls.Add(LabTolAPC, 4, 5)
         tLayoutLPLabels.Controls.Add(LabTolAPIII, 3, 5)
         tLayoutLPLabels.Controls.Add(LabTolAPII, 2, 5)
@@ -1487,7 +1485,7 @@ Partial Class Form1
         tLayoutLPLabels.Controls.Add(LabTolLPI, 1, 0)
         tLayoutLPLabels.Controls.Add(LabTolLPS, 0, 0)
         tLayoutLPLabels.Dock = DockStyle.Fill
-        tLayoutLPLabels.Location = New Point(156, 78)
+        tLayoutLPLabels.Location = New Point(156, 74)
         tLayoutLPLabels.Margin = New Padding(0)
         tLayoutLPLabels.Name = "tLayoutLPLabels"
         tLayoutLPLabels.RowCount = 6
@@ -1498,17 +1496,17 @@ Partial Class Form1
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
-        tLayoutLPLabels.Size = New Size(104, 175)
+        tLayoutLPLabels.Size = New Size(104, 169)
         tLayoutLPLabels.TabIndex = 15
         ' 
         ' LabTolAPC
         ' 
         LabTolAPC.AutoSize = True
         LabTolAPC.Dock = DockStyle.Fill
-        LabTolAPC.Location = New Point(84, 145)
+        LabTolAPC.Location = New Point(84, 140)
         LabTolAPC.Margin = New Padding(4, 0, 4, 0)
         LabTolAPC.Name = "LabTolAPC"
-        LabTolAPC.Size = New Size(16, 30)
+        LabTolAPC.Size = New Size(16, 29)
         LabTolAPC.TabIndex = 29
         LabTolAPC.Text = "C"
         LabTolAPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1517,10 +1515,10 @@ Partial Class Form1
         ' 
         LabTolAPIII.AutoSize = True
         LabTolAPIII.Dock = DockStyle.Fill
-        LabTolAPIII.Location = New Point(64, 145)
+        LabTolAPIII.Location = New Point(64, 140)
         LabTolAPIII.Margin = New Padding(4, 0, 4, 0)
         LabTolAPIII.Name = "LabTolAPIII"
-        LabTolAPIII.Size = New Size(12, 30)
+        LabTolAPIII.Size = New Size(12, 29)
         LabTolAPIII.TabIndex = 28
         LabTolAPIII.Text = "III"
         LabTolAPIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1529,10 +1527,10 @@ Partial Class Form1
         ' 
         LabTolAPII.AutoSize = True
         LabTolAPII.Dock = DockStyle.Fill
-        LabTolAPII.Location = New Point(44, 145)
+        LabTolAPII.Location = New Point(44, 140)
         LabTolAPII.Margin = New Padding(4, 0, 4, 0)
         LabTolAPII.Name = "LabTolAPII"
-        LabTolAPII.Size = New Size(12, 30)
+        LabTolAPII.Size = New Size(12, 29)
         LabTolAPII.TabIndex = 27
         LabTolAPII.Text = "II"
         LabTolAPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1541,10 +1539,10 @@ Partial Class Form1
         ' 
         LabTolAPI.AutoSize = True
         LabTolAPI.Dock = DockStyle.Fill
-        LabTolAPI.Location = New Point(24, 145)
+        LabTolAPI.Location = New Point(24, 140)
         LabTolAPI.Margin = New Padding(4, 0, 4, 0)
         LabTolAPI.Name = "LabTolAPI"
-        LabTolAPI.Size = New Size(12, 30)
+        LabTolAPI.Size = New Size(12, 29)
         LabTolAPI.TabIndex = 26
         LabTolAPI.Text = "I"
         LabTolAPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1553,10 +1551,10 @@ Partial Class Form1
         ' 
         LabTolAPS.AutoSize = True
         LabTolAPS.Dock = DockStyle.Fill
-        LabTolAPS.Location = New Point(4, 145)
+        LabTolAPS.Location = New Point(4, 140)
         LabTolAPS.Margin = New Padding(4, 0, 4, 0)
         LabTolAPS.Name = "LabTolAPS"
-        LabTolAPS.Size = New Size(12, 30)
+        LabTolAPS.Size = New Size(12, 29)
         LabTolAPS.TabIndex = 25
         LabTolAPS.Text = "S"
         LabTolAPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1565,10 +1563,10 @@ Partial Class Form1
         ' 
         LabTolADC.AutoSize = True
         LabTolADC.Dock = DockStyle.Fill
-        LabTolADC.Location = New Point(84, 116)
+        LabTolADC.Location = New Point(84, 112)
         LabTolADC.Margin = New Padding(4, 0, 4, 0)
         LabTolADC.Name = "LabTolADC"
-        LabTolADC.Size = New Size(16, 29)
+        LabTolADC.Size = New Size(16, 28)
         LabTolADC.TabIndex = 24
         LabTolADC.Text = "C"
         LabTolADC.TextAlign = ContentAlignment.MiddleCenter
@@ -1577,10 +1575,10 @@ Partial Class Form1
         ' 
         LabTolADIII.AutoSize = True
         LabTolADIII.Dock = DockStyle.Fill
-        LabTolADIII.Location = New Point(64, 116)
+        LabTolADIII.Location = New Point(64, 112)
         LabTolADIII.Margin = New Padding(4, 0, 4, 0)
         LabTolADIII.Name = "LabTolADIII"
-        LabTolADIII.Size = New Size(12, 29)
+        LabTolADIII.Size = New Size(12, 28)
         LabTolADIII.TabIndex = 23
         LabTolADIII.Text = "III"
         LabTolADIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1589,10 +1587,10 @@ Partial Class Form1
         ' 
         LabTolADII.AutoSize = True
         LabTolADII.Dock = DockStyle.Fill
-        LabTolADII.Location = New Point(44, 116)
+        LabTolADII.Location = New Point(44, 112)
         LabTolADII.Margin = New Padding(4, 0, 4, 0)
         LabTolADII.Name = "LabTolADII"
-        LabTolADII.Size = New Size(12, 29)
+        LabTolADII.Size = New Size(12, 28)
         LabTolADII.TabIndex = 22
         LabTolADII.Text = "II"
         LabTolADII.TextAlign = ContentAlignment.MiddleCenter
@@ -1601,10 +1599,10 @@ Partial Class Form1
         ' 
         LabTolADI.AutoSize = True
         LabTolADI.Dock = DockStyle.Fill
-        LabTolADI.Location = New Point(24, 116)
+        LabTolADI.Location = New Point(24, 112)
         LabTolADI.Margin = New Padding(4, 0, 4, 0)
         LabTolADI.Name = "LabTolADI"
-        LabTolADI.Size = New Size(12, 29)
+        LabTolADI.Size = New Size(12, 28)
         LabTolADI.TabIndex = 21
         LabTolADI.Text = "I"
         LabTolADI.TextAlign = ContentAlignment.MiddleCenter
@@ -1613,10 +1611,10 @@ Partial Class Form1
         ' 
         LabTolADS.AutoSize = True
         LabTolADS.Dock = DockStyle.Fill
-        LabTolADS.Location = New Point(4, 116)
+        LabTolADS.Location = New Point(4, 112)
         LabTolADS.Margin = New Padding(4, 0, 4, 0)
         LabTolADS.Name = "LabTolADS"
-        LabTolADS.Size = New Size(12, 29)
+        LabTolADS.Size = New Size(12, 28)
         LabTolADS.TabIndex = 20
         LabTolADS.Text = "S"
         LabTolADS.TextAlign = ContentAlignment.MiddleCenter
@@ -1625,10 +1623,10 @@ Partial Class Form1
         ' 
         LabTolMPPC.AutoSize = True
         LabTolMPPC.Dock = DockStyle.Fill
-        LabTolMPPC.Location = New Point(84, 87)
+        LabTolMPPC.Location = New Point(84, 84)
         LabTolMPPC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPC.Name = "LabTolMPPC"
-        LabTolMPPC.Size = New Size(16, 29)
+        LabTolMPPC.Size = New Size(16, 28)
         LabTolMPPC.TabIndex = 19
         LabTolMPPC.Text = "C"
         LabTolMPPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1637,10 +1635,10 @@ Partial Class Form1
         ' 
         LabTolMPPIII.AutoSize = True
         LabTolMPPIII.Dock = DockStyle.Fill
-        LabTolMPPIII.Location = New Point(64, 87)
+        LabTolMPPIII.Location = New Point(64, 84)
         LabTolMPPIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPIII.Name = "LabTolMPPIII"
-        LabTolMPPIII.Size = New Size(12, 29)
+        LabTolMPPIII.Size = New Size(12, 28)
         LabTolMPPIII.TabIndex = 18
         LabTolMPPIII.Text = "III"
         LabTolMPPIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1649,10 +1647,10 @@ Partial Class Form1
         ' 
         LabTolMPPII.AutoSize = True
         LabTolMPPII.Dock = DockStyle.Fill
-        LabTolMPPII.Location = New Point(44, 87)
+        LabTolMPPII.Location = New Point(44, 84)
         LabTolMPPII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPII.Name = "LabTolMPPII"
-        LabTolMPPII.Size = New Size(12, 29)
+        LabTolMPPII.Size = New Size(12, 28)
         LabTolMPPII.TabIndex = 17
         LabTolMPPII.Text = "II"
         LabTolMPPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1661,10 +1659,10 @@ Partial Class Form1
         ' 
         LabTolMPPI.AutoSize = True
         LabTolMPPI.Dock = DockStyle.Fill
-        LabTolMPPI.Location = New Point(24, 87)
+        LabTolMPPI.Location = New Point(24, 84)
         LabTolMPPI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPI.Name = "LabTolMPPI"
-        LabTolMPPI.Size = New Size(12, 29)
+        LabTolMPPI.Size = New Size(12, 28)
         LabTolMPPI.TabIndex = 16
         LabTolMPPI.Text = "I"
         LabTolMPPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1673,10 +1671,10 @@ Partial Class Form1
         ' 
         LabTolMPPS.AutoSize = True
         LabTolMPPS.Dock = DockStyle.Fill
-        LabTolMPPS.Location = New Point(4, 87)
+        LabTolMPPS.Location = New Point(4, 84)
         LabTolMPPS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPS.Name = "LabTolMPPS"
-        LabTolMPPS.Size = New Size(12, 29)
+        LabTolMPPS.Size = New Size(12, 28)
         LabTolMPPS.TabIndex = 15
         LabTolMPPS.Text = "S"
         LabTolMPPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1685,10 +1683,10 @@ Partial Class Form1
         ' 
         LabTolMPBC.AutoSize = True
         LabTolMPBC.Dock = DockStyle.Fill
-        LabTolMPBC.Location = New Point(84, 58)
+        LabTolMPBC.Location = New Point(84, 56)
         LabTolMPBC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBC.Name = "LabTolMPBC"
-        LabTolMPBC.Size = New Size(16, 29)
+        LabTolMPBC.Size = New Size(16, 28)
         LabTolMPBC.TabIndex = 14
         LabTolMPBC.Text = "C"
         LabTolMPBC.TextAlign = ContentAlignment.MiddleCenter
@@ -1697,10 +1695,10 @@ Partial Class Form1
         ' 
         LabTolMPBIII.AutoSize = True
         LabTolMPBIII.Dock = DockStyle.Fill
-        LabTolMPBIII.Location = New Point(64, 58)
+        LabTolMPBIII.Location = New Point(64, 56)
         LabTolMPBIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBIII.Name = "LabTolMPBIII"
-        LabTolMPBIII.Size = New Size(12, 29)
+        LabTolMPBIII.Size = New Size(12, 28)
         LabTolMPBIII.TabIndex = 13
         LabTolMPBIII.Text = "III"
         LabTolMPBIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1709,10 +1707,10 @@ Partial Class Form1
         ' 
         LabTolMPBII.AutoSize = True
         LabTolMPBII.Dock = DockStyle.Fill
-        LabTolMPBII.Location = New Point(44, 58)
+        LabTolMPBII.Location = New Point(44, 56)
         LabTolMPBII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBII.Name = "LabTolMPBII"
-        LabTolMPBII.Size = New Size(12, 29)
+        LabTolMPBII.Size = New Size(12, 28)
         LabTolMPBII.TabIndex = 12
         LabTolMPBII.Text = "II"
         LabTolMPBII.TextAlign = ContentAlignment.MiddleCenter
@@ -1721,10 +1719,10 @@ Partial Class Form1
         ' 
         LabTolMPBI.AutoSize = True
         LabTolMPBI.Dock = DockStyle.Fill
-        LabTolMPBI.Location = New Point(24, 58)
+        LabTolMPBI.Location = New Point(24, 56)
         LabTolMPBI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBI.Name = "LabTolMPBI"
-        LabTolMPBI.Size = New Size(12, 29)
+        LabTolMPBI.Size = New Size(12, 28)
         LabTolMPBI.TabIndex = 11
         LabTolMPBI.Text = "I"
         LabTolMPBI.TextAlign = ContentAlignment.MiddleCenter
@@ -1733,10 +1731,10 @@ Partial Class Form1
         ' 
         LabTolMPBS.AutoSize = True
         LabTolMPBS.Dock = DockStyle.Fill
-        LabTolMPBS.Location = New Point(4, 58)
+        LabTolMPBS.Location = New Point(4, 56)
         LabTolMPBS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBS.Name = "LabTolMPBS"
-        LabTolMPBS.Size = New Size(12, 29)
+        LabTolMPBS.Size = New Size(12, 28)
         LabTolMPBS.TabIndex = 10
         LabTolMPBS.Text = "S"
         LabTolMPBS.TextAlign = ContentAlignment.MiddleCenter
@@ -1745,10 +1743,10 @@ Partial Class Form1
         ' 
         LabTolMPRC.AutoSize = True
         LabTolMPRC.Dock = DockStyle.Fill
-        LabTolMPRC.Location = New Point(84, 29)
+        LabTolMPRC.Location = New Point(84, 28)
         LabTolMPRC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRC.Name = "LabTolMPRC"
-        LabTolMPRC.Size = New Size(16, 29)
+        LabTolMPRC.Size = New Size(16, 28)
         LabTolMPRC.TabIndex = 9
         LabTolMPRC.Text = "C"
         LabTolMPRC.TextAlign = ContentAlignment.MiddleCenter
@@ -1757,10 +1755,10 @@ Partial Class Form1
         ' 
         LabTolMPRIII.AutoSize = True
         LabTolMPRIII.Dock = DockStyle.Fill
-        LabTolMPRIII.Location = New Point(64, 29)
+        LabTolMPRIII.Location = New Point(64, 28)
         LabTolMPRIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRIII.Name = "LabTolMPRIII"
-        LabTolMPRIII.Size = New Size(12, 29)
+        LabTolMPRIII.Size = New Size(12, 28)
         LabTolMPRIII.TabIndex = 8
         LabTolMPRIII.Text = "III"
         LabTolMPRIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1769,10 +1767,10 @@ Partial Class Form1
         ' 
         LabTolMPRII.AutoSize = True
         LabTolMPRII.Dock = DockStyle.Fill
-        LabTolMPRII.Location = New Point(44, 29)
+        LabTolMPRII.Location = New Point(44, 28)
         LabTolMPRII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRII.Name = "LabTolMPRII"
-        LabTolMPRII.Size = New Size(12, 29)
+        LabTolMPRII.Size = New Size(12, 28)
         LabTolMPRII.TabIndex = 7
         LabTolMPRII.Text = "II"
         LabTolMPRII.TextAlign = ContentAlignment.MiddleCenter
@@ -1781,10 +1779,10 @@ Partial Class Form1
         ' 
         LabTolMPRI.AutoSize = True
         LabTolMPRI.Dock = DockStyle.Fill
-        LabTolMPRI.Location = New Point(24, 29)
+        LabTolMPRI.Location = New Point(24, 28)
         LabTolMPRI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRI.Name = "LabTolMPRI"
-        LabTolMPRI.Size = New Size(12, 29)
+        LabTolMPRI.Size = New Size(12, 28)
         LabTolMPRI.TabIndex = 6
         LabTolMPRI.Text = "I"
         LabTolMPRI.TextAlign = ContentAlignment.MiddleCenter
@@ -1793,10 +1791,10 @@ Partial Class Form1
         ' 
         LabTolMPRS.AutoSize = True
         LabTolMPRS.Dock = DockStyle.Fill
-        LabTolMPRS.Location = New Point(4, 29)
+        LabTolMPRS.Location = New Point(4, 28)
         LabTolMPRS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRS.Name = "LabTolMPRS"
-        LabTolMPRS.Size = New Size(12, 29)
+        LabTolMPRS.Size = New Size(12, 28)
         LabTolMPRS.TabIndex = 5
         LabTolMPRS.Text = "S"
         LabTolMPRS.TextAlign = ContentAlignment.MiddleCenter
@@ -1808,7 +1806,7 @@ Partial Class Form1
         LabTolLPC.Location = New Point(84, 0)
         LabTolLPC.Margin = New Padding(4, 0, 4, 0)
         LabTolLPC.Name = "LabTolLPC"
-        LabTolLPC.Size = New Size(16, 29)
+        LabTolLPC.Size = New Size(16, 28)
         LabTolLPC.TabIndex = 4
         LabTolLPC.Text = "C"
         LabTolLPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1820,7 +1818,7 @@ Partial Class Form1
         LabTolLPII.Location = New Point(44, 0)
         LabTolLPII.Margin = New Padding(4, 0, 4, 0)
         LabTolLPII.Name = "LabTolLPII"
-        LabTolLPII.Size = New Size(12, 29)
+        LabTolLPII.Size = New Size(12, 28)
         LabTolLPII.TabIndex = 2
         LabTolLPII.Text = "II"
         LabTolLPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1832,7 +1830,7 @@ Partial Class Form1
         LabTolLPI.Location = New Point(24, 0)
         LabTolLPI.Margin = New Padding(4, 0, 4, 0)
         LabTolLPI.Name = "LabTolLPI"
-        LabTolLPI.Size = New Size(12, 29)
+        LabTolLPI.Size = New Size(12, 28)
         LabTolLPI.TabIndex = 1
         LabTolLPI.Text = "I"
         LabTolLPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1844,7 +1842,7 @@ Partial Class Form1
         LabTolLPS.Location = New Point(4, 0)
         LabTolLPS.Margin = New Padding(4, 0, 4, 0)
         LabTolLPS.Name = "LabTolLPS"
-        LabTolLPS.Size = New Size(12, 29)
+        LabTolLPS.Size = New Size(12, 28)
         LabTolLPS.TabIndex = 0
         LabTolLPS.Text = "S"
         LabTolLPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1853,7 +1851,7 @@ Partial Class Form1
         ' 
         tLayoutLocalPitchDetails.SetColumnSpan(TxtAngularDeviation, 2)
         TxtAngularDeviation.Dock = DockStyle.Top
-        TxtAngularDeviation.Location = New Point(264, 198)
+        TxtAngularDeviation.Location = New Point(264, 186)
         TxtAngularDeviation.Margin = New Padding(4)
         TxtAngularDeviation.Name = "TxtAngularDeviation"
         TxtAngularDeviation.Size = New Size(102, 27)
@@ -1863,7 +1861,7 @@ Partial Class Form1
         ' 
         tLayoutLocalPitchDetails.SetColumnSpan(TxtAxialPosition, 2)
         TxtAxialPosition.Dock = DockStyle.Top
-        TxtAxialPosition.Location = New Point(264, 227)
+        TxtAxialPosition.Location = New Point(264, 213)
         TxtAxialPosition.Margin = New Padding(4)
         TxtAxialPosition.Name = "TxtAxialPosition"
         TxtAxialPosition.Size = New Size(102, 27)
@@ -1872,12 +1870,13 @@ Partial Class Form1
         ' TLayoutMeasurement
         ' 
         TLayoutMeasurement.ColumnCount = 6
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 212F))
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 212.0F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20.0F))
+        TLayoutMeasurement.Controls.Add(EncoderStatusStrip1, 0, 5)
         TLayoutMeasurement.Controls.Add(PanelGrids, 0, 3)
         TLayoutMeasurement.Controls.Add(PictureBoxLogo, 0, 0)
         TLayoutMeasurement.Controls.Add(PanelJob, 0, 2)
@@ -1890,31 +1889,47 @@ Partial Class Form1
         TLayoutMeasurement.Location = New Point(0, 0)
         TLayoutMeasurement.Margin = New Padding(4)
         TLayoutMeasurement.Name = "TLayoutMeasurement"
-        TLayoutMeasurement.RowCount = 5
-        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 33F))
-        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 67F))
+        TLayoutMeasurement.RowCount = 6
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 33.0F))
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 80.0F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
-        TLayoutMeasurement.Size = New Size(1184, 606)
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 35.0F))
+        TLayoutMeasurement.Size = New Size(1184, 636)
         TLayoutMeasurement.TabIndex = 23
+        ' 
+        ' EncoderStatusStrip1
+        ' 
+        EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        TLayoutMeasurement.SetColumnSpan(EncoderStatusStrip1, 6)
+        EncoderStatusStrip1.Dock = DockStyle.Fill
+        EncoderStatusStrip1.Hardware = Nothing
+        EncoderStatusStrip1.Location = New Point(3, 603)
+        EncoderStatusStrip1.Margin = New Padding(3, 4, 3, 4)
+        EncoderStatusStrip1.Name = "EncoderStatusStrip1"
+        EncoderStatusStrip1.Size = New Size(1178, 29)
+        EncoderStatusStrip1.TabIndex = 24
+        EncoderStatusStrip1.TimerInterval = 100L
+        EncoderStatusStrip1.TimerOn = False
+        EncoderStatusStrip1.WorkstationName = ""
         ' 
         ' PanelGrids
         ' 
         TLayoutMeasurement.SetColumnSpan(PanelGrids, 4)
         PanelGrids.Controls.Add(TLayoutGrids)
         PanelGrids.Dock = DockStyle.Fill
-        PanelGrids.Location = New Point(10, 268)
+        PanelGrids.Location = New Point(10, 275)
         PanelGrids.Margin = New Padding(10, 0, 0, 3)
         PanelGrids.Name = "PanelGrids"
-        PanelGrids.Size = New Size(784, 165)
+        PanelGrids.Size = New Size(784, 159)
         PanelGrids.TabIndex = 24
         ' 
         ' TLayoutGrids
         ' 
         TLayoutGrids.ColumnCount = 2
-        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 101F))
+        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 101.0F))
         TLayoutGrids.Controls.Add(Lab, 1, 0)
         TLayoutGrids.Controls.Add(LabGrids, 0, 0)
         TLayoutGrids.Controls.Add(GridBladePitch, 1, 1)
@@ -1924,16 +1939,16 @@ Partial Class Form1
         TLayoutGrids.Margin = New Padding(4)
         TLayoutGrids.Name = "TLayoutGrids"
         TLayoutGrids.RowCount = 2
-        TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        TLayoutGrids.Size = New Size(784, 165)
+        TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Absolute, 20.0F))
+        TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Percent, 100.0F))
+        TLayoutGrids.Size = New Size(784, 159)
         TLayoutGrids.TabIndex = 0
         ' 
         ' Lab
         ' 
         Lab.BackColor = SystemColors.ActiveCaption
         Lab.Dock = DockStyle.Top
-        Lab.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Lab.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Lab.Location = New Point(683, 0)
         Lab.Margin = New Padding(0)
         Lab.Name = "Lab"
@@ -1945,7 +1960,7 @@ Partial Class Form1
         ' 
         LabGrids.BackColor = SystemColors.ActiveCaption
         LabGrids.Dock = DockStyle.Top
-        LabGrids.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabGrids.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabGrids.Location = New Point(0, 0)
         LabGrids.Margin = New Padding(0)
         LabGrids.Name = "LabGrids"
@@ -1957,30 +1972,29 @@ Partial Class Form1
         ' 
         TLayoutPlotandLP.ColumnCount = 1
         TLayoutMeasurement.SetColumnSpan(TLayoutPlotandLP, 2)
-        TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 23F))
+        TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100.0F))
+        TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 23.0F))
         TLayoutPlotandLP.Controls.Add(PanelLocalPitchDetails, 0, 1)
         TLayoutPlotandLP.Controls.Add(PanelPlot, 0, 0)
         TLayoutPlotandLP.Dock = DockStyle.Fill
-        TLayoutPlotandLP.Location = New Point(794, 100)
+        TLayoutPlotandLP.Location = New Point(794, 113)
         TLayoutPlotandLP.Margin = New Padding(0)
         TLayoutPlotandLP.Name = "TLayoutPlotandLP"
         TLayoutPlotandLP.RowCount = 2
         TLayoutMeasurement.SetRowSpan(TLayoutPlotandLP, 3)
-        TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TLayoutPlotandLP.Size = New Size(390, 506)
+        TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50.0F))
+        TLayoutPlotandLP.Size = New Size(390, 486)
         TLayoutPlotandLP.TabIndex = 25
         ' 
         ' Form1
         ' 
-        AutoScaleDimensions = New SizeF(8F, 20F)
+        AutoScaleDimensions = New SizeF(8.0F, 20.0F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = SystemColors.Control
         ClientSize = New Size(1184, 636)
         Controls.Add(TLayoutMeasurement)
-        Controls.Add(EncoderStatusStrip1)
-        Font = New Font("Segoe UI", 11F)
+        Font = New Font("Segoe UI", 11.0F)
         Margin = New Padding(3, 1, 3, 1)
         Name = "Form1"
         Text = "Measurements"
@@ -2156,4 +2170,6 @@ Partial Class Form1
     Friend WithEvents LabPlot As Label
     Friend WithEvents ChkPlotAngularDeviation As CheckBox
     Friend WithEvents LabPitchBasis As Label
+    Friend WithEvents ComboPlotReferenceBlade As ComboBox
+    'Friend WithEvents ComboPlotRefBlade As ComboBox
 End Class

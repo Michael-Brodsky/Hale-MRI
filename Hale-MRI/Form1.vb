@@ -30,7 +30,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As FrmReports
+    Private mFrmReports As Form2
     Private mFrmVessels As FrmVessels
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -876,7 +876,7 @@ Public Class Form1
         TxtDiameter.Text = strDiameter
         TxtBore.Text = strBore
         ComboReferenceBlade.DataSource = bsReferenceBlades
-        ComboPlotRefBlade.DataSource = bsReferenceBlades
+        ComboPlotReferenceBlade.DataSource = bsReferenceBlades
         ComboReferencePoint.SelectedItem = "LE"
         ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
         ComboPitchBasis.SelectedItem = "Marked"
@@ -1103,6 +1103,8 @@ Public Class Form1
             Dim tolerances = Database.Tolerances.Local.ToList
             tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
             ComboTolerance.DataSource = tolerances
+            ComboTolerance.DisplayMember = "ToleranceClass"
+            ComboTolerance.ValueMember = "ToleranceClass"
             ComboReferencePoint.DataSource = New List(Of String) From {"LE", "Mid", "TE"}
             ComboPitchBasis.DataSource = New List(Of String) From {"Mean", "Marked", "Desired"}
 
