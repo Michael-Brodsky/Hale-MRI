@@ -30,7 +30,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As Form2
+    Private mFrmReports As FrmReports
     Private mFrmVessels As FrmVessels
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -152,7 +152,7 @@ Public Class Form1
         Set(value As Boolean)
             ChkMinimumsApply.Checked = value
             ShowBladePitch(True)
-            ShowPlot()
+            ShowBladePlot()
             ShowTrack()
             ShowTolerances(value, False)
         End Set
@@ -967,16 +967,8 @@ Public Class Form1
         chartArea1.AxisY.MajorTickMark.Enabled = False
         chartArea1.AxisX.LineWidth = 0
         chartArea1.AxisY.LineWidth = 0
-<<<<<<< HEAD
-        ChartPlot.ChartAreas.Add(chartArea1)
-
-
-        ' Add a Title
-        ChartPlot.Titles.Add("Blade Tolerances By Radius")
-=======
         chartPlot.ChartAreas.Add(chartArea1)
         chartPlot.Titles.Add("Blade Tolerances By Radius")
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
 
         ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
@@ -990,7 +982,6 @@ Public Class Form1
         chartArea1.AxisX.Minimum = -chartArea1.AxisX.Maximum
         chartArea1.AxisY.Maximum = chartArea1.AxisX.Maximum
         chartArea1.AxisY.Minimum = -chartArea1.AxisY.Maximum
-<<<<<<< HEAD
         ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
         ' having a radius equal to RadiusMeasurement.Radius. 
         If ComboTolerance.Text = "" Then
@@ -1024,40 +1015,8 @@ Public Class Form1
                 Dim pointcolor As ToleranceColor = arcColors(Math.Min(currentsector, arcColors.Count - 1))
                 s.Points(p).Color = ToColor(pointcolor)
             Next
-            ChartPlot.Series.Add(s)
+            chartPlot.Series.Add(s)
         Next
-=======
-        If Not (String.IsNullOrEmpty(TxtBasis.Text) Or String.IsNullOrEmpty(ComboTolerance.Text)) Then
-            Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
-            Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
-            ' Each RadiusMeasurement is a new Series of Points that circumscribes an arc
-            ' having a radius equal to RadiusMeasurement.Radius. 
-            For Each rm As RadiusMeasurement In radiusMeasurements
-                Dim s As New Series With {
-                    .ChartType = kBladePlotChartType,
-                    .MarkerStyle = kBladePlotMarkerStyle,
-                    .MarkerSize = kBladePlotMarkerSize
-                }
-                Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
-                ' Each CellMeasurement in the RadiusMeasurement defines a Point on the arc.
-                For i As Integer = 1 To cellMeasurements.Count - 1
-                    Dim cmCurrent As CellMeasurement = cellMeasurements(i)
-                    Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
-                    Dim pitch As Double = GetPitch(cmCurrent?.Angle, cmPrevious?.Angle, cmCurrent?.Depth, cmPrevious?.Depth)
-                    Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
-                    Dim theta As Double = cmPrevious.Angle * Math.PI / 180
-                    Dim coordinates = PolarToCartesian(rm.Radius, angle)
-                    ' Cartesian point coordinates are computed from polar coordinates (r,theta), where 
-                    ' r is RadiusMeasurement.Radius and theta is CellMeasurement.Angle
-                    Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y)
-                    ' Set the point color based on tolerance class, pitch and basis pitch.
-                    Dim pointcolor As ToleranceColor = Tolerances.CheckLocalPitchTolerance(TolClass, pitch, BasisPitch)
-                    s.Points(p).Color = ToColor(pointcolor)
-                Next
-                chartPlot.Series.Add(s)
-            Next
-        End If
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
     End Sub
 
     Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
@@ -1092,7 +1051,7 @@ Public Class Form1
 
     End Sub
 
-    Private Sub ComboPitchBasis_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboPitchBasis.SelectedIndexChanged
+    Private Sub ComboPitchBasis_SelectedIndexChanged(sender As Object, e As EventArgs)
         ShowPitchBasis()
     End Sub
 
@@ -1109,7 +1068,7 @@ Public Class Form1
         ShowTrack()
     End Sub
 
-    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
+    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs)
         ShowBladePlot()
     End Sub
 

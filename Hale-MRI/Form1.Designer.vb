@@ -23,21 +23,17 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-<<<<<<< HEAD
-        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
-=======
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
-        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form1))
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -103,20 +99,17 @@ Partial Class Form1
         TxtRake = New TextBox()
         LabTrackPanel = New Label()
         PanelPlot = New Panel()
-<<<<<<< HEAD
-        TLayoutPlot = New TableLayoutPanel()
-=======
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
+        tLayoutPlotPanel = New TableLayoutPanel()
+        LabPlot = New Label()
         chartPlot = New DataVisualization.Charting.Chart()
-        LabPanelPlot = New Label()
-        TxtBasis = New TextBox()
-        LabBasis = New Label()
-        LabPitchBasis = New Label()
-        ComboPitchBasis = New ComboBox()
-        ComboTolerance = New ComboBox()
         LabTolerance = New Label()
-        LabPlotRefBlade = New Label()
-        ComboPlotRefBlade = New ComboBox()
+        ComboTolerance = New ComboBox()
+        LabBasis = New Label()
+        TxtBasis = New TextBox()
+        ChkPlotAngularDeviation = New CheckBox()
+        ComboPitchBasis = New ComboBox()
+        LabPitchBasis = New Label()
+        LabPanelPlot = New Label()
         PanelLocalPitchDetails = New Panel()
         tLayoutLocalPitchDetails = New TableLayoutPanel()
         LabLocalPitchDetails = New Label()
@@ -190,7 +183,7 @@ Partial Class Form1
         CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
         CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
         PanelPlot.SuspendLayout()
-        TLayoutPlot.SuspendLayout()
+        tLayoutPlotPanel.SuspendLayout()
         CType(chartPlot, ComponentModel.ISupportInitialize).BeginInit()
         PanelLocalPitchDetails.SuspendLayout()
         tLayoutLocalPitchDetails.SuspendLayout()
@@ -208,7 +201,7 @@ Partial Class Form1
         RecordNavigationBar1.BoundControls = Nothing
         TLayoutMeasurement.SetColumnSpan(RecordNavigationBar1, 3)
         RecordNavigationBar1.Database = Nothing
-        RecordNavigationBar1.Dock = DockStyle.Top
+        RecordNavigationBar1.Dock = DockStyle.Right
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
         RecordNavigationBar1.Location = New Point(600, 0)
@@ -216,7 +209,7 @@ Partial Class Form1
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.NoUpdates = False
-        RecordNavigationBar1.Size = New Size(569, 32)
+        RecordNavigationBar1.Size = New Size(569, 33)
         RecordNavigationBar1.TabIndex = 0
         ' 
         ' EncoderStatusStrip1
@@ -243,27 +236,27 @@ Partial Class Form1
         DataGridJobDetails.AllowUserToDeleteRows = False
         DataGridJobDetails.AutoGenerateColumns = False
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
-        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
+        DataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle4.BackColor = SystemColors.Control
+        DataGridViewCellStyle4.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle4.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle4.WrapMode = DataGridViewTriState.True
+        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDate, MeasurementTypeDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedBy, Description})
         TLayoutMeasurement.SetColumnSpan(DataGridJobDetails, 3)
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = SystemColors.Window
-        DataGridViewCellStyle3.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle3.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.False
-        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle3
-        DataGridJobDetails.Dock = DockStyle.Fill
+        DataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle5.BackColor = SystemColors.Window
+        DataGridViewCellStyle5.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle5.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle5.WrapMode = DataGridViewTriState.False
+        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle5
+        DataGridJobDetails.Dock = DockStyle.Right
         DataGridJobDetails.Location = New Point(604, 37)
         DataGridJobDetails.Margin = New Padding(4, 4, 15, 4)
         DataGridJobDetails.Name = "DataGridJobDetails"
@@ -478,7 +471,7 @@ Partial Class Form1
         ' 
         TxtJobNumber.BackColor = SystemColors.Control
         TxtJobNumber.BorderStyle = BorderStyle.None
-        TxtJobNumber.Font = New Font("Segoe UI", 27.75F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        TxtJobNumber.Font = New Font("Segoe UI", 27.75F, FontStyle.Bold)
         TxtJobNumber.Location = New Point(4, 4)
         TxtJobNumber.Margin = New Padding(4)
         TxtJobNumber.Name = "TxtJobNumber"
@@ -841,18 +834,14 @@ Partial Class Form1
         GridBladebyRadius.AllowUserToDeleteRows = False
         GridBladebyRadius.AllowUserToOrderColumns = True
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
-        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle1.BackColor = SystemColors.Control
-<<<<<<< HEAD
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-=======
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
-        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
-        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
+        DataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle6.BackColor = SystemColors.Control
+        DataGridViewCellStyle6.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle6.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle6.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GridBladebyRadius.Dock = DockStyle.Fill
         GridBladebyRadius.Location = New Point(0, 20)
@@ -865,8 +854,8 @@ Partial Class Form1
         ' PictureBoxLogo
         ' 
         PictureBoxLogo.Dock = DockStyle.Fill
-        PictureBoxLogo.Image = CType(resources.GetObject("PictureBoxLogo.Image"), Image)
-        PictureBoxLogo.InitialImage = CType(resources.GetObject("PictureBoxLogo.InitialImage"), Image)
+        PictureBoxLogo.Image = My.Resources.Resources.Hale_MRI_logo
+        PictureBoxLogo.InitialImage = Nothing
         PictureBoxLogo.Location = New Point(0, 0)
         PictureBoxLogo.Margin = New Padding(0)
         PictureBoxLogo.Name = "PictureBoxLogo"
@@ -924,55 +913,38 @@ Partial Class Form1
         ' 
         ' ChartBladeHeight
         ' 
-        ChartArea1.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea1)
+        ChartArea4.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea4)
         ChartBladeHeight.Dock = DockStyle.Fill
-        Legend1.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend1)
-<<<<<<< HEAD
+        Legend3.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend3)
         ChartBladeHeight.Location = New Point(0, 21)
         ChartBladeHeight.Margin = New Padding(0, 1, 0, 0)
-=======
-        ChartBladeHeight.Location = New Point(3, 26)
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
         ChartBladeHeight.Name = "ChartBladeHeight"
         tLayoutTrack.SetRowSpan(ChartBladeHeight, 8)
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series1)
-<<<<<<< HEAD
+        Series4.ChartArea = "ChartArea1"
+        Series4.Legend = "Legend1"
+        Series4.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series4)
         ChartBladeHeight.Size = New Size(312, 145)
-=======
-        ChartBladeHeight.Size = New Size(227, 179)
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
         ChartBladeHeight.TabIndex = 0
         ChartBladeHeight.Text = "Track"
         ' 
         ' ChartAngularPosition
         ' 
-        ChartArea2.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea2)
+        ChartArea5.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea5)
         ChartAngularPosition.Dock = DockStyle.Fill
-        Legend2.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend2)
-<<<<<<< HEAD
-        ChartAngularPosition.Location = New Point(468, 21)
-        ChartAngularPosition.Margin = New Padding(0, 1, 0, 0)
-=======
-        ChartAngularPosition.Location = New Point(352, 26)
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
+        Legend4.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend4)
+        ChartAngularPosition.Location = New Point(471, 23)
         ChartAngularPosition.Name = "ChartAngularPosition"
         tLayoutTrack.SetRowSpan(ChartAngularPosition, 8)
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series2)
-<<<<<<< HEAD
-        ChartAngularPosition.Size = New Size(312, 145)
-=======
-        ChartAngularPosition.Size = New Size(229, 179)
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
+        Series5.ChartArea = "ChartArea1"
+        Series5.Legend = "Legend1"
+        Series5.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series5)
+        ChartAngularPosition.Size = New Size(306, 140)
         ChartAngularPosition.TabIndex = 1
         ChartAngularPosition.Text = "Track"
         ' 
@@ -1073,8 +1045,7 @@ Partial Class Form1
         ' PanelPlot
         ' 
         PanelPlot.BorderStyle = BorderStyle.Fixed3D
-<<<<<<< HEAD
-        PanelPlot.Controls.Add(TLayoutPlot)
+        PanelPlot.Controls.Add(tLayoutPlotPanel)
         PanelPlot.Dock = DockStyle.Fill
         PanelPlot.Location = New Point(5, 0)
         PanelPlot.Margin = New Padding(5, 0, 15, 0)
@@ -1082,79 +1053,138 @@ Partial Class Form1
         PanelPlot.Size = New Size(370, 253)
         PanelPlot.TabIndex = 11
         ' 
-        ' TLayoutPlot
+        ' tLayoutPlotPanel
         ' 
-        TLayoutPlot.ColumnCount = 2
-        TLayoutPlot.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 85F))
-        TLayoutPlot.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        TLayoutPlot.Controls.Add(chartPlot, 1, 1)
-        TLayoutPlot.Controls.Add(LabPanelPlot, 0, 0)
-        TLayoutPlot.Controls.Add(TxtBasis, 0, 6)
-        TLayoutPlot.Controls.Add(LabBasis, 0, 5)
-        TLayoutPlot.Controls.Add(LabPitchBasis, 0, 1)
-        TLayoutPlot.Controls.Add(ComboPitchBasis, 0, 2)
-        TLayoutPlot.Controls.Add(ComboTolerance, 0, 4)
-        TLayoutPlot.Controls.Add(LabTolerance, 0, 3)
-        TLayoutPlot.Controls.Add(LabPlotRefBlade, 0, 7)
-        TLayoutPlot.Controls.Add(ComboPlotRefBlade, 0, 8)
-        TLayoutPlot.Dock = DockStyle.Fill
-        TLayoutPlot.Location = New Point(0, 0)
-        TLayoutPlot.Margin = New Padding(4)
-        TLayoutPlot.Name = "TLayoutPlot"
-        TLayoutPlot.RowCount = 11
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        TLayoutPlot.Size = New Size(366, 249)
-        TLayoutPlot.TabIndex = 1
+        tLayoutPlotPanel.ColumnCount = 2
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 100F))
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        tLayoutPlotPanel.Controls.Add(LabPlot, 0, 0)
+        tLayoutPlotPanel.Controls.Add(chartPlot, 1, 1)
+        tLayoutPlotPanel.Controls.Add(LabTolerance, 0, 3)
+        tLayoutPlotPanel.Controls.Add(ComboTolerance, 0, 4)
+        tLayoutPlotPanel.Controls.Add(LabBasis, 0, 5)
+        tLayoutPlotPanel.Controls.Add(TxtBasis, 0, 6)
+        tLayoutPlotPanel.Controls.Add(ChkPlotAngularDeviation, 0, 7)
+        tLayoutPlotPanel.Controls.Add(ComboPitchBasis, 0, 2)
+        tLayoutPlotPanel.Controls.Add(LabPitchBasis, 0, 1)
+        tLayoutPlotPanel.Dock = DockStyle.Fill
+        tLayoutPlotPanel.Location = New Point(0, 0)
+        tLayoutPlotPanel.Name = "tLayoutPlotPanel"
+        tLayoutPlotPanel.RowCount = 9
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 15F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tLayoutPlotPanel.Size = New Size(366, 249)
+        tLayoutPlotPanel.TabIndex = 1
         ' 
-=======
-        PanelPlot.Controls.Add(chartPlot)
-        PanelPlot.Location = New Point(803, 131)
-        PanelPlot.Name = "PanelPlot"
-        PanelPlot.Size = New Size(294, 294)
-        PanelPlot.TabIndex = 11
+        ' LabPlot
         ' 
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
+        LabPlot.BackColor = SystemColors.ActiveCaption
+        tLayoutPlotPanel.SetColumnSpan(LabPlot, 2)
+        LabPlot.Dock = DockStyle.Fill
+        LabPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPlot.Location = New Point(0, 0)
+        LabPlot.Margin = New Padding(0)
+        LabPlot.Name = "LabPlot"
+        LabPlot.Size = New Size(366, 15)
+        LabPlot.TabIndex = 15
+        LabPlot.Text = "Measurements"
+        ' 
         ' chartPlot
         ' 
-        ChartArea3.Name = "ChartArea1"
-        chartPlot.ChartAreas.Add(ChartArea3)
+        ChartArea6.Name = "ChartArea1"
+        chartPlot.ChartAreas.Add(ChartArea6)
         chartPlot.Dock = DockStyle.Fill
-<<<<<<< HEAD
-        chartPlot.Location = New Point(89, 24)
-        chartPlot.Margin = New Padding(4)
+        chartPlot.Location = New Point(103, 18)
         chartPlot.Name = "chartPlot"
-        TLayoutPlot.SetRowSpan(chartPlot, 10)
-=======
-        chartPlot.Location = New Point(0, 0)
-        chartPlot.Name = "chartPlot"
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
-        Series3.ChartArea = "ChartArea1"
-        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
-        Series3.IsVisibleInLegend = False
-        Series3.Name = "Series1"
-        chartPlot.Series.Add(Series3)
-<<<<<<< HEAD
-        chartPlot.Size = New Size(273, 221)
-=======
-        chartPlot.Size = New Size(290, 290)
->>>>>>> 226d5edae9bd5d5ad57261a7e13c155c1febb4c2
+        tLayoutPlotPanel.SetRowSpan(chartPlot, 8)
+        Series6.ChartArea = "ChartArea1"
+        Series6.ChartType = DataVisualization.Charting.SeriesChartType.Radar
+        Series6.IsVisibleInLegend = False
+        Series6.Name = "Series1"
+        chartPlot.Series.Add(Series6)
+        chartPlot.Size = New Size(260, 228)
         chartPlot.TabIndex = 0
         chartPlot.Text = "ChartPlot"
+        ' 
+        ' LabTolerance
+        ' 
+        LabTolerance.AutoSize = True
+        LabTolerance.Dock = DockStyle.Bottom
+        LabTolerance.Location = New Point(3, 85)
+        LabTolerance.Name = "LabTolerance"
+        LabTolerance.Size = New Size(94, 20)
+        LabTolerance.TabIndex = 17
+        LabTolerance.Text = "Tolerance"
+        ' 
+        ' ComboTolerance
+        ' 
+        ComboTolerance.Dock = DockStyle.Top
+        ComboTolerance.FormattingEnabled = True
+        ComboTolerance.Location = New Point(3, 108)
+        ComboTolerance.Name = "ComboTolerance"
+        ComboTolerance.Size = New Size(94, 28)
+        ComboTolerance.TabIndex = 18
+        ' 
+        ' LabBasis
+        ' 
+        LabBasis.AutoSize = True
+        LabBasis.Dock = DockStyle.Bottom
+        LabBasis.Location = New Point(3, 145)
+        LabBasis.Name = "LabBasis"
+        LabBasis.Size = New Size(94, 20)
+        LabBasis.TabIndex = 19
+        LabBasis.Text = "Basis"
+        ' 
+        ' TxtBasis
+        ' 
+        TxtBasis.Dock = DockStyle.Top
+        TxtBasis.Location = New Point(3, 168)
+        TxtBasis.Name = "TxtBasis"
+        TxtBasis.Size = New Size(94, 27)
+        TxtBasis.TabIndex = 20
+        ' 
+        ' ChkPlotAngularDeviation
+        ' 
+        ChkPlotAngularDeviation.AutoSize = True
+        ChkPlotAngularDeviation.Dock = DockStyle.Fill
+        ChkPlotAngularDeviation.Location = New Point(15, 198)
+        ChkPlotAngularDeviation.Margin = New Padding(15, 3, 3, 3)
+        ChkPlotAngularDeviation.Name = "ChkPlotAngularDeviation"
+        tLayoutPlotPanel.SetRowSpan(ChkPlotAngularDeviation, 2)
+        ChkPlotAngularDeviation.Size = New Size(82, 48)
+        ChkPlotAngularDeviation.TabIndex = 21
+        ChkPlotAngularDeviation.Text = "Angular Deviation"
+        ChkPlotAngularDeviation.UseVisualStyleBackColor = True
+        ' 
+        ' ComboPitchBasis
+        ' 
+        ComboPitchBasis.Dock = DockStyle.Top
+        ComboPitchBasis.FormattingEnabled = True
+        ComboPitchBasis.Location = New Point(3, 48)
+        ComboPitchBasis.Name = "ComboPitchBasis"
+        ComboPitchBasis.Size = New Size(94, 28)
+        ComboPitchBasis.TabIndex = 16
+        ' 
+        ' LabPitchBasis
+        ' 
+        LabPitchBasis.AutoSize = True
+        LabPitchBasis.Dock = DockStyle.Bottom
+        LabPitchBasis.Location = New Point(3, 25)
+        LabPitchBasis.Name = "LabPitchBasis"
+        LabPitchBasis.Size = New Size(94, 20)
+        LabPitchBasis.TabIndex = 22
+        LabPitchBasis.Text = "Pitch Basis"
         ' 
         ' LabPanelPlot
         ' 
         LabPanelPlot.BackColor = SystemColors.ActiveCaption
-        TLayoutPlot.SetColumnSpan(LabPanelPlot, 2)
         LabPanelPlot.Dock = DockStyle.Fill
         LabPanelPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabPanelPlot.Location = New Point(0, 0)
@@ -1163,81 +1193,6 @@ Partial Class Form1
         LabPanelPlot.Size = New Size(366, 20)
         LabPanelPlot.TabIndex = 13
         LabPanelPlot.Text = "Plot"
-        ' 
-        ' TxtBasis
-        ' 
-        TxtBasis.Location = New Point(4, 134)
-        TxtBasis.Margin = New Padding(4)
-        TxtBasis.Name = "TxtBasis"
-        TxtBasis.Size = New Size(77, 27)
-        TxtBasis.TabIndex = 20
-        ' 
-        ' LabBasis
-        ' 
-        LabBasis.AutoSize = True
-        LabBasis.Location = New Point(4, 108)
-        LabBasis.Margin = New Padding(4, 0, 4, 0)
-        LabBasis.Name = "LabBasis"
-        LabBasis.Size = New Size(42, 20)
-        LabBasis.TabIndex = 21
-        LabBasis.Text = "Basis"
-        ' 
-        ' LabPitchBasis
-        ' 
-        LabPitchBasis.AutoSize = True
-        LabPitchBasis.Location = New Point(4, 20)
-        LabPitchBasis.Margin = New Padding(4, 0, 4, 0)
-        LabPitchBasis.Name = "LabPitchBasis"
-        LabPitchBasis.Size = New Size(41, 20)
-        LabPitchBasis.TabIndex = 18
-        LabPitchBasis.Text = "Pitch"
-        ' 
-        ' ComboPitchBasis
-        ' 
-        ComboPitchBasis.FormattingEnabled = True
-        ComboPitchBasis.Location = New Point(4, 46)
-        ComboPitchBasis.Margin = New Padding(4)
-        ComboPitchBasis.Name = "ComboPitchBasis"
-        ComboPitchBasis.Size = New Size(77, 28)
-        ComboPitchBasis.TabIndex = 16
-        ' 
-        ' ComboTolerance
-        ' 
-        ComboTolerance.DisplayMember = "ToleranceClass"
-        ComboTolerance.FormattingEnabled = True
-        ComboTolerance.Location = New Point(4, 90)
-        ComboTolerance.Margin = New Padding(4)
-        ComboTolerance.Name = "ComboTolerance"
-        ComboTolerance.Size = New Size(77, 28)
-        ComboTolerance.TabIndex = 17
-        ComboTolerance.ValueMember = "ToleranceClass"
-        ' 
-        ' LabTolerance
-        ' 
-        LabTolerance.AutoSize = True
-        LabTolerance.Location = New Point(4, 64)
-        LabTolerance.Margin = New Padding(4, 0, 4, 0)
-        LabTolerance.Name = "LabTolerance"
-        LabTolerance.Size = New Size(73, 20)
-        LabTolerance.TabIndex = 19
-        LabTolerance.Text = "Tolerance"
-        ' 
-        ' LabPlotRefBlade
-        ' 
-        LabPlotRefBlade.AutoSize = True
-        LabPlotRefBlade.Location = New Point(3, 152)
-        LabPlotRefBlade.Name = "LabPlotRefBlade"
-        LabPlotRefBlade.Size = New Size(73, 20)
-        LabPlotRefBlade.TabIndex = 22
-        LabPlotRefBlade.Text = "Ref Blade"
-        ' 
-        ' ComboPlotRefBlade
-        ' 
-        ComboPlotRefBlade.FormattingEnabled = True
-        ComboPlotRefBlade.Location = New Point(3, 177)
-        ComboPlotRefBlade.Name = "ComboPlotRefBlade"
-        ComboPlotRefBlade.Size = New Size(79, 28)
-        ComboPlotRefBlade.TabIndex = 23
         ' 
         ' PanelLocalPitchDetails
         ' 
@@ -2004,8 +1959,8 @@ Partial Class Form1
         TLayoutMeasurement.SetColumnSpan(TLayoutPlotandLP, 2)
         TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         TLayoutPlotandLP.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 23F))
-        TLayoutPlotandLP.Controls.Add(PanelPlot, 0, 0)
         TLayoutPlotandLP.Controls.Add(PanelLocalPitchDetails, 0, 1)
+        TLayoutPlotandLP.Controls.Add(PanelPlot, 0, 0)
         TLayoutPlotandLP.Dock = DockStyle.Fill
         TLayoutPlotandLP.Location = New Point(794, 100)
         TLayoutPlotandLP.Margin = New Padding(0)
@@ -2025,7 +1980,7 @@ Partial Class Form1
         ClientSize = New Size(1184, 636)
         Controls.Add(TLayoutMeasurement)
         Controls.Add(EncoderStatusStrip1)
-        Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        Font = New Font("Segoe UI", 11F)
         Margin = New Padding(3, 1, 3, 1)
         Name = "Form1"
         Text = "Measurements"
@@ -2050,8 +2005,8 @@ Partial Class Form1
         CType(ChartBladeHeight, ComponentModel.ISupportInitialize).EndInit()
         CType(ChartAngularPosition, ComponentModel.ISupportInitialize).EndInit()
         PanelPlot.ResumeLayout(False)
-        TLayoutPlot.ResumeLayout(False)
-        TLayoutPlot.PerformLayout()
+        tLayoutPlotPanel.ResumeLayout(False)
+        tLayoutPlotPanel.PerformLayout()
         CType(chartPlot, ComponentModel.ISupportInitialize).EndInit()
         PanelLocalPitchDetails.ResumeLayout(False)
         tLayoutLocalPitchDetails.ResumeLayout(False)
@@ -2129,7 +2084,6 @@ Partial Class Form1
     Friend WithEvents TxtRake As TextBox
     Friend WithEvents ComboPitchBasis As ComboBox
     Friend WithEvents ComboTolerance As ComboBox
-    Friend WithEvents LabPitchBasis As Label
     Friend WithEvents LabTolerance As Label
     Friend WithEvents TxtBasis As TextBox
     Friend WithEvents LabBasis As Label
@@ -2198,4 +2152,8 @@ Partial Class Form1
     Friend WithEvents LabPlotRefBlade As Label
     Friend WithEvents ComboPlotRefBlade As ComboBox
     Friend WithEvents LabLocalPitchDetails As Label
+    Friend WithEvents tLayoutPlotPanel As TableLayoutPanel
+    Friend WithEvents LabPlot As Label
+    Friend WithEvents ChkPlotAngularDeviation As CheckBox
+    Friend WithEvents LabPitchBasis As Label
 End Class
