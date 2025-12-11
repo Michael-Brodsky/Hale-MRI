@@ -23,17 +23,17 @@ Partial Class Form1
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         EncoderStatusStrip1 = New EncoderStatusStrip()
         JobDetailsBindingSource = New BindingSource(components)
@@ -236,26 +236,26 @@ Partial Class Form1
         DataGridJobDetails.AllowUserToDeleteRows = False
         DataGridJobDetails.AutoGenerateColumns = False
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
-        DataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle4.BackColor = SystemColors.Control
-        DataGridViewCellStyle4.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle4.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle4.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle4.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle4.WrapMode = DataGridViewTriState.True
-        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle4
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Control
+        DataGridViewCellStyle2.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
+        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDate, MeasurementTypeDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedBy, Description})
         TLayoutMeasurement.SetColumnSpan(DataGridJobDetails, 3)
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridViewCellStyle5.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle5.BackColor = SystemColors.Window
-        DataGridViewCellStyle5.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle5.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle5.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle5.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle5.WrapMode = DataGridViewTriState.False
-        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle5
+        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = SystemColors.Window
+        DataGridViewCellStyle3.Font = New Font("Segoe UI", 10F)
+        DataGridViewCellStyle3.ForeColor = SystemColors.ControlText
+        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.False
+        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle3
         DataGridJobDetails.Dock = DockStyle.Right
         DataGridJobDetails.Location = New Point(604, 37)
         DataGridJobDetails.Margin = New Padding(4, 4, 15, 4)
@@ -834,14 +834,14 @@ Partial Class Form1
         GridBladebyRadius.AllowUserToDeleteRows = False
         GridBladebyRadius.AllowUserToOrderColumns = True
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
-        DataGridViewCellStyle6.Alignment = DataGridViewContentAlignment.MiddleCenter
-        DataGridViewCellStyle6.BackColor = SystemColors.Control
-        DataGridViewCellStyle6.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
-        DataGridViewCellStyle6.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle6.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle6.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle6.WrapMode = DataGridViewTriState.True
-        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle6
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GridBladebyRadius.Dock = DockStyle.Fill
         GridBladebyRadius.Location = New Point(0, 20)
@@ -913,37 +913,37 @@ Partial Class Form1
         ' 
         ' ChartBladeHeight
         ' 
-        ChartArea4.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea4)
+        ChartArea1.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea1)
         ChartBladeHeight.Dock = DockStyle.Fill
-        Legend3.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend3)
+        Legend1.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend1)
         ChartBladeHeight.Location = New Point(0, 21)
         ChartBladeHeight.Margin = New Padding(0, 1, 0, 0)
         ChartBladeHeight.Name = "ChartBladeHeight"
         tLayoutTrack.SetRowSpan(ChartBladeHeight, 8)
-        Series4.ChartArea = "ChartArea1"
-        Series4.Legend = "Legend1"
-        Series4.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series4)
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series1)
         ChartBladeHeight.Size = New Size(312, 145)
         ChartBladeHeight.TabIndex = 0
         ChartBladeHeight.Text = "Track"
         ' 
         ' ChartAngularPosition
         ' 
-        ChartArea5.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea5)
+        ChartArea2.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea2)
         ChartAngularPosition.Dock = DockStyle.Fill
-        Legend4.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend4)
+        Legend2.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend2)
         ChartAngularPosition.Location = New Point(471, 23)
         ChartAngularPosition.Name = "ChartAngularPosition"
         tLayoutTrack.SetRowSpan(ChartAngularPosition, 8)
-        Series5.ChartArea = "ChartArea1"
-        Series5.Legend = "Legend1"
-        Series5.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series5)
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series2)
         ChartAngularPosition.Size = New Size(306, 140)
         ChartAngularPosition.TabIndex = 1
         ChartAngularPosition.Text = "Track"
@@ -1098,17 +1098,17 @@ Partial Class Form1
         ' 
         ' chartPlot
         ' 
-        ChartArea6.Name = "ChartArea1"
-        chartPlot.ChartAreas.Add(ChartArea6)
+        ChartArea3.Name = "ChartArea1"
+        chartPlot.ChartAreas.Add(ChartArea3)
         chartPlot.Dock = DockStyle.Fill
         chartPlot.Location = New Point(103, 18)
         chartPlot.Name = "chartPlot"
         tLayoutPlotPanel.SetRowSpan(chartPlot, 8)
-        Series6.ChartArea = "ChartArea1"
-        Series6.ChartType = DataVisualization.Charting.SeriesChartType.Radar
-        Series6.IsVisibleInLegend = False
-        Series6.Name = "Series1"
-        chartPlot.Series.Add(Series6)
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
+        Series3.IsVisibleInLegend = False
+        Series3.Name = "Series1"
+        chartPlot.Series.Add(Series3)
         chartPlot.Size = New Size(260, 228)
         chartPlot.TabIndex = 0
         chartPlot.Text = "ChartPlot"
