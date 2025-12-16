@@ -32,6 +32,8 @@ Public Class Form1
     Private mFrmManufacturers As FrmManufacturers
     Private mFrmReports As Form2
     Private mFrmVessels As FrmVessels
+    Private mFrmLocalPitch As FormLocalPitch
+
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
     Private mEncoderData As List(Of RadiusMeasurement) = Nothing
@@ -1364,6 +1366,10 @@ Public Class Form1
             Return
         End If
         'resetting counts is multiplying by calibrations
+    End Sub
+
+    Private Sub Form1_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
+
     End Sub
 #End Region
 End Class
