@@ -135,36 +135,21 @@ Public Class FormLocalPitch
     Private Sub GridJobDetails_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles GridJobDetails.CellContentClick
 
     End Sub
-
-    Private Sub FormLocalPitch_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Dim tolerances = Database.Tolerances.Local.ToList
-        tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
-        ComboToleranceClass.DataSource = tolerances
-        ComboToleranceClass.DisplayMember = "ToleranceClass"
-        ComboToleranceClass.ValueMember = "ToleranceClass"
-        ComboCompareto.DataSource = New List(Of String) From {"Mean", "Marked", "Desired", "Progressive"}
-
-        GridJobDetails.AutoGenerateColumns = False
-        'For Each emp As Employee In Database.Employees.Local.ToList()
-        '    EmployeesBindingSource.Add(emp)
-        'Next
-
-        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
-
-        'For Each tolclass As Tolerance In Database.Tolerances.Local.ToList()
-        '    ClassBindingSource.Add(tolclass)
-        'Next
-        ClassBindingSource.DataSource = Database.Tolerances.Local.ToBindingList
-        'For Each mtype As MeasurementType In Database.MeasurementTypes.Local.ToList()
-        '    MeasurementTypesBindingSource.Add(mtype)
-        'Next
-        MeasurementTypesBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList
-
-        ' Initialize the Navigator
-        Navigator = RecordNavigationBar1
-        Navigator.BoundControls = New List(Of Control) From {GridJobDetails}
-        MasterSource = JobDetailsBindingSource
+    Private Sub ShowSummaryArea()
+        If mJobDetails Is Nothing Then Exit Sub
+        For Each se As Series In ChartLocalPitch.Series
+            If se.ChartArea = "SummaryArea" Then
+                ChartLocalPitch.Series.Remove(se)
+            End If
+        Next
+        Dim x As Integer
+        For x = 1 To Job.PropellerBlades
+            Dim se As Series = ChartLocalPitch.Series.Add("Blade " And x.ToString)
+            se.ChartArea = "SummaryArea"
+            se.ChartType = SeriesChartType.Column
+        Next
     End Sub
+
 #End Region
 
 #Region "Event Handlers"
@@ -195,6 +180,48 @@ Public Class FormLocalPitch
         If mJobDetails IsNot Current Then
             mJobDetails = Current
             'insert form updating function here
+        End If
+    End Sub
+    Private Sub FormLocalPitch_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        Dim tolerances = Database.Tolerances.Local.ToList
+        tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
+        ComboToleranceClass.DataSource = tolerances
+        ComboToleranceClass.DisplayMember = "ToleranceClass"
+        ComboToleranceClass.ValueMember = "ToleranceClass"
+        ComboCompareto.DataSource = New List(Of String) From {"Mean", "Marked", "Desired", "Progressive"}
+
+        GridJobDetails.AutoGenerateColumns = False
+        'For Each emp As Employee In Database.Employees.Local.ToList()
+        '    EmployeesBindingSource.Add(emp)
+        'Next
+
+        EmployeesBindingSource.DataSource = Database.Employees.Local.ToBindingList
+
+        'For Each tolclass As Tolerance In Database.Tolerances.Local.ToList()
+        '    ClassBindingSource.Add(tolclass)
+        'Next
+        ClassBindingSource.DataSource = Database.Tolerances.Local.ToBindingList
+        'For Each mtype As MeasurementType In Database.MeasurementTypes.Local.ToList()
+        '    MeasurementTypesBindingSource.Add(mtype)
+        'Next
+        MeasurementTypesBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList
+
+        ' Initialize the Navigator
+        Navigator = RecordNavigationBar1
+        Navigator.BoundControls = New List(Of Control) From {GridJobDetails}
+        MasterSource = JobDetailsBindingSource
+    End Sub
+
+    Private Sub ChkShowTable_CheckedChanged(sender As Object, e As EventArgs) Handles ChkShowTable.CheckedChanged
+        ' make the blade pitch area chart visible or invisible - and update the placement of chart areas
+        If ChkShowTable.Checked Then
+            ChartLocalPitch.ChartAreas("BladePitchArea").Visible = True
+            ChartLocalPitch.ChartAreas("SummaryArea").Position.Height = 40
+            'UpdateChartAreas()
+        Else
+            ChartLocalPitch.ChartAreas("BladePitchArea").Visible = False
+            ChartLocalPitch.ChartAreas("SummaryArea").Position.Height = 65
+            'UpdateChartAreas()
         End If
     End Sub
 #End Region

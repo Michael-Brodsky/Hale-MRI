@@ -1,6 +1,6 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FormLocalPitch
-    Inherits System.Windows.Forms.Form
+    Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()> _
@@ -24,8 +24,12 @@ Partial Class FormLocalPitch
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         tLayoutLocalPitch = New TableLayoutPanel()
         tLayoutNavigationButtons = New TableLayoutPanel()
         CmdComparisonForm = New Button()
@@ -373,21 +377,54 @@ Partial Class FormLocalPitch
         ' 
         ' ChartLocalPitch
         ' 
-        ChartArea1.Name = "ChartArea1"
+        ChartArea1.Name = "SummaryArea"
+        ChartArea1.Position.Auto = False
+        ChartArea1.Position.Height = 65F
+        ChartArea1.Position.Width = 94F
+        ChartArea1.Position.X = 3F
+        ChartArea1.Position.Y = 3F
+        ChartArea2.AlignWithChartArea = "SummaryArea"
+        ChartArea2.Name = "BladePitchArea"
+        ChartArea2.Position.Auto = False
+        ChartArea2.Position.Height = 25F
+        ChartArea2.Position.Width = 94F
+        ChartArea2.Position.X = 3F
+        ChartArea2.Position.Y = 47F
+        ChartArea2.Visible = False
+        ChartArea3.AlignWithChartArea = "SummaryArea"
+        ChartArea3.Name = "LocalPitchArea"
+        ChartArea3.Position.Auto = False
+        ChartArea3.Position.Height = 30F
+        ChartArea3.Position.Width = 94F
+        ChartArea3.Position.X = 3F
+        ChartArea3.Position.Y = 70F
         ChartLocalPitch.ChartAreas.Add(ChartArea1)
+        ChartLocalPitch.ChartAreas.Add(ChartArea2)
+        ChartLocalPitch.ChartAreas.Add(ChartArea3)
         tLayoutLocalPitch.SetColumnSpan(ChartLocalPitch, 4)
         ChartLocalPitch.Dock = DockStyle.Fill
-        Legend1.Name = "Legend1"
-        ChartLocalPitch.Legends.Add(Legend1)
         ChartLocalPitch.Location = New Point(133, 116)
         ChartLocalPitch.Name = "ChartLocalPitch"
         tLayoutLocalPitch.SetRowSpan(ChartLocalPitch, 16)
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
+        Series1.ChartArea = "SummaryArea"
         Series1.Name = "Series1"
+        Series2.ChartArea = "BladePitchArea"
+        Series2.Name = "Series2"
+        Series3.ChartArea = "LocalPitchArea"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
+        Series3.Name = "Series3"
         ChartLocalPitch.Series.Add(Series1)
+        ChartLocalPitch.Series.Add(Series2)
+        ChartLocalPitch.Series.Add(Series3)
         ChartLocalPitch.Size = New Size(1048, 517)
         ChartLocalPitch.TabIndex = 16
+        Title1.Alignment = ContentAlignment.TopCenter
+        Title1.DockedToChartArea = "SummaryArea"
+        Title1.DockingOffset = -5
+        Title1.Name = "SummaryTitle"
+        Title1.Text = "Where is this"
+        Title1.TextOrientation = DataVisualization.Charting.TextOrientation.Horizontal
+        ChartLocalPitch.Titles.Add(Title1)
         ' 
         ' GridJobDetails
         ' 
