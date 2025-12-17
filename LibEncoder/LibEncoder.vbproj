@@ -8,14 +8,23 @@
     <Configurations>Debug;Release;NoEncoders</Configurations>
   </PropertyGroup>
 
-  <ItemGroup>
+  <ItemGroup Condition="'$(Configuration)' == 'NoEncoders'">
+	<Compile Remove="USDigital.vb" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(Configuration)' != 'NoEncoders'">
+	<Compile Remove="USB4_No_Encoders.vb" />
+	<Compile Remove="USDigital_No_Encoders.vb" />
     <Reference Include="USB4Wrapper">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\US Digital\USB4\Common\USB4Wrapper.dll</HintPath>
     </Reference>
+    <Import Include="USB4Wrapper" />
   </ItemGroup>
 
   <ItemGroup>
-    <Import Include="USB4Wrapper" />
+  </ItemGroup>
+
+  <ItemGroup>
   </ItemGroup>
 
 </Project>

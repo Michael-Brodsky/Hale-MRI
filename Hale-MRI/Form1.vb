@@ -119,7 +119,8 @@ Public Class Form1
             If mJob IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
+                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
@@ -140,8 +141,8 @@ Public Class Form1
             If mJobDetails IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
 #If NO_ENCODERS Then
-                Dim jd = Database.RadiusMeasurements.MinBy(Function(cm) cm.JobDetailsId)?.Id
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd).Include(Function(m) m.CellMeasurements).ToList()
+                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
