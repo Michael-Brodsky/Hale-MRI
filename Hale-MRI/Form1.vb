@@ -9,9 +9,8 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-#Const NO_ENCODERS = False
+
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -141,7 +140,8 @@ Public Class Form1
             If mJobDetails IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
+                Dim jd = Database.RadiusMeasurements.MinBy(Function(cm) cm.JobDetailsId)?.Id
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If

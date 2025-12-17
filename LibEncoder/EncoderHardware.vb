@@ -17,7 +17,7 @@ Public Class EncoderHardware
     Private mEncoder As IEncoderHardware
 
     Public Sub New(aHardware As IEncoderHardware)
-        ' Create and intialize a new instance of the EncoderHardware class
+        ' Create and initialize a new instance of the EncoderHardware class
         mEncoder = aHardware
     End Sub
     Public Property AngleCalibration() As Double

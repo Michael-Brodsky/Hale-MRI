@@ -8,6 +8,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <MyType>WindowsForms</MyType>
     <Platforms>AnyCPU;x64</Platforms>
+    <Configurations>Debug;Release;NoEncoders</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
@@ -101,5 +102,7 @@
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
     </None>
   </ItemGroup>
+
+  <Import Project="..\CommonSettings.targets" />
 
 </Project>
