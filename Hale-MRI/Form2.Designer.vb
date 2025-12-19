@@ -24,6 +24,15 @@ Partial Class Form2
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         JobDetailsBindingSource = New BindingSource(components)
         HeaderLayoutPanel = New TableLayoutPanel()
         TxtWheelPitch = New TextBox()
@@ -87,9 +96,15 @@ Partial Class Form2
         PageSetupToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator2 = New ToolStripSeparator()
         ExitToolStripMenuItem = New ToolStripMenuItem()
+        Chart1 = New DataVisualization.Charting.Chart()
+        Chart2 = New DataVisualization.Charting.Chart()
+        Chart3 = New DataVisualization.Charting.Chart()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' HeaderLayoutPanel
@@ -167,7 +182,7 @@ Partial Class Form2
         ' 
         TxtWheelPitch.Anchor = AnchorStyles.Left
         TxtWheelPitch.BorderStyle = BorderStyle.None
-        TxtWheelPitch.Location = New Point(646, 192)
+        TxtWheelPitch.Location = New Point(646, 196)
         TxtWheelPitch.Name = "TxtWheelPitch"
         TxtWheelPitch.ReadOnly = True
         TxtWheelPitch.Size = New Size(168, 16)
@@ -177,7 +192,7 @@ Partial Class Form2
         ' 
         TxtMarkedPitch.Anchor = AnchorStyles.Left
         TxtMarkedPitch.BorderStyle = BorderStyle.None
-        TxtMarkedPitch.Location = New Point(646, 165)
+        TxtMarkedPitch.Location = New Point(646, 167)
         TxtMarkedPitch.Name = "TxtMarkedPitch"
         TxtMarkedPitch.ReadOnly = True
         TxtMarkedPitch.Size = New Size(168, 16)
@@ -187,7 +202,7 @@ Partial Class Form2
         ' 
         TxtMeasuredDiameter.Anchor = AnchorStyles.Left
         TxtMeasuredDiameter.BorderStyle = BorderStyle.None
-        TxtMeasuredDiameter.Location = New Point(646, 138)
+        TxtMeasuredDiameter.Location = New Point(646, 140)
         TxtMeasuredDiameter.Name = "TxtMeasuredDiameter"
         TxtMeasuredDiameter.ReadOnly = True
         TxtMeasuredDiameter.Size = New Size(168, 16)
@@ -197,7 +212,7 @@ Partial Class Form2
         ' 
         TxtMarkedDiameter.Anchor = AnchorStyles.Left
         TxtMarkedDiameter.BorderStyle = BorderStyle.None
-        TxtMarkedDiameter.Location = New Point(646, 111)
+        TxtMarkedDiameter.Location = New Point(646, 113)
         TxtMarkedDiameter.Name = "TxtMarkedDiameter"
         TxtMarkedDiameter.ReadOnly = True
         TxtMarkedDiameter.Size = New Size(168, 16)
@@ -207,7 +222,7 @@ Partial Class Form2
         ' 
         TxtRotation.Anchor = AnchorStyles.Left
         TxtRotation.BorderStyle = BorderStyle.None
-        TxtRotation.Location = New Point(646, 84)
+        TxtRotation.Location = New Point(646, 86)
         TxtRotation.Name = "TxtRotation"
         TxtRotation.ReadOnly = True
         TxtRotation.Size = New Size(168, 16)
@@ -217,7 +232,7 @@ Partial Class Form2
         ' 
         TxtPerformedBy.Anchor = AnchorStyles.Left
         TxtPerformedBy.BorderStyle = BorderStyle.None
-        TxtPerformedBy.Location = New Point(646, 57)
+        TxtPerformedBy.Location = New Point(646, 59)
         TxtPerformedBy.Name = "TxtPerformedBy"
         TxtPerformedBy.ReadOnly = True
         TxtPerformedBy.Size = New Size(168, 16)
@@ -227,7 +242,7 @@ Partial Class Form2
         ' 
         TxtScanDate.Anchor = AnchorStyles.Left
         TxtScanDate.BorderStyle = BorderStyle.None
-        TxtScanDate.Location = New Point(646, 30)
+        TxtScanDate.Location = New Point(646, 32)
         TxtScanDate.Name = "TxtScanDate"
         TxtScanDate.ReadOnly = True
         TxtScanDate.Size = New Size(168, 16)
@@ -237,7 +252,7 @@ Partial Class Form2
         ' 
         TxtFileName.Anchor = AnchorStyles.Left
         TxtFileName.BorderStyle = BorderStyle.None
-        TxtFileName.Location = New Point(646, 3)
+        TxtFileName.Location = New Point(646, 5)
         TxtFileName.Name = "TxtFileName"
         TxtFileName.ReadOnly = True
         TxtFileName.Size = New Size(168, 16)
@@ -258,7 +273,7 @@ Partial Class Form2
         ' 
         TxtJobId.Anchor = AnchorStyles.Left
         TxtJobId.BorderStyle = BorderStyle.None
-        TxtJobId.Location = New Point(374, 3)
+        TxtJobId.Location = New Point(374, 5)
         TxtJobId.Name = "TxtJobId"
         TxtJobId.ReadOnly = True
         TxtJobId.Size = New Size(167, 16)
@@ -367,7 +382,7 @@ Partial Class Form2
         ' 
         TxtJobNumber.Anchor = AnchorStyles.Left
         TxtJobNumber.BorderStyle = BorderStyle.None
-        TxtJobNumber.Location = New Point(102, 3)
+        TxtJobNumber.Location = New Point(102, 5)
         TxtJobNumber.Name = "TxtJobNumber"
         TxtJobNumber.ReadOnly = True
         TxtJobNumber.Size = New Size(167, 16)
@@ -377,7 +392,7 @@ Partial Class Form2
         ' 
         TxtCustomer.Anchor = AnchorStyles.Left
         TxtCustomer.BorderStyle = BorderStyle.None
-        TxtCustomer.Location = New Point(102, 30)
+        TxtCustomer.Location = New Point(102, 32)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
         TxtCustomer.Size = New Size(167, 16)
@@ -387,7 +402,7 @@ Partial Class Form2
         ' 
         TxtVessel.Anchor = AnchorStyles.Left
         TxtVessel.BorderStyle = BorderStyle.None
-        TxtVessel.Location = New Point(102, 57)
+        TxtVessel.Location = New Point(102, 59)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
         TxtVessel.Size = New Size(167, 16)
@@ -397,7 +412,7 @@ Partial Class Form2
         ' 
         TxtManufacturer.Anchor = AnchorStyles.Left
         TxtManufacturer.BorderStyle = BorderStyle.None
-        TxtManufacturer.Location = New Point(102, 84)
+        TxtManufacturer.Location = New Point(102, 86)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
         TxtManufacturer.Size = New Size(167, 16)
@@ -407,7 +422,7 @@ Partial Class Form2
         ' 
         TxtPartNumber.Anchor = AnchorStyles.Left
         TxtPartNumber.BorderStyle = BorderStyle.None
-        TxtPartNumber.Location = New Point(102, 111)
+        TxtPartNumber.Location = New Point(102, 113)
         TxtPartNumber.Name = "TxtPartNumber"
         TxtPartNumber.ReadOnly = True
         TxtPartNumber.Size = New Size(167, 16)
@@ -417,7 +432,7 @@ Partial Class Form2
         ' 
         TxtSerialNumber.Anchor = AnchorStyles.Left
         TxtSerialNumber.BorderStyle = BorderStyle.None
-        TxtSerialNumber.Location = New Point(102, 138)
+        TxtSerialNumber.Location = New Point(102, 140)
         TxtSerialNumber.Name = "TxtSerialNumber"
         TxtSerialNumber.ReadOnly = True
         TxtSerialNumber.Size = New Size(167, 16)
@@ -427,7 +442,7 @@ Partial Class Form2
         ' 
         TxtStampNumber.Anchor = AnchorStyles.Left
         TxtStampNumber.BorderStyle = BorderStyle.None
-        TxtStampNumber.Location = New Point(102, 165)
+        TxtStampNumber.Location = New Point(102, 167)
         TxtStampNumber.Name = "TxtStampNumber"
         TxtStampNumber.ReadOnly = True
         TxtStampNumber.Size = New Size(167, 16)
@@ -437,7 +452,7 @@ Partial Class Form2
         ' 
         TxtInspectedBy.Anchor = AnchorStyles.Left
         TxtInspectedBy.BorderStyle = BorderStyle.None
-        TxtInspectedBy.Location = New Point(102, 192)
+        TxtInspectedBy.Location = New Point(102, 196)
         TxtInspectedBy.Name = "TxtInspectedBy"
         TxtInspectedBy.ReadOnly = True
         TxtInspectedBy.Size = New Size(167, 16)
@@ -524,7 +539,7 @@ Partial Class Form2
         ' 
         TxtClass.Anchor = AnchorStyles.Left
         TxtClass.BorderStyle = BorderStyle.None
-        TxtClass.Location = New Point(374, 30)
+        TxtClass.Location = New Point(374, 32)
         TxtClass.Name = "TxtClass"
         TxtClass.ReadOnly = True
         TxtClass.Size = New Size(167, 16)
@@ -534,7 +549,7 @@ Partial Class Form2
         ' 
         TxtRepairStatus.Anchor = AnchorStyles.Left
         TxtRepairStatus.BorderStyle = BorderStyle.None
-        TxtRepairStatus.Location = New Point(374, 57)
+        TxtRepairStatus.Location = New Point(374, 59)
         TxtRepairStatus.Name = "TxtRepairStatus"
         TxtRepairStatus.ReadOnly = True
         TxtRepairStatus.Size = New Size(167, 16)
@@ -544,7 +559,7 @@ Partial Class Form2
         ' 
         TxtStyle.Anchor = AnchorStyles.Left
         TxtStyle.BorderStyle = BorderStyle.None
-        TxtStyle.Location = New Point(374, 84)
+        TxtStyle.Location = New Point(374, 86)
         TxtStyle.Name = "TxtStyle"
         TxtStyle.ReadOnly = True
         TxtStyle.Size = New Size(167, 16)
@@ -554,7 +569,7 @@ Partial Class Form2
         ' 
         TxtMaterial.Anchor = AnchorStyles.Left
         TxtMaterial.BorderStyle = BorderStyle.None
-        TxtMaterial.Location = New Point(374, 111)
+        TxtMaterial.Location = New Point(374, 113)
         TxtMaterial.Name = "TxtMaterial"
         TxtMaterial.ReadOnly = True
         TxtMaterial.Size = New Size(167, 16)
@@ -564,7 +579,7 @@ Partial Class Form2
         ' 
         TxtBore.Anchor = AnchorStyles.Left
         TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Location = New Point(374, 138)
+        TxtBore.Location = New Point(374, 140)
         TxtBore.Name = "TxtBore"
         TxtBore.ReadOnly = True
         TxtBore.Size = New Size(167, 16)
@@ -574,7 +589,7 @@ Partial Class Form2
         ' 
         TxtDAR.Anchor = AnchorStyles.Left
         TxtDAR.BorderStyle = BorderStyle.None
-        TxtDAR.Location = New Point(374, 165)
+        TxtDAR.Location = New Point(374, 167)
         TxtDAR.Name = "TxtDAR"
         TxtDAR.ReadOnly = True
         TxtDAR.Size = New Size(167, 16)
@@ -584,7 +599,7 @@ Partial Class Form2
         ' 
         TxtCup.Anchor = AnchorStyles.Left
         TxtCup.BorderStyle = BorderStyle.None
-        TxtCup.Location = New Point(374, 192)
+        TxtCup.Location = New Point(374, 196)
         TxtCup.Name = "TxtCup"
         TxtCup.ReadOnly = True
         TxtCup.Size = New Size(167, 16)
@@ -743,11 +758,64 @@ Partial Class Form2
         ExitToolStripMenuItem.Size = New Size(103, 22)
         ExitToolStripMenuItem.Text = "Exit"
         ' 
+        ' Chart1
+        ' 
+        ChartArea1.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        Chart1.Legends.Add(Legend1)
+        Chart1.Location = New Point(12, 267)
+        Chart1.Name = "Chart1"
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Chart1.Series.Add(Series1)
+        Chart1.Size = New Size(300, 181)
+        Chart1.TabIndex = 4
+        Chart1.Text = "Chart1"
+        ' 
+        ' Chart2
+        ' 
+        ChartArea2.Name = "ChartArea1"
+        Chart2.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Chart2.Legends.Add(Legend2)
+        Chart2.Location = New Point(12, 454)
+        Chart2.Name = "Chart2"
+        Series2.ChartArea = "ChartArea1"
+        Series2.ChartType = DataVisualization.Charting.SeriesChartType.Bar
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Chart2.Series.Add(Series2)
+        Chart2.Size = New Size(300, 187)
+        Chart2.TabIndex = 5
+        Chart2.Text = "Chart2"
+        ' 
+        ' Chart3
+        ' 
+        ChartArea3.Name = "ChartArea1"
+        Chart3.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        Chart3.Legends.Add(Legend3)
+        Chart3.Location = New Point(12, 647)
+        Chart3.Name = "Chart3"
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
+        Series3.Legend = "Legend1"
+        Series3.Name = "Series1"
+        Chart3.Series.Add(Series3)
+        Chart3.Size = New Size(300, 187)
+        Chart3.TabIndex = 6
+        Chart3.Text = "Chart3"
+        ' 
         ' Form2
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(842, 598)
+        ClientSize = New Size(842, 855)
+        Controls.Add(Chart3)
+        Controls.Add(Chart2)
+        Controls.Add(Chart1)
         Controls.Add(HeaderLayoutPanel)
         Controls.Add(MenuStrip1)
         MainMenuStrip = MenuStrip1
@@ -758,6 +826,9 @@ Partial Class Form2
         HeaderLayoutPanel.PerformLayout()
         MenuStrip1.ResumeLayout(False)
         MenuStrip1.PerformLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -824,4 +895,7 @@ Partial Class Form2
     Friend WithEvents PageSetupToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
     Friend WithEvents ExitToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents Chart1 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart2 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart3 As DataVisualization.Charting.Chart
 End Class
