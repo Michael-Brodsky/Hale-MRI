@@ -4,12 +4,15 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports System.Drawing.Printing
+Imports System.Numerics
 
 Public Class Form2
     Inherits FrmDatabaseForm
+
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
+    Private mReportGenerator As ReportGenerator = Nothing
 
     ''' <summary>
     ''' Returns the currently selected JobDetail,
@@ -71,7 +74,27 @@ Public Class Form2
     End Sub
 
     Private Sub ConfigureControls()
+        mReportGenerator = New ReportGenerator(New List(Of Control) From {
+            Chart1,
+            Chart2,
+            Chart3
+        })
+        ControlVisible(Chart1, True)
+        ControlVisible(Chart2, True)
+        ControlVisible(Chart3, True)
+    End Sub
 
+    Private Sub ControlVisible(element As Control, visible As Boolean)
+        element.Visible = visible
+        If visible Then
+            AddHandler element.MouseDown, AddressOf Control_MouseDown
+            AddHandler element.MouseMove, AddressOf Control_MouseMove
+            AddHandler element.MouseUp, AddressOf Control_MouseUp
+        Else
+            RemoveHandler element.MouseDown, AddressOf Control_MouseDown
+            RemoveHandler element.MouseMove, AddressOf Control_MouseMove
+            RemoveHandler element.MouseUp, AddressOf Control_MouseUp
+        End If
     End Sub
 
     Private Function GetMeasurementData(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
@@ -126,6 +149,7 @@ Public Class Form2
         Next
     End Sub
 
+#Region "Event Handlers"
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         MasterSource = JobDetailsBindingSource
         ConfigureControls()
@@ -179,14 +203,33 @@ Public Class Form2
         Dim captureWidth As Integer = Me.ClientSize.Width
         Dim captureHeight As Integer = Me.ClientSize.Height
         Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
-        Dim tempBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
-        Me.DrawToBitmap(tempBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
-        Dim finalBitmap As New Bitmap(captureWidth, captureHeight)
-        Using g As Graphics = Graphics.FromImage(finalBitmap)
-            g.DrawImage(tempBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
+        Dim formBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
+        Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
+        Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
+        Using g As Graphics = Graphics.FromImage(croppedBitmap)
+            ' TODO: This combines cropping and scaling to paper size with margins, but
+            ' should really be done in two steps: crop, then scale.
+            g.DrawImage(formBitmap, New Rectangle(0, 0,
+            captureWidth - (e.MarginBounds.Left + (Me.ClientSize.Width - e.MarginBounds.Right)),
+            captureHeight - (e.MarginBounds.Top + (Me.ClientSize.Height - e.MarginBounds.Bottom))), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
         End Using
-        tempBitmap.Dispose()
-        e.Graphics.DrawImage(finalBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the margins
+        formBitmap.Dispose()
+        e.Graphics.DrawImage(croppedBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
         e.HasMorePages = False
     End Sub
+
+#Region "Dragging the Form"
+    Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
+        mReportGenerator.ControlDragStart(sender, e)
+    End Sub
+
+    Private Sub Control_MouseMove(sender As Object, e As MouseEventArgs)
+        mReportGenerator.ControlDragMove(sender, e)
+    End Sub
+
+    Private Sub Control_MouseUp(sender As Object, e As MouseEventArgs)
+        mReportGenerator.ControlDragDrop(sender, e)
+    End Sub
+#End Region
+#End Region
 End Class

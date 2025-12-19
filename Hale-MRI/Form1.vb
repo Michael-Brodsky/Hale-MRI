@@ -9,9 +9,8 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-#Const NO_ENCODERS = False
+
 Public Class Form1
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -120,7 +119,8 @@ Public Class Form1
             If mJob IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
+                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
@@ -141,7 +141,8 @@ Public Class Form1
             If mJobDetails IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
 #If NO_ENCODERS Then
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = 13063).Include(Function(m) m.CellMeasurements).ToList()
+                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
+                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
 #End If
                 ShowJobInfo()
             End If
@@ -395,27 +396,27 @@ Public Class Form1
         End Set
     End Property
 
-    Private Function ShowLocalPitchTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
+    Private Function ShowLocalPitchTolerance(minsApply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
         ' made for use in ShowTolerances only returns an integer representing which class passed
-        Dim passingclass As Integer = 0
+        Dim passingClass As Integer = 0
         If app Then
 
         Else
             For Each tol As Tolerance In classes
-                If passingclass < classes.IndexOf(tol) Then
-                    Return passingclass 'return the highest class that passed - means that all others will auto pass
+                If passingClass < classes.IndexOf(tol) Then
+                    Return passingClass 'return the highest class that passed - means that all others will auto pass
                 End If
                 Dim Sectors As Integer = tol.LocalPitchSectors
                 For Each rm In mJobDetails?.RadiusMeasurements
                     For n = 1 To Sectors
                         Dim pitch As Double = GetLocalPitch(rm.CellMeasurements.ToList(), Sectors, n, Job.PropellerDiameter, rm.Radius)
-                        Dim LocalPitch As ToleranceColor = CheckLocalPitchTolerance(tol, pitch, Job.DesiredPitch, minsapply)
+                        Dim LocalPitch As ToleranceColor = CheckLocalPitchTolerance(tol, pitch, Job.DesiredPitch, minsApply)
                         If LocalPitch <> ToleranceColor.Pass Then
-                            passingclass += 1
+                            passingClass += 1
                             Exit For ' exit n loop because this class failed
                         End If
                     Next
-                    If passingclass > classes.IndexOf(tol) Then
+                    If passingClass > classes.IndexOf(tol) Then
                         Exit For ' exit rm loop because this class already failed
                     End If
                 Next
@@ -425,144 +426,144 @@ Public Class Form1
     End Function
 
     Private Function ShowMeanPitchRadiusTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        Dim passingclass As Integer = 0
+        Dim passingClass As Integer = 0
         If app Then
 
         Else
             For Each tol As Tolerance In classes
-                If passingclass < classes.IndexOf(tol) Then
-                    Return passingclass 'return the highest class that passed - means that all others will auto pass
+                If passingClass < classes.IndexOf(tol) Then
+                    Return passingClass 'return the highest class that passed - means that all others will auto pass
                 End If
                 For Each rm In mJobDetails?.RadiusMeasurements
                     Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
                     Dim MeanPitch As ToleranceColor = CheckBladeRadiusPitch(tol, pitch, Job.DesiredPitch, minsapply)
                     If MeanPitch <> ToleranceColor.BadData Then
-                        passingclass += 1
+                        passingClass += 1
                         Exit For ' exit n loop because this class failed
                     End If
                 Next
-                If passingclass > classes.IndexOf(tol) Then
+                If passingClass > classes.IndexOf(tol) Then
                     Exit For ' exit rm loop because this class already failed
                 End If
             Next
         End If
-        Return passingclass
+        Return passingClass
     End Function
     Private Function ShowMeanPitchBladeTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        Dim passingclass As Integer = 0
+        Dim passingClass As Integer = 0
         If app Then
 
         Else
             For Each tol As Tolerance In classes
-                If passingclass < classes.IndexOf(tol) Then
-                    Return passingclass
+                If passingClass < classes.IndexOf(tol) Then
+                    Return passingClass
                 End If
                 Dim blade As Integer
                 For blade = 1 To mJob?.PropellerBlades
-                    Dim Pitchtotal As Double = 0
+                    Dim pitchTotal As Double = 0
                     Dim Count As Integer = 0
                     For Each rm In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = blade).ToList()
                         Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements)
-                        Pitchtotal += pitch
+                        pitchTotal += pitch
                         Count += 1
                     Next
-                    Dim BladePitch As ToleranceColor = CheckBladePitch(tol, (Pitchtotal / Count), mJob?.DesiredPitch, minsapply)
+                    Dim BladePitch As ToleranceColor = CheckBladePitch(tol, (pitchTotal / Count), mJob?.DesiredPitch, minsapply)
                     If BladePitch <> ToleranceColor.BadData Then
-                        passingclass += 1
+                        passingClass += 1
                         Exit For ' Exit blade loop - class already failed
                     End If
                 Next
             Next
         End If
-        Return passingclass
+        Return passingClass
     End Function
     Private Function ShowMeanPitchPropellerTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        Dim passingclass = 0
+        Dim passingClass = 0
         For Each tol As Tolerance In classes
-            If passingclass < classes.IndexOf(tol) Then
-                Return passingclass
+            If passingClass < classes.IndexOf(tol) Then
+                Return passingClass
             End If
             Dim pitch = mJobDetails.WheelPitch
             Dim meanPitch As ToleranceColor = CheckWheelPitch(tol, pitch, mJob.DesiredPitch, minsapply)
             If meanPitch <> ToleranceColor.Pass Then
-                passingclass += 1
+                passingClass += 1
             End If
         Next
-        Return passingclass
+        Return passingClass
     End Function
 
     Private Function ShowAngularDeviationTolerance(classes As List(Of Tolerance), radius As Double) As Integer
-        Dim passingclass As Integer = 0
+        Dim passingClass As Integer = 0
         Dim largestDeviation As Double = 0.0
         For Each tol As Tolerance In classes
-            If passingclass < classes.IndexOf(tol) Then
-                Return passingclass
+            If passingClass < classes.IndexOf(tol) Then
+                Return passingClass
             End If
             Dim blade As Integer
             For blade = 1 To mJob?.PropellerBlades
-                Dim radmeas As RadiusMeasurement
-                Dim radmeas2 As RadiusMeasurement
-                Dim nextblade As Integer = blade + 1
+                Dim rad As RadiusMeasurement
+                Dim rad2 As RadiusMeasurement
+                Dim nextBlade As Integer = blade + 1
                 If blade = mJob.PropellerBlades Then
-                    nextblade = 1
+                    nextBlade = 1
                 End If
                 If mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).Any() Then
-                    radmeas = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
-                    radmeas2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextblade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
+                    rad = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
+                    rad2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextBlade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
                 Else ' if no radii at selected radius then no classes pass inspection
                     Return 5
                 End If
-                Dim blademidangle = GetChordMidAngle(radmeas.CellMeasurements) ' need to make all neccessary checks to select a good radius measurement
-                Dim nextblademidangle = GetChordMidAngle(radmeas2.CellMeasurements)
-                If largestDeviation < Math.Abs(blademidangle - nextblademidangle) Then
-                    largestDeviation = Math.Abs(blademidangle - nextblademidangle)
+                Dim bladeMidAngle = GetChordMidAngle(rad.CellMeasurements) ' need to make all necessary checks to select a good radius measurement
+                Dim nextBladeMidAngle = GetChordMidAngle(rad2.CellMeasurements)
+                If largestDeviation < Math.Abs(bladeMidAngle - nextBladeMidAngle) Then
+                    largestDeviation = Math.Abs(bladeMidAngle - nextBladeMidAngle)
                 End If
-                Dim angDeviationcheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, blademidangle, nextblademidangle)
-                If angDeviationcheck <> ToleranceColor.Pass Then
-                    passingclass += 1
+                Dim angDeviationCheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, bladeMidAngle, nextBladeMidAngle)
+                If angDeviationCheck <> ToleranceColor.Pass Then
+                    passingClass += 1
                     Exit For
                 End If
             Next
         Next
         TxtAngularDeviation.Text = Math.Round(largestDeviation, 2).ToString() + "°"
-        Return passingclass
+        Return passingClass
     End Function
 
     Private Function ShowAxialPositionTolerance(classes As List(Of Tolerance), radius As Double) As Integer
-        Dim passingclass As Integer = 0
+        Dim passingClass As Integer = 0
         Dim largestDeviation As Double = 0.0
         For Each tol As Tolerance In classes
-            If passingclass < classes.IndexOf(tol) Then
-                Return passingclass
+            If passingClass < classes.IndexOf(tol) Then
+                Return passingClass
             End If
             Dim blade As Integer
             For blade = 1 To mJob?.PropellerBlades
-                Dim radmeas As RadiusMeasurement
-                Dim radmeas2 As RadiusMeasurement
-                Dim nextblade As Integer = blade + 1
+                Dim rad As RadiusMeasurement
+                Dim rad2 As RadiusMeasurement
+                Dim nextBlade As Integer = blade + 1
                 If blade = mJob.PropellerBlades Then
-                    nextblade = 1
+                    nextBlade = 1
                 End If
                 If mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).Any() Then
-                    radmeas = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
-                    radmeas2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextblade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
+                    rad = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
+                    rad2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextblade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
                 Else ' if no radii at selected radius then no classes pass inspection
                     Return 5
                 End If
-                Dim blademiddepth = GetChordMidDepth(radmeas.CellMeasurements) ' need to make all neccessary checks to select a good radius measurement
-                Dim nextblademiddepth = GetChordMidDepth(radmeas2.CellMeasurements)
-                If largestDeviation < Math.Abs(blademiddepth - nextblademiddepth) Then
-                    largestDeviation = Math.Abs(blademiddepth - nextblademiddepth)
+                Dim bladeMidDepth = GetChordMidDepth(rad.CellMeasurements) ' need to make all necessary checks to select a good radius measurement
+                Dim nextBladeMidDepth = GetChordMidDepth(rad2.CellMeasurements)
+                If largestDeviation < Math.Abs(bladeMidDepth - nextBladeMidDepth) Then
+                    largestDeviation = Math.Abs(bladeMidDepth - nextBladeMidDepth)
                 End If
-                Dim Axialposcheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, blademiddepth, nextblademiddepth)
-                If Axialposcheck <> ToleranceColor.Pass Then
-                    passingclass += 1
+                Dim axialPosCheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, bladeMidDepth, nextBladeMidDepth)
+                If axialPosCheck <> ToleranceColor.Pass Then
+                    passingClass += 1
                     Exit For
                 End If
             Next
         Next
         TxtAxialPosition.Text = Math.Round(largestDeviation, 2).ToString() + " In."
-        Return passingclass
+        Return passingClass
     End Function
 
     Private Sub ShowTolerances(mins As Boolean, app As Boolean)
@@ -817,12 +818,12 @@ Public Class Form1
         Dim dtBladePitchByRadius As New DataTable()
         Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
         Dim colPitch As DataColumn = dtBladePitch.Columns.Add("Blade", GetType(Double))
-        Dim rowradiusBlade As DataRow
-        Dim rowbladeBlade As DataRow
+        Dim rowRadiusBlade As DataRow
+        Dim rowBladeBlade As DataRow
         Dim x As Integer
         For x = 1 To Job?.PropellerBlades
-            rowradiusBlade = dtBladePitchByRadius.Rows.Add(x)
-            rowbladeBlade = dtBladePitch.Rows.Add(x)
+            rowRadiusBlade = dtBladePitchByRadius.Rows.Add(x)
+            rowBladeBlade = dtBladePitch.Rows.Add(x)
         Next
         GridBladePitch.DataSource = dtBladePitch
         dtBladePitch.Columns.Add("Avg Pitch", GetType(Double))
@@ -835,26 +836,26 @@ Public Class Form1
             Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
             For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
                 Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
-                rowradiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
+                rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
                 colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
                 Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
                 rowradiusBlade.Item(colRadius) = Math.Round(pitch, 2)
-                Dim textavgbladepitchcolor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
-                GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textavgbladepitchcolor)
-                rowbladeBlade = If(dtBladePitch.Rows.Find(rm.BladeId), dtBladePitch.Rows.Find(1))
+                Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
+                GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textAvgBladePitchColor)
+                rowBladeBlade = If(dtBladePitch.Rows.Find(rm.BladeId), dtBladePitch.Rows.Find(1))
                 colPitch = If(dtBladePitch.Columns("Avg Pitch"), dtBladePitch.Columns.Add("Avg Pitch", GetType(Double)))
                 totalPitch += pitch
                 pitchCount += 1
             Next
-            Dim avgpitch As Double = totalPitch / pitchCount
-            TotalPitchWheel += avgpitch
-            Dim bladepitchcolor As ToleranceColor = CheckBladePitch(ToleranceTable, avgpitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
+            Dim avgPitch As Double = totalPitch / pitchCount
+            TotalPitchWheel += avgPitch
+            Dim bladePitchColor As ToleranceColor = CheckBladePitch(ToleranceTable, avgPitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
             dtBladePitch.Rows(row.Item("Blade") - 1).Item("Avg Pitch") = Math.Round(totalPitch / pitchCount, 2)
             GridBladePitch.Rows(row.Item("Blade") - 1).Cells(1).Style.ForeColor = Tolerances.ToColor(bladepitchcolor)
         Next
         mJobDetails.WheelPitch = TotalPitchWheel / mJob.PropellerBlades
-        Dim textwheelpitchcolor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, Job.DesiredPitch, True)
-        TxtWheelPitch.ForeColor = Tolerances.ToColor(textwheelpitchcolor)
+        Dim textWheelPitchColor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, Job.DesiredPitch, True)
+        TxtWheelPitch.ForeColor = Tolerances.ToColor(textWheelPitchColor)
         TxtWheelPitch.Text = mJobDetails.WheelPitch.ToString()
         GridBladePitch.Columns(0).Visible = False
     End Sub
@@ -992,8 +993,8 @@ Public Class Form1
         If TxtBasis.Text = "" Then
             Return
         End If
-        Dim TolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
-        Dim BasisPitch As Double = Double.Parse(TxtBasis.Text)
+        Dim tolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
+        Dim basisPitch As Double = Double.Parse(TxtBasis.Text)
         For Each rm As RadiusMeasurement In radiusMeasurements
             Dim s As New Series With {
                 .ChartType = SeriesChartType.Point,
@@ -1003,18 +1004,18 @@ Public Class Form1
             Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
             Dim arcColors As New List(Of ToleranceColor)
             Dim sector As Integer = 1
-            For sector = 1 To TolClass.LocalPitchSectors
-                arcColors.Add(CheckLocalPitchTolerance(TolClass, GetLocalPitch(cellMeasurements, TolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius), BasisPitch, True))
+            For sector = 1 To tolClass.LocalPitchSectors
+                arcColors.Add(CheckLocalPitchTolerance(tolClass, GetLocalPitch(cellMeasurements, tolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius), basisPitch, True))
             Next
-            Dim cellpersector As Integer = CInt(Math.Floor(cellMeasurements.Count / TolClass.LocalPitchSectors))
+            Dim cellPerSector As Integer = CInt(Math.Floor(cellMeasurements.Count / tolClass.LocalPitchSectors))
             For i As Integer = 1 To cellMeasurements.Count - 1
-                Dim currentsector As Integer = Math.Truncate(i / cellpersector)
+                Dim currentSector As Integer = Math.Truncate(i / cellPerSector)
                 Dim cmCurrent As CellMeasurement = cellMeasurements(i)
                 Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
                 Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
                 Dim coordinates = PolarToCartesian(rm.Radius, angle)
                 Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
-                Dim pointcolor As ToleranceColor = arcColors(Math.Min(currentsector, arcColors.Count - 1))
+                Dim pointcolor As ToleranceColor = arcColors(Math.Min(currentSector, arcColors.Count - 1))
                 s.Points(p).Color = ToColor(pointcolor)
             Next
             chartPlot.Series.Add(s)
@@ -1353,8 +1354,8 @@ Public Class Form1
         If mJobDetails Is Nothing Then
             Return
         End If
-        Dim userinput As String = InputBox("Describe where the Reference is being taken from (e.g. 'Leading Edge at 70 Radius on Blade 1'):", "Reference Set")
-        mJobDetails.ReferenceCell.ReferenceDescription = userinput
+        Dim userInput As String = InputBox("Describe where the Reference is being taken from (e.g. 'Leading Edge at 70 Radius on Blade 1'):", "Reference Set")
+        mJobDetails.ReferenceCell.ReferenceDescription = userInput
         mJobDetails.ReferenceCell.ReferenceRadius = Double.Parse(TxtRadius.Text)
         mJobDetails.ReferenceCell.ReferenceAngle = Double.Parse(TxtAngle.Text)
         mJobDetails.ReferenceCell.ReferenceDepth = Double.Parse(TxtDepth.Text)
