@@ -203,14 +203,18 @@ Public Class Form2
         Dim captureWidth As Integer = Me.ClientSize.Width
         Dim captureHeight As Integer = Me.ClientSize.Height
         Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
-        Dim tempBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
-        Me.DrawToBitmap(tempBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
-        Dim finalBitmap As New Bitmap(captureWidth, captureHeight)
-        Using g As Graphics = Graphics.FromImage(finalBitmap)
-            g.DrawImage(tempBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
+        Dim formBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
+        Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
+        Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
+        Using g As Graphics = Graphics.FromImage(croppedBitmap)
+            ' TODO: This combines cropping and scaling to paper size with margins, but
+            ' should really be done in two steps: crop, then scale.
+            g.DrawImage(formBitmap, New Rectangle(0, 0,
+            captureWidth - (e.MarginBounds.Left + (Me.ClientSize.Width - e.MarginBounds.Right)),
+            captureHeight - (e.MarginBounds.Top + (Me.ClientSize.Height - e.MarginBounds.Bottom))), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
         End Using
-        tempBitmap.Dispose()
-        e.Graphics.DrawImage(finalBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
+        formBitmap.Dispose()
+        e.Graphics.DrawImage(croppedBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
         e.HasMorePages = False
     End Sub
 

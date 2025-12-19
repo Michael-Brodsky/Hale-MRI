@@ -175,14 +175,14 @@ Partial Class Form2
         HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
-        HeaderLayoutPanel.Size = New Size(818, 219)
+        HeaderLayoutPanel.Size = New Size(810, 219)
         HeaderLayoutPanel.TabIndex = 0
         ' 
         ' TxtWheelPitch
         ' 
         TxtWheelPitch.Anchor = AnchorStyles.Left
         TxtWheelPitch.BorderStyle = BorderStyle.None
-        TxtWheelPitch.Location = New Point(646, 196)
+        TxtWheelPitch.Location = New Point(639, 196)
         TxtWheelPitch.Name = "TxtWheelPitch"
         TxtWheelPitch.ReadOnly = True
         TxtWheelPitch.Size = New Size(168, 16)
@@ -192,7 +192,7 @@ Partial Class Form2
         ' 
         TxtMarkedPitch.Anchor = AnchorStyles.Left
         TxtMarkedPitch.BorderStyle = BorderStyle.None
-        TxtMarkedPitch.Location = New Point(646, 167)
+        TxtMarkedPitch.Location = New Point(639, 167)
         TxtMarkedPitch.Name = "TxtMarkedPitch"
         TxtMarkedPitch.ReadOnly = True
         TxtMarkedPitch.Size = New Size(168, 16)
@@ -202,7 +202,7 @@ Partial Class Form2
         ' 
         TxtMeasuredDiameter.Anchor = AnchorStyles.Left
         TxtMeasuredDiameter.BorderStyle = BorderStyle.None
-        TxtMeasuredDiameter.Location = New Point(646, 140)
+        TxtMeasuredDiameter.Location = New Point(639, 140)
         TxtMeasuredDiameter.Name = "TxtMeasuredDiameter"
         TxtMeasuredDiameter.ReadOnly = True
         TxtMeasuredDiameter.Size = New Size(168, 16)
@@ -212,7 +212,7 @@ Partial Class Form2
         ' 
         TxtMarkedDiameter.Anchor = AnchorStyles.Left
         TxtMarkedDiameter.BorderStyle = BorderStyle.None
-        TxtMarkedDiameter.Location = New Point(646, 113)
+        TxtMarkedDiameter.Location = New Point(639, 113)
         TxtMarkedDiameter.Name = "TxtMarkedDiameter"
         TxtMarkedDiameter.ReadOnly = True
         TxtMarkedDiameter.Size = New Size(168, 16)
@@ -222,7 +222,7 @@ Partial Class Form2
         ' 
         TxtRotation.Anchor = AnchorStyles.Left
         TxtRotation.BorderStyle = BorderStyle.None
-        TxtRotation.Location = New Point(646, 86)
+        TxtRotation.Location = New Point(639, 86)
         TxtRotation.Name = "TxtRotation"
         TxtRotation.ReadOnly = True
         TxtRotation.Size = New Size(168, 16)
@@ -232,7 +232,7 @@ Partial Class Form2
         ' 
         TxtPerformedBy.Anchor = AnchorStyles.Left
         TxtPerformedBy.BorderStyle = BorderStyle.None
-        TxtPerformedBy.Location = New Point(646, 59)
+        TxtPerformedBy.Location = New Point(639, 59)
         TxtPerformedBy.Name = "TxtPerformedBy"
         TxtPerformedBy.ReadOnly = True
         TxtPerformedBy.Size = New Size(168, 16)
@@ -242,7 +242,7 @@ Partial Class Form2
         ' 
         TxtScanDate.Anchor = AnchorStyles.Left
         TxtScanDate.BorderStyle = BorderStyle.None
-        TxtScanDate.Location = New Point(646, 32)
+        TxtScanDate.Location = New Point(639, 32)
         TxtScanDate.Name = "TxtScanDate"
         TxtScanDate.ReadOnly = True
         TxtScanDate.Size = New Size(168, 16)
@@ -252,7 +252,7 @@ Partial Class Form2
         ' 
         TxtFileName.Anchor = AnchorStyles.Left
         TxtFileName.BorderStyle = BorderStyle.None
-        TxtFileName.Location = New Point(646, 5)
+        TxtFileName.Location = New Point(639, 5)
         TxtFileName.Name = "TxtFileName"
         TxtFileName.ReadOnly = True
         TxtFileName.Size = New Size(168, 16)
@@ -263,7 +263,7 @@ Partial Class Form2
         Label1.Anchor = AnchorStyles.Left
         Label1.AutoSize = True
         Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label1.Location = New Point(547, 6)
+        Label1.Location = New Point(541, 6)
         Label1.Name = "Label1"
         Label1.Size = New Size(62, 15)
         Label1.TabIndex = 34
@@ -273,10 +273,10 @@ Partial Class Form2
         ' 
         TxtJobId.Anchor = AnchorStyles.Left
         TxtJobId.BorderStyle = BorderStyle.None
-        TxtJobId.Location = New Point(374, 5)
+        TxtJobId.Location = New Point(370, 5)
         TxtJobId.Name = "TxtJobId"
         TxtJobId.ReadOnly = True
-        TxtJobId.Size = New Size(167, 16)
+        TxtJobId.Size = New Size(165, 16)
         TxtJobId.TabIndex = 26
         ' 
         ' LabJobId
@@ -284,7 +284,7 @@ Partial Class Form2
         LabJobId.Anchor = AnchorStyles.Left
         LabJobId.AutoSize = True
         LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabJobId.Location = New Point(275, 6)
+        LabJobId.Location = New Point(272, 6)
         LabJobId.Name = "LabJobId"
         LabJobId.Size = New Size(40, 15)
         LabJobId.TabIndex = 18
@@ -382,80 +382,80 @@ Partial Class Form2
         ' 
         TxtJobNumber.Anchor = AnchorStyles.Left
         TxtJobNumber.BorderStyle = BorderStyle.None
-        TxtJobNumber.Location = New Point(102, 5)
+        TxtJobNumber.Location = New Point(101, 5)
         TxtJobNumber.Name = "TxtJobNumber"
         TxtJobNumber.ReadOnly = True
-        TxtJobNumber.Size = New Size(167, 16)
+        TxtJobNumber.Size = New Size(165, 16)
         TxtJobNumber.TabIndex = 10
         ' 
         ' TxtCustomer
         ' 
         TxtCustomer.Anchor = AnchorStyles.Left
         TxtCustomer.BorderStyle = BorderStyle.None
-        TxtCustomer.Location = New Point(102, 32)
+        TxtCustomer.Location = New Point(101, 32)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
-        TxtCustomer.Size = New Size(167, 16)
+        TxtCustomer.Size = New Size(165, 16)
         TxtCustomer.TabIndex = 11
         ' 
         ' TxtVessel
         ' 
         TxtVessel.Anchor = AnchorStyles.Left
         TxtVessel.BorderStyle = BorderStyle.None
-        TxtVessel.Location = New Point(102, 59)
+        TxtVessel.Location = New Point(101, 59)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
-        TxtVessel.Size = New Size(167, 16)
+        TxtVessel.Size = New Size(165, 16)
         TxtVessel.TabIndex = 12
         ' 
         ' TxtManufacturer
         ' 
         TxtManufacturer.Anchor = AnchorStyles.Left
         TxtManufacturer.BorderStyle = BorderStyle.None
-        TxtManufacturer.Location = New Point(102, 86)
+        TxtManufacturer.Location = New Point(101, 86)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
-        TxtManufacturer.Size = New Size(167, 16)
+        TxtManufacturer.Size = New Size(165, 16)
         TxtManufacturer.TabIndex = 13
         ' 
         ' TxtPartNumber
         ' 
         TxtPartNumber.Anchor = AnchorStyles.Left
         TxtPartNumber.BorderStyle = BorderStyle.None
-        TxtPartNumber.Location = New Point(102, 113)
+        TxtPartNumber.Location = New Point(101, 113)
         TxtPartNumber.Name = "TxtPartNumber"
         TxtPartNumber.ReadOnly = True
-        TxtPartNumber.Size = New Size(167, 16)
+        TxtPartNumber.Size = New Size(165, 16)
         TxtPartNumber.TabIndex = 14
         ' 
         ' TxtSerialNumber
         ' 
         TxtSerialNumber.Anchor = AnchorStyles.Left
         TxtSerialNumber.BorderStyle = BorderStyle.None
-        TxtSerialNumber.Location = New Point(102, 140)
+        TxtSerialNumber.Location = New Point(101, 140)
         TxtSerialNumber.Name = "TxtSerialNumber"
         TxtSerialNumber.ReadOnly = True
-        TxtSerialNumber.Size = New Size(167, 16)
+        TxtSerialNumber.Size = New Size(165, 16)
         TxtSerialNumber.TabIndex = 15
         ' 
         ' TxtStampNumber
         ' 
         TxtStampNumber.Anchor = AnchorStyles.Left
         TxtStampNumber.BorderStyle = BorderStyle.None
-        TxtStampNumber.Location = New Point(102, 167)
+        TxtStampNumber.Location = New Point(101, 167)
         TxtStampNumber.Name = "TxtStampNumber"
         TxtStampNumber.ReadOnly = True
-        TxtStampNumber.Size = New Size(167, 16)
+        TxtStampNumber.Size = New Size(165, 16)
         TxtStampNumber.TabIndex = 16
         ' 
         ' TxtInspectedBy
         ' 
         TxtInspectedBy.Anchor = AnchorStyles.Left
         TxtInspectedBy.BorderStyle = BorderStyle.None
-        TxtInspectedBy.Location = New Point(102, 196)
+        TxtInspectedBy.Location = New Point(101, 196)
         TxtInspectedBy.Name = "TxtInspectedBy"
         TxtInspectedBy.ReadOnly = True
-        TxtInspectedBy.Size = New Size(167, 16)
+        TxtInspectedBy.Size = New Size(165, 16)
         TxtInspectedBy.TabIndex = 17
         ' 
         ' LabClass
@@ -463,7 +463,7 @@ Partial Class Form2
         LabClass.Anchor = AnchorStyles.Left
         LabClass.AutoSize = True
         LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabClass.Location = New Point(275, 33)
+        LabClass.Location = New Point(272, 33)
         LabClass.Name = "LabClass"
         LabClass.Size = New Size(33, 15)
         LabClass.TabIndex = 19
@@ -474,7 +474,7 @@ Partial Class Form2
         LabRepairStatus.Anchor = AnchorStyles.Left
         LabRepairStatus.AutoSize = True
         LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabRepairStatus.Location = New Point(275, 60)
+        LabRepairStatus.Location = New Point(272, 60)
         LabRepairStatus.Name = "LabRepairStatus"
         LabRepairStatus.Size = New Size(81, 15)
         LabRepairStatus.TabIndex = 20
@@ -485,7 +485,7 @@ Partial Class Form2
         LabStyle.Anchor = AnchorStyles.Left
         LabStyle.AutoSize = True
         LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabStyle.Location = New Point(275, 87)
+        LabStyle.Location = New Point(272, 87)
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(35, 15)
         LabStyle.TabIndex = 21
@@ -496,7 +496,7 @@ Partial Class Form2
         LabMaterial.Anchor = AnchorStyles.Left
         LabMaterial.AutoSize = True
         LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabMaterial.Location = New Point(275, 114)
+        LabMaterial.Location = New Point(272, 114)
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(53, 15)
         LabMaterial.TabIndex = 22
@@ -507,7 +507,7 @@ Partial Class Form2
         LabBore.Anchor = AnchorStyles.Left
         LabBore.AutoSize = True
         LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabBore.Location = New Point(275, 141)
+        LabBore.Location = New Point(272, 141)
         LabBore.Name = "LabBore"
         LabBore.Size = New Size(34, 15)
         LabBore.TabIndex = 23
@@ -518,7 +518,7 @@ Partial Class Form2
         LabDAR.Anchor = AnchorStyles.Left
         LabDAR.AutoSize = True
         LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabDAR.Location = New Point(275, 168)
+        LabDAR.Location = New Point(272, 168)
         LabDAR.Name = "LabDAR"
         LabDAR.Size = New Size(32, 15)
         LabDAR.TabIndex = 24
@@ -529,7 +529,7 @@ Partial Class Form2
         LabCup.Anchor = AnchorStyles.Left
         LabCup.AutoSize = True
         LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabCup.Location = New Point(275, 196)
+        LabCup.Location = New Point(272, 196)
         LabCup.Name = "LabCup"
         LabCup.Size = New Size(28, 15)
         LabCup.TabIndex = 25
@@ -539,70 +539,70 @@ Partial Class Form2
         ' 
         TxtClass.Anchor = AnchorStyles.Left
         TxtClass.BorderStyle = BorderStyle.None
-        TxtClass.Location = New Point(374, 32)
+        TxtClass.Location = New Point(370, 32)
         TxtClass.Name = "TxtClass"
         TxtClass.ReadOnly = True
-        TxtClass.Size = New Size(167, 16)
+        TxtClass.Size = New Size(165, 16)
         TxtClass.TabIndex = 27
         ' 
         ' TxtRepairStatus
         ' 
         TxtRepairStatus.Anchor = AnchorStyles.Left
         TxtRepairStatus.BorderStyle = BorderStyle.None
-        TxtRepairStatus.Location = New Point(374, 59)
+        TxtRepairStatus.Location = New Point(370, 59)
         TxtRepairStatus.Name = "TxtRepairStatus"
         TxtRepairStatus.ReadOnly = True
-        TxtRepairStatus.Size = New Size(167, 16)
+        TxtRepairStatus.Size = New Size(165, 16)
         TxtRepairStatus.TabIndex = 28
         ' 
         ' TxtStyle
         ' 
         TxtStyle.Anchor = AnchorStyles.Left
         TxtStyle.BorderStyle = BorderStyle.None
-        TxtStyle.Location = New Point(374, 86)
+        TxtStyle.Location = New Point(370, 86)
         TxtStyle.Name = "TxtStyle"
         TxtStyle.ReadOnly = True
-        TxtStyle.Size = New Size(167, 16)
+        TxtStyle.Size = New Size(165, 16)
         TxtStyle.TabIndex = 29
         ' 
         ' TxtMaterial
         ' 
         TxtMaterial.Anchor = AnchorStyles.Left
         TxtMaterial.BorderStyle = BorderStyle.None
-        TxtMaterial.Location = New Point(374, 113)
+        TxtMaterial.Location = New Point(370, 113)
         TxtMaterial.Name = "TxtMaterial"
         TxtMaterial.ReadOnly = True
-        TxtMaterial.Size = New Size(167, 16)
+        TxtMaterial.Size = New Size(165, 16)
         TxtMaterial.TabIndex = 30
         ' 
         ' TxtBore
         ' 
         TxtBore.Anchor = AnchorStyles.Left
         TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Location = New Point(374, 140)
+        TxtBore.Location = New Point(370, 140)
         TxtBore.Name = "TxtBore"
         TxtBore.ReadOnly = True
-        TxtBore.Size = New Size(167, 16)
+        TxtBore.Size = New Size(165, 16)
         TxtBore.TabIndex = 31
         ' 
         ' TxtDAR
         ' 
         TxtDAR.Anchor = AnchorStyles.Left
         TxtDAR.BorderStyle = BorderStyle.None
-        TxtDAR.Location = New Point(374, 167)
+        TxtDAR.Location = New Point(370, 167)
         TxtDAR.Name = "TxtDAR"
         TxtDAR.ReadOnly = True
-        TxtDAR.Size = New Size(167, 16)
+        TxtDAR.Size = New Size(165, 16)
         TxtDAR.TabIndex = 32
         ' 
         ' TxtCup
         ' 
         TxtCup.Anchor = AnchorStyles.Left
         TxtCup.BorderStyle = BorderStyle.None
-        TxtCup.Location = New Point(374, 196)
+        TxtCup.Location = New Point(370, 196)
         TxtCup.Name = "TxtCup"
         TxtCup.ReadOnly = True
-        TxtCup.Size = New Size(167, 16)
+        TxtCup.Size = New Size(165, 16)
         TxtCup.TabIndex = 33
         ' 
         ' Label2
@@ -610,7 +610,7 @@ Partial Class Form2
         Label2.Anchor = AnchorStyles.Left
         Label2.AutoSize = True
         Label2.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label2.Location = New Point(547, 33)
+        Label2.Location = New Point(541, 33)
         Label2.Name = "Label2"
         Label2.Size = New Size(63, 15)
         Label2.TabIndex = 35
@@ -621,7 +621,7 @@ Partial Class Form2
         Label3.Anchor = AnchorStyles.Left
         Label3.AutoSize = True
         Label3.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label3.Location = New Point(547, 60)
+        Label3.Location = New Point(541, 60)
         Label3.Name = "Label3"
         Label3.Size = New Size(85, 15)
         Label3.TabIndex = 36
@@ -632,7 +632,7 @@ Partial Class Form2
         Label7.Anchor = AnchorStyles.Left
         Label7.AutoSize = True
         Label7.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label7.Location = New Point(547, 168)
+        Label7.Location = New Point(541, 168)
         Label7.Name = "Label7"
         Label7.Size = New Size(81, 15)
         Label7.TabIndex = 40
@@ -643,7 +643,7 @@ Partial Class Form2
         Label8.Anchor = AnchorStyles.Left
         Label8.AutoSize = True
         Label8.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label8.Location = New Point(547, 196)
+        Label8.Location = New Point(541, 196)
         Label8.Name = "Label8"
         Label8.Size = New Size(74, 15)
         Label8.TabIndex = 41
@@ -654,7 +654,7 @@ Partial Class Form2
         Label5.Anchor = AnchorStyles.Left
         Label5.AutoSize = True
         Label5.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label5.Location = New Point(547, 141)
+        Label5.Location = New Point(541, 141)
         Label5.Name = "Label5"
         Label5.Size = New Size(83, 15)
         Label5.TabIndex = 38
@@ -665,7 +665,7 @@ Partial Class Form2
         Label4.Anchor = AnchorStyles.Left
         Label4.AutoSize = True
         Label4.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label4.Location = New Point(547, 114)
+        Label4.Location = New Point(541, 114)
         Label4.Name = "Label4"
         Label4.Size = New Size(71, 15)
         Label4.TabIndex = 37
@@ -676,7 +676,7 @@ Partial Class Form2
         Label6.Anchor = AnchorStyles.Left
         Label6.AutoSize = True
         Label6.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Label6.Location = New Point(547, 87)
+        Label6.Location = New Point(541, 87)
         Label6.Name = "Label6"
         Label6.Size = New Size(55, 15)
         Label6.TabIndex = 39
@@ -700,7 +700,7 @@ Partial Class Form2
         MenuStrip1.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
-        MenuStrip1.Size = New Size(842, 24)
+        MenuStrip1.Size = New Size(834, 24)
         MenuStrip1.TabIndex = 1
         MenuStrip1.Text = "MenuStrip1"
         ' 
@@ -770,7 +770,7 @@ Partial Class Form2
         Series1.Legend = "Legend1"
         Series1.Name = "Series1"
         Chart1.Series.Add(Series1)
-        Chart1.Size = New Size(300, 181)
+        Chart1.Size = New Size(300, 160)
         Chart1.TabIndex = 4
         Chart1.Text = "Chart1"
         ' 
@@ -780,14 +780,14 @@ Partial Class Form2
         Chart2.ChartAreas.Add(ChartArea2)
         Legend2.Name = "Legend1"
         Chart2.Legends.Add(Legend2)
-        Chart2.Location = New Point(12, 454)
+        Chart2.Location = New Point(12, 433)
         Chart2.Name = "Chart2"
         Series2.ChartArea = "ChartArea1"
         Series2.ChartType = DataVisualization.Charting.SeriesChartType.Bar
         Series2.Legend = "Legend1"
         Series2.Name = "Series1"
         Chart2.Series.Add(Series2)
-        Chart2.Size = New Size(300, 187)
+        Chart2.Size = New Size(300, 160)
         Chart2.TabIndex = 5
         Chart2.Text = "Chart2"
         ' 
@@ -797,14 +797,14 @@ Partial Class Form2
         Chart3.ChartAreas.Add(ChartArea3)
         Legend3.Name = "Legend1"
         Chart3.Legends.Add(Legend3)
-        Chart3.Location = New Point(12, 647)
+        Chart3.Location = New Point(12, 599)
         Chart3.Name = "Chart3"
         Series3.ChartArea = "ChartArea1"
         Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
         Series3.Legend = "Legend1"
         Series3.Name = "Series1"
         Chart3.Series.Add(Series3)
-        Chart3.Size = New Size(300, 187)
+        Chart3.Size = New Size(300, 160)
         Chart3.TabIndex = 6
         Chart3.Text = "Chart3"
         ' 
@@ -812,7 +812,7 @@ Partial Class Form2
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(842, 855)
+        ClientSize = New Size(834, 1061)
         Controls.Add(Chart3)
         Controls.Add(Chart2)
         Controls.Add(Chart1)
