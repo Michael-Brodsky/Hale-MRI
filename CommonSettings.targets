@@ -1,0 +1,5 @@
+<Project>
+  <PropertyGroup Condition="'$(Configuration)' == 'NoEncoders'">
+    <DefineConstants>$(DefineConstants)NO_ENCODERS</DefineConstants>
+  </PropertyGroup>
+</Project>
