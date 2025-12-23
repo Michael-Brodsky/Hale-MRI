@@ -87,13 +87,21 @@ Public Class Form2
     Private Sub ControlVisible(element As Control, visible As Boolean)
         element.Visible = visible
         If visible Then
+            AddHandler element.MouseClick, AddressOf Control_MouseClick
+            AddHandler element.Enter, AddressOf Control_Enter
+            AddHandler element.Leave, AddressOf Control_Leave
             AddHandler element.MouseDown, AddressOf Control_MouseDown
             AddHandler element.MouseMove, AddressOf Control_MouseMove
             AddHandler element.MouseUp, AddressOf Control_MouseUp
+            AddHandler element.Paint, AddressOf Control_Paint
         Else
+            RemoveHandler element.MouseClick, AddressOf Control_MouseClick
+            RemoveHandler element.Enter, AddressOf Control_Enter
+            RemoveHandler element.Leave, AddressOf Control_Leave
             RemoveHandler element.MouseDown, AddressOf Control_MouseDown
             RemoveHandler element.MouseMove, AddressOf Control_MouseMove
             RemoveHandler element.MouseUp, AddressOf Control_MouseUp
+            RemoveHandler element.Paint, AddressOf Control_Paint
         End If
     End Sub
 
@@ -197,7 +205,8 @@ Public Class Form2
     End Sub
 
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
-        ' Print only the inside of the form's client area, excluding borders and title bar.
+        ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
+        ' paper's printable area.
         Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
         Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + MenuStrip1.Height
         Dim captureWidth As Integer = Me.ClientSize.Width
@@ -207,19 +216,31 @@ Public Class Form2
         Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
         Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
         Using g As Graphics = Graphics.FromImage(croppedBitmap)
-            ' TODO: This combines cropping and scaling to paper size with margins, but
-            ' should really be done in two steps: crop, then scale.
-            g.DrawImage(formBitmap, New Rectangle(0, 0,
-            captureWidth - (e.MarginBounds.Left + (Me.ClientSize.Width - e.MarginBounds.Right)),
-            captureHeight - (e.MarginBounds.Top + (Me.ClientSize.Height - e.MarginBounds.Bottom))), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
+            g.DrawImage(formBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
         End Using
+        Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
+        Using g As Graphics = Graphics.FromImage(scaledBitmap)
+            g.DrawImage(croppedBitmap, New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height))    ' Scale to paper printable area (inside margins).
+        End Using
+        e.Graphics.DrawImage(scaledBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
         formBitmap.Dispose()
-        e.Graphics.DrawImage(croppedBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
+        croppedBitmap.Dispose()
         e.HasMorePages = False
     End Sub
 
 #Region "Dragging the Form"
+    Private Sub Control_MouseClick(sender As Object, e As MouseEventArgs)
+        ' mReportGenerator.ControlSelect(sender, e)
+    End Sub
+
+    Private Sub Control_Enter(sender As Object, e As EventArgs)
+        mReportGenerator.ControlEnter(sender, e)
+    End Sub
+    Private Sub Control_Leave(sender As Object, e As EventArgs)
+        mReportGenerator.ControlLeave(sender, e)
+    End Sub
     Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
+        mReportGenerator.ControlSelect(sender, e)
         mReportGenerator.ControlDragStart(sender, e)
     End Sub
 
@@ -229,6 +250,14 @@ Public Class Form2
 
     Private Sub Control_MouseUp(sender As Object, e As MouseEventArgs)
         mReportGenerator.ControlDragDrop(sender, e)
+    End Sub
+
+    Private Sub Control_Paint(sender As Object, e As PaintEventArgs)
+        mReportGenerator.ControlRepaint(sender, e)
+    End Sub
+
+    Private Sub Form2_Paint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
+        'mReportGenerator.ReportRepaint(sender, e)
     End Sub
 #End Region
 #End Region
