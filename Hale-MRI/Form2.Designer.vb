@@ -27,12 +27,15 @@ Partial Class Form2
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title2 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title3 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         JobDetailsBindingSource = New BindingSource(components)
         HeaderLayoutPanel = New TableLayoutPanel()
         TxtWheelPitch = New TextBox()
@@ -773,6 +776,8 @@ Partial Class Form2
         Chart1.Size = New Size(300, 160)
         Chart1.TabIndex = 4
         Chart1.Text = "Chart1"
+        Title1.Name = "Title1"
+        Chart1.Titles.Add(Title1)
         ' 
         ' Chart2
         ' 
@@ -790,6 +795,8 @@ Partial Class Form2
         Chart2.Size = New Size(300, 160)
         Chart2.TabIndex = 5
         Chart2.Text = "Chart2"
+        Title2.Name = "Title2"
+        Chart2.Titles.Add(Title2)
         ' 
         ' Chart3
         ' 
@@ -807,6 +814,8 @@ Partial Class Form2
         Chart3.Size = New Size(300, 160)
         Chart3.TabIndex = 6
         Chart3.Text = "Chart3"
+        Title3.Name = "Title3"
+        Chart3.Titles.Add(Title3)
         ' 
         ' Form2
         ' 

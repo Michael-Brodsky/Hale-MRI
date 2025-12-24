@@ -74,14 +74,19 @@ Public Class Form2
     End Sub
 
     Private Sub ConfigureControls()
+        ControlVisible(HeaderLayoutPanel, True)
+        ControlVisible(Chart1, True)
+        ControlVisible(Chart2, True)
+        ControlVisible(Chart3, True)
         mReportGenerator = New ReportGenerator(New List(Of Control) From {
+            HeaderLayoutPanel,
             Chart1,
             Chart2,
             Chart3
         })
-        ControlVisible(Chart1, True)
-        ControlVisible(Chart2, True)
-        ControlVisible(Chart3, True)
+        mReportGenerator.ParentForm = Me
+        mReportGenerator.HorizontalLimit = 0
+        mReportGenerator.VerticalLimit = MenuStrip1.Height
     End Sub
 
     Private Sub ControlVisible(element As Control, visible As Boolean)
@@ -94,6 +99,7 @@ Public Class Form2
             AddHandler element.MouseMove, AddressOf Control_MouseMove
             AddHandler element.MouseUp, AddressOf Control_MouseUp
             AddHandler element.Paint, AddressOf Control_Paint
+            AddHandler element.Resize, AddressOf Control_Resize
         Else
             RemoveHandler element.MouseClick, AddressOf Control_MouseClick
             RemoveHandler element.Enter, AddressOf Control_Enter
@@ -102,6 +108,7 @@ Public Class Form2
             RemoveHandler element.MouseMove, AddressOf Control_MouseMove
             RemoveHandler element.MouseUp, AddressOf Control_MouseUp
             RemoveHandler element.Paint, AddressOf Control_Paint
+            RemoveHandler element.Resize, AddressOf Control_Resize
         End If
     End Sub
 
@@ -207,6 +214,10 @@ Public Class Form2
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
         ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
         ' paper's printable area.
+        ' TODO: See what fits on one page and handle multiple pages if needed. Set captureWidth and captureHeight
+        ' based on e.PageBounds and e.MarginBounds.
+        mReportGenerator.ReportGenerate(sender, e)
+        Exit Sub
         Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
         Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + MenuStrip1.Height
         Dim captureWidth As Integer = Me.ClientSize.Width
@@ -230,7 +241,7 @@ Public Class Form2
 
 #Region "Dragging the Form"
     Private Sub Control_MouseClick(sender As Object, e As MouseEventArgs)
-        ' mReportGenerator.ControlSelect(sender, e)
+        mReportGenerator.ControlMouseClick(sender, e)
     End Sub
 
     Private Sub Control_Enter(sender As Object, e As EventArgs)
@@ -240,24 +251,31 @@ Public Class Form2
         mReportGenerator.ControlLeave(sender, e)
     End Sub
     Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
-        mReportGenerator.ControlSelect(sender, e)
-        mReportGenerator.ControlDragStart(sender, e)
+        mReportGenerator.ControlMouseDown(sender, e)
     End Sub
 
     Private Sub Control_MouseMove(sender As Object, e As MouseEventArgs)
-        mReportGenerator.ControlDragMove(sender, e)
+        mReportGenerator.ControlMouseMove(sender, e)
     End Sub
 
     Private Sub Control_MouseUp(sender As Object, e As MouseEventArgs)
-        mReportGenerator.ControlDragDrop(sender, e)
+        mReportGenerator.ControlMouseUp(sender, e)
     End Sub
 
     Private Sub Control_Paint(sender As Object, e As PaintEventArgs)
         mReportGenerator.ControlRepaint(sender, e)
     End Sub
 
+    Private Sub Control_Resize(sender As Object, e As EventArgs)
+        mReportGenerator.ControlResize(sender, e)
+    End Sub
+
     Private Sub Form2_Paint(sender As Object, e As PaintEventArgs) Handles MyBase.Paint
         'mReportGenerator.ReportRepaint(sender, e)
+    End Sub
+
+    Private Sub Form2_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
+        mReportGenerator.FormMouseDown(sender, e)
     End Sub
 #End Region
 #End Region
