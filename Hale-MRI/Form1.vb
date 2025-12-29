@@ -32,6 +32,7 @@ Public Class Form1
     Private mFrmReports As Form2
     Private mFrmVessels As FrmVessels
     Private mFrmLocalPitch As FormLocalPitch
+    Private mFrmComparison As FrmComparison
 
 #If NO_ENCODERS Then
     Private mCm As Integer = 0

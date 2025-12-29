@@ -29,7 +29,7 @@ Partial Class FrmComparison
         DataGridJobDetails = New DataGridView()
         tlayoutComparisonControls = New TableLayoutPanel()
         ComboSegments = New ComboBox()
-        ComboRadius = New ComboBox()
+        ComboRadiusorBlade = New ComboBox()
         ChkExamineoneBlade = New CheckBox()
         ChkSpline = New CheckBox()
         ChkShowTrack = New CheckBox()
@@ -37,7 +37,7 @@ Partial Class FrmComparison
         ChkKeepforComp = New CheckBox()
         LabRefPitch = New Label()
         LabSegments = New Label()
-        LabBlade = New Label()
+        LabRadiusorBlade = New Label()
         LabTrackRefBlade = New Label()
         TxtRefPitch = New TextBox()
         ChkCenterRef = New CheckBox()
@@ -46,6 +46,7 @@ Partial Class FrmComparison
         CmdPrintAllGraphs = New Button()
         PanelChart = New Panel()
         ChartComparison = New DataVisualization.Charting.Chart()
+        RecordNavigationBar1 = New RecordNavigationBar()
         tLayoutComparison.SuspendLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
@@ -68,6 +69,7 @@ Partial Class FrmComparison
         tLayoutComparison.Controls.Add(DataGridJobDetails, 4, 1)
         tLayoutComparison.Controls.Add(tlayoutComparisonControls, 0, 2)
         tLayoutComparison.Controls.Add(PanelChart, 1, 2)
+        tLayoutComparison.Controls.Add(RecordNavigationBar1, 4, 0)
         tLayoutComparison.Dock = DockStyle.Fill
         tLayoutComparison.Location = New Point(0, 0)
         tLayoutComparison.Name = "tLayoutComparison"
@@ -109,7 +111,7 @@ Partial Class FrmComparison
         tlayoutComparisonControls.ColumnCount = 1
         tlayoutComparisonControls.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
         tlayoutComparisonControls.Controls.Add(ComboSegments, 0, 12)
-        tlayoutComparisonControls.Controls.Add(ComboRadius, 0, 10)
+        tlayoutComparisonControls.Controls.Add(ComboRadiusorBlade, 0, 10)
         tlayoutComparisonControls.Controls.Add(ChkExamineoneBlade, 0, 6)
         tlayoutComparisonControls.Controls.Add(ChkSpline, 0, 15)
         tlayoutComparisonControls.Controls.Add(ChkShowTrack, 0, 5)
@@ -117,7 +119,7 @@ Partial Class FrmComparison
         tlayoutComparisonControls.Controls.Add(ChkKeepforComp, 0, 3)
         tlayoutComparisonControls.Controls.Add(LabRefPitch, 0, 0)
         tlayoutComparisonControls.Controls.Add(LabSegments, 0, 11)
-        tlayoutComparisonControls.Controls.Add(LabBlade, 0, 9)
+        tlayoutComparisonControls.Controls.Add(LabRadiusorBlade, 0, 9)
         tlayoutComparisonControls.Controls.Add(LabTrackRefBlade, 0, 7)
         tlayoutComparisonControls.Controls.Add(TxtRefPitch, 0, 1)
         tlayoutComparisonControls.Controls.Add(ChkCenterRef, 0, 2)
@@ -159,14 +161,14 @@ Partial Class FrmComparison
         ComboSegments.Size = New Size(195, 28)
         ComboSegments.TabIndex = 19
         ' 
-        ' ComboRadius
+        ' ComboRadiusorBlade
         ' 
-        ComboRadius.Dock = DockStyle.Top
-        ComboRadius.FormattingEnabled = True
-        ComboRadius.Location = New Point(3, 273)
-        ComboRadius.Name = "ComboRadius"
-        ComboRadius.Size = New Size(195, 28)
-        ComboRadius.TabIndex = 18
+        ComboRadiusorBlade.Dock = DockStyle.Top
+        ComboRadiusorBlade.FormattingEnabled = True
+        ComboRadiusorBlade.Location = New Point(3, 273)
+        ComboRadiusorBlade.Name = "ComboRadiusorBlade"
+        ComboRadiusorBlade.Size = New Size(195, 28)
+        ComboRadiusorBlade.TabIndex = 18
         ' 
         ' ChkExamineoneBlade
         ' 
@@ -248,15 +250,15 @@ Partial Class FrmComparison
         LabSegments.TabIndex = 3
         LabSegments.Text = "Segments"
         ' 
-        ' LabBlade
+        ' LabRadiusorBlade
         ' 
-        LabBlade.AutoSize = True
-        LabBlade.Dock = DockStyle.Bottom
-        LabBlade.Location = New Point(3, 250)
-        LabBlade.Name = "LabBlade"
-        LabBlade.Size = New Size(195, 20)
-        LabBlade.TabIndex = 2
-        LabBlade.Text = "Radius"
+        LabRadiusorBlade.AutoSize = True
+        LabRadiusorBlade.Dock = DockStyle.Bottom
+        LabRadiusorBlade.Location = New Point(3, 250)
+        LabRadiusorBlade.Name = "LabRadiusorBlade"
+        LabRadiusorBlade.Size = New Size(195, 20)
+        LabRadiusorBlade.TabIndex = 2
+        LabRadiusorBlade.Text = "Radius"
         ' 
         ' LabTrackRefBlade
         ' 
@@ -344,6 +346,24 @@ Partial Class FrmComparison
         ChartComparison.Size = New Size(976, 517)
         ChartComparison.TabIndex = 2
         ' 
+        ' RecordNavigationBar1
+        ' 
+        RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        RecordNavigationBar1.BoundControls = Nothing
+        tLayoutComparison.SetColumnSpan(RecordNavigationBar1, 3)
+        RecordNavigationBar1.Database = Nothing
+        RecordNavigationBar1.Dock = DockStyle.Right
+        RecordNavigationBar1.Filter = Nothing
+        RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Location = New Point(600, 0)
+        RecordNavigationBar1.Margin = New Padding(0, 0, 15, 0)
+        RecordNavigationBar1.MasterSource = Nothing
+        RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.NoUpdates = False
+        RecordNavigationBar1.Size = New Size(569, 33)
+        RecordNavigationBar1.TabIndex = 5
+        ' 
         ' FrmComparison
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
@@ -355,6 +375,7 @@ Partial Class FrmComparison
         Name = "FrmComparison"
         Text = "FrmComparison"
         tLayoutComparison.ResumeLayout(False)
+        tLayoutComparison.PerformLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         tlayoutComparisonControls.ResumeLayout(False)
@@ -376,14 +397,15 @@ Partial Class FrmComparison
     Friend WithEvents ChkKeepforComp As CheckBox
     Friend WithEvents LabRefPitch As Label
     Friend WithEvents LabSegments As Label
-    Friend WithEvents LabBlade As Label
+    Friend WithEvents LabRadiusorBlade As Label
     Friend WithEvents LabTrackRefBlade As Label
     Friend WithEvents TxtRefPitch As TextBox
     Friend WithEvents ChkCenterRef As CheckBox
     Friend WithEvents ComboSegments As ComboBox
-    Friend WithEvents ComboRadius As ComboBox
+    Friend WithEvents ComboRadiusorBlade As ComboBox
     Friend WithEvents ComboTrackRefBlade As ComboBox
     Friend WithEvents CmdSelectProgression As Button
     Friend WithEvents CmdPrintAllGraphs As Button
     Friend WithEvents PanelChart As Panel
+    Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
 End Class

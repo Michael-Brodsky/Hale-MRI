@@ -26,7 +26,7 @@ Public Class FrmComparison
     ''' </summary>
     Public ReadOnly Property Current As JobDetail
         Get
-            Return BindingSourceCurrent(JobDetailsBindingSource)
+            'Return BindingSourceCurrent(JobDetailsBindingSource)
         End Get
     End Property
 
@@ -58,7 +58,7 @@ Public Class FrmComparison
             mJobDetails = value
             mJob = mJobDetails?.Job
             If mJobDetails IsNot Nothing Then
-                JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
+                'JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
             End If
         End Set
     End Property
@@ -69,15 +69,46 @@ Public Class FrmComparison
         Set(value As Job)
             mJob = value
             If mJob IsNot Nothing Then
-                JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
+                'JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
             End If
         End Set
     End Property
 #End Region
 #Region "Private Interface"
+    Private Sub OrientCharts(chartnum As Integer)
+        Dim x As Integer
+        For x = 0 To chartnum - 1
+            ChartComparison.ChartAreas.ElementAt(x).Position.Auto = False
+            ChartComparison.ChartAreas.ElementAt(x).Position.Height = 100 / chartnum
+            ChartComparison.ChartAreas.ElementAt(x).Position.Width = 100
+            ChartComparison.ChartAreas.ElementAt(x).AxisX.Minimum = -5
+            ChartComparison.ChartAreas.ElementAt(x).AxisX.Maximum = 105
+            ChartComparison.ChartAreas.ElementAt(x).AxisY.Minimum = 1 ' need to add control for managing y Axis Scaling
+            ChartComparison.ChartAreas.ElementAt(x).AxisY.Maximum = 10
+            ChartComparison.ChartAreas.ElementAt(x).Position.Y = x * (100 / chartnum)
+
+        Next
+        ChartComparison.Height = chartnum * 250
+    End Sub
+    Private Sub CreateChartAreas(radorBlade As Boolean)
+        'radorBlade true = all radii False = one rad on all blades
+        If radorBlade Then
+            For Each RM As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = ComboRadiusorBlade.SelectedItem)
+                ChartComparison.ChartAreas.Add("Rad" + Math.Round(RM.Radius.Value).ToString())
+                ChartComparison.ChartAreas("Rad" + Math.Round(RM.Radius.Value).ToString()).AxisY.Title = "Bld " + ComboRadiusorBlade.SelectedItem.ToString() + "Radius " + RM.Radius.Value.ToString()
+            Next
+        Else
+            Dim x As Integer
+            For x = 1 To Job.PropellerBlades
+                ChartComparison.ChartAreas.Add("Blade" + x.ToString())
+                ChartComparison.ChartAreas("Blade" + x.ToString()).AxisY.Title = "Bld " + x.ToString() + " " + ComboRadiusorBlade.SelectedItem.ToString()
+            Next
+        End If
+    End Sub
     Private Sub ShowCompChart()
         ChartComparison.Series.Clear()
         ChartComparison.ChartAreas.Clear()
+        Dim x As Integer
         'ChartComparison.ChartAreas.
         ' going to have to handle all modifications and plotting of charts here fully programmatically
     End Sub
