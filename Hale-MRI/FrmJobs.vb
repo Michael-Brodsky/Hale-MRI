@@ -31,7 +31,7 @@ Public Class FrmJobs
     Private mFrmCustomers As FrmCustomers
     Private mFrmVessels As FrmVessels
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmMeasurements As Form1
+    Private mFrmMeasurements As FrmMeasurements
 #End Region
 #Region "Public Interface"
     Public Sub AddNew(ByVal vessel As Vessel)

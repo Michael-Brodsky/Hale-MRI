@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FrmReports
+Partial Class Form2
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
@@ -23,72 +23,670 @@ Partial Class FrmReports
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title2 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title3 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
+        JobDetailsBindingSource = New BindingSource(components)
+        HeaderLayoutPanel = New TableLayoutPanel()
+        TxtWheelPitch = New TextBox()
+        TxtMarkedPitch = New TextBox()
+        TxtMeasuredDiameter = New TextBox()
+        TxtMarkedDiameter = New TextBox()
+        TxtRotation = New TextBox()
+        TxtPerformedBy = New TextBox()
+        TxtScanDate = New TextBox()
+        TxtFileName = New TextBox()
+        Label1 = New Label()
+        TxtJobId = New TextBox()
+        LabJobId = New Label()
+        LabJobNumber = New Label()
+        LabCustomer = New Label()
+        LabVessel = New Label()
+        LabManufacturer = New Label()
+        LabPartNumber = New Label()
+        LabSerialNumber = New Label()
+        LabStampNumber = New Label()
+        LabInspectedBy = New Label()
+        TxtJobNumber = New TextBox()
+        TxtCustomer = New TextBox()
+        TxtVessel = New TextBox()
+        TxtManufacturer = New TextBox()
+        TxtPartNumber = New TextBox()
+        TxtSerialNumber = New TextBox()
+        TxtStampNumber = New TextBox()
+        TxtInspectedBy = New TextBox()
+        LabClass = New Label()
+        LabRepairStatus = New Label()
+        LabStyle = New Label()
+        LabMaterial = New Label()
+        LabBore = New Label()
+        LabDAR = New Label()
+        LabCup = New Label()
+        TxtClass = New TextBox()
+        TxtRepairStatus = New TextBox()
+        TxtStyle = New TextBox()
+        TxtMaterial = New TextBox()
+        TxtBore = New TextBox()
+        TxtDAR = New TextBox()
+        TxtCup = New TextBox()
+        Label2 = New Label()
+        Label3 = New Label()
+        Label7 = New Label()
+        Label8 = New Label()
+        Label5 = New Label()
+        Label4 = New Label()
+        Label6 = New Label()
         PrintDocument1 = New Printing.PrintDocument()
         PrintPreviewDialog1 = New PrintPreviewDialog()
         PageSetupDialog1 = New PageSetupDialog()
-        ChartBladeHeight = New DataVisualization.Charting.Chart()
-        ChartAngularPosition = New DataVisualization.Charting.Chart()
-        PanelHeader = New Panel()
-        TablePropeller = New TableLayoutPanel()
-        LabBore = New Label()
-        LabDiameter = New Label()
-        LabBlades = New Label()
-        LabRotation = New Label()
-        LabMaterial = New Label()
-        LabStyle = New Label()
-        LabManufacturer = New Label()
-        TxtManufacturer = New TextBox()
-        TxtStyle = New TextBox()
-        TxtMaterial = New TextBox()
-        TxtRotation = New TextBox()
-        TxtBlades = New TextBox()
-        TxtDiameter = New TextBox()
-        TxtBore = New TextBox()
-        TableCustomerVessel = New TableLayoutPanel()
-        TxtVessel = New TextBox()
-        TxtCustomer = New TextBox()
-        LabVessel = New Label()
-        LabCustomer = New Label()
-        TableJob = New TableLayoutPanel()
-        TxtDescription = New TextBox()
-        TxtEmployee = New TextBox()
-        TxtClass = New TextBox()
-        TxtMeasurement = New TextBox()
-        TxtStartDate = New TextBox()
-        LabEmployee = New Label()
-        LabClass = New Label()
-        LabMeasurement = New Label()
-        LabStartDate = New Label()
-        LabJobNumber = New Label()
-        LabDescription = New Label()
-        TxtJobNumber = New TextBox()
-        ChartBladeAverages = New DataVisualization.Charting.Chart()
+        MenuStrip1 = New MenuStrip()
+        FileToolStripMenuItem = New ToolStripMenuItem()
+        OpenToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator1 = New ToolStripSeparator()
+        PrintToolStripMenuItem = New ToolStripMenuItem()
+        PrintToolStripMenuItem1 = New ToolStripMenuItem()
+        PrintPreviewToolStripMenuItem = New ToolStripMenuItem()
+        PageSetupToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator2 = New ToolStripSeparator()
+        ExitToolStripMenuItem = New ToolStripMenuItem()
         Chart1 = New DataVisualization.Charting.Chart()
-        JobDetailsBindingSource = New BindingSource(components)
-        TableLayoutPanel1 = New TableLayoutPanel()
-        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
-        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
-        PanelHeader.SuspendLayout()
-        TablePropeller.SuspendLayout()
-        TableCustomerVessel.SuspendLayout()
-        TableJob.SuspendLayout()
-        CType(ChartBladeAverages, ComponentModel.ISupportInitialize).BeginInit()
-        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
+        Chart2 = New DataVisualization.Charting.Chart()
+        Chart3 = New DataVisualization.Charting.Chart()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        HeaderLayoutPanel.SuspendLayout()
+        MenuStrip1.SuspendLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
+        ' 
+        ' HeaderLayoutPanel
+        ' 
+        HeaderLayoutPanel.ColumnCount = 6
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.212122F))
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.212122F))
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
+        HeaderLayoutPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.212122F))
+        HeaderLayoutPanel.Controls.Add(TxtWheelPitch, 5, 7)
+        HeaderLayoutPanel.Controls.Add(TxtMarkedPitch, 5, 6)
+        HeaderLayoutPanel.Controls.Add(TxtMeasuredDiameter, 5, 5)
+        HeaderLayoutPanel.Controls.Add(TxtMarkedDiameter, 5, 4)
+        HeaderLayoutPanel.Controls.Add(TxtRotation, 5, 3)
+        HeaderLayoutPanel.Controls.Add(TxtPerformedBy, 5, 2)
+        HeaderLayoutPanel.Controls.Add(TxtScanDate, 5, 1)
+        HeaderLayoutPanel.Controls.Add(TxtFileName, 5, 0)
+        HeaderLayoutPanel.Controls.Add(Label1, 4, 0)
+        HeaderLayoutPanel.Controls.Add(TxtJobId, 3, 0)
+        HeaderLayoutPanel.Controls.Add(LabJobId, 2, 0)
+        HeaderLayoutPanel.Controls.Add(LabJobNumber, 0, 0)
+        HeaderLayoutPanel.Controls.Add(LabCustomer, 0, 1)
+        HeaderLayoutPanel.Controls.Add(LabVessel, 0, 2)
+        HeaderLayoutPanel.Controls.Add(LabManufacturer, 0, 3)
+        HeaderLayoutPanel.Controls.Add(LabPartNumber, 0, 4)
+        HeaderLayoutPanel.Controls.Add(LabSerialNumber, 0, 5)
+        HeaderLayoutPanel.Controls.Add(LabStampNumber, 0, 6)
+        HeaderLayoutPanel.Controls.Add(LabInspectedBy, 0, 7)
+        HeaderLayoutPanel.Controls.Add(TxtJobNumber, 1, 0)
+        HeaderLayoutPanel.Controls.Add(TxtCustomer, 1, 1)
+        HeaderLayoutPanel.Controls.Add(TxtVessel, 1, 2)
+        HeaderLayoutPanel.Controls.Add(TxtManufacturer, 1, 3)
+        HeaderLayoutPanel.Controls.Add(TxtPartNumber, 1, 4)
+        HeaderLayoutPanel.Controls.Add(TxtSerialNumber, 1, 5)
+        HeaderLayoutPanel.Controls.Add(TxtStampNumber, 1, 6)
+        HeaderLayoutPanel.Controls.Add(TxtInspectedBy, 1, 7)
+        HeaderLayoutPanel.Controls.Add(LabClass, 2, 1)
+        HeaderLayoutPanel.Controls.Add(LabRepairStatus, 2, 2)
+        HeaderLayoutPanel.Controls.Add(LabStyle, 2, 3)
+        HeaderLayoutPanel.Controls.Add(LabMaterial, 2, 4)
+        HeaderLayoutPanel.Controls.Add(LabBore, 2, 5)
+        HeaderLayoutPanel.Controls.Add(LabDAR, 2, 6)
+        HeaderLayoutPanel.Controls.Add(LabCup, 2, 7)
+        HeaderLayoutPanel.Controls.Add(TxtClass, 3, 1)
+        HeaderLayoutPanel.Controls.Add(TxtRepairStatus, 3, 2)
+        HeaderLayoutPanel.Controls.Add(TxtStyle, 3, 3)
+        HeaderLayoutPanel.Controls.Add(TxtMaterial, 3, 4)
+        HeaderLayoutPanel.Controls.Add(TxtBore, 3, 5)
+        HeaderLayoutPanel.Controls.Add(TxtDAR, 3, 6)
+        HeaderLayoutPanel.Controls.Add(TxtCup, 3, 7)
+        HeaderLayoutPanel.Controls.Add(Label2, 4, 1)
+        HeaderLayoutPanel.Controls.Add(Label3, 4, 2)
+        HeaderLayoutPanel.Controls.Add(Label7, 4, 6)
+        HeaderLayoutPanel.Controls.Add(Label8, 4, 7)
+        HeaderLayoutPanel.Controls.Add(Label5, 4, 5)
+        HeaderLayoutPanel.Controls.Add(Label4, 4, 4)
+        HeaderLayoutPanel.Controls.Add(Label6, 4, 3)
+        HeaderLayoutPanel.Location = New Point(12, 42)
+        HeaderLayoutPanel.Name = "HeaderLayoutPanel"
+        HeaderLayoutPanel.RowCount = 8
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        HeaderLayoutPanel.Size = New Size(827, 219)
+        HeaderLayoutPanel.TabIndex = 0
+        ' 
+        ' TxtWheelPitch
+        ' 
+        TxtWheelPitch.Anchor = AnchorStyles.Left
+        TxtWheelPitch.BorderStyle = BorderStyle.None
+        TxtWheelPitch.Location = New Point(653, 196)
+        TxtWheelPitch.Name = "TxtWheelPitch"
+        TxtWheelPitch.ReadOnly = True
+        TxtWheelPitch.Size = New Size(168, 16)
+        TxtWheelPitch.TabIndex = 49
+        ' 
+        ' TxtMarkedPitch
+        ' 
+        TxtMarkedPitch.Anchor = AnchorStyles.Left
+        TxtMarkedPitch.BorderStyle = BorderStyle.None
+        TxtMarkedPitch.Location = New Point(653, 167)
+        TxtMarkedPitch.Name = "TxtMarkedPitch"
+        TxtMarkedPitch.ReadOnly = True
+        TxtMarkedPitch.Size = New Size(168, 16)
+        TxtMarkedPitch.TabIndex = 48
+        ' 
+        ' TxtMeasuredDiameter
+        ' 
+        TxtMeasuredDiameter.Anchor = AnchorStyles.Left
+        TxtMeasuredDiameter.BorderStyle = BorderStyle.None
+        TxtMeasuredDiameter.Location = New Point(653, 140)
+        TxtMeasuredDiameter.Name = "TxtMeasuredDiameter"
+        TxtMeasuredDiameter.ReadOnly = True
+        TxtMeasuredDiameter.Size = New Size(168, 16)
+        TxtMeasuredDiameter.TabIndex = 47
+        ' 
+        ' TxtMarkedDiameter
+        ' 
+        TxtMarkedDiameter.Anchor = AnchorStyles.Left
+        TxtMarkedDiameter.BorderStyle = BorderStyle.None
+        TxtMarkedDiameter.Location = New Point(653, 113)
+        TxtMarkedDiameter.Name = "TxtMarkedDiameter"
+        TxtMarkedDiameter.ReadOnly = True
+        TxtMarkedDiameter.Size = New Size(168, 16)
+        TxtMarkedDiameter.TabIndex = 46
+        ' 
+        ' TxtRotation
+        ' 
+        TxtRotation.Anchor = AnchorStyles.Left
+        TxtRotation.BorderStyle = BorderStyle.None
+        TxtRotation.Location = New Point(653, 86)
+        TxtRotation.Name = "TxtRotation"
+        TxtRotation.ReadOnly = True
+        TxtRotation.Size = New Size(168, 16)
+        TxtRotation.TabIndex = 45
+        ' 
+        ' TxtPerformedBy
+        ' 
+        TxtPerformedBy.Anchor = AnchorStyles.Left
+        TxtPerformedBy.BorderStyle = BorderStyle.None
+        TxtPerformedBy.Location = New Point(653, 59)
+        TxtPerformedBy.Name = "TxtPerformedBy"
+        TxtPerformedBy.ReadOnly = True
+        TxtPerformedBy.Size = New Size(168, 16)
+        TxtPerformedBy.TabIndex = 44
+        ' 
+        ' TxtScanDate
+        ' 
+        TxtScanDate.Anchor = AnchorStyles.Left
+        TxtScanDate.BorderStyle = BorderStyle.None
+        TxtScanDate.Location = New Point(653, 32)
+        TxtScanDate.Name = "TxtScanDate"
+        TxtScanDate.ReadOnly = True
+        TxtScanDate.Size = New Size(168, 16)
+        TxtScanDate.TabIndex = 43
+        ' 
+        ' TxtFileName
+        ' 
+        TxtFileName.Anchor = AnchorStyles.Left
+        TxtFileName.BorderStyle = BorderStyle.None
+        TxtFileName.Location = New Point(653, 5)
+        TxtFileName.Name = "TxtFileName"
+        TxtFileName.ReadOnly = True
+        TxtFileName.Size = New Size(168, 16)
+        TxtFileName.TabIndex = 42
+        ' 
+        ' Label1
+        ' 
+        Label1.Anchor = AnchorStyles.Left
+        Label1.AutoSize = True
+        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label1.Location = New Point(553, 6)
+        Label1.Name = "Label1"
+        Label1.Size = New Size(62, 15)
+        Label1.TabIndex = 34
+        Label1.Text = "File Name"
+        ' 
+        ' TxtJobId
+        ' 
+        TxtJobId.Anchor = AnchorStyles.Left
+        TxtJobId.BorderStyle = BorderStyle.None
+        TxtJobId.Location = New Point(378, 5)
+        TxtJobId.Name = "TxtJobId"
+        TxtJobId.ReadOnly = True
+        TxtJobId.Size = New Size(165, 16)
+        TxtJobId.TabIndex = 26
+        ' 
+        ' LabJobId
+        ' 
+        LabJobId.Anchor = AnchorStyles.Left
+        LabJobId.AutoSize = True
+        LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobId.Location = New Point(278, 6)
+        LabJobId.Name = "LabJobId"
+        LabJobId.Size = New Size(40, 15)
+        LabJobId.TabIndex = 18
+        LabJobId.Text = "Job Id"
+        ' 
+        ' LabJobNumber
+        ' 
+        LabJobNumber.Anchor = AnchorStyles.Left
+        LabJobNumber.AutoSize = True
+        LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobNumber.Location = New Point(3, 6)
+        LabJobNumber.Name = "LabJobNumber"
+        LabJobNumber.Size = New Size(48, 15)
+        LabJobNumber.TabIndex = 0
+        LabJobNumber.Text = "Job No."
+        ' 
+        ' LabCustomer
+        ' 
+        LabCustomer.Anchor = AnchorStyles.Left
+        LabCustomer.AutoSize = True
+        LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCustomer.Location = New Point(3, 33)
+        LabCustomer.Name = "LabCustomer"
+        LabCustomer.Size = New Size(61, 15)
+        LabCustomer.TabIndex = 3
+        LabCustomer.Text = "Customer"
+        ' 
+        ' LabVessel
+        ' 
+        LabVessel.Anchor = AnchorStyles.Left
+        LabVessel.AutoSize = True
+        LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabVessel.Location = New Point(3, 60)
+        LabVessel.Name = "LabVessel"
+        LabVessel.Size = New Size(41, 15)
+        LabVessel.TabIndex = 4
+        LabVessel.Text = "Vessel"
+        ' 
+        ' LabManufacturer
+        ' 
+        LabManufacturer.Anchor = AnchorStyles.Left
+        LabManufacturer.AutoSize = True
+        LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabManufacturer.Location = New Point(3, 87)
+        LabManufacturer.Name = "LabManufacturer"
+        LabManufacturer.Size = New Size(84, 15)
+        LabManufacturer.TabIndex = 5
+        LabManufacturer.Text = "Manufacturer"
+        ' 
+        ' LabPartNumber
+        ' 
+        LabPartNumber.Anchor = AnchorStyles.Left
+        LabPartNumber.AutoSize = True
+        LabPartNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPartNumber.Location = New Point(3, 114)
+        LabPartNumber.Name = "LabPartNumber"
+        LabPartNumber.Size = New Size(52, 15)
+        LabPartNumber.TabIndex = 6
+        LabPartNumber.Text = "Part No."
+        ' 
+        ' LabSerialNumber
+        ' 
+        LabSerialNumber.Anchor = AnchorStyles.Left
+        LabSerialNumber.AutoSize = True
+        LabSerialNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabSerialNumber.Location = New Point(3, 141)
+        LabSerialNumber.Name = "LabSerialNumber"
+        LabSerialNumber.Size = New Size(28, 15)
+        LabSerialNumber.TabIndex = 7
+        LabSerialNumber.Text = "S/N"
+        ' 
+        ' LabStampNumber
+        ' 
+        LabStampNumber.Anchor = AnchorStyles.Left
+        LabStampNumber.AutoSize = True
+        LabStampNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStampNumber.Location = New Point(3, 168)
+        LabStampNumber.Name = "LabStampNumber"
+        LabStampNumber.Size = New Size(65, 15)
+        LabStampNumber.TabIndex = 8
+        LabStampNumber.Text = "Stamp No."
+        ' 
+        ' LabInspectedBy
+        ' 
+        LabInspectedBy.Anchor = AnchorStyles.Left
+        LabInspectedBy.AutoSize = True
+        LabInspectedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabInspectedBy.Location = New Point(3, 196)
+        LabInspectedBy.Name = "LabInspectedBy"
+        LabInspectedBy.Size = New Size(79, 15)
+        LabInspectedBy.TabIndex = 9
+        LabInspectedBy.Text = "Inspected By"
+        ' 
+        ' TxtJobNumber
+        ' 
+        TxtJobNumber.Anchor = AnchorStyles.Left
+        TxtJobNumber.BorderStyle = BorderStyle.None
+        TxtJobNumber.Location = New Point(103, 5)
+        TxtJobNumber.Name = "TxtJobNumber"
+        TxtJobNumber.ReadOnly = True
+        TxtJobNumber.Size = New Size(165, 16)
+        TxtJobNumber.TabIndex = 10
+        ' 
+        ' TxtCustomer
+        ' 
+        TxtCustomer.Anchor = AnchorStyles.Left
+        TxtCustomer.BorderStyle = BorderStyle.None
+        TxtCustomer.Location = New Point(103, 32)
+        TxtCustomer.Name = "TxtCustomer"
+        TxtCustomer.ReadOnly = True
+        TxtCustomer.Size = New Size(165, 16)
+        TxtCustomer.TabIndex = 11
+        ' 
+        ' TxtVessel
+        ' 
+        TxtVessel.Anchor = AnchorStyles.Left
+        TxtVessel.BorderStyle = BorderStyle.None
+        TxtVessel.Location = New Point(103, 59)
+        TxtVessel.Name = "TxtVessel"
+        TxtVessel.ReadOnly = True
+        TxtVessel.Size = New Size(165, 16)
+        TxtVessel.TabIndex = 12
+        ' 
+        ' TxtManufacturer
+        ' 
+        TxtManufacturer.Anchor = AnchorStyles.Left
+        TxtManufacturer.BorderStyle = BorderStyle.None
+        TxtManufacturer.Location = New Point(103, 86)
+        TxtManufacturer.Name = "TxtManufacturer"
+        TxtManufacturer.ReadOnly = True
+        TxtManufacturer.Size = New Size(165, 16)
+        TxtManufacturer.TabIndex = 13
+        ' 
+        ' TxtPartNumber
+        ' 
+        TxtPartNumber.Anchor = AnchorStyles.Left
+        TxtPartNumber.BorderStyle = BorderStyle.None
+        TxtPartNumber.Location = New Point(103, 113)
+        TxtPartNumber.Name = "TxtPartNumber"
+        TxtPartNumber.ReadOnly = True
+        TxtPartNumber.Size = New Size(165, 16)
+        TxtPartNumber.TabIndex = 14
+        ' 
+        ' TxtSerialNumber
+        ' 
+        TxtSerialNumber.Anchor = AnchorStyles.Left
+        TxtSerialNumber.BorderStyle = BorderStyle.None
+        TxtSerialNumber.Location = New Point(103, 140)
+        TxtSerialNumber.Name = "TxtSerialNumber"
+        TxtSerialNumber.ReadOnly = True
+        TxtSerialNumber.Size = New Size(165, 16)
+        TxtSerialNumber.TabIndex = 15
+        ' 
+        ' TxtStampNumber
+        ' 
+        TxtStampNumber.Anchor = AnchorStyles.Left
+        TxtStampNumber.BorderStyle = BorderStyle.None
+        TxtStampNumber.Location = New Point(103, 167)
+        TxtStampNumber.Name = "TxtStampNumber"
+        TxtStampNumber.ReadOnly = True
+        TxtStampNumber.Size = New Size(165, 16)
+        TxtStampNumber.TabIndex = 16
+        ' 
+        ' TxtInspectedBy
+        ' 
+        TxtInspectedBy.Anchor = AnchorStyles.Left
+        TxtInspectedBy.BorderStyle = BorderStyle.None
+        TxtInspectedBy.Location = New Point(103, 196)
+        TxtInspectedBy.Name = "TxtInspectedBy"
+        TxtInspectedBy.ReadOnly = True
+        TxtInspectedBy.Size = New Size(165, 16)
+        TxtInspectedBy.TabIndex = 17
+        ' 
+        ' LabClass
+        ' 
+        LabClass.Anchor = AnchorStyles.Left
+        LabClass.AutoSize = True
+        LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabClass.Location = New Point(278, 33)
+        LabClass.Name = "LabClass"
+        LabClass.Size = New Size(33, 15)
+        LabClass.TabIndex = 19
+        LabClass.Text = "Class"
+        ' 
+        ' LabRepairStatus
+        ' 
+        LabRepairStatus.Anchor = AnchorStyles.Left
+        LabRepairStatus.AutoSize = True
+        LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabRepairStatus.Location = New Point(278, 60)
+        LabRepairStatus.Name = "LabRepairStatus"
+        LabRepairStatus.Size = New Size(81, 15)
+        LabRepairStatus.TabIndex = 20
+        LabRepairStatus.Text = "Repair Status"
+        ' 
+        ' LabStyle
+        ' 
+        LabStyle.Anchor = AnchorStyles.Left
+        LabStyle.AutoSize = True
+        LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStyle.Location = New Point(278, 87)
+        LabStyle.Name = "LabStyle"
+        LabStyle.Size = New Size(35, 15)
+        LabStyle.TabIndex = 21
+        LabStyle.Text = "Style"
+        ' 
+        ' LabMaterial
+        ' 
+        LabMaterial.Anchor = AnchorStyles.Left
+        LabMaterial.AutoSize = True
+        LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMaterial.Location = New Point(278, 114)
+        LabMaterial.Name = "LabMaterial"
+        LabMaterial.Size = New Size(53, 15)
+        LabMaterial.TabIndex = 22
+        LabMaterial.Text = "Material"
+        ' 
+        ' LabBore
+        ' 
+        LabBore.Anchor = AnchorStyles.Left
+        LabBore.AutoSize = True
+        LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabBore.Location = New Point(278, 141)
+        LabBore.Name = "LabBore"
+        LabBore.Size = New Size(34, 15)
+        LabBore.TabIndex = 23
+        LabBore.Text = "Bore"
+        ' 
+        ' LabDAR
+        ' 
+        LabDAR.Anchor = AnchorStyles.Left
+        LabDAR.AutoSize = True
+        LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabDAR.Location = New Point(278, 168)
+        LabDAR.Name = "LabDAR"
+        LabDAR.Size = New Size(32, 15)
+        LabDAR.TabIndex = 24
+        LabDAR.Text = "DAR"
+        ' 
+        ' LabCup
+        ' 
+        LabCup.Anchor = AnchorStyles.Left
+        LabCup.AutoSize = True
+        LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCup.Location = New Point(278, 196)
+        LabCup.Name = "LabCup"
+        LabCup.Size = New Size(28, 15)
+        LabCup.TabIndex = 25
+        LabCup.Text = "Cup"
+        ' 
+        ' TxtClass
+        ' 
+        TxtClass.Anchor = AnchorStyles.Left
+        TxtClass.BorderStyle = BorderStyle.None
+        TxtClass.Location = New Point(378, 32)
+        TxtClass.Name = "TxtClass"
+        TxtClass.ReadOnly = True
+        TxtClass.Size = New Size(165, 16)
+        TxtClass.TabIndex = 27
+        ' 
+        ' TxtRepairStatus
+        ' 
+        TxtRepairStatus.Anchor = AnchorStyles.Left
+        TxtRepairStatus.BorderStyle = BorderStyle.None
+        TxtRepairStatus.Location = New Point(378, 59)
+        TxtRepairStatus.Name = "TxtRepairStatus"
+        TxtRepairStatus.ReadOnly = True
+        TxtRepairStatus.Size = New Size(165, 16)
+        TxtRepairStatus.TabIndex = 28
+        ' 
+        ' TxtStyle
+        ' 
+        TxtStyle.Anchor = AnchorStyles.Left
+        TxtStyle.BorderStyle = BorderStyle.None
+        TxtStyle.Location = New Point(378, 86)
+        TxtStyle.Name = "TxtStyle"
+        TxtStyle.ReadOnly = True
+        TxtStyle.Size = New Size(165, 16)
+        TxtStyle.TabIndex = 29
+        ' 
+        ' TxtMaterial
+        ' 
+        TxtMaterial.Anchor = AnchorStyles.Left
+        TxtMaterial.BorderStyle = BorderStyle.None
+        TxtMaterial.Location = New Point(378, 113)
+        TxtMaterial.Name = "TxtMaterial"
+        TxtMaterial.ReadOnly = True
+        TxtMaterial.Size = New Size(165, 16)
+        TxtMaterial.TabIndex = 30
+        ' 
+        ' TxtBore
+        ' 
+        TxtBore.Anchor = AnchorStyles.Left
+        TxtBore.BorderStyle = BorderStyle.None
+        TxtBore.Location = New Point(378, 140)
+        TxtBore.Name = "TxtBore"
+        TxtBore.ReadOnly = True
+        TxtBore.Size = New Size(165, 16)
+        TxtBore.TabIndex = 31
+        ' 
+        ' TxtDAR
+        ' 
+        TxtDAR.Anchor = AnchorStyles.Left
+        TxtDAR.BorderStyle = BorderStyle.None
+        TxtDAR.Location = New Point(378, 167)
+        TxtDAR.Name = "TxtDAR"
+        TxtDAR.ReadOnly = True
+        TxtDAR.Size = New Size(165, 16)
+        TxtDAR.TabIndex = 32
+        ' 
+        ' TxtCup
+        ' 
+        TxtCup.Anchor = AnchorStyles.Left
+        TxtCup.BorderStyle = BorderStyle.None
+        TxtCup.Location = New Point(378, 196)
+        TxtCup.Name = "TxtCup"
+        TxtCup.ReadOnly = True
+        TxtCup.Size = New Size(165, 16)
+        TxtCup.TabIndex = 33
+        ' 
+        ' Label2
+        ' 
+        Label2.Anchor = AnchorStyles.Left
+        Label2.AutoSize = True
+        Label2.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label2.Location = New Point(553, 33)
+        Label2.Name = "Label2"
+        Label2.Size = New Size(63, 15)
+        Label2.TabIndex = 35
+        Label2.Text = "Scan Date"
+        ' 
+        ' Label3
+        ' 
+        Label3.Anchor = AnchorStyles.Left
+        Label3.AutoSize = True
+        Label3.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label3.Location = New Point(553, 60)
+        Label3.Name = "Label3"
+        Label3.Size = New Size(85, 15)
+        Label3.TabIndex = 36
+        Label3.Text = "Performed By"
+        ' 
+        ' Label7
+        ' 
+        Label7.Anchor = AnchorStyles.Left
+        Label7.AutoSize = True
+        Label7.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label7.Location = New Point(553, 168)
+        Label7.Name = "Label7"
+        Label7.Size = New Size(81, 15)
+        Label7.TabIndex = 40
+        Label7.Text = "Marked Pitch"
+        ' 
+        ' Label8
+        ' 
+        Label8.Anchor = AnchorStyles.Left
+        Label8.AutoSize = True
+        Label8.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label8.Location = New Point(553, 196)
+        Label8.Name = "Label8"
+        Label8.Size = New Size(74, 15)
+        Label8.TabIndex = 41
+        Label8.Text = "Wheel Pitch"
+        ' 
+        ' Label5
+        ' 
+        Label5.Anchor = AnchorStyles.Left
+        Label5.AutoSize = True
+        Label5.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label5.Location = New Point(553, 141)
+        Label5.Name = "Label5"
+        Label5.Size = New Size(83, 15)
+        Label5.TabIndex = 38
+        Label5.Text = "Measured Dia"
+        ' 
+        ' Label4
+        ' 
+        Label4.Anchor = AnchorStyles.Left
+        Label4.AutoSize = True
+        Label4.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label4.Location = New Point(553, 114)
+        Label4.Name = "Label4"
+        Label4.Size = New Size(71, 15)
+        Label4.TabIndex = 37
+        Label4.Text = "Marked Dia"
+        ' 
+        ' Label6
+        ' 
+        Label6.Anchor = AnchorStyles.Left
+        Label6.AutoSize = True
+        Label6.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label6.Location = New Point(553, 87)
+        Label6.Name = "Label6"
+        Label6.Size = New Size(55, 15)
+        Label6.TabIndex = 39
+        Label6.Text = "Rotation"
+        ' 
+        ' PrintDocument1
+        ' 
         ' 
         ' PrintPreviewDialog1
         ' 
@@ -100,515 +698,213 @@ Partial Class FrmReports
         PrintPreviewDialog1.Name = "PrintPreviewDialog1"
         PrintPreviewDialog1.Visible = False
         ' 
-        ' ChartBladeHeight
-        ' 
-        ChartArea1.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend1)
-        ChartBladeHeight.Location = New Point(18, 216)
-        ChartBladeHeight.Name = "ChartBladeHeight"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series1)
-        ChartBladeHeight.Size = New Size(221, 179)
-        ChartBladeHeight.TabIndex = 2
-        ChartBladeHeight.Text = "Track"
-        ' 
-        ' ChartAngularPosition
-        ' 
-        ChartArea2.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend2)
-        ChartAngularPosition.Location = New Point(245, 216)
-        ChartAngularPosition.Name = "ChartAngularPosition"
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series2)
-        ChartAngularPosition.Size = New Size(229, 179)
-        ChartAngularPosition.TabIndex = 3
-        ChartAngularPosition.Text = "Track"
-        ' 
-        ' PanelHeader
-        ' 
-        PanelHeader.Controls.Add(TablePropeller)
-        PanelHeader.Controls.Add(TableCustomerVessel)
-        PanelHeader.Controls.Add(TableJob)
-        PanelHeader.Location = New Point(12, 12)
-        PanelHeader.Name = "PanelHeader"
-        PanelHeader.Size = New Size(1181, 156)
-        PanelHeader.TabIndex = 4
-        ' 
-        ' TablePropeller
-        ' 
-        TablePropeller.ColumnCount = 8
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 69.76744F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 30.2325573F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 94F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 61F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 55F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 70F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 64F))
-        TablePropeller.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 587F))
-        TablePropeller.Controls.Add(LabBore, 6, 0)
-        TablePropeller.Controls.Add(LabDiameter, 5, 0)
-        TablePropeller.Controls.Add(LabBlades, 4, 0)
-        TablePropeller.Controls.Add(LabRotation, 3, 0)
-        TablePropeller.Controls.Add(LabMaterial, 2, 0)
-        TablePropeller.Controls.Add(LabStyle, 1, 0)
-        TablePropeller.Controls.Add(LabManufacturer, 0, 0)
-        TablePropeller.Controls.Add(TxtManufacturer, 0, 1)
-        TablePropeller.Controls.Add(TxtStyle, 1, 1)
-        TablePropeller.Controls.Add(TxtMaterial, 2, 1)
-        TablePropeller.Controls.Add(TxtRotation, 3, 1)
-        TablePropeller.Controls.Add(TxtBlades, 4, 1)
-        TablePropeller.Controls.Add(TxtDiameter, 5, 1)
-        TablePropeller.Controls.Add(TxtBore, 6, 1)
-        TablePropeller.Location = New Point(3, 106)
-        TablePropeller.Name = "TablePropeller"
-        TablePropeller.RowCount = 2
-        TablePropeller.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TablePropeller.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TablePropeller.Size = New Size(1175, 46)
-        TablePropeller.TabIndex = 2
-        ' 
-        ' LabBore
-        ' 
-        LabBore.AutoSize = True
-        LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabBore.Location = New Point(526, 0)
-        LabBore.Name = "LabBore"
-        LabBore.Size = New Size(34, 15)
-        LabBore.TabIndex = 8
-        LabBore.Text = "Bore"
-        ' 
-        ' LabDiameter
-        ' 
-        LabDiameter.AutoSize = True
-        LabDiameter.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabDiameter.Location = New Point(456, 0)
-        LabDiameter.Name = "LabDiameter"
-        LabDiameter.Size = New Size(60, 15)
-        LabDiameter.TabIndex = 7
-        LabDiameter.Text = "Diameter"
-        ' 
-        ' LabBlades
-        ' 
-        LabBlades.AutoSize = True
-        LabBlades.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabBlades.Location = New Point(401, 0)
-        LabBlades.Name = "LabBlades"
-        LabBlades.Size = New Size(43, 15)
-        LabBlades.TabIndex = 6
-        LabBlades.Text = "Blades"
-        ' 
-        ' LabRotation
-        ' 
-        LabRotation.AutoSize = True
-        LabRotation.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabRotation.Location = New Point(340, 0)
-        LabRotation.Name = "LabRotation"
-        LabRotation.Size = New Size(55, 15)
-        LabRotation.TabIndex = 5
-        LabRotation.Text = "Rotation"
-        ' 
-        ' LabMaterial
-        ' 
-        LabMaterial.AutoSize = True
-        LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabMaterial.Location = New Point(246, 0)
-        LabMaterial.Name = "LabMaterial"
-        LabMaterial.Size = New Size(53, 15)
-        LabMaterial.TabIndex = 4
-        LabMaterial.Text = "Material"
-        ' 
-        ' LabStyle
-        ' 
-        LabStyle.AutoSize = True
-        LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabStyle.Location = New Point(173, 0)
-        LabStyle.Name = "LabStyle"
-        LabStyle.Size = New Size(35, 15)
-        LabStyle.TabIndex = 3
-        LabStyle.Text = "Style"
-        ' 
-        ' LabManufacturer
-        ' 
-        LabManufacturer.AutoSize = True
-        LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabManufacturer.Location = New Point(3, 0)
-        LabManufacturer.Name = "LabManufacturer"
-        LabManufacturer.Size = New Size(84, 15)
-        LabManufacturer.TabIndex = 2
-        LabManufacturer.Text = "Manufacturer"
-        ' 
-        ' TxtManufacturer
-        ' 
-        TxtManufacturer.BorderStyle = BorderStyle.None
-        TxtManufacturer.Location = New Point(3, 25)
-        TxtManufacturer.Name = "TxtManufacturer"
-        TxtManufacturer.Size = New Size(164, 16)
-        TxtManufacturer.TabIndex = 9
-        ' 
-        ' TxtStyle
-        ' 
-        TxtStyle.BorderStyle = BorderStyle.None
-        TxtStyle.Location = New Point(173, 25)
-        TxtStyle.Name = "TxtStyle"
-        TxtStyle.Size = New Size(67, 16)
-        TxtStyle.TabIndex = 10
-        ' 
-        ' TxtMaterial
-        ' 
-        TxtMaterial.BorderStyle = BorderStyle.None
-        TxtMaterial.Location = New Point(246, 25)
-        TxtMaterial.Name = "TxtMaterial"
-        TxtMaterial.Size = New Size(88, 16)
-        TxtMaterial.TabIndex = 11
-        ' 
-        ' TxtRotation
-        ' 
-        TxtRotation.BorderStyle = BorderStyle.None
-        TxtRotation.Location = New Point(340, 25)
-        TxtRotation.Name = "TxtRotation"
-        TxtRotation.Size = New Size(55, 16)
-        TxtRotation.TabIndex = 12
-        ' 
-        ' TxtBlades
-        ' 
-        TxtBlades.BorderStyle = BorderStyle.None
-        TxtBlades.Location = New Point(401, 25)
-        TxtBlades.Name = "TxtBlades"
-        TxtBlades.Size = New Size(49, 16)
-        TxtBlades.TabIndex = 13
-        ' 
-        ' TxtDiameter
-        ' 
-        TxtDiameter.BorderStyle = BorderStyle.None
-        TxtDiameter.Location = New Point(456, 25)
-        TxtDiameter.Name = "TxtDiameter"
-        TxtDiameter.Size = New Size(64, 16)
-        TxtDiameter.TabIndex = 14
-        ' 
-        ' TxtBore
-        ' 
-        TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Location = New Point(526, 25)
-        TxtBore.Name = "TxtBore"
-        TxtBore.Size = New Size(58, 16)
-        TxtBore.TabIndex = 15
-        ' 
-        ' TableCustomerVessel
-        ' 
-        TableCustomerVessel.ColumnCount = 2
-        TableCustomerVessel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableCustomerVessel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableCustomerVessel.Controls.Add(TxtVessel, 1, 1)
-        TableCustomerVessel.Controls.Add(TxtCustomer, 0, 1)
-        TableCustomerVessel.Controls.Add(LabVessel, 1, 0)
-        TableCustomerVessel.Controls.Add(LabCustomer, 0, 0)
-        TableCustomerVessel.Location = New Point(3, 56)
-        TableCustomerVessel.Name = "TableCustomerVessel"
-        TableCustomerVessel.RowCount = 2
-        TableCustomerVessel.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TableCustomerVessel.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TableCustomerVessel.Size = New Size(493, 44)
-        TableCustomerVessel.TabIndex = 1
-        ' 
-        ' TxtVessel
-        ' 
-        TxtVessel.BorderStyle = BorderStyle.None
-        TxtVessel.Location = New Point(249, 25)
-        TxtVessel.Name = "TxtVessel"
-        TxtVessel.Size = New Size(241, 16)
-        TxtVessel.TabIndex = 8
-        ' 
-        ' TxtCustomer
-        ' 
-        TxtCustomer.BorderStyle = BorderStyle.None
-        TxtCustomer.Location = New Point(3, 25)
-        TxtCustomer.Name = "TxtCustomer"
-        TxtCustomer.Size = New Size(240, 16)
-        TxtCustomer.TabIndex = 7
-        ' 
-        ' LabVessel
-        ' 
-        LabVessel.AutoSize = True
-        LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabVessel.Location = New Point(249, 0)
-        LabVessel.Name = "LabVessel"
-        LabVessel.Size = New Size(41, 15)
-        LabVessel.TabIndex = 3
-        LabVessel.Text = "Vessel"
-        ' 
-        ' LabCustomer
-        ' 
-        LabCustomer.AutoSize = True
-        LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabCustomer.Location = New Point(3, 0)
-        LabCustomer.Name = "LabCustomer"
-        LabCustomer.Size = New Size(61, 15)
-        LabCustomer.TabIndex = 2
-        LabCustomer.Text = "Customer"
-        ' 
-        ' TableJob
-        ' 
-        TableJob.ColumnCount = 6
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 45.1219521F))
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 54.8780479F))
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 91F))
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 57F))
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 166F))
-        TableJob.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 615F))
-        TableJob.Controls.Add(TxtDescription, 5, 1)
-        TableJob.Controls.Add(TxtEmployee, 4, 1)
-        TableJob.Controls.Add(TxtClass, 3, 1)
-        TableJob.Controls.Add(TxtMeasurement, 2, 1)
-        TableJob.Controls.Add(TxtStartDate, 1, 1)
-        TableJob.Controls.Add(LabEmployee, 4, 0)
-        TableJob.Controls.Add(LabClass, 3, 0)
-        TableJob.Controls.Add(LabMeasurement, 2, 0)
-        TableJob.Controls.Add(LabStartDate, 1, 0)
-        TableJob.Controls.Add(LabJobNumber, 0, 0)
-        TableJob.Controls.Add(LabDescription, 5, 0)
-        TableJob.Controls.Add(TxtJobNumber, 0, 1)
-        TableJob.Location = New Point(3, 3)
-        TableJob.Name = "TableJob"
-        TableJob.RowCount = 2
-        TableJob.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TableJob.RowStyles.Add(New RowStyle(SizeType.Absolute, 22F))
-        TableJob.Size = New Size(1175, 47)
-        TableJob.TabIndex = 0
-        ' 
-        ' TxtDescription
-        ' 
-        TxtDescription.BorderStyle = BorderStyle.None
-        TxtDescription.Location = New Point(563, 25)
-        TxtDescription.Name = "TxtDescription"
-        TxtDescription.Size = New Size(609, 16)
-        TxtDescription.TabIndex = 11
-        ' 
-        ' TxtEmployee
-        ' 
-        TxtEmployee.BorderStyle = BorderStyle.None
-        TxtEmployee.Location = New Point(397, 25)
-        TxtEmployee.Name = "TxtEmployee"
-        TxtEmployee.Size = New Size(160, 16)
-        TxtEmployee.TabIndex = 10
-        ' 
-        ' TxtClass
-        ' 
-        TxtClass.BorderStyle = BorderStyle.None
-        TxtClass.Location = New Point(340, 25)
-        TxtClass.Name = "TxtClass"
-        TxtClass.Size = New Size(51, 16)
-        TxtClass.TabIndex = 9
-        ' 
-        ' TxtMeasurement
-        ' 
-        TxtMeasurement.BorderStyle = BorderStyle.None
-        TxtMeasurement.Location = New Point(249, 25)
-        TxtMeasurement.Name = "TxtMeasurement"
-        TxtMeasurement.Size = New Size(85, 16)
-        TxtMeasurement.TabIndex = 8
-        ' 
-        ' TxtStartDate
-        ' 
-        TxtStartDate.BorderStyle = BorderStyle.None
-        TxtStartDate.Location = New Point(114, 25)
-        TxtStartDate.Name = "TxtStartDate"
-        TxtStartDate.Size = New Size(129, 16)
-        TxtStartDate.TabIndex = 7
-        ' 
-        ' LabEmployee
-        ' 
-        LabEmployee.AutoSize = True
-        LabEmployee.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabEmployee.Location = New Point(397, 0)
-        LabEmployee.Name = "LabEmployee"
-        LabEmployee.Size = New Size(61, 15)
-        LabEmployee.TabIndex = 5
-        LabEmployee.Text = "Employee"
-        ' 
-        ' LabClass
-        ' 
-        LabClass.AutoSize = True
-        LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabClass.Location = New Point(340, 0)
-        LabClass.Name = "LabClass"
-        LabClass.Size = New Size(33, 15)
-        LabClass.TabIndex = 4
-        LabClass.Text = "Class"
-        ' 
-        ' LabMeasurement
-        ' 
-        LabMeasurement.AutoSize = True
-        LabMeasurement.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabMeasurement.Location = New Point(249, 0)
-        LabMeasurement.Name = "LabMeasurement"
-        LabMeasurement.Size = New Size(85, 15)
-        LabMeasurement.TabIndex = 3
-        LabMeasurement.Text = "Measurement"
-        ' 
-        ' LabStartDate
-        ' 
-        LabStartDate.AutoSize = True
-        LabStartDate.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabStartDate.Location = New Point(114, 0)
-        LabStartDate.Name = "LabStartDate"
-        LabStartDate.Size = New Size(65, 15)
-        LabStartDate.TabIndex = 2
-        LabStartDate.Text = "Start Date"
-        ' 
-        ' LabJobNumber
-        ' 
-        LabJobNumber.AutoSize = True
-        LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabJobNumber.Location = New Point(3, 0)
-        LabJobNumber.Name = "LabJobNumber"
-        LabJobNumber.Size = New Size(26, 15)
-        LabJobNumber.TabIndex = 1
-        LabJobNumber.Text = "Job"
-        ' 
-        ' LabDescription
-        ' 
-        LabDescription.AutoSize = True
-        LabDescription.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        LabDescription.Location = New Point(563, 0)
-        LabDescription.Name = "LabDescription"
-        LabDescription.Size = New Size(71, 15)
-        LabDescription.TabIndex = 0
-        LabDescription.Text = "Description"
-        ' 
-        ' TxtJobNumber
-        ' 
-        TxtJobNumber.BorderStyle = BorderStyle.None
-        TxtJobNumber.Location = New Point(3, 25)
-        TxtJobNumber.Name = "TxtJobNumber"
-        TxtJobNumber.Size = New Size(105, 16)
-        TxtJobNumber.TabIndex = 6
-        ' 
-        ' ChartBladeAverages
-        ' 
-        ChartArea3.Name = "ChartArea1"
-        ChartBladeAverages.ChartAreas.Add(ChartArea3)
-        Legend3.Name = "Legend1"
-        ChartBladeAverages.Legends.Add(Legend3)
-        ChartBladeAverages.Location = New Point(480, 216)
-        ChartBladeAverages.Name = "ChartBladeAverages"
-        Series3.ChartArea = "ChartArea1"
-        Series3.Legend = "Legend1"
-        Series3.Name = "Series1"
-        ChartBladeAverages.Series.Add(Series3)
-        ChartBladeAverages.Size = New Size(229, 179)
-        ChartBladeAverages.TabIndex = 5
-        ChartBladeAverages.Text = "Chart1"
+        ' MenuStrip1
+        ' 
+        MenuStrip1.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem})
+        MenuStrip1.Location = New Point(0, 0)
+        MenuStrip1.Name = "MenuStrip1"
+        MenuStrip1.Size = New Size(850, 24)
+        MenuStrip1.TabIndex = 1
+        MenuStrip1.Text = "MenuStrip1"
+        ' 
+        ' FileToolStripMenuItem
+        ' 
+        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {OpenToolStripMenuItem, ToolStripSeparator1, PrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
+        FileToolStripMenuItem.Name = "FileToolStripMenuItem"
+        FileToolStripMenuItem.Size = New Size(37, 20)
+        FileToolStripMenuItem.Text = "File"
+        ' 
+        ' OpenToolStripMenuItem
+        ' 
+        OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
+        OpenToolStripMenuItem.Size = New Size(103, 22)
+        OpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' ToolStripSeparator1
+        ' 
+        ToolStripSeparator1.Name = "ToolStripSeparator1"
+        ToolStripSeparator1.Size = New Size(100, 6)
+        ' 
+        ' PrintToolStripMenuItem
+        ' 
+        PrintToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {PrintToolStripMenuItem1, PrintPreviewToolStripMenuItem, PageSetupToolStripMenuItem})
+        PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
+        PrintToolStripMenuItem.Size = New Size(103, 22)
+        PrintToolStripMenuItem.Text = "Print"
+        ' 
+        ' PrintToolStripMenuItem1
+        ' 
+        PrintToolStripMenuItem1.Name = "PrintToolStripMenuItem1"
+        PrintToolStripMenuItem1.Size = New Size(143, 22)
+        PrintToolStripMenuItem1.Text = "Print"
+        ' 
+        ' PrintPreviewToolStripMenuItem
+        ' 
+        PrintPreviewToolStripMenuItem.Name = "PrintPreviewToolStripMenuItem"
+        PrintPreviewToolStripMenuItem.Size = New Size(143, 22)
+        PrintPreviewToolStripMenuItem.Text = "Print Preview"
+        ' 
+        ' PageSetupToolStripMenuItem
+        ' 
+        PageSetupToolStripMenuItem.Name = "PageSetupToolStripMenuItem"
+        PageSetupToolStripMenuItem.Size = New Size(143, 22)
+        PageSetupToolStripMenuItem.Text = "Page Setup"
+        ' 
+        ' ToolStripSeparator2
+        ' 
+        ToolStripSeparator2.Name = "ToolStripSeparator2"
+        ToolStripSeparator2.Size = New Size(100, 6)
+        ' 
+        ' ExitToolStripMenuItem
+        ' 
+        ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
+        ExitToolStripMenuItem.Size = New Size(103, 22)
+        ExitToolStripMenuItem.Text = "Exit"
         ' 
         ' Chart1
         ' 
-        ChartArea4.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea4)
-        Legend4.Name = "Legend1"
-        Chart1.Legends.Add(Legend4)
-        Chart1.Location = New Point(715, 216)
+        ChartArea1.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        Chart1.Legends.Add(Legend1)
+        Chart1.Location = New Point(12, 267)
         Chart1.Name = "Chart1"
-        Series4.ChartArea = "ChartArea1"
-        Series4.Legend = "Legend1"
-        Series4.Name = "Series1"
-        Chart1.Series.Add(Series4)
-        Chart1.Size = New Size(475, 179)
-        Chart1.TabIndex = 6
-        Chart1.Text = "ChartSummary"
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Chart1.Series.Add(Series1)
+        Chart1.Size = New Size(300, 160)
+        Chart1.TabIndex = 4
+        Chart1.Text = "Chart1"
+        Title1.Name = "Title1"
+        Chart1.Titles.Add(Title1)
         ' 
-        ' JobDetailsBindingSource
+        ' Chart2
         ' 
-        JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
+        ChartArea2.Name = "ChartArea1"
+        Chart2.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Chart2.Legends.Add(Legend2)
+        Chart2.Location = New Point(12, 433)
+        Chart2.Name = "Chart2"
+        Series2.ChartArea = "ChartArea1"
+        Series2.ChartType = DataVisualization.Charting.SeriesChartType.Bar
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Chart2.Series.Add(Series2)
+        Chart2.Size = New Size(300, 160)
+        Chart2.TabIndex = 5
+        Chart2.Text = "Chart2"
+        Title2.Name = "Title2"
+        Chart2.Titles.Add(Title2)
         ' 
-        ' TableLayoutPanel1
+        ' Chart3
         ' 
-        TableLayoutPanel1.ColumnCount = 2
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.Location = New Point(18, 425)
-        TableLayoutPanel1.Name = "TableLayoutPanel1"
-        TableLayoutPanel1.RowCount = 2
-        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TableLayoutPanel1.Size = New Size(200, 100)
-        TableLayoutPanel1.TabIndex = 7
+        ChartArea3.Name = "ChartArea1"
+        Chart3.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        Chart3.Legends.Add(Legend3)
+        Chart3.Location = New Point(12, 599)
+        Chart3.Name = "Chart3"
+        Series3.ChartArea = "ChartArea1"
+        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
+        Series3.Legend = "Legend1"
+        Series3.Name = "Series1"
+        Chart3.Series.Add(Series3)
+        Chart3.Size = New Size(300, 160)
+        Chart3.TabIndex = 6
+        Chart3.Text = "Chart3"
+        Title3.Name = "Title3"
+        Chart3.Titles.Add(Title3)
         ' 
-        ' FrmReports
+        ' Form2
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(1205, 703)
-        Controls.Add(TableLayoutPanel1)
+        ClientSize = New Size(850, 1061)
+        Controls.Add(Chart3)
+        Controls.Add(Chart2)
         Controls.Add(Chart1)
-        Controls.Add(ChartBladeAverages)
-        Controls.Add(PanelHeader)
-        Controls.Add(ChartBladeHeight)
-        Controls.Add(ChartAngularPosition)
-        Name = "FrmReports"
-        Text = "Reports"
-        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).EndInit()
-        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).EndInit()
-        PanelHeader.ResumeLayout(False)
-        TablePropeller.ResumeLayout(False)
-        TablePropeller.PerformLayout()
-        TableCustomerVessel.ResumeLayout(False)
-        TableCustomerVessel.PerformLayout()
-        TableJob.ResumeLayout(False)
-        TableJob.PerformLayout()
-        CType(ChartBladeAverages, ComponentModel.ISupportInitialize).EndInit()
-        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
+        Controls.Add(HeaderLayoutPanel)
+        Controls.Add(MenuStrip1)
+        MainMenuStrip = MenuStrip1
+        Name = "Form2"
+        Text = "Form2"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        HeaderLayoutPanel.ResumeLayout(False)
+        HeaderLayoutPanel.PerformLayout()
+        MenuStrip1.ResumeLayout(False)
+        MenuStrip1.PerformLayout()
+        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
+        PerformLayout()
     End Sub
-
+    Friend WithEvents JobDetailsBindingSource As BindingSource
+    Friend WithEvents HeaderLayoutPanel As TableLayoutPanel
+    Friend WithEvents LabJobNumber As Label
+    Friend WithEvents LabCustomer As Label
+    Friend WithEvents LabVessel As Label
+    Friend WithEvents LabManufacturer As Label
+    Friend WithEvents LabPartNumber As Label
+    Friend WithEvents LabSerialNumber As Label
+    Friend WithEvents LabStampNumber As Label
+    Friend WithEvents LabInspectedBy As Label
+    Friend WithEvents TxtJobNumber As TextBox
+    Friend WithEvents TxtCustomer As TextBox
+    Friend WithEvents TxtVessel As TextBox
+    Friend WithEvents TxtManufacturer As TextBox
+    Friend WithEvents TxtPartNumber As TextBox
+    Friend WithEvents TxtSerialNumber As TextBox
+    Friend WithEvents TxtStampNumber As TextBox
+    Friend WithEvents TxtInspectedBy As TextBox
+    Friend WithEvents LabJobId As Label
+    Friend WithEvents LabClass As Label
+    Friend WithEvents LabRepairStatus As Label
+    Friend WithEvents LabStyle As Label
+    Friend WithEvents LabMaterial As Label
+    Friend WithEvents TxtJobId As TextBox
+    Friend WithEvents LabBore As Label
+    Friend WithEvents LabDAR As Label
+    Friend WithEvents LabCup As Label
+    Friend WithEvents TxtClass As TextBox
+    Friend WithEvents TxtRepairStatus As TextBox
+    Friend WithEvents TxtStyle As TextBox
+    Friend WithEvents TxtMaterial As TextBox
+    Friend WithEvents TxtBore As TextBox
+    Friend WithEvents TxtDAR As TextBox
+    Friend WithEvents TxtCup As TextBox
+    Friend WithEvents Label1 As Label
+    Friend WithEvents Label2 As Label
+    Friend WithEvents Label3 As Label
+    Friend WithEvents Label4 As Label
+    Friend WithEvents Label5 As Label
+    Friend WithEvents Label6 As Label
+    Friend WithEvents Label7 As Label
+    Friend WithEvents Label8 As Label
+    Friend WithEvents TxtWheelPitch As TextBox
+    Friend WithEvents TxtMarkedPitch As TextBox
+    Friend WithEvents TxtMeasuredDiameter As TextBox
+    Friend WithEvents TxtMarkedDiameter As TextBox
+    Friend WithEvents TxtRotation As TextBox
+    Friend WithEvents TxtPerformedBy As TextBox
+    Friend WithEvents TxtScanDate As TextBox
+    Friend WithEvents TxtFileName As TextBox
     Friend WithEvents PrintDocument1 As Printing.PrintDocument
     Friend WithEvents PrintPreviewDialog1 As PrintPreviewDialog
     Friend WithEvents PageSetupDialog1 As PageSetupDialog
-    Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
-    Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
-    Friend WithEvents PanelHeader As Panel
-    Friend WithEvents ChartBladeAverages As DataVisualization.Charting.Chart
+    Friend WithEvents MenuStrip1 As MenuStrip
+    Friend WithEvents FileToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents OpenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator1 As ToolStripSeparator
+    Friend WithEvents PrintToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PrintToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents PrintPreviewToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents PageSetupToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator2 As ToolStripSeparator
+    Friend WithEvents ExitToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents Chart1 As DataVisualization.Charting.Chart
-    Friend WithEvents JobDetailsBindingSource As BindingSource
-    Friend WithEvents TableJob As TableLayoutPanel
-    Friend WithEvents LabDescription As Label
-    Friend WithEvents LabEmployee As Label
-    Friend WithEvents LabClass As Label
-    Friend WithEvents LabMeasurement As Label
-    Friend WithEvents LabStartDate As Label
-    Friend WithEvents LabJobNumber As Label
-    Friend WithEvents TxtDescription As TextBox
-    Friend WithEvents TxtEmployee As TextBox
-    Friend WithEvents TxtClass As TextBox
-    Friend WithEvents TxtMeasurement As TextBox
-    Friend WithEvents TxtStartDate As TextBox
-    Friend WithEvents TxtJobNumber As TextBox
-    Friend WithEvents TableCustomerVessel As TableLayoutPanel
-    Friend WithEvents TxtVessel As TextBox
-    Friend WithEvents TxtCustomer As TextBox
-    Friend WithEvents LabVessel As Label
-    Friend WithEvents LabCustomer As Label
-    Friend WithEvents TablePropeller As TableLayoutPanel
-    Friend WithEvents LabBore As Label
-    Friend WithEvents LabDiameter As Label
-    Friend WithEvents LabBlades As Label
-    Friend WithEvents LabRotation As Label
-    Friend WithEvents LabMaterial As Label
-    Friend WithEvents LabStyle As Label
-    Friend WithEvents LabManufacturer As Label
-    Friend WithEvents TxtManufacturer As TextBox
-    Friend WithEvents TxtStyle As TextBox
-    Friend WithEvents TxtMaterial As TextBox
-    Friend WithEvents TxtRotation As TextBox
-    Friend WithEvents TxtBlades As TextBox
-    Friend WithEvents TxtDiameter As TextBox
-    Friend WithEvents TxtBore As TextBox
-    Friend WithEvents TableLayoutPanel1 As TableLayoutPanel
+    Friend WithEvents Chart2 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart3 As DataVisualization.Charting.Chart
 End Class
