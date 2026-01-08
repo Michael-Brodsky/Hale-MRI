@@ -44,6 +44,23 @@ Module MRIMath
         Return GetPitch(sectorstartangle, sectorendangle, sectorstartdepth, sectorenddepth) 'sectorenddepth - sectorstartdepth) * (360 / sectorArc)
     End Function
 
+    Public Function GetLocalHeight(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double) As Double
+        'Returns the local height of a sector based on the first and last cell measurements in that sector
+        Dim startangle As Double = cm.FirstOrDefault().Angle
+        Dim endangle As Double = cm.LastOrDefault().Angle
+        Dim deltaangle As Double = startangle - endangle
+        Dim cl As Double = GetChordLength(startangle, endangle, cm.FirstOrDefault().Depth, cm.LastOrDefault().Depth, diameter, CInt(radiusPercent))
+        If cl <> 0 Then
+            startangle -= (deltaangle * cm.FirstOrDefault().RadiusMeasurement.JobDetails.Job.TeExclusion / cl)
+            endangle += (deltaangle * cm.FirstOrDefault().RadiusMeasurement.JobDetails.Job.LeExclusion / cl)
+        End If ' bunch of math that finds the angle bounds of the sector excluding TE and LE Exclusion zones
+        Dim sectorArc As Double = (startangle - endangle) / sectors
+        Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
+        Dim sectorendangle As Double = sectorstartangle - sectorArc
+        Dim sectorstartcell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorstartangle).LastOrDefault()
+        Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
+        Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
+    End Function
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
@@ -63,7 +80,7 @@ Module MRIMath
 
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
         'Pitch = (360 * Change in Depth) / Change in Angle
-        ' Can be used to get local pitch between two cellmeasurements, 
+        ' Can be used to get local pitch between two cellmeasurements,
         Dim deltaangle = secondangle - firstangle
         Dim deltadepth = seconddepth - firstdepth
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)

@@ -22,8 +22,8 @@ Partial Class FrmComparison
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         tLayoutComparison = New TableLayoutPanel()
         PictLogo = New PictureBox()
         DataGridJobDetails = New DataGridView()
@@ -47,12 +47,16 @@ Partial Class FrmComparison
         PanelChart = New Panel()
         ChartComparison = New DataVisualization.Charting.Chart()
         RecordNavigationBar1 = New RecordNavigationBar()
+        JobDetailsBindingSource = New BindingSource(components)
+        BindingSource2 = New BindingSource(components)
         tLayoutComparison.SuspendLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         tlayoutComparisonControls.SuspendLayout()
         PanelChart.SuspendLayout()
         CType(ChartComparison, ComponentModel.ISupportInitialize).BeginInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(BindingSource2, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' tLayoutComparison
@@ -340,9 +344,6 @@ Partial Class FrmComparison
         ChartComparison.Dock = DockStyle.Top
         ChartComparison.Location = New Point(0, 0)
         ChartComparison.Name = "ChartComparison"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Name = "Series1"
-        ChartComparison.Series.Add(Series1)
         ChartComparison.Size = New Size(976, 517)
         ChartComparison.TabIndex = 2
         ' 
@@ -364,6 +365,9 @@ Partial Class FrmComparison
         RecordNavigationBar1.Size = New Size(569, 33)
         RecordNavigationBar1.TabIndex = 5
         ' 
+        ' JobDetailsBindingSource
+        ' 
+        ' 
         ' FrmComparison
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
@@ -382,6 +386,8 @@ Partial Class FrmComparison
         tlayoutComparisonControls.PerformLayout()
         PanelChart.ResumeLayout(False)
         CType(ChartComparison, ComponentModel.ISupportInitialize).EndInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(BindingSource2, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
 
@@ -408,4 +414,6 @@ Partial Class FrmComparison
     Friend WithEvents CmdPrintAllGraphs As Button
     Friend WithEvents PanelChart As Panel
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
+    Friend WithEvents JobDetailsBindingSource As BindingSource
+    Friend WithEvents BindingSource2 As BindingSource
 End Class
