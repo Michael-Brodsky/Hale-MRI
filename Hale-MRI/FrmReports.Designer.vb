@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form2
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class FrmReports
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,10 +20,10 @@ Partial Class Form2
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
@@ -102,12 +102,16 @@ Partial Class Form2
         Chart1 = New DataVisualization.Charting.Chart()
         Chart2 = New DataVisualization.Charting.Chart()
         Chart3 = New DataVisualization.Charting.Chart()
+        GrdRadiiAverages = New DataGridView()
+        grdChordLength = New DataGridView()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
         CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
+        CType(GrdRadiiAverages, ComponentModel.ISupportInitialize).BeginInit()
+        CType(grdChordLength, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' HeaderLayoutPanel
@@ -817,18 +821,36 @@ Partial Class Form2
         Title3.Name = "Title3"
         Chart3.Titles.Add(Title3)
         ' 
-        ' Form2
+        ' GrdRadiiAverages
+        ' 
+        GrdRadiiAverages.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        GrdRadiiAverages.Location = New Point(12, 765)
+        GrdRadiiAverages.Name = "GrdRadiiAverages"
+        GrdRadiiAverages.Size = New Size(240, 150)
+        GrdRadiiAverages.TabIndex = 7
+        ' 
+        ' grdChordLength
+        ' 
+        grdChordLength.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        grdChordLength.Location = New Point(12, 921)
+        grdChordLength.Name = "grdChordLength"
+        grdChordLength.Size = New Size(240, 150)
+        grdChordLength.TabIndex = 8
+        ' 
+        ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
+        Controls.Add(grdChordLength)
+        Controls.Add(GrdRadiiAverages)
         Controls.Add(Chart3)
         Controls.Add(Chart2)
         Controls.Add(Chart1)
         Controls.Add(HeaderLayoutPanel)
         Controls.Add(MenuStrip1)
         MainMenuStrip = MenuStrip1
-        Name = "Form2"
+        Name = "FrmReports"
         Text = "Form2"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         HeaderLayoutPanel.ResumeLayout(False)
@@ -838,6 +860,8 @@ Partial Class Form2
         CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
+        CType(GrdRadiiAverages, ComponentModel.ISupportInitialize).EndInit()
+        CType(grdChordLength, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -907,4 +931,6 @@ Partial Class Form2
     Friend WithEvents Chart1 As DataVisualization.Charting.Chart
     Friend WithEvents Chart2 As DataVisualization.Charting.Chart
     Friend WithEvents Chart3 As DataVisualization.Charting.Chart
+    Friend WithEvents GrdRadiiAverages As DataGridView
+    Friend WithEvents grdChordLength As DataGridView
 End Class

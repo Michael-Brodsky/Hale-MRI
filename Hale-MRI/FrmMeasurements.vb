@@ -11,7 +11,7 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
 
-Public Class Form1
+Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Private Members"
     Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this is a database Setting).
@@ -29,7 +29,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As Form2
+    Private mFrmReports As FrmReports
     Private mFrmVessels As FrmVessels
     Private mFrmLocalPitch As FormLocalPitch
 
@@ -546,7 +546,7 @@ Public Class Form1
                 End If
                 If mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).Any() Then
                     rad = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = blade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
-                    rad2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextblade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
+                    rad2 = mJobDetails?.RadiusMeasurements.Where(Function(rm) rm.BladeId = nextBlade).Where(Function(rm) Math.Round(rm.Radius.Value) = radius).FirstOrDefault()
                 Else ' if no radii at selected radius then no classes pass inspection
                     Return 5
                 End If
@@ -839,7 +839,7 @@ Public Class Form1
                 rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
                 colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
                 Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
-                rowradiusBlade.Item(colRadius) = Math.Round(pitch, 2)
+                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
                 Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
                 GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textAvgBladePitchColor)
                 rowBladeBlade = If(dtBladePitch.Rows.Find(rm.BladeId), dtBladePitch.Rows.Find(1))
@@ -851,7 +851,7 @@ Public Class Form1
             TotalPitchWheel += avgPitch
             Dim bladePitchColor As ToleranceColor = CheckBladePitch(ToleranceTable, avgPitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
             dtBladePitch.Rows(row.Item("Blade") - 1).Item("Avg Pitch") = Math.Round(totalPitch / pitchCount, 2)
-            GridBladePitch.Rows(row.Item("Blade") - 1).Cells(1).Style.ForeColor = Tolerances.ToColor(bladepitchcolor)
+            GridBladePitch.Rows(row.Item("Blade") - 1).Cells(1).Style.ForeColor = Tolerances.ToColor(bladePitchColor)
         Next
         mJobDetails.WheelPitch = TotalPitchWheel / mJob.PropellerBlades
         Dim textWheelPitchColor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, Job.DesiredPitch, True)

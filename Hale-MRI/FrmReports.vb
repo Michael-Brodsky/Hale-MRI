@@ -6,14 +6,15 @@ Imports Microsoft.EntityFrameworkCore
 Imports System.Drawing.Printing
 Imports System.Numerics
 
-Public Class Form2
+Public Class FrmReports
     Inherits FrmDatabaseForm
-
+#Region "Private Members"
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
     Private mReportGenerator As ReportGenerator = Nothing
-
+#End Region 'Private Members
+#Region "Public Interface"
     ''' <summary>
     ''' Returns the currently selected JobDetail,
     ''' or Nothing if there is no selected record.
@@ -25,7 +26,6 @@ Public Class Form2
     End Property
 
     Public Overrides Property Database As HaleMRIContext
-
     ''' <summary>
     ''' Loads all JobDetails and their Cell, Extreme and RadiusMeasurements
     ''' for the given Job.
@@ -63,7 +63,8 @@ Public Class Form2
     End Property
 
     Protected Overrides Property MasterSource As BindingSource
-
+#End Region ' Public Interface
+#Region "Private Interface"
     Private Sub ConfigureChart()
         'ChartBladeHeight.ChartAreas.Clear()
         'ChartBladeHeight.Series.Clear()
@@ -164,6 +165,69 @@ Public Class Form2
         Next
     End Sub
 
+    Private Sub UpdateRadiiAveragesTable(MeanDesign As Boolean)
+        If mJobDetails Is Nothing Then
+            Return
+        End If
+        Dim ToleranceTable As Tolerance = GetToleranceTable(Database, If(mJobDetails?.ToleranceClass, "D"))
+        Dim dtBladePitchByRadius As New DataTable()
+        Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
+        Dim rowRadiusBlade As DataRow
+        Dim x As Integer
+        For x = 1 To Job?.PropellerBlades
+            rowRadiusBlade = dtBladePitchByRadius.Rows.Add(x)
+        Next
+        GrdRadiiAverages.DataSource = dtBladePitchByRadius
+        dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
+        GrdRadiiAverages.Refresh()
+        For Each row As DataRow In dtBladePitchByRadius.Rows
+            Dim totalPitch As Double = 0.0
+            Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+                Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+                rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
+                colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
+                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
+                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
+                Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, True) ' Check tolerance and adjust text color
+                GrdRadiiAverages.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textAvgBladePitchColor)
+                totalPitch += pitch
+                pitchCount += 1
+            Next
+            Dim avgPitch As Double = totalPitch / pitchCount
+            Dim bladePitchColor As ToleranceColor = CheckBladePitch(ToleranceTable, avgPitch, Job.DesiredPitch, True) ' Check tolerance and adjust text color
+            If MeanDesign Then
+                Dim meancol As DataColumn = If(dtBladePitchByRadius.Columns("Mean"), dtBladePitchByRadius.Columns.Add("Mean", GetType(Double)))
+                Dim designcol As DataColumn = If(dtBladePitchByRadius.Columns("Design"), dtBladePitchByRadius.Columns.Add("Design", GetType(Double)))
+                'add if here for design loaded check use design pitch if loaded and ref if not
+                row.Item(designcol) = Math.Round(Job.DesiredPitch.Value, 2)
+                row.Item(meancol) = Math.Round(avgPitch, 2)
+                GrdRadiiAverages.Rows(row.Item("Blade") - 1).Cells(meancol.Ordinal).Style.ForeColor = Tolerances.ToColor(bladePitchColor)
+            End If
+        Next
+    End Sub
+    Private Sub UpdateChordLengthTable()
+        If mJobDetails Is Nothing Then
+            Return
+        End If
+        Dim ToleranceTable As Tolerance = GetToleranceTable(Database, If(mJobDetails?.ToleranceClass, "D"))
+        Dim dtChordLength As New DataTable()
+        Dim colRadius As DataColumn = dtChordLength.Columns.Add("Blade", GetType(Integer))
+        Dim rowBlade As DataRow
+        Dim x As Integer
+        For x = 1 To Job?.PropellerBlades
+            dtChordLength.Rows.Add(x)
+        Next
+        grdChordLength.DataSource = dtChordLength
+        dtChordLength.PrimaryKey = New DataColumn() {colRadius}
+        grdChordLength.Refresh()
+        For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements
+            Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+            rowBlade = If(dtChordLength.Rows.Find(rm.BladeId), dtChordLength.Rows.Add(rm.BladeId))
+            colRadius = If(dtChordLength.Columns(radiusPercent), dtChordLength.Columns.Add(radiusPercent, GetType(Double)))
+        Next
+    End Sub
+#End Region 'Private Interface
 #Region "Event Handlers"
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         MasterSource = JobDetailsBindingSource

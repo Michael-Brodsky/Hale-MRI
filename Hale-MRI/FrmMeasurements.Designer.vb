@@ -1,9 +1,9 @@
-﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form1
+﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class FrmMeasurements
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
-    <System.Diagnostics.DebuggerNonUserCode()> _
+    <System.Diagnostics.DebuggerNonUserCode()>
     Protected Overrides Sub Dispose(ByVal disposing As Boolean)
         Try
             If disposing AndAlso components IsNot Nothing Then
@@ -20,7 +20,7 @@ Partial Class Form1
     'NOTE: The following procedure is required by the Windows Form Designer
     'It can be modified using the Windows Form Designer.  
     'Do not modify it using the code editor.
-    <System.Diagnostics.DebuggerStepThrough()> _
+    <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
@@ -2069,7 +2069,7 @@ Partial Class Form1
         CmdMeasureForm.Text = "Measure"
         CmdMeasureForm.UseVisualStyleBackColor = True
         ' 
-        ' Form1
+        ' FrmMeasurements
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
@@ -2078,7 +2078,7 @@ Partial Class Form1
         Controls.Add(TLayoutMeasurement)
         Font = New Font("Segoe UI", 11F)
         Margin = New Padding(3, 1, 3, 1)
-        Name = "Form1"
+        Name = "FrmMeasurements"
         Text = "Measurements"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
