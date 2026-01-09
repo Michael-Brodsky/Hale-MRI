@@ -24,18 +24,18 @@ Partial Class FrmReports
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Title2 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Title3 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title4 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
+        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend5 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title5 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
+        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend6 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim Title6 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         JobDetailsBindingSource = New BindingSource(components)
         HeaderLayoutPanel = New TableLayoutPanel()
         TxtWheelPitch = New TextBox()
@@ -103,7 +103,7 @@ Partial Class FrmReports
         Chart2 = New DataVisualization.Charting.Chart()
         Chart3 = New DataVisualization.Charting.Chart()
         GrdRadiiAverages = New DataGridView()
-        grdChordLength = New DataGridView()
+        GrdChordLength = New DataGridView()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
@@ -111,7 +111,7 @@ Partial Class FrmReports
         CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
         CType(GrdRadiiAverages, ComponentModel.ISupportInitialize).BeginInit()
-        CType(grdChordLength, ComponentModel.ISupportInitialize).BeginInit()
+        CType(GrdChordLength, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' HeaderLayoutPanel
@@ -269,7 +269,7 @@ Partial Class FrmReports
         ' 
         Label1.Anchor = AnchorStyles.Left
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label1.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label1.Location = New Point(553, 6)
         Label1.Name = "Label1"
         Label1.Size = New Size(62, 15)
@@ -290,7 +290,7 @@ Partial Class FrmReports
         ' 
         LabJobId.Anchor = AnchorStyles.Left
         LabJobId.AutoSize = True
-        LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobId.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabJobId.Location = New Point(278, 6)
         LabJobId.Name = "LabJobId"
         LabJobId.Size = New Size(40, 15)
@@ -301,7 +301,7 @@ Partial Class FrmReports
         ' 
         LabJobNumber.Anchor = AnchorStyles.Left
         LabJobNumber.AutoSize = True
-        LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabJobNumber.Location = New Point(3, 6)
         LabJobNumber.Name = "LabJobNumber"
         LabJobNumber.Size = New Size(48, 15)
@@ -312,7 +312,7 @@ Partial Class FrmReports
         ' 
         LabCustomer.Anchor = AnchorStyles.Left
         LabCustomer.AutoSize = True
-        LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCustomer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabCustomer.Location = New Point(3, 33)
         LabCustomer.Name = "LabCustomer"
         LabCustomer.Size = New Size(61, 15)
@@ -323,7 +323,7 @@ Partial Class FrmReports
         ' 
         LabVessel.Anchor = AnchorStyles.Left
         LabVessel.AutoSize = True
-        LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabVessel.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabVessel.Location = New Point(3, 60)
         LabVessel.Name = "LabVessel"
         LabVessel.Size = New Size(41, 15)
@@ -334,7 +334,7 @@ Partial Class FrmReports
         ' 
         LabManufacturer.Anchor = AnchorStyles.Left
         LabManufacturer.AutoSize = True
-        LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabManufacturer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabManufacturer.Location = New Point(3, 87)
         LabManufacturer.Name = "LabManufacturer"
         LabManufacturer.Size = New Size(84, 15)
@@ -345,7 +345,7 @@ Partial Class FrmReports
         ' 
         LabPartNumber.Anchor = AnchorStyles.Left
         LabPartNumber.AutoSize = True
-        LabPartNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPartNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPartNumber.Location = New Point(3, 114)
         LabPartNumber.Name = "LabPartNumber"
         LabPartNumber.Size = New Size(52, 15)
@@ -356,7 +356,7 @@ Partial Class FrmReports
         ' 
         LabSerialNumber.Anchor = AnchorStyles.Left
         LabSerialNumber.AutoSize = True
-        LabSerialNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabSerialNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabSerialNumber.Location = New Point(3, 141)
         LabSerialNumber.Name = "LabSerialNumber"
         LabSerialNumber.Size = New Size(28, 15)
@@ -367,7 +367,7 @@ Partial Class FrmReports
         ' 
         LabStampNumber.Anchor = AnchorStyles.Left
         LabStampNumber.AutoSize = True
-        LabStampNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStampNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabStampNumber.Location = New Point(3, 168)
         LabStampNumber.Name = "LabStampNumber"
         LabStampNumber.Size = New Size(65, 15)
@@ -378,7 +378,7 @@ Partial Class FrmReports
         ' 
         LabInspectedBy.Anchor = AnchorStyles.Left
         LabInspectedBy.AutoSize = True
-        LabInspectedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabInspectedBy.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabInspectedBy.Location = New Point(3, 196)
         LabInspectedBy.Name = "LabInspectedBy"
         LabInspectedBy.Size = New Size(79, 15)
@@ -469,7 +469,7 @@ Partial Class FrmReports
         ' 
         LabClass.Anchor = AnchorStyles.Left
         LabClass.AutoSize = True
-        LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabClass.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabClass.Location = New Point(278, 33)
         LabClass.Name = "LabClass"
         LabClass.Size = New Size(33, 15)
@@ -480,7 +480,7 @@ Partial Class FrmReports
         ' 
         LabRepairStatus.Anchor = AnchorStyles.Left
         LabRepairStatus.AutoSize = True
-        LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabRepairStatus.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabRepairStatus.Location = New Point(278, 60)
         LabRepairStatus.Name = "LabRepairStatus"
         LabRepairStatus.Size = New Size(81, 15)
@@ -491,7 +491,7 @@ Partial Class FrmReports
         ' 
         LabStyle.Anchor = AnchorStyles.Left
         LabStyle.AutoSize = True
-        LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStyle.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabStyle.Location = New Point(278, 87)
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(35, 15)
@@ -502,7 +502,7 @@ Partial Class FrmReports
         ' 
         LabMaterial.Anchor = AnchorStyles.Left
         LabMaterial.AutoSize = True
-        LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMaterial.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabMaterial.Location = New Point(278, 114)
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(53, 15)
@@ -513,7 +513,7 @@ Partial Class FrmReports
         ' 
         LabBore.Anchor = AnchorStyles.Left
         LabBore.AutoSize = True
-        LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabBore.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabBore.Location = New Point(278, 141)
         LabBore.Name = "LabBore"
         LabBore.Size = New Size(34, 15)
@@ -524,7 +524,7 @@ Partial Class FrmReports
         ' 
         LabDAR.Anchor = AnchorStyles.Left
         LabDAR.AutoSize = True
-        LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabDAR.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabDAR.Location = New Point(278, 168)
         LabDAR.Name = "LabDAR"
         LabDAR.Size = New Size(32, 15)
@@ -535,7 +535,7 @@ Partial Class FrmReports
         ' 
         LabCup.Anchor = AnchorStyles.Left
         LabCup.AutoSize = True
-        LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCup.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabCup.Location = New Point(278, 196)
         LabCup.Name = "LabCup"
         LabCup.Size = New Size(28, 15)
@@ -616,7 +616,7 @@ Partial Class FrmReports
         ' 
         Label2.Anchor = AnchorStyles.Left
         Label2.AutoSize = True
-        Label2.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label2.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label2.Location = New Point(553, 33)
         Label2.Name = "Label2"
         Label2.Size = New Size(63, 15)
@@ -627,7 +627,7 @@ Partial Class FrmReports
         ' 
         Label3.Anchor = AnchorStyles.Left
         Label3.AutoSize = True
-        Label3.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label3.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label3.Location = New Point(553, 60)
         Label3.Name = "Label3"
         Label3.Size = New Size(85, 15)
@@ -638,7 +638,7 @@ Partial Class FrmReports
         ' 
         Label7.Anchor = AnchorStyles.Left
         Label7.AutoSize = True
-        Label7.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label7.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label7.Location = New Point(553, 168)
         Label7.Name = "Label7"
         Label7.Size = New Size(81, 15)
@@ -649,7 +649,7 @@ Partial Class FrmReports
         ' 
         Label8.Anchor = AnchorStyles.Left
         Label8.AutoSize = True
-        Label8.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label8.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label8.Location = New Point(553, 196)
         Label8.Name = "Label8"
         Label8.Size = New Size(74, 15)
@@ -660,7 +660,7 @@ Partial Class FrmReports
         ' 
         Label5.Anchor = AnchorStyles.Left
         Label5.AutoSize = True
-        Label5.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label5.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label5.Location = New Point(553, 141)
         Label5.Name = "Label5"
         Label5.Size = New Size(83, 15)
@@ -671,7 +671,7 @@ Partial Class FrmReports
         ' 
         Label4.Anchor = AnchorStyles.Left
         Label4.AutoSize = True
-        Label4.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label4.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label4.Location = New Point(553, 114)
         Label4.Name = "Label4"
         Label4.Size = New Size(71, 15)
@@ -682,7 +682,7 @@ Partial Class FrmReports
         ' 
         Label6.Anchor = AnchorStyles.Left
         Label6.AutoSize = True
-        Label6.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label6.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label6.Location = New Point(553, 87)
         Label6.Name = "Label6"
         Label6.Size = New Size(55, 15)
@@ -767,82 +767,84 @@ Partial Class FrmReports
         ' 
         ' Chart1
         ' 
-        ChartArea1.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        Chart1.Legends.Add(Legend1)
+        ChartArea4.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea4)
+        Legend4.Name = "Legend1"
+        Chart1.Legends.Add(Legend4)
         Chart1.Location = New Point(12, 267)
         Chart1.Name = "Chart1"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        Chart1.Series.Add(Series1)
+        Series4.ChartArea = "ChartArea1"
+        Series4.Legend = "Legend1"
+        Series4.Name = "Series1"
+        Chart1.Series.Add(Series4)
         Chart1.Size = New Size(300, 160)
         Chart1.TabIndex = 4
         Chart1.Text = "Chart1"
-        Title1.Name = "Title1"
-        Chart1.Titles.Add(Title1)
+        Title4.Name = "Title1"
+        Chart1.Titles.Add(Title4)
         ' 
         ' Chart2
         ' 
-        ChartArea2.Name = "ChartArea1"
-        Chart2.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        Chart2.Legends.Add(Legend2)
+        ChartArea5.Name = "ChartArea1"
+        Chart2.ChartAreas.Add(ChartArea5)
+        Legend5.Name = "Legend1"
+        Chart2.Legends.Add(Legend5)
         Chart2.Location = New Point(12, 433)
         Chart2.Name = "Chart2"
-        Series2.ChartArea = "ChartArea1"
-        Series2.ChartType = DataVisualization.Charting.SeriesChartType.Bar
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        Chart2.Series.Add(Series2)
+        Series5.ChartArea = "ChartArea1"
+        Series5.ChartType = DataVisualization.Charting.SeriesChartType.Bar
+        Series5.Legend = "Legend1"
+        Series5.Name = "Series1"
+        Chart2.Series.Add(Series5)
         Chart2.Size = New Size(300, 160)
         Chart2.TabIndex = 5
         Chart2.Text = "Chart2"
-        Title2.Name = "Title2"
-        Chart2.Titles.Add(Title2)
+        Title5.Name = "Title2"
+        Chart2.Titles.Add(Title5)
         ' 
         ' Chart3
         ' 
-        ChartArea3.Name = "ChartArea1"
-        Chart3.ChartAreas.Add(ChartArea3)
-        Legend3.Name = "Legend1"
-        Chart3.Legends.Add(Legend3)
+        ChartArea6.Name = "ChartArea1"
+        Chart3.ChartAreas.Add(ChartArea6)
+        Legend6.Name = "Legend1"
+        Chart3.Legends.Add(Legend6)
         Chart3.Location = New Point(12, 599)
         Chart3.Name = "Chart3"
-        Series3.ChartArea = "ChartArea1"
-        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
-        Series3.Legend = "Legend1"
-        Series3.Name = "Series1"
-        Chart3.Series.Add(Series3)
+        Series6.ChartArea = "ChartArea1"
+        Series6.ChartType = DataVisualization.Charting.SeriesChartType.Line
+        Series6.Legend = "Legend1"
+        Series6.Name = "Series1"
+        Chart3.Series.Add(Series6)
         Chart3.Size = New Size(300, 160)
         Chart3.TabIndex = 6
         Chart3.Text = "Chart3"
-        Title3.Name = "Title3"
-        Chart3.Titles.Add(Title3)
+        Title6.Name = "Title3"
+        Chart3.Titles.Add(Title6)
         ' 
         ' GrdRadiiAverages
         ' 
         GrdRadiiAverages.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GrdRadiiAverages.Location = New Point(12, 765)
         GrdRadiiAverages.Name = "GrdRadiiAverages"
+        GrdRadiiAverages.RowHeadersVisible = False
         GrdRadiiAverages.Size = New Size(240, 150)
         GrdRadiiAverages.TabIndex = 7
         ' 
-        ' grdChordLength
+        ' GrdChordLength
         ' 
-        grdChordLength.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        grdChordLength.Location = New Point(12, 921)
-        grdChordLength.Name = "grdChordLength"
-        grdChordLength.Size = New Size(240, 150)
-        grdChordLength.TabIndex = 8
+        GrdChordLength.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        GrdChordLength.Location = New Point(12, 921)
+        GrdChordLength.Name = "GrdChordLength"
+        GrdChordLength.RowHeadersVisible = False
+        GrdChordLength.Size = New Size(240, 150)
+        GrdChordLength.TabIndex = 8
         ' 
         ' FrmReports
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
-        Controls.Add(grdChordLength)
+        Controls.Add(GrdChordLength)
         Controls.Add(GrdRadiiAverages)
         Controls.Add(Chart3)
         Controls.Add(Chart2)
@@ -861,7 +863,7 @@ Partial Class FrmReports
         CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
         CType(GrdRadiiAverages, ComponentModel.ISupportInitialize).EndInit()
-        CType(grdChordLength, ComponentModel.ISupportInitialize).EndInit()
+        CType(GrdChordLength, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -932,5 +934,5 @@ Partial Class FrmReports
     Friend WithEvents Chart2 As DataVisualization.Charting.Chart
     Friend WithEvents Chart3 As DataVisualization.Charting.Chart
     Friend WithEvents GrdRadiiAverages As DataGridView
-    Friend WithEvents grdChordLength As DataGridView
+    Friend WithEvents GrdChordLength As DataGridView
 End Class

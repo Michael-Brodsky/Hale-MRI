@@ -409,7 +409,7 @@ Public Class FrmMeasurements
                 Dim Sectors As Integer = tol.LocalPitchSectors
                 For Each rm In mJobDetails?.RadiusMeasurements
                     For n = 1 To Sectors
-                        Dim pitch As Double = GetLocalPitch(rm.CellMeasurements.ToList(), Sectors, n, Job.PropellerDiameter, rm.Radius)
+                        Dim pitch As Double = GetLocalPitch(rm.CellMeasurements.ToList(), Sectors, n, Job.PropellerDiameter, rm.Radius, mJob.TeExclusion, mJob.LeExclusion)
                         Dim LocalPitch As ToleranceColor = CheckLocalPitchTolerance(tol, pitch, Job.DesiredPitch, minsApply)
                         If LocalPitch <> ToleranceColor.Pass Then
                             passingClass += 1
@@ -435,7 +435,7 @@ Public Class FrmMeasurements
                     Return passingClass 'return the highest class that passed - means that all others will auto pass
                 End If
                 For Each rm In mJobDetails?.RadiusMeasurements
-                    Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
+                    Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
                     Dim MeanPitch As ToleranceColor = CheckBladeRadiusPitch(tol, pitch, Job.DesiredPitch, minsapply)
                     If MeanPitch <> ToleranceColor.BadData Then
                         passingClass += 1
@@ -463,7 +463,7 @@ Public Class FrmMeasurements
                     Dim pitchTotal As Double = 0
                     Dim Count As Integer = 0
                     For Each rm In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = blade).ToList()
-                        Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements)
+                        Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements, mJob.TeExclusion, mJob.LeExclusion)
                         pitchTotal += pitch
                         Count += 1
                     Next
@@ -838,7 +838,7 @@ Public Class FrmMeasurements
                 Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
                 rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
                 colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
-                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList())
+                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
                 rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
                 Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
                 GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textAvgBladePitchColor)
@@ -1005,7 +1005,7 @@ Public Class FrmMeasurements
             Dim arcColors As New List(Of ToleranceColor)
             Dim sector As Integer = 1
             For sector = 1 To tolClass.LocalPitchSectors
-                arcColors.Add(CheckLocalPitchTolerance(tolClass, GetLocalPitch(cellMeasurements, tolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius), basisPitch, True))
+                arcColors.Add(CheckLocalPitchTolerance(tolClass, GetLocalPitch(cellMeasurements, tolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius, mJob.TeExclusion, mJob.LeExclusion), basisPitch, True))
             Next
             Dim cellPerSector As Integer = CInt(Math.Floor(cellMeasurements.Count / tolClass.LocalPitchSectors))
             For i As Integer = 1 To cellMeasurements.Count - 1

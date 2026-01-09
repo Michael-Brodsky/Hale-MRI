@@ -1,5 +1,6 @@
 ﻿Imports System.Drawing.Printing
 Imports Hale_MRI.Reporting
+Imports LibDatabase.Models
 Imports Windows.Win32.UI
 
 ''' <summary>
@@ -253,4 +254,95 @@ Public Module Reporting
             Return sortedElements
         End Function
     End Class
+#Region "Tables"
+    Private Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, MeanDesign As Boolean) As DataTable
+        Dim mJob As Job = mJobDetails.Job
+        If mJobDetails Is Nothing Then
+            Return New DataTable()
+        End If
+        Dim dtBladePitchByRadius As New DataTable()
+        Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
+        Dim rowRadiusBlade As DataRow
+        Dim x As Integer
+        For x = 1 To mJob?.PropellerBlades
+            rowRadiusBlade = dtBladePitchByRadius.Rows.Add(x)
+        Next
+        dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
+        For Each row As DataRow In dtBladePitchByRadius.Rows
+            Dim totalPitch As Double = 0.0
+            Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+                Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+                rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
+                colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
+                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
+                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
+                totalPitch += pitch
+                pitchCount += 1
+            Next
+            Dim avgPitch As Double = totalPitch / pitchCount
+            If MeanDesign Then
+                Dim meancol As DataColumn = If(dtBladePitchByRadius.Columns("Mean"), dtBladePitchByRadius.Columns.Add("Mean", GetType(Double)))
+                Dim designcol As DataColumn = If(dtBladePitchByRadius.Columns("Design"), dtBladePitchByRadius.Columns.Add("Design", GetType(Double)))
+                'add if here for design loaded check use design pitch if loaded and ref if not
+                row.Item(designcol) = Math.Round(mJob.DesiredPitch.Value, 2)
+                row.Item(meancol) = Math.Round(avgPitch, 2)
+            End If
+        Next
+        Return dtBladePitchByRadius
+    End Function
+    Private Function UpdateChordLengthTable(mJobDetails As JobDetail) As DataTable
+        Dim mjob As Job = mJobDetails.Job
+        If mJobDetails Is Nothing Then
+            Return New DataTable()
+        End If
+        Dim dtChordLength As New DataTable()
+        Dim colRadius As DataColumn = dtChordLength.Columns.Add("Blade", GetType(Integer))
+        Dim rowBlade As DataRow
+        Dim x As Integer
+        For x = 1 To mjob?.PropellerBlades
+            dtChordLength.Rows.Add(x)
+        Next
+        dtChordLength.PrimaryKey = New DataColumn() {colRadius}
+        For Each row As DataRow In dtChordLength.Rows
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+                Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+                rowBlade = If(dtChordLength.Rows.Find(rm.BladeId), dtChordLength.Rows.Add(rm.BladeId))
+                colRadius = If(dtChordLength.Columns(radiusPercent), dtChordLength.Columns.Add(radiusPercent, GetType(Double)))
+                Dim ChordLength As Double = GetChordLength(rm.CellMeasurements.ToList(), mjob.PropellerDiameter, CInt(radiusPercent))
+                rowBlade.Item(colRadius) = Math.Round(ChordLength, 2)
+            Next
+            colRadius = If(dtChordLength.Columns("Track"), dtChordLength.Columns.Add("Track", GetType(Double))) ' need to figure out what this is
+        Next
+        Return dtChordLength
+    End Function
+
+    'Private Sub UpdateISOTOLTable(Tolclass As Tolerance, Mins As Boolean)
+    '    Dim ISOTable As New DataTable()
+    '    ISOTable.Columns.Add("TolType", GetType(String))
+    '    ISOTable.Columns.Add("MinsApply", GetType(String))
+    '    ISOTable.Columns.Add("TolPerc", GetType(String))
+    '    ISOTable.Columns.Add("PlusMinus", GetType(String))
+    '    ISOTable.Columns.Add("OverUnder", GetType(String))
+
+    '    GrdISOTolTable.DataSource = ISOTable
+    '    If Mins Then
+    '        GrdISOTolTable.Columns("MinsApply").Visible = True
+    '    Else
+    '        GrdISOTolTable.Columns("MinsApply").Visible = False
+    '    End If
+    '    Select Case Tolclass.ToleranceClass
+    '        Case "S", "I", "II"
+    '            Dim RowLocal As DataRow = ISOTable.Rows.Add("Local Pitch")
+    '            RowLocal.Item("TolType") = "Local Pitch"
+    '            RowLocal.Item("MinsApply") = "Mins"
+    '            RowLocal.Item("TolPerc") = Tolclass.LocalPitchPercent.ToString("F2") & " %"
+    '            Dim LocalMinMax As Double
+    '            If 
+    '            RowLocal.Item("PlusMinus") = "±" + (mJobDetails.WheelPitch * (Tolclass.LocalPitchPer) 'need to change wheel pitch to basis option on this form
+
+    '    End Select
+    'End Sub
+#End Region
+
 End Module
