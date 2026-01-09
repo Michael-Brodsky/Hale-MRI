@@ -11,7 +11,7 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
 
-Public Class Form1
+Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Private Members"
     Private Const kMaxSamplesPerScan As Integer = 200           ' Maximum number of samples per scan (this is a database Setting).
@@ -29,7 +29,7 @@ Public Class Form1
     Private mFrmCustomers As FrmCustomers
     Private mFrmJobs As FrmJobs
     Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As Form2
+    Private mFrmReports As FrmReports
     Private mFrmVessels As FrmVessels
     Private mFrmLocalPitch As FormLocalPitch
 

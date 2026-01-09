@@ -1,18 +1,18 @@
 ﻿Imports System.ComponentModel
-Imports System.Windows.Forms.DataVisualization.Charting
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports System.Drawing.Printing
-Imports System.Numerics
 
-Public Class Form2
+Public Class FrmReports
     Inherits FrmDatabaseForm
 
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
-    Private mReportGenerator As ReportGenerator = Nothing
+    Private mReport As String = ""                              ' The currently loaded report.
+    Private mReportGenerator As ReportGenerator = Nothing       ' The ReportGenerator for runtime form layout and formatting.
+    Private mReportElements As List(Of Control) = Nothing       ' The list of all available report controls.
 
     ''' <summary>
     ''' Returns the currently selected JobDetail,
@@ -65,28 +65,11 @@ Public Class Form2
     Protected Overrides Property MasterSource As BindingSource
 
     Private Sub ConfigureChart()
-        'ChartBladeHeight.ChartAreas.Clear()
-        'ChartBladeHeight.Series.Clear()
-        'ChartBladeHeight.Titles.Clear()
-        'Dim chartArea1 As New ChartArea()
-        'ChartBladeHeight.ChartAreas.Add(chartArea1)
-        'ChartBladeHeight.Titles.Add("Blade Height")
+
     End Sub
 
     Private Sub ConfigureControls()
-        ControlVisible(HeaderLayoutPanel, True)
-        ControlVisible(Chart1, True)
-        ControlVisible(Chart2, True)
-        ControlVisible(Chart3, True)
-        mReportGenerator = New ReportGenerator(New List(Of Control) From {
-            HeaderLayoutPanel,
-            Chart1,
-            Chart2,
-            Chart3
-        })
-        mReportGenerator.ParentForm = Me
-        mReportGenerator.HorizontalLimit = 0
-        mReportGenerator.VerticalLimit = MenuStrip1.Height
+
     End Sub
 
     Private Sub ControlVisible(element As Control, visible As Boolean)
@@ -126,6 +109,45 @@ Public Class Form2
         Return data
     End Function
 
+    Private Property Report As String
+        Get
+            Return mReport
+        End Get
+        Set(value As String)
+            Dim reportElements As List(Of ReportElement)
+            mReport = value
+            If Not String.IsNullOrEmpty(mReport) Then
+                ' Load report layout and formatting
+                reportElements = New List(Of ReportElement)(
+                    Database.ReportElements _
+                        .Where(Function(re) re.Report.ReportName = mReport) _
+                        .Include(Function(re) re.Report) _
+                        .ToList())
+            Else
+                ' Clear report layout and formatting
+                reportElements = New List(Of ReportElement)()
+            End If
+            ReportLoad(reportElements)
+        End Set
+    End Property
+
+    Private Sub ReportLoad(elements As List(Of ReportElement))
+        Dim reportElements As New List(Of Control)
+        For Each ctrl As Control In mReportElements
+            ControlVisible(ctrl, False)
+        Next
+        For Each re As ReportElement In elements
+            Dim control As Control = mReportElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
+            If control IsNot Nothing Then
+                reportElements.Add(control)
+                ControlVisible(control, True)
+                control.Location = New Point(re.PositionX, re.PositionY)
+                control.Size = New Size(re.SizeWidth, re.SizeHeight)
+            End If
+        Next
+        mReportGenerator.ReportElements = reportElements
+    End Sub
+
     Private Sub ShowHeader(ByVal j As Job)
         TxtJobNumber.Text = Job?.JobNumber.ToString()
         TxtCustomer.Text = Job?.Vessel?.Customer?.CustomerName
@@ -134,7 +156,7 @@ Public Class Form2
         TxtPartNumber.Text = Job?.PropellerPartNumber
         TxtSerialNumber.Text = Job?.SerialNumber
         TxtStampNumber.Text = Job?.StampNumber
-        TxtInspectedBy.Text = Database.Employees.Local.FirstOrDefault(Function(emp) emp.Id = JobDetails?.PerformedBy)?.EmployeeName
+        TxtInspectedBy.Text = Database.Employees.Local.FirstOrDefault(Function(emp) emp.Id = If(Job?.InspectedBy, 0))?.EmployeeName
 
         TxtJobId.Text = If(JobDetails?.Id, "").ToString()
         TxtClass.Text = JobDetails?.ToleranceClass
@@ -167,24 +189,34 @@ Public Class Form2
 #Region "Event Handlers"
     Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         MasterSource = JobDetailsBindingSource
-        ConfigureControls()
-        ConfigureChart()
-    End Sub
-
-    Private Sub ChartBladeHeight_MouseDoubleClick(sender As Object, e As MouseEventArgs)
-        Dim s = SeriesBladeHeight(Current?.RadiusMeasurements, Job?.PropellerBlades, 1, "LE", "50")
-        s.Name = "Blade Height"
-        s.XValueMember = "Blade"
-        s.YValueMembers = "Height"
-        'ChartBladeHeight.Series.Add(s)
+        mReportElements = New List(Of Control) From {
+            HeaderLayoutPanel,
+            Chart1,
+            Chart2,
+            Chart3
+    }
+        mReportGenerator = New ReportGenerator() With {
+            .ParentForm = Me,
+            .HorizontalLimit = 10,
+            .VerticalLimit = MenuStrip1.Height
+        }
+        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
     End Sub
 
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
         Me.Close()
     End Sub
 
-    Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+    Private Sub ListReports_DoubleClick(sender As Object, e As EventArgs) Handles ListReports.DoubleClick
+        Dim selectedReport = CType(ListReports.SelectedItem, Report)
+        Report = selectedReport.ReportName
+        TableReports.Visible = False
+    End Sub
 
+    Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+        TableReports.Visible = True
+        TableReports.BringToFront()
     End Sub
 
     Private Sub PrintToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles PrintToolStripMenuItem1.Click
@@ -237,6 +269,14 @@ Public Class Form2
         formBitmap.Dispose()
         croppedBitmap.Dispose()
         e.HasMorePages = False
+    End Sub
+
+    Private Sub SaveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub SaveAsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveAsToolStripMenuItem.Click
+
     End Sub
 
 #Region "Dragging the Form"

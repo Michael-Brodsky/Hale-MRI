@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form1
+Partial Class FrmMeasurements
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
@@ -2069,7 +2069,7 @@ Partial Class Form1
         CmdMeasureForm.Text = "Measure"
         CmdMeasureForm.UseVisualStyleBackColor = True
         ' 
-        ' Form1
+        ' FrmMeasurements
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
@@ -2078,7 +2078,7 @@ Partial Class Form1
         Controls.Add(TLayoutMeasurement)
         Font = New Font("Segoe UI", 11F)
         Margin = New Padding(3, 1, 3, 1)
-        Name = "Form1"
+        Name = "FrmMeasurements"
         Text = "Measurements"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()

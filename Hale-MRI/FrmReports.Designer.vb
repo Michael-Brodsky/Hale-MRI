@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class Form2
+Partial Class FrmReports
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.
@@ -23,7 +23,7 @@ Partial Class Form2
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(Form2))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
@@ -93,6 +93,11 @@ Partial Class Form2
         FileToolStripMenuItem = New ToolStripMenuItem()
         OpenToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator1 = New ToolStripSeparator()
+        CloseToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator3 = New ToolStripSeparator()
+        SaveToolStripMenuItem = New ToolStripMenuItem()
+        SaveAsToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator4 = New ToolStripSeparator()
         PrintToolStripMenuItem = New ToolStripMenuItem()
         PrintToolStripMenuItem1 = New ToolStripMenuItem()
         PrintPreviewToolStripMenuItem = New ToolStripMenuItem()
@@ -102,12 +107,18 @@ Partial Class Form2
         Chart1 = New DataVisualization.Charting.Chart()
         Chart2 = New DataVisualization.Charting.Chart()
         Chart3 = New DataVisualization.Charting.Chart()
+        ReportBindingSource = New BindingSource(components)
+        TableReports = New TableLayoutPanel()
+        labReports = New Label()
+        ListReports = New ListBox()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
         CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ReportBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        TableReports.SuspendLayout()
         SuspendLayout()
         ' 
         ' HeaderLayoutPanel
@@ -167,7 +178,7 @@ Partial Class Form2
         HeaderLayoutPanel.Controls.Add(Label5, 4, 5)
         HeaderLayoutPanel.Controls.Add(Label4, 4, 4)
         HeaderLayoutPanel.Controls.Add(Label6, 4, 3)
-        HeaderLayoutPanel.Location = New Point(12, 42)
+        HeaderLayoutPanel.Location = New Point(12, 160)
         HeaderLayoutPanel.Name = "HeaderLayoutPanel"
         HeaderLayoutPanel.RowCount = 8
         HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
@@ -180,6 +191,7 @@ Partial Class Form2
         HeaderLayoutPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         HeaderLayoutPanel.Size = New Size(827, 219)
         HeaderLayoutPanel.TabIndex = 0
+        HeaderLayoutPanel.Visible = False
         ' 
         ' TxtWheelPitch
         ' 
@@ -709,7 +721,7 @@ Partial Class Form2
         ' 
         ' FileToolStripMenuItem
         ' 
-        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {OpenToolStripMenuItem, ToolStripSeparator1, PrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
+        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {OpenToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, PrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
         FileToolStripMenuItem.Name = "FileToolStripMenuItem"
         FileToolStripMenuItem.Size = New Size(37, 20)
         FileToolStripMenuItem.Text = "File"
@@ -717,19 +729,47 @@ Partial Class Form2
         ' OpenToolStripMenuItem
         ' 
         OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
-        OpenToolStripMenuItem.Size = New Size(103, 22)
+        OpenToolStripMenuItem.Size = New Size(180, 22)
         OpenToolStripMenuItem.Text = "Open"
         ' 
         ' ToolStripSeparator1
         ' 
         ToolStripSeparator1.Name = "ToolStripSeparator1"
-        ToolStripSeparator1.Size = New Size(100, 6)
+        ToolStripSeparator1.Size = New Size(177, 6)
+        ' 
+        ' CloseToolStripMenuItem
+        ' 
+        CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
+        CloseToolStripMenuItem.Size = New Size(180, 22)
+        CloseToolStripMenuItem.Text = "Close"
+        ' 
+        ' ToolStripSeparator3
+        ' 
+        ToolStripSeparator3.Name = "ToolStripSeparator3"
+        ToolStripSeparator3.Size = New Size(177, 6)
+        ' 
+        ' SaveToolStripMenuItem
+        ' 
+        SaveToolStripMenuItem.Name = "SaveToolStripMenuItem"
+        SaveToolStripMenuItem.Size = New Size(180, 22)
+        SaveToolStripMenuItem.Text = "Save"
+        ' 
+        ' SaveAsToolStripMenuItem
+        ' 
+        SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem"
+        SaveAsToolStripMenuItem.Size = New Size(180, 22)
+        SaveAsToolStripMenuItem.Text = "Save As"
+        ' 
+        ' ToolStripSeparator4
+        ' 
+        ToolStripSeparator4.Name = "ToolStripSeparator4"
+        ToolStripSeparator4.Size = New Size(177, 6)
         ' 
         ' PrintToolStripMenuItem
         ' 
         PrintToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {PrintToolStripMenuItem1, PrintPreviewToolStripMenuItem, PageSetupToolStripMenuItem})
         PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
-        PrintToolStripMenuItem.Size = New Size(103, 22)
+        PrintToolStripMenuItem.Size = New Size(180, 22)
         PrintToolStripMenuItem.Text = "Print"
         ' 
         ' PrintToolStripMenuItem1
@@ -753,12 +793,12 @@ Partial Class Form2
         ' ToolStripSeparator2
         ' 
         ToolStripSeparator2.Name = "ToolStripSeparator2"
-        ToolStripSeparator2.Size = New Size(100, 6)
+        ToolStripSeparator2.Size = New Size(177, 6)
         ' 
         ' ExitToolStripMenuItem
         ' 
         ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        ExitToolStripMenuItem.Size = New Size(103, 22)
+        ExitToolStripMenuItem.Size = New Size(180, 22)
         ExitToolStripMenuItem.Text = "Exit"
         ' 
         ' Chart1
@@ -767,7 +807,7 @@ Partial Class Form2
         Chart1.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Chart1.Legends.Add(Legend1)
-        Chart1.Location = New Point(12, 267)
+        Chart1.Location = New Point(12, 385)
         Chart1.Name = "Chart1"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
@@ -778,6 +818,7 @@ Partial Class Form2
         Chart1.Text = "Chart1"
         Title1.Name = "Title1"
         Chart1.Titles.Add(Title1)
+        Chart1.Visible = False
         ' 
         ' Chart2
         ' 
@@ -785,7 +826,7 @@ Partial Class Form2
         Chart2.ChartAreas.Add(ChartArea2)
         Legend2.Name = "Legend1"
         Chart2.Legends.Add(Legend2)
-        Chart2.Location = New Point(12, 433)
+        Chart2.Location = New Point(12, 551)
         Chart2.Name = "Chart2"
         Series2.ChartArea = "ChartArea1"
         Series2.ChartType = DataVisualization.Charting.SeriesChartType.Bar
@@ -797,6 +838,7 @@ Partial Class Form2
         Chart2.Text = "Chart2"
         Title2.Name = "Title2"
         Chart2.Titles.Add(Title2)
+        Chart2.Visible = False
         ' 
         ' Chart3
         ' 
@@ -804,7 +846,7 @@ Partial Class Form2
         Chart3.ChartAreas.Add(ChartArea3)
         Legend3.Name = "Legend1"
         Chart3.Legends.Add(Legend3)
-        Chart3.Location = New Point(12, 599)
+        Chart3.Location = New Point(12, 717)
         Chart3.Name = "Chart3"
         Series3.ChartArea = "ChartArea1"
         Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
@@ -816,19 +858,69 @@ Partial Class Form2
         Chart3.Text = "Chart3"
         Title3.Name = "Title3"
         Chart3.Titles.Add(Title3)
+        Chart3.Visible = False
         ' 
-        ' Form2
+        ' ReportBindingSource
+        ' 
+        ReportBindingSource.DataSource = GetType(LibDatabase.Models.Report)
+        ' 
+        ' TableReports
+        ' 
+        TableReports.AutoSize = True
+        TableReports.ColumnCount = 1
+        TableReports.ColumnStyles.Add(New ColumnStyle())
+        TableReports.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 20F))
+        TableReports.Controls.Add(labReports, 0, 0)
+        TableReports.Controls.Add(ListReports, 0, 1)
+        TableReports.Location = New Point(15, 27)
+        TableReports.Name = "TableReports"
+        TableReports.RowCount = 2
+        TableReports.RowStyles.Add(New RowStyle(SizeType.Percent, 12.6760559F))
+        TableReports.RowStyles.Add(New RowStyle(SizeType.Percent, 87.3239441F))
+        TableReports.Size = New Size(200, 163)
+        TableReports.TabIndex = 9
+        TableReports.Visible = False
+        ' 
+        ' labReports
+        ' 
+        labReports.AutoSize = True
+        labReports.BackColor = SystemColors.Highlight
+        labReports.Dock = DockStyle.Fill
+        labReports.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        labReports.ForeColor = SystemColors.ControlLightLight
+        labReports.Location = New Point(3, 0)
+        labReports.Name = "labReports"
+        labReports.Size = New Size(194, 20)
+        labReports.TabIndex = 10
+        labReports.Text = "Open Report"
+        labReports.TextAlign = ContentAlignment.MiddleCenter
+        ' 
+        ' ListReports
+        ' 
+        ListReports.DataSource = ReportBindingSource
+        ListReports.DisplayMember = "ReportName"
+        ListReports.Dock = DockStyle.Top
+        ListReports.FormattingEnabled = True
+        ListReports.ItemHeight = 15
+        ListReports.Location = New Point(3, 20)
+        ListReports.Margin = New Padding(3, 0, 3, 0)
+        ListReports.Name = "ListReports"
+        ListReports.Size = New Size(194, 139)
+        ListReports.TabIndex = 9
+        ' 
+        ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
+        Controls.Add(TableReports)
         Controls.Add(Chart3)
         Controls.Add(Chart2)
         Controls.Add(Chart1)
         Controls.Add(HeaderLayoutPanel)
         Controls.Add(MenuStrip1)
         MainMenuStrip = MenuStrip1
-        Name = "Form2"
+        Name = "FrmReports"
         Text = "Form2"
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         HeaderLayoutPanel.ResumeLayout(False)
@@ -838,6 +930,9 @@ Partial Class Form2
         CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
+        CType(ReportBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        TableReports.ResumeLayout(False)
+        TableReports.PerformLayout()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -907,4 +1002,13 @@ Partial Class Form2
     Friend WithEvents Chart1 As DataVisualization.Charting.Chart
     Friend WithEvents Chart2 As DataVisualization.Charting.Chart
     Friend WithEvents Chart3 As DataVisualization.Charting.Chart
+    Friend WithEvents ReportBindingSource As BindingSource
+    Friend WithEvents CloseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator3 As ToolStripSeparator
+    Friend WithEvents SaveToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents SaveAsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
+    Friend WithEvents TableReports As TableLayoutPanel
+    Friend WithEvents labReports As Label
+    Friend WithEvents ListReports As ListBox
 End Class

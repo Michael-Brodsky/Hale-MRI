@@ -172,6 +172,7 @@ Public Class FrmHaleMRI
             mDatabase.Cups.Load()
             mDatabase.Workstations.Load()
             mDatabase.Settings.Load()
+            mDatabase.Reports.OrderBy(Function(rpt) rpt.ReportName).Load()
         Catch ex As Exception
             MessageBox.Show("Error loading database: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

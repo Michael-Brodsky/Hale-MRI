@@ -14,9 +14,16 @@ Public Module Reporting
         Private mLastControlSize As Size                    ' The last known size of the control being resized.    
         Private mTopSortedControls As List(Of Control)      ' The list of controls sorted by their top (Y) position.
         Private mTopLeftSortedControls As List(Of Control)  ' The list of controls sorted by their top (Y) and left (X) position.
-        Public Sub New(controls As List(Of Control))
-            mTopSortedControls = ElementSortByTop(controls)
-            mTopLeftSortedControls = ElementSortByTopLeft(controls)
+
+        Public Sub New()
+            mTopSortedControls = New List(Of Control)()
+            mTopLeftSortedControls = New List(Of Control)()
+        End Sub
+
+        Public Sub New(ctrls As List(Of Control))
+            ReportElements = ctrls
+            'mTopSortedControls = ElementSortByTop(Controls)
+            'mTopLeftSortedControls = ElementSortByTopLeft(Controls)
         End Sub
 
         Public Sub ControlCursorChange(sender As Object, e As MouseEventArgs, borderSize As Integer)
@@ -171,6 +178,16 @@ Public Module Reporting
             Me.SelectedControl.Invalidate()
         End Sub
 
+        Public Property ReportElements As List(Of Control)
+            Get
+                Return mTopLeftSortedControls
+            End Get
+            Set(value As List(Of Control))
+                mTopLeftSortedControls = ElementSortByTopLeft(value)
+                mTopSortedControls = ElementSortByTop(value)
+            End Set
+        End Property
+
         Public Property EnteredControl As Control
 
         Public Sub FormMouseDown(sender As Object, e As MouseEventArgs)
@@ -181,7 +198,7 @@ Public Module Reporting
             End If
         End Sub
 
-        Public Property GridSize As Integer = 10
+        Public Property GridSize As Integer = 0
 
         Public Property HorizontalLimit As Integer = 0
 
