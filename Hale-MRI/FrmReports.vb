@@ -6,13 +6,12 @@ Imports System.Drawing.Printing
 
 Public Class FrmReports
     Inherits FrmDatabaseForm
-
     Private mJobDetails As JobDetail                            ' The current JobDetail record
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
     Private mReport As String = ""                              ' The currently loaded report.
     Private mReportGenerator As ReportGenerator = Nothing       ' The ReportGenerator for runtime form layout and formatting.
-    Private mReportElements As List(Of Control) = Nothing       ' The list of all available report controls.
+    Private mAllElements As List(Of Control) = Nothing       ' The list of all available report controls.
 
     ''' <summary>
     ''' Returns the currently selected JobDetail,
@@ -25,7 +24,6 @@ Public Class FrmReports
     End Property
 
     Public Overrides Property Database As HaleMRIContext
-
     ''' <summary>
     ''' Loads all JobDetails and their Cell, Extreme and RadiusMeasurements
     ''' for the given Job.
@@ -63,7 +61,6 @@ Public Class FrmReports
     End Property
 
     Protected Overrides Property MasterSource As BindingSource
-
     Private Sub ConfigureChart()
 
     End Sub
@@ -123,21 +120,55 @@ Public Class FrmReports
                         .Where(Function(re) re.Report.ReportName = mReport) _
                         .Include(Function(re) re.Report) _
                         .ToList())
+                Me.Text = "Reports - " & mReport
             Else
                 ' Clear report layout and formatting
                 reportElements = New List(Of ReportElement)()
+                Me.Text = "Reports"
             End If
             ReportLoad(reportElements)
         End Set
     End Property
 
+    Private Sub ReportAddNew()
+        FrmInputBox.Text = "Add New Report"
+        FrmInputBox.Prompt = "Enter the name of the new report:"
+        FrmInputBox.InputText = ""
+        Dim result As DialogResult = FrmInputBox.ShowDialog()
+        If result = DialogResult.OK Then
+            Dim newReportName As String = FrmInputBox.InputText.Trim()
+            If Not String.IsNullOrEmpty(newReportName) Then
+                Dim newReport As New Report() With {
+                    .ReportName = newReportName,
+                    .IsDefault = False,
+                    .LastModifed = DateTime.Now,
+                    .ModifiedBy = User?.Id
+                }
+                Database.Reports.Add(newReport)
+                'Dim entries = Database.ChangeTracker.Entries().Select(Function(e) New With {
+                '    .Type = e.Entity.GetType().FullName,
+                '    .State = e.State.ToString(),
+                '    .Values = e.CurrentValues.Clone().ToObject()
+                '}).ToList()
+
+                'For Each en In entries
+                '    Debug.WriteLine(String.Format("Type={0} State={1} Values={2}", en.Type, en.State, Newtonsoft.Json.JsonConvert.SerializeObject(en.Values)))
+                'Next
+                'MessageBox.Show(String.Join(Environment.NewLine, entries.Select(Function(e) e.Type & " - " & e.State)))
+                Database.SaveChanges()
+                ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+                Report = newReportName
+            End If
+        End If
+    End Sub
+
     Private Sub ReportLoad(elements As List(Of ReportElement))
         Dim reportElements As New List(Of Control)
-        For Each ctrl As Control In mReportElements
+        For Each ctrl As Control In mAllElements
             ControlVisible(ctrl, False)
         Next
         For Each re As ReportElement In elements
-            Dim control As Control = mReportElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
+            Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
             If control IsNot Nothing Then
                 reportElements.Add(control)
                 ControlVisible(control, True)
@@ -185,22 +216,50 @@ Public Class FrmReports
             Next
         Next
     End Sub
-
 #Region "Event Handlers"
-    Private Sub Form2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    Private Sub CopyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub CutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CutToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub FrmReports_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
         MasterSource = JobDetailsBindingSource
-        mReportElements = New List(Of Control) From {
+        Dim reportsMenu As ToolStripMenuItem = ReportsToolStripMenuItem
+        For Each rpt As Report In ReportBindingSource
+            Dim subItem As New ToolStripMenuItem(rpt.ReportName)
+            reportsMenu.DropDownItems.Add(subItem)
+            AddHandler subItem.Click, AddressOf ReportsItemClickHandler
+        Next
+        If ReportBindingSource.Count > 0 Then
+            Dim separatorItem As New ToolStripSeparator()
+            reportsMenu.DropDownItems.Add(separatorItem)
+        End If
+        Dim addNewItem As New ToolStripMenuItem("Add New")
+        reportsMenu.DropDownItems.Add(addNewItem)
+        AddHandler addNewItem.Click, AddressOf ReportsItemClickHandler
+        ' All available report elements must be listed here before setting the Report property.
+        mAllElements = New List(Of Control) From {
             HeaderLayoutPanel,
             Chart1,
             Chart2,
-            Chart3
-    }
+            Chart3,
+            GrdRadiiAverages,
+            GrdChordLength
+        }
         mReportGenerator = New ReportGenerator() With {
             .ParentForm = Me,
             .HorizontalLimit = 10,
             .VerticalLimit = MenuStrip1.Height
         }
-        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
         Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
     End Sub
 
@@ -243,6 +302,10 @@ Public Class FrmReports
         End If
     End Sub
 
+    Private Sub PasteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PasteToolStripMenuItem.Click
+
+    End Sub
+
     Private Sub PrintDocument1_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument1.PrintPage
         ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
         ' paper's printable area.
@@ -269,6 +332,18 @@ Public Class FrmReports
         formBitmap.Dispose()
         croppedBitmap.Dispose()
         e.HasMorePages = False
+    End Sub
+
+    Private Sub ReportsItemClickHandler(sender As Object, e As EventArgs)
+        Dim clickedItem As ToolStripItem = TryCast(sender, ToolStripMenuItem)
+
+        If clickedItem IsNot Nothing Then
+            If clickedItem.Text = "Add New" Then
+                ReportAddNew()
+            Else
+                Report = clickedItem.Text
+            End If
+        End If
     End Sub
 
     Private Sub SaveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem.Click

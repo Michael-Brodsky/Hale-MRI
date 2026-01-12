@@ -65,6 +65,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
     <PackageReference Include="System.Data.Odbc" Version="8.0.1" />
     <PackageReference Include="System.Data.OleDb" Version="8.0.1" />
     <PackageReference Include="WinForms.DataVisualization" Version="1.10.0" />

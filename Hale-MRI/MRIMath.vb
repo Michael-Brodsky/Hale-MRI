@@ -2,15 +2,15 @@
 Imports LibDatabase.Models
 
 Module MRIMath
-    Public Function GetLocalPitch(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double) As Double
+    Public Function GetLocalPitch(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
         'Returns the local pitch of a sector based on the first and last cell measurements in that sector
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = startangle - endangle
-        Dim cl As Double = GetChordLength(startangle, endangle, cm.FirstOrDefault().Depth, cm.LastOrDefault().Depth, diameter, CInt(radiusPercent))
+        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
         If cl <> 0 Then
-            startangle -= (deltaangle * cm.FirstOrDefault().RadiusMeasurement.JobDetails.Job.TeExclusion / cl)
-            endangle += (deltaangle * cm.FirstOrDefault().RadiusMeasurement.JobDetails.Job.LeExclusion / cl)
+            startangle -= (deltaangle * TeExclusion / cl)
+            endangle += (deltaangle * LeExclusion / cl)
         End If ' bunch of math that finds the angle bounds of the sector excluding TE and LE Exclusion zones
         Dim sectorArc As Double = (startangle - endangle) / sectors
         Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
@@ -44,6 +44,23 @@ Module MRIMath
         Return GetPitch(sectorstartangle, sectorendangle, sectorstartdepth, sectorenddepth) 'sectorenddepth - sectorstartdepth) * (360 / sectorArc)
     End Function
 
+    Public Function GetLocalHeight(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
+        'Returns the local height of a sector based on the first and last cell measurements in that sector
+        Dim startangle As Double = cm.FirstOrDefault().Angle
+        Dim endangle As Double = cm.LastOrDefault().Angle
+        Dim deltaangle As Double = startangle - endangle
+        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
+        If cl <> 0 Then
+            startangle -= (deltaangle * TeExclusion / cl)
+            endangle += (deltaangle * LeExclusion / cl)
+        End If ' bunch of math that finds the angle bounds of the sector excluding TE and LE Exclusion zones
+        Dim sectorArc As Double = (startangle - endangle) / sectors
+        Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
+        Dim sectorendangle As Double = sectorstartangle - sectorArc
+        Dim sectorstartcell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorstartangle).LastOrDefault()
+        Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
+        Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
+    End Function
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
@@ -63,17 +80,17 @@ Module MRIMath
 
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
         'Pitch = (360 * Change in Depth) / Change in Angle
-        ' Can be used to get local pitch between two cellmeasurements, 
+        ' Can be used to get local pitch between two cellmeasurements,
         Dim deltaangle = secondangle - firstangle
         Dim deltadepth = seconddepth - firstdepth
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)
     End Function
 
-    Public Function GetChordLength(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double, diameter As Double, radperc As Integer) As Double
+    Public Function GetChordLength(angleFirst As Double, angleLast As Double, depthFirst As Double, depthLast As Double, diameter As Double, radperc As Integer) As Double
         'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
         'used to get the chord length between two cell measurements in inches
-        Dim deltaangle As Double = secondangle - firstangle 'Total change in angle on a radius of one blade
-        Dim deltadepth As Double = seconddepth - firstdepth 'Total change in depth on a radius of one blade
+        Dim deltaangle As Double = angleLast - angleFirst 'Total change in angle on a radius of one blade
+        Dim deltadepth As Double = depthLast - depthFirst 'Total change in depth on a radius of one blade
 
         Dim adjusteddiameter As Double = diameter * (radperc / 100) 'Gets the value side of a radius measurement from a radius percent needed for an arc length calculation
 
@@ -91,7 +108,7 @@ Module MRIMath
         Return If(Blades <> 0, CInt(Math.Ceiling(Angle / (360 / Blades))), 1)
     End Function
 
-    Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement)) As Double
+    Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement), TeExclusion As Double, LeExclusion As Double) As Double
         Dim avgPitch As Double = 0.0 ' Changed this due to terms written in the ISO standard of how to measure average pitch of a radial section
         'Dim pitch As New List(Of Double)
         'For i As Integer = 1 To 10
@@ -99,7 +116,7 @@ Module MRIMath
         '    If p <> 0.0 Then pitch.Add(p)
         'Next
         'If pitch.Count > 0 Then avgPitch = pitch.Average()
-        avgPitch = GetLocalPitch(cellMeasurements, 1, 1, cellMeasurements.FirstOrDefault().RadiusMeasurement.JobDetails.Job.PropellerDiameter, cellMeasurements.FirstOrDefault().RadiusMeasurement.Radius)
+        avgPitch = GetLocalPitch(cellMeasurements, 1, 1, cellMeasurements.FirstOrDefault().RadiusMeasurement.JobDetails.Job.PropellerDiameter, cellMeasurements.FirstOrDefault().RadiusMeasurement.Radius, TeExclusion, LeExclusion)
         'Dim avgPitch As Double = GetPitch(cellMeasurements.First().Angle, cellMeasurements.Last().Angle, cellMeasurements.First().Depth, cellMeasurements.Last().Depth)
         Return avgPitch
     End Function
