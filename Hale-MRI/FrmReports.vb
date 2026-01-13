@@ -4,14 +4,16 @@ Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports System.Drawing.Printing
 
+
 Public Class FrmReports
     Inherits FrmDatabaseForm
-    Private mJobDetails As JobDetail                            ' The current JobDetail record
-    Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
-    Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
-    Private mReport As String = ""                              ' The currently loaded report.
-    Private mReportGenerator As ReportGenerator = Nothing       ' The ReportGenerator for runtime form layout and formatting.
-    Private mAllElements As List(Of Control) = Nothing       ' The list of all available report controls.
+    Private mAllElements As List(Of Control) = Nothing              ' The list of all available report controls.
+    Private mCurrentElements As List(Of ReportElement) = Nothing    ' The list of currently loaded report elements.
+    Private mJobDetails As JobDetail                                ' The current JobDetail record
+    Private mJob As Job                                             ' The Job the current JobDetail record belongs to.
+    Private mMasterSource As BindingSource = Nothing                ' The form's "master" BindingSource.
+    Private mReport As String = ""                                  ' The currently loaded report.
+    Private mReportGenerator As ReportGenerator = Nothing           ' The ReportGenerator for runtime form layout and formatting.
 
     ''' <summary>
     ''' Returns the currently selected JobDetail,
@@ -74,6 +76,7 @@ Public Class FrmReports
         If visible Then
             AddHandler element.MouseClick, AddressOf Control_MouseClick
             AddHandler element.Enter, AddressOf Control_Enter
+            AddHandler element.KeyDown, AddressOf Control_KeyDown
             AddHandler element.Leave, AddressOf Control_Leave
             AddHandler element.MouseDown, AddressOf Control_MouseDown
             AddHandler element.MouseMove, AddressOf Control_MouseMove
@@ -83,6 +86,7 @@ Public Class FrmReports
         Else
             RemoveHandler element.MouseClick, AddressOf Control_MouseClick
             RemoveHandler element.Enter, AddressOf Control_Enter
+            RemoveHandler element.KeyDown, AddressOf Control_KeyDown
             RemoveHandler element.Leave, AddressOf Control_Leave
             RemoveHandler element.MouseDown, AddressOf Control_MouseDown
             RemoveHandler element.MouseMove, AddressOf Control_MouseMove
@@ -90,6 +94,11 @@ Public Class FrmReports
             RemoveHandler element.Paint, AddressOf Control_Paint
             RemoveHandler element.Resize, AddressOf Control_Resize
         End If
+    End Sub
+
+    Private Sub DataSourcesInitialize()
+        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        MasterSource = JobDetailsBindingSource
     End Sub
 
     Private Function GetMeasurementData(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
@@ -145,21 +154,40 @@ Public Class FrmReports
                     .ModifiedBy = User?.Id
                 }
                 Database.Reports.Add(newReport)
-                'Dim entries = Database.ChangeTracker.Entries().Select(Function(e) New With {
-                '    .Type = e.Entity.GetType().FullName,
-                '    .State = e.State.ToString(),
-                '    .Values = e.CurrentValues.Clone().ToObject()
-                '}).ToList()
-
-                'For Each en In entries
-                '    Debug.WriteLine(String.Format("Type={0} State={1} Values={2}", en.Type, en.State, Newtonsoft.Json.JsonConvert.SerializeObject(en.Values)))
-                'Next
-                'MessageBox.Show(String.Join(Environment.NewLine, entries.Select(Function(e) e.Type & " - " & e.State)))
                 Database.SaveChanges()
                 ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
                 Report = newReportName
             End If
         End If
+    End Sub
+
+    Private Sub ReportElementRemove(ctrl As Control)
+        Dim elementToRemove As ReportElement = mCurrentElements.FirstOrDefault(Function(re) re.ElementName = ctrl.Name)
+        If elementToRemove IsNot Nothing Then
+            Database.ReportElements.Remove(elementToRemove)
+            Database.SaveChanges()
+            mCurrentElements.Remove(elementToRemove)
+            ControlVisible(ctrl, False)
+            mReportGenerator.ReportElements.Remove(ctrl)
+        End If
+    End Sub
+
+    Private Sub ReportGeneratorInitialize()
+        ' Initialize the ReportGenerator and set up event handlers for all report elements.
+        mReportGenerator = New ReportGenerator() With {
+            .ParentForm = Me,
+            .HorizontalLimit = 10,
+            .VerticalLimit = MenuStrip1.Height
+        }
+        ' All available report elements must be listed here before setting the Report property.
+        mAllElements = New List(Of Control) From {
+            HeaderLayoutPanel,
+            Chart1,
+            Chart2,
+            Chart3,
+            GrdRadiiAverages,
+            GrdChordLength
+        }
     End Sub
 
     Private Sub ReportLoad(elements As List(Of ReportElement))
@@ -177,6 +205,24 @@ Public Class FrmReports
             End If
         Next
         mReportGenerator.ReportElements = reportElements
+        mCurrentElements = elements
+    End Sub
+
+    Private Sub ReportsToolStripMenuIntialize()
+        ' Populate the Reports menu with available reports from the database.
+        Dim reportsMenu As ToolStripMenuItem = ReportsToolStripMenuItem
+        For Each rpt As Report In ReportBindingSource
+            Dim subItem As New ToolStripMenuItem(rpt.ReportName)
+            reportsMenu.DropDownItems.Add(subItem)
+            AddHandler subItem.Click, AddressOf ReportsItemClickHandler
+        Next
+        If ReportBindingSource.Count > 0 Then
+            Dim separatorItem As New ToolStripSeparator()
+            reportsMenu.DropDownItems.Add(separatorItem)
+        End If
+        Dim addNewItem As New ToolStripMenuItem("Add New")
+        reportsMenu.DropDownItems.Add(addNewItem)
+        AddHandler addNewItem.Click, AddressOf ReportsItemClickHandler
     End Sub
 
     Private Sub ShowHeader(ByVal j As Job)
@@ -231,35 +277,10 @@ Public Class FrmReports
     End Sub
 
     Private Sub FrmReports_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
-        MasterSource = JobDetailsBindingSource
-        Dim reportsMenu As ToolStripMenuItem = ReportsToolStripMenuItem
-        For Each rpt As Report In ReportBindingSource
-            Dim subItem As New ToolStripMenuItem(rpt.ReportName)
-            reportsMenu.DropDownItems.Add(subItem)
-            AddHandler subItem.Click, AddressOf ReportsItemClickHandler
-        Next
-        If ReportBindingSource.Count > 0 Then
-            Dim separatorItem As New ToolStripSeparator()
-            reportsMenu.DropDownItems.Add(separatorItem)
-        End If
-        Dim addNewItem As New ToolStripMenuItem("Add New")
-        reportsMenu.DropDownItems.Add(addNewItem)
-        AddHandler addNewItem.Click, AddressOf ReportsItemClickHandler
-        ' All available report elements must be listed here before setting the Report property.
-        mAllElements = New List(Of Control) From {
-            HeaderLayoutPanel,
-            Chart1,
-            Chart2,
-            Chart3,
-            GrdRadiiAverages,
-            GrdChordLength
-        }
-        mReportGenerator = New ReportGenerator() With {
-            .ParentForm = Me,
-            .HorizontalLimit = 10,
-            .VerticalLimit = MenuStrip1.Height
-        }
+        DataSourcesInitialize()
+        ReportsToolStripMenuIntialize()
+        ReportGeneratorInitialize()
+        ' Open the default report if one is set.
         Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
     End Sub
 
@@ -355,12 +376,18 @@ Public Class FrmReports
     End Sub
 
 #Region "Dragging the Form"
+
     Private Sub Control_MouseClick(sender As Object, e As MouseEventArgs)
         mReportGenerator.ControlMouseClick(sender, e)
     End Sub
 
     Private Sub Control_Enter(sender As Object, e As EventArgs)
         mReportGenerator.ControlEnter(sender, e)
+    End Sub
+    Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs)
+        If mReportGenerator.ControlKeyDown(sender, e) = Keys.Delete Then
+            ReportElementRemove(CType(sender, Control))
+        End If
     End Sub
     Private Sub Control_Leave(sender As Object, e As EventArgs)
         mReportGenerator.ControlLeave(sender, e)

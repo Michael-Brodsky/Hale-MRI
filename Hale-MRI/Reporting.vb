@@ -1,5 +1,6 @@
 ﻿Imports System.Drawing.Printing
 Imports Hale_MRI.Reporting
+Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Windows.Win32.UI
 
@@ -80,6 +81,27 @@ Public Module Reporting
         Public Sub ControlEnter(sender As Object, e As EventArgs)
 
         End Sub
+
+        Public Function ControlKeyDown(sender As Object, e As KeyEventArgs) As Integer
+            Dim keyHandled As Integer = 0
+            Dim currentControl As Control = CType(sender, Control)
+            If currentControl IsNot Nothing AndAlso currentControl Is SelectedControl Then
+                Select Case e.KeyCode
+                    Case Keys.Up
+                        currentControl.Top -= 1
+                    Case Keys.Down
+                        currentControl.Top += 1
+                    Case Keys.Left
+                        currentControl.Left -= 1
+                    Case Keys.Right
+                        currentControl.Left += 1
+                    Case Keys.Delete
+                        ' Handled by parent form
+                End Select
+                keyHandled = e.KeyValue
+            End If
+            Return keyHandled
+        End Function
 
         Public Sub ControlLeave(sender As Object, e As EventArgs)
 
@@ -221,6 +243,11 @@ Public Module Reporting
         Public Property SelectedControl As Control
 
         Public Property VerticalLimit As Integer = 0
+
+        Private Sub ElementAdd(element As Control, elements As List(Of Control))
+            ' Adds the element to the list of elements.
+            elements.Add(element)
+        End Sub
 
         Private Sub ElementDrop(element As Control, gridSize As Integer)
             mTopLeftSortedControls = ElementSortByTopLeft(mTopLeftSortedControls)

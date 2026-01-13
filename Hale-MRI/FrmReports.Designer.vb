@@ -818,25 +818,25 @@ Partial Class FrmReports
         ' CutToolStripMenuItem
         ' 
         CutToolStripMenuItem.Name = "CutToolStripMenuItem"
-        CutToolStripMenuItem.Size = New Size(180, 22)
+        CutToolStripMenuItem.Size = New Size(107, 22)
         CutToolStripMenuItem.Text = "Cut"
         ' 
         ' CopyToolStripMenuItem
         ' 
         CopyToolStripMenuItem.Name = "CopyToolStripMenuItem"
-        CopyToolStripMenuItem.Size = New Size(180, 22)
+        CopyToolStripMenuItem.Size = New Size(107, 22)
         CopyToolStripMenuItem.Text = "Copy"
         ' 
         ' PasteToolStripMenuItem
         ' 
         PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
-        PasteToolStripMenuItem.Size = New Size(180, 22)
+        PasteToolStripMenuItem.Size = New Size(107, 22)
         PasteToolStripMenuItem.Text = "Paste"
         ' 
         ' DeleteToolStripMenuItem
         ' 
         DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        DeleteToolStripMenuItem.Size = New Size(180, 22)
+        DeleteToolStripMenuItem.Size = New Size(107, 22)
         DeleteToolStripMenuItem.Text = "Delete"
         ' 
         ' ReportsToolStripMenuItem
