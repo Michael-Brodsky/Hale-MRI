@@ -14,18 +14,35 @@ Public Module Reporting
         Private mIsResizing As Boolean = False              ' Indicates whether a resize operation is in progress.
         Private mLastControlPos As Point                    ' The last known position of the control being dragged.
         Private mLastControlSize As Size                    ' The last known size of the control being resized.    
-        Private mTopSortedControls As List(Of Control)      ' The list of controls sorted by their top (Y) position.
+        'Private mTopSortedControls As List(Of Control)     ' The list of controls sorted by their top (Y) position.
+        Private mPasteLocation As Point                     ' The location of a right mouse click.
         Private mTopLeftSortedControls As List(Of Control)  ' The list of controls sorted by their top (Y) and left (X) position.
 
         Public Sub New()
-            mTopSortedControls = New List(Of Control)()
             mTopLeftSortedControls = New List(Of Control)()
         End Sub
 
         Public Sub New(ctrls As List(Of Control))
             ReportElements = ctrls
-            'mTopSortedControls = ElementSortByTop(Controls)
-            'mTopLeftSortedControls = ElementSortByTopLeft(Controls)
+        End Sub
+
+        Public Sub ControlPositionNew(newElement As Control)
+            ' Position a new control element in the first location on the form into which it will fit.
+            Dim p As New Point(Me.HorizontalLimit, Me.VerticalLimit)
+            For i As Integer = 0 To mTopLeftSortedControls.Count - 1
+                newElement.Location = p
+                If newElement.Bounds.IntersectsWith(mTopLeftSortedControls(i).Bounds) Then
+                    If mTopLeftSortedControls(i).Right + Me.HorizontalLimit + newElement.Width <= ParentForm.ClientSize.Width Then
+                        p.X = mTopLeftSortedControls(i).Right + Me.HorizontalLimit
+                    Else
+                        p.X = Me.HorizontalLimit
+                        p.Y = mTopLeftSortedControls(i).Bottom + Me.VerticalLimit
+                    End If
+                    Continue For
+                End If
+                mTopLeftSortedControls.Insert(i, newElement)
+                Exit For
+            Next
         End Sub
 
         Public Sub ControlCursorChange(sender As Object, e As MouseEventArgs, borderSize As Integer)
@@ -85,19 +102,22 @@ Public Module Reporting
         Public Function ControlKeyDown(sender As Object, e As KeyEventArgs) As Integer
             Dim keyHandled As Integer = 0
             Dim currentControl As Control = CType(sender, Control)
-            If currentControl IsNot Nothing AndAlso currentControl Is SelectedControl Then
-                Select Case e.KeyCode
-                    Case Keys.Up
-                        currentControl.Top -= 1
-                    Case Keys.Down
-                        currentControl.Top += 1
-                    Case Keys.Left
-                        currentControl.Left -= 1
-                    Case Keys.Right
-                        currentControl.Left += 1
-                    Case Keys.Delete
-                        ' Handled by parent form
-                End Select
+            If currentControl IsNot Nothing Then
+                mLastControlPos = currentControl.Location
+                If currentControl Is SelectedControl Then
+                    Select Case e.KeyCode
+                        Case Keys.Up
+                            currentControl.Top -= 1
+                        Case Keys.Down
+                            currentControl.Top += 1
+                        Case Keys.Left
+                            currentControl.Left -= 1
+                        Case Keys.Right
+                            currentControl.Left += 1
+                        Case Keys.Delete
+                            ' Handled by parent form
+                    End Select
+                End If
                 keyHandled = e.KeyValue
             End If
             Return keyHandled
@@ -114,6 +134,7 @@ Public Module Reporting
         Public Sub ControlMouseDown(sender As Object, e As MouseEventArgs)
             ' Initiates resizing if the mouse is on the border of the control,
             ' else initiates drag drop.
+            mPasteLocation = e.Location
             ControlSelect(sender, Nothing)
             If Me.SelectedControl.Cursor = Cursors.Default Then
                 ControlDragStart(sender, e)
@@ -207,7 +228,6 @@ Public Module Reporting
             End Get
             Set(value As List(Of Control))
                 mTopLeftSortedControls = ElementSortByTopLeft(value)
-                mTopSortedControls = ElementSortByTop(value)
             End Set
         End Property
 
@@ -215,15 +235,28 @@ Public Module Reporting
 
         Public Sub FormMouseDown(sender As Object, e As MouseEventArgs)
             ' Clears the selected control when clicking on the form background.
+            mPasteLocation = e.Location
             If Me.SelectedControl IsNot Nothing Then
                 Me.SelectedControl.Invalidate()
                 Me.SelectedControl = Nothing
             End If
         End Sub
 
-        Public Property GridSize As Integer = 0
+        Public Property GridSize As Integer = 10
 
-        Public Property HorizontalLimit As Integer = 0
+        Public Property HorizontalLimit As Integer = 10
+
+        Public ReadOnly Property LastControlPosition As Point
+            Get
+                Return mLastControlPos
+            End Get
+        End Property
+
+        Public ReadOnly Property PasteLocation As Point
+            Get
+                Return mPasteLocation
+            End Get
+        End Property
 
         Public Property ParentForm As Form
 
@@ -242,12 +275,7 @@ Public Module Reporting
 
         Public Property SelectedControl As Control
 
-        Public Property VerticalLimit As Integer = 0
-
-        Private Sub ElementAdd(element As Control, elements As List(Of Control))
-            ' Adds the element to the list of elements.
-            elements.Add(element)
-        End Sub
+        Public Property VerticalLimit As Integer = 10
 
         Private Sub ElementDrop(element As Control, gridSize As Integer)
             mTopLeftSortedControls = ElementSortByTopLeft(mTopLeftSortedControls)

@@ -533,6 +533,9 @@ Namespace Contexts
                         HasColumnType("bit").
                         HasColumnName("Is Default")
                     entity.Property(Function(e) e.LastModifed).HasColumnName("Last Modifed")
+                    entity.Property(Function(e) e.LetterHeadFile).
+                        HasMaxLength(255).
+                        HasColumnName("LetterHead File")
                     entity.Property(Function(e) e.ModifiedBy).HasColumnName("Modified By")
                     entity.Property(Function(e) e.ReportName).
                         IsRequired().

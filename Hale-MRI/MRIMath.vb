@@ -61,6 +61,7 @@ Module MRIMath
         Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
         Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
     End Function
+
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle

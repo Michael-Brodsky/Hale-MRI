@@ -33,7 +33,25 @@ Partial Class FrmReports
         Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        JobDetailsBindingSource = New BindingSource(components)
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea5 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend5 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series5 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea6 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend6 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series6 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea7 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend7 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series7 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea8 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend8 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series8 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea9 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend9 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series9 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        MeasurementDataBindingSource = New BindingSource(components)
         HeaderLayoutPanel = New TableLayoutPanel()
         TxtWheelPitch = New TextBox()
         TxtMarkedPitch = New TextBox()
@@ -107,6 +125,8 @@ Partial Class FrmReports
         PasteToolStripMenuItem = New ToolStripMenuItem()
         DeleteToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripMenuItem = New ToolStripMenuItem()
+        SettingsToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripMenuItem1 = New ToolStripMenuItem()
         ReportBindingSource = New BindingSource(components)
         TableReports = New TableLayoutPanel()
         labReports = New Label()
@@ -116,7 +136,38 @@ Partial Class FrmReports
         Chart1 = New DataVisualization.Charting.Chart()
         Chart2 = New DataVisualization.Charting.Chart()
         Chart3 = New DataVisualization.Charting.Chart()
-        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        DataGridJobs = New DataGridView()
+        JobNumber = New DataGridViewComboBoxColumn()
+        JobBindingSource = New BindingSource(components)
+        DescriptionDataGridViewTextBoxColumn = New DataGridViewComboBoxColumn()
+        MeasurementTypeBindingSource = New BindingSource(components)
+        StartDateDataGridViewTextBoxColumn = New DataGridViewTextBoxColumn()
+        PerformedBy = New DataGridViewComboBoxColumn()
+        EmployeeBindingSource = New BindingSource(components)
+        Description = New DataGridViewTextBoxColumn()
+        JobDetailsBindingSource = New BindingSource(components)
+        ContextMenuStrip1 = New ContextMenuStrip(components)
+        UndoToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator6 = New ToolStripSeparator()
+        CutToolStripMenuItem1 = New ToolStripMenuItem()
+        PasteToolStripMenuItem1 = New ToolStripMenuItem()
+        DeleteToolStripMenuItem1 = New ToolStripMenuItem()
+        ToolStripSeparator5 = New ToolStripSeparator()
+        SelectAllToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator7 = New ToolStripSeparator()
+        AddNewToolStripMenuItem = New ToolStripMenuItem()
+        Chart4 = New DataVisualization.Charting.Chart()
+        Chart5 = New DataVisualization.Charting.Chart()
+        Chart6 = New DataVisualization.Charting.Chart()
+        Chart7 = New DataVisualization.Charting.Chart()
+        Chart8 = New DataVisualization.Charting.Chart()
+        Chart9 = New DataVisualization.Charting.Chart()
+        ToolStripMenuItem2 = New ToolStripMenuItem()
+        ToolStripMenuItem3 = New ToolStripMenuItem()
+        ToolStripMenuItem4 = New ToolStripMenuItem()
+        ToolStripMenuItem5 = New ToolStripMenuItem()
+        ElementsToolStripMenuItem = New ToolStripMenuItem()
+        CType(MeasurementDataBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
         CType(ReportBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -126,7 +177,24 @@ Partial Class FrmReports
         CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
         CType(Chart3, ComponentModel.ISupportInitialize).BeginInit()
+        CType(DataGridJobs, ComponentModel.ISupportInitialize).BeginInit()
+        CType(JobBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(MeasurementTypeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        ContextMenuStrip1.SuspendLayout()
+        CType(Chart4, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart5, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart6, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart7, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart8, ComponentModel.ISupportInitialize).BeginInit()
+        CType(Chart9, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
+        ' 
+        ' MeasurementDataBindingSource
+        ' 
+        MeasurementDataBindingSource.AllowNew = False
+        MeasurementDataBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
         ' 
         ' HeaderLayoutPanel
         ' 
@@ -284,7 +352,7 @@ Partial Class FrmReports
         ' 
         Label1.Anchor = AnchorStyles.Left
         Label1.AutoSize = True
-        Label1.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label1.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label1.Location = New Point(553, 6)
         Label1.Name = "Label1"
         Label1.Size = New Size(62, 15)
@@ -305,7 +373,7 @@ Partial Class FrmReports
         ' 
         LabJobId.Anchor = AnchorStyles.Left
         LabJobId.AutoSize = True
-        LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobId.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabJobId.Location = New Point(278, 6)
         LabJobId.Name = "LabJobId"
         LabJobId.Size = New Size(40, 15)
@@ -316,7 +384,7 @@ Partial Class FrmReports
         ' 
         LabJobNumber.Anchor = AnchorStyles.Left
         LabJobNumber.AutoSize = True
-        LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabJobNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabJobNumber.Location = New Point(3, 6)
         LabJobNumber.Name = "LabJobNumber"
         LabJobNumber.Size = New Size(48, 15)
@@ -327,7 +395,7 @@ Partial Class FrmReports
         ' 
         LabCustomer.Anchor = AnchorStyles.Left
         LabCustomer.AutoSize = True
-        LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCustomer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabCustomer.Location = New Point(3, 33)
         LabCustomer.Name = "LabCustomer"
         LabCustomer.Size = New Size(61, 15)
@@ -338,7 +406,7 @@ Partial Class FrmReports
         ' 
         LabVessel.Anchor = AnchorStyles.Left
         LabVessel.AutoSize = True
-        LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabVessel.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabVessel.Location = New Point(3, 60)
         LabVessel.Name = "LabVessel"
         LabVessel.Size = New Size(41, 15)
@@ -349,7 +417,7 @@ Partial Class FrmReports
         ' 
         LabManufacturer.Anchor = AnchorStyles.Left
         LabManufacturer.AutoSize = True
-        LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabManufacturer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabManufacturer.Location = New Point(3, 87)
         LabManufacturer.Name = "LabManufacturer"
         LabManufacturer.Size = New Size(84, 15)
@@ -360,7 +428,7 @@ Partial Class FrmReports
         ' 
         LabPartNumber.Anchor = AnchorStyles.Left
         LabPartNumber.AutoSize = True
-        LabPartNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPartNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabPartNumber.Location = New Point(3, 114)
         LabPartNumber.Name = "LabPartNumber"
         LabPartNumber.Size = New Size(52, 15)
@@ -371,7 +439,7 @@ Partial Class FrmReports
         ' 
         LabSerialNumber.Anchor = AnchorStyles.Left
         LabSerialNumber.AutoSize = True
-        LabSerialNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabSerialNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabSerialNumber.Location = New Point(3, 141)
         LabSerialNumber.Name = "LabSerialNumber"
         LabSerialNumber.Size = New Size(28, 15)
@@ -382,7 +450,7 @@ Partial Class FrmReports
         ' 
         LabStampNumber.Anchor = AnchorStyles.Left
         LabStampNumber.AutoSize = True
-        LabStampNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStampNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabStampNumber.Location = New Point(3, 168)
         LabStampNumber.Name = "LabStampNumber"
         LabStampNumber.Size = New Size(65, 15)
@@ -393,7 +461,7 @@ Partial Class FrmReports
         ' 
         LabInspectedBy.Anchor = AnchorStyles.Left
         LabInspectedBy.AutoSize = True
-        LabInspectedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabInspectedBy.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabInspectedBy.Location = New Point(3, 196)
         LabInspectedBy.Name = "LabInspectedBy"
         LabInspectedBy.Size = New Size(79, 15)
@@ -484,7 +552,7 @@ Partial Class FrmReports
         ' 
         LabClass.Anchor = AnchorStyles.Left
         LabClass.AutoSize = True
-        LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabClass.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabClass.Location = New Point(278, 33)
         LabClass.Name = "LabClass"
         LabClass.Size = New Size(33, 15)
@@ -495,7 +563,7 @@ Partial Class FrmReports
         ' 
         LabRepairStatus.Anchor = AnchorStyles.Left
         LabRepairStatus.AutoSize = True
-        LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabRepairStatus.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabRepairStatus.Location = New Point(278, 60)
         LabRepairStatus.Name = "LabRepairStatus"
         LabRepairStatus.Size = New Size(81, 15)
@@ -506,7 +574,7 @@ Partial Class FrmReports
         ' 
         LabStyle.Anchor = AnchorStyles.Left
         LabStyle.AutoSize = True
-        LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabStyle.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabStyle.Location = New Point(278, 87)
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(35, 15)
@@ -517,7 +585,7 @@ Partial Class FrmReports
         ' 
         LabMaterial.Anchor = AnchorStyles.Left
         LabMaterial.AutoSize = True
-        LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabMaterial.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabMaterial.Location = New Point(278, 114)
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(53, 15)
@@ -528,7 +596,7 @@ Partial Class FrmReports
         ' 
         LabBore.Anchor = AnchorStyles.Left
         LabBore.AutoSize = True
-        LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabBore.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabBore.Location = New Point(278, 141)
         LabBore.Name = "LabBore"
         LabBore.Size = New Size(34, 15)
@@ -539,7 +607,7 @@ Partial Class FrmReports
         ' 
         LabDAR.Anchor = AnchorStyles.Left
         LabDAR.AutoSize = True
-        LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabDAR.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabDAR.Location = New Point(278, 168)
         LabDAR.Name = "LabDAR"
         LabDAR.Size = New Size(32, 15)
@@ -550,7 +618,7 @@ Partial Class FrmReports
         ' 
         LabCup.Anchor = AnchorStyles.Left
         LabCup.AutoSize = True
-        LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabCup.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         LabCup.Location = New Point(278, 196)
         LabCup.Name = "LabCup"
         LabCup.Size = New Size(28, 15)
@@ -631,7 +699,7 @@ Partial Class FrmReports
         ' 
         Label2.Anchor = AnchorStyles.Left
         Label2.AutoSize = True
-        Label2.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label2.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label2.Location = New Point(553, 33)
         Label2.Name = "Label2"
         Label2.Size = New Size(63, 15)
@@ -642,7 +710,7 @@ Partial Class FrmReports
         ' 
         Label3.Anchor = AnchorStyles.Left
         Label3.AutoSize = True
-        Label3.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label3.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label3.Location = New Point(553, 60)
         Label3.Name = "Label3"
         Label3.Size = New Size(85, 15)
@@ -653,7 +721,7 @@ Partial Class FrmReports
         ' 
         Label7.Anchor = AnchorStyles.Left
         Label7.AutoSize = True
-        Label7.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label7.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label7.Location = New Point(553, 168)
         Label7.Name = "Label7"
         Label7.Size = New Size(81, 15)
@@ -664,7 +732,7 @@ Partial Class FrmReports
         ' 
         Label8.Anchor = AnchorStyles.Left
         Label8.AutoSize = True
-        Label8.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label8.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label8.Location = New Point(553, 196)
         Label8.Name = "Label8"
         Label8.Size = New Size(74, 15)
@@ -675,7 +743,7 @@ Partial Class FrmReports
         ' 
         Label5.Anchor = AnchorStyles.Left
         Label5.AutoSize = True
-        Label5.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label5.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label5.Location = New Point(553, 141)
         Label5.Name = "Label5"
         Label5.Size = New Size(83, 15)
@@ -686,7 +754,7 @@ Partial Class FrmReports
         ' 
         Label4.Anchor = AnchorStyles.Left
         Label4.AutoSize = True
-        Label4.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label4.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label4.Location = New Point(553, 114)
         Label4.Name = "Label4"
         Label4.Size = New Size(71, 15)
@@ -697,7 +765,7 @@ Partial Class FrmReports
         ' 
         Label6.Anchor = AnchorStyles.Left
         Label6.AutoSize = True
-        Label6.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        Label6.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         Label6.Location = New Point(553, 87)
         Label6.Name = "Label6"
         Label6.Size = New Size(55, 15)
@@ -719,7 +787,7 @@ Partial Class FrmReports
         ' 
         ' MenuStrip1
         ' 
-        MenuStrip1.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, ReportsToolStripMenuItem})
+        MenuStrip1.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem})
         MenuStrip1.Location = New Point(0, 0)
         MenuStrip1.Name = "MenuStrip1"
         MenuStrip1.Size = New Size(850, 24)
@@ -845,6 +913,20 @@ Partial Class FrmReports
         ReportsToolStripMenuItem.Size = New Size(59, 20)
         ReportsToolStripMenuItem.Text = "Reports"
         ' 
+        ' SettingsToolStripMenuItem
+        ' 
+        SettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem1})
+        SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        SettingsToolStripMenuItem.Size = New Size(61, 20)
+        SettingsToolStripMenuItem.Text = "Settings"
+        ' 
+        ' ToolStripMenuItem1
+        ' 
+        ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem2, ToolStripMenuItem3, ToolStripMenuItem4, ToolStripMenuItem5})
+        ToolStripMenuItem1.Name = "ToolStripMenuItem1"
+        ToolStripMenuItem1.Size = New Size(180, 22)
+        ToolStripMenuItem1.Text = "Class"
+        ' 
         ' ReportBindingSource
         ' 
         ReportBindingSource.DataSource = GetType(LibDatabase.Models.Report)
@@ -854,7 +936,7 @@ Partial Class FrmReports
         TableReports.AutoSize = True
         TableReports.ColumnCount = 1
         TableReports.ColumnStyles.Add(New ColumnStyle())
-        TableReports.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 20F))
+        TableReports.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 20.0F))
         TableReports.Controls.Add(labReports, 0, 0)
         TableReports.Controls.Add(ListReports, 0, 1)
         TableReports.Location = New Point(15, 27)
@@ -871,7 +953,7 @@ Partial Class FrmReports
         labReports.AutoSize = True
         labReports.BackColor = SystemColors.Highlight
         labReports.Dock = DockStyle.Fill
-        labReports.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        labReports.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
         labReports.ForeColor = SystemColors.ControlLightLight
         labReports.Location = New Point(3, 0)
         labReports.Name = "labReports"
@@ -917,7 +999,7 @@ Partial Class FrmReports
         Chart1.ChartAreas.Add(ChartArea1)
         Legend1.Name = "Legend1"
         Chart1.Legends.Add(Legend1)
-        Chart1.Location = New Point(12, 274)
+        Chart1.Location = New Point(12, 385)
         Chart1.Name = "Chart1"
         Series1.ChartArea = "ChartArea1"
         Series1.Legend = "Legend1"
@@ -926,6 +1008,7 @@ Partial Class FrmReports
         Chart1.Size = New Size(250, 151)
         Chart1.TabIndex = 10
         Chart1.Text = "Chart1"
+        Chart1.Visible = False
         ' 
         ' Chart2
         ' 
@@ -933,7 +1016,7 @@ Partial Class FrmReports
         Chart2.ChartAreas.Add(ChartArea2)
         Legend2.Name = "Legend1"
         Chart2.Legends.Add(Legend2)
-        Chart2.Location = New Point(12, 431)
+        Chart2.Location = New Point(30, 397)
         Chart2.Name = "Chart2"
         Series2.ChartArea = "ChartArea1"
         Series2.Legend = "Legend1"
@@ -942,6 +1025,7 @@ Partial Class FrmReports
         Chart2.Size = New Size(250, 151)
         Chart2.TabIndex = 11
         Chart2.Text = "Chart2"
+        Chart2.Visible = False
         ' 
         ' Chart3
         ' 
@@ -949,7 +1033,7 @@ Partial Class FrmReports
         Chart3.ChartAreas.Add(ChartArea3)
         Legend3.Name = "Legend1"
         Chart3.Legends.Add(Legend3)
-        Chart3.Location = New Point(12, 588)
+        Chart3.Location = New Point(41, 407)
         Chart3.Name = "Chart3"
         Series3.ChartArea = "ChartArea1"
         Series3.Legend = "Legend1"
@@ -958,12 +1042,298 @@ Partial Class FrmReports
         Chart3.Size = New Size(250, 151)
         Chart3.TabIndex = 12
         Chart3.Text = "Chart3"
+        Chart3.Visible = False
+        ' 
+        ' DataGridJobs
+        ' 
+        DataGridJobs.AutoGenerateColumns = False
+        DataGridJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridJobs.Columns.AddRange(New DataGridViewColumn() {JobNumber, DescriptionDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, PerformedBy, Description})
+        DataGridJobs.DataSource = JobDetailsBindingSource
+        DataGridJobs.Location = New Point(15, 45)
+        DataGridJobs.Name = "DataGridJobs"
+        DataGridJobs.ReadOnly = True
+        DataGridJobs.Size = New Size(823, 150)
+        DataGridJobs.TabIndex = 13
+        DataGridJobs.Visible = False
+        ' 
+        ' JobNumber
+        ' 
+        JobNumber.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
+        JobNumber.DataPropertyName = "JobId"
+        JobNumber.DataSource = JobBindingSource
+        JobNumber.DisplayMember = "JobNumber"
+        JobNumber.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+        JobNumber.HeaderText = "Job"
+        JobNumber.Name = "JobNumber"
+        JobNumber.ReadOnly = True
+        JobNumber.Resizable = DataGridViewTriState.True
+        JobNumber.ValueMember = "Id"
+        JobNumber.Width = 39
+        ' 
+        ' JobBindingSource
+        ' 
+        JobBindingSource.AllowNew = False
+        JobBindingSource.DataSource = GetType(LibDatabase.Models.Job)
+        JobBindingSource.Sort = "JobNumber"
+        ' 
+        ' DescriptionDataGridViewTextBoxColumn
+        ' 
+        DescriptionDataGridViewTextBoxColumn.DataPropertyName = "MeasurementTypeId"
+        DescriptionDataGridViewTextBoxColumn.DataSource = MeasurementTypeBindingSource
+        DescriptionDataGridViewTextBoxColumn.DisplayMember = "MeasurementType1"
+        DescriptionDataGridViewTextBoxColumn.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+        DescriptionDataGridViewTextBoxColumn.HeaderText = "Measurement"
+        DescriptionDataGridViewTextBoxColumn.Name = "DescriptionDataGridViewTextBoxColumn"
+        DescriptionDataGridViewTextBoxColumn.ReadOnly = True
+        DescriptionDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
+        DescriptionDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
+        DescriptionDataGridViewTextBoxColumn.ValueMember = "Id"
+        ' 
+        ' MeasurementTypeBindingSource
+        ' 
+        MeasurementTypeBindingSource.AllowNew = False
+        MeasurementTypeBindingSource.DataSource = GetType(LibDatabase.Models.MeasurementType)
+        ' 
+        ' StartDateDataGridViewTextBoxColumn
+        ' 
+        StartDateDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.DisplayedCellsExceptHeader
+        StartDateDataGridViewTextBoxColumn.DataPropertyName = "StartDate"
+        StartDateDataGridViewTextBoxColumn.HeaderText = "Start Date"
+        StartDateDataGridViewTextBoxColumn.Name = "StartDateDataGridViewTextBoxColumn"
+        StartDateDataGridViewTextBoxColumn.ReadOnly = True
+        StartDateDataGridViewTextBoxColumn.Width = 21
+        ' 
+        ' PerformedBy
+        ' 
+        PerformedBy.DataPropertyName = "PerformedBy"
+        PerformedBy.DataSource = EmployeeBindingSource
+        PerformedBy.DisplayMember = "EmployeeName"
+        PerformedBy.DisplayStyle = DataGridViewComboBoxDisplayStyle.Nothing
+        PerformedBy.HeaderText = "Performed By"
+        PerformedBy.Name = "PerformedBy"
+        PerformedBy.ReadOnly = True
+        PerformedBy.ValueMember = "Id"
+        ' 
+        ' EmployeeBindingSource
+        ' 
+        EmployeeBindingSource.AllowNew = False
+        EmployeeBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
+        EmployeeBindingSource.Sort = "EmployeeName"
+        ' 
+        ' Description
+        ' 
+        Description.DataPropertyName = "Description"
+        Description.HeaderText = "Description"
+        Description.Name = "Description"
+        Description.ReadOnly = True
+        ' 
+        ' JobDetailsBindingSource
+        ' 
+        JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
+        JobDetailsBindingSource.Sort = "JobId"
+        ' 
+        ' ContextMenuStrip1
+        ' 
+        ContextMenuStrip1.Items.AddRange(New ToolStripItem() {UndoToolStripMenuItem, ToolStripSeparator6, CutToolStripMenuItem1, PasteToolStripMenuItem1, DeleteToolStripMenuItem1, ToolStripSeparator5, SelectAllToolStripMenuItem, ToolStripSeparator7, AddNewToolStripMenuItem})
+        ContextMenuStrip1.Name = "ContextMenuStrip1"
+        ContextMenuStrip1.Size = New Size(124, 154)
+        ' 
+        ' UndoToolStripMenuItem
+        ' 
+        UndoToolStripMenuItem.Name = "UndoToolStripMenuItem"
+        UndoToolStripMenuItem.Size = New Size(123, 22)
+        UndoToolStripMenuItem.Text = "Undo"
+        ' 
+        ' ToolStripSeparator6
+        ' 
+        ToolStripSeparator6.Name = "ToolStripSeparator6"
+        ToolStripSeparator6.Size = New Size(120, 6)
+        ' 
+        ' CutToolStripMenuItem1
+        ' 
+        CutToolStripMenuItem1.Name = "CutToolStripMenuItem1"
+        CutToolStripMenuItem1.Size = New Size(123, 22)
+        CutToolStripMenuItem1.Text = "Cut"
+        ' 
+        ' PasteToolStripMenuItem1
+        ' 
+        PasteToolStripMenuItem1.Name = "PasteToolStripMenuItem1"
+        PasteToolStripMenuItem1.Size = New Size(123, 22)
+        PasteToolStripMenuItem1.Text = "Paste"
+        ' 
+        ' DeleteToolStripMenuItem1
+        ' 
+        DeleteToolStripMenuItem1.Name = "DeleteToolStripMenuItem1"
+        DeleteToolStripMenuItem1.Size = New Size(123, 22)
+        DeleteToolStripMenuItem1.Text = "Delete"
+        ' 
+        ' ToolStripSeparator5
+        ' 
+        ToolStripSeparator5.Name = "ToolStripSeparator5"
+        ToolStripSeparator5.Size = New Size(120, 6)
+        ' 
+        ' SelectAllToolStripMenuItem
+        ' 
+        SelectAllToolStripMenuItem.Name = "SelectAllToolStripMenuItem"
+        SelectAllToolStripMenuItem.Size = New Size(123, 22)
+        SelectAllToolStripMenuItem.Text = "Select All"
+        ' 
+        ' ToolStripSeparator7
+        ' 
+        ToolStripSeparator7.Name = "ToolStripSeparator7"
+        ToolStripSeparator7.Size = New Size(120, 6)
+        ' 
+        ' AddNewToolStripMenuItem
+        ' 
+        AddNewToolStripMenuItem.Name = "AddNewToolStripMenuItem"
+        AddNewToolStripMenuItem.Size = New Size(123, 22)
+        AddNewToolStripMenuItem.Text = "Add New"
+        ' 
+        ' Chart4
+        ' 
+        ChartArea4.Name = "ChartArea1"
+        Chart4.ChartAreas.Add(ChartArea4)
+        Legend4.Name = "Legend1"
+        Chart4.Legends.Add(Legend4)
+        Chart4.Location = New Point(58, 419)
+        Chart4.Name = "Chart4"
+        Series4.ChartArea = "ChartArea1"
+        Series4.Legend = "Legend1"
+        Series4.Name = "Series1"
+        Chart4.Series.Add(Series4)
+        Chart4.Size = New Size(250, 151)
+        Chart4.TabIndex = 14
+        Chart4.Text = "Chart4"
+        Chart4.Visible = False
+        ' 
+        ' Chart5
+        ' 
+        ChartArea5.Name = "ChartArea1"
+        Chart5.ChartAreas.Add(ChartArea5)
+        Legend5.Name = "Legend1"
+        Chart5.Legends.Add(Legend5)
+        Chart5.Location = New Point(75, 432)
+        Chart5.Name = "Chart5"
+        Series5.ChartArea = "ChartArea1"
+        Series5.Legend = "Legend1"
+        Series5.Name = "Series1"
+        Chart5.Series.Add(Series5)
+        Chart5.Size = New Size(250, 151)
+        Chart5.TabIndex = 15
+        Chart5.Text = "Chart5"
+        Chart5.Visible = False
+        ' 
+        ' Chart6
+        ' 
+        ChartArea6.Name = "ChartArea1"
+        Chart6.ChartAreas.Add(ChartArea6)
+        Legend6.Name = "Legend1"
+        Chart6.Legends.Add(Legend6)
+        Chart6.Location = New Point(93, 443)
+        Chart6.Name = "Chart6"
+        Series6.ChartArea = "ChartArea1"
+        Series6.Legend = "Legend1"
+        Series6.Name = "Series1"
+        Chart6.Series.Add(Series6)
+        Chart6.Size = New Size(250, 151)
+        Chart6.TabIndex = 16
+        Chart6.Text = "Chart6"
+        Chart6.Visible = False
+        ' 
+        ' Chart7
+        ' 
+        ChartArea7.Name = "ChartArea1"
+        Chart7.ChartAreas.Add(ChartArea7)
+        Legend7.Name = "Legend1"
+        Chart7.Legends.Add(Legend7)
+        Chart7.Location = New Point(115, 457)
+        Chart7.Name = "Chart7"
+        Series7.ChartArea = "ChartArea1"
+        Series7.Legend = "Legend1"
+        Series7.Name = "Series1"
+        Chart7.Series.Add(Series7)
+        Chart7.Size = New Size(250, 151)
+        Chart7.TabIndex = 17
+        Chart7.Text = "Chart7"
+        Chart7.Visible = False
+        ' 
+        ' Chart8
+        ' 
+        ChartArea8.Name = "ChartArea1"
+        Chart8.ChartAreas.Add(ChartArea8)
+        Legend8.Name = "Legend1"
+        Chart8.Legends.Add(Legend8)
+        Chart8.Location = New Point(143, 471)
+        Chart8.Name = "Chart8"
+        Series8.ChartArea = "ChartArea1"
+        Series8.Legend = "Legend1"
+        Series8.Name = "Series1"
+        Chart8.Series.Add(Series8)
+        Chart8.Size = New Size(250, 151)
+        Chart8.TabIndex = 18
+        Chart8.Text = "Chart8"
+        Chart8.Visible = False
+        ' 
+        ' Chart9
+        ' 
+        ChartArea9.Name = "ChartArea1"
+        Chart9.ChartAreas.Add(ChartArea9)
+        Legend9.Name = "Legend1"
+        Chart9.Legends.Add(Legend9)
+        Chart9.Location = New Point(166, 484)
+        Chart9.Name = "Chart9"
+        Series9.ChartArea = "ChartArea1"
+        Series9.Legend = "Legend1"
+        Series9.Name = "Series1"
+        Chart9.Series.Add(Series9)
+        Chart9.Size = New Size(250, 151)
+        Chart9.TabIndex = 19
+        Chart9.Text = "Chart9"
+        Chart9.Visible = False
+        ' 
+        ' ToolStripMenuItem2
+        ' 
+        ToolStripMenuItem2.Name = "ToolStripMenuItem2"
+        ToolStripMenuItem2.Size = New Size(180, 22)
+        ToolStripMenuItem2.Text = "I"
+        ' 
+        ' ToolStripMenuItem3
+        ' 
+        ToolStripMenuItem3.Name = "ToolStripMenuItem3"
+        ToolStripMenuItem3.Size = New Size(180, 22)
+        ToolStripMenuItem3.Text = "II"
+        ' 
+        ' ToolStripMenuItem4
+        ' 
+        ToolStripMenuItem4.Name = "ToolStripMenuItem4"
+        ToolStripMenuItem4.Size = New Size(180, 22)
+        ToolStripMenuItem4.Text = "III"
+        ' 
+        ' ToolStripMenuItem5
+        ' 
+        ToolStripMenuItem5.Name = "ToolStripMenuItem5"
+        ToolStripMenuItem5.Size = New Size(180, 22)
+        ToolStripMenuItem5.Text = "S"
+        ' 
+        ' ElementsToolStripMenuItem
+        ' 
+        ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
+        ElementsToolStripMenuItem.Size = New Size(67, 20)
+        ElementsToolStripMenuItem.Text = "Elements"
         ' 
         ' FrmReports
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
+        Controls.Add(Chart9)
+        Controls.Add(Chart8)
+        Controls.Add(Chart7)
+        Controls.Add(Chart6)
+        Controls.Add(Chart5)
+        Controls.Add(Chart4)
+        Controls.Add(DataGridJobs)
         Controls.Add(Chart3)
         Controls.Add(Chart2)
         Controls.Add(Chart1)
@@ -975,7 +1345,7 @@ Partial Class FrmReports
         MainMenuStrip = MenuStrip1
         Name = "FrmReports"
         Text = "Reports"
-        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(MeasurementDataBindingSource, ComponentModel.ISupportInitialize).EndInit()
         HeaderLayoutPanel.ResumeLayout(False)
         HeaderLayoutPanel.PerformLayout()
         MenuStrip1.ResumeLayout(False)
@@ -988,10 +1358,22 @@ Partial Class FrmReports
         CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
         CType(Chart3, ComponentModel.ISupportInitialize).EndInit()
+        CType(DataGridJobs, ComponentModel.ISupportInitialize).EndInit()
+        CType(JobBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(MeasurementTypeBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        ContextMenuStrip1.ResumeLayout(False)
+        CType(Chart4, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart5, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart6, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart7, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart8, ComponentModel.ISupportInitialize).EndInit()
+        CType(Chart9, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
-    Friend WithEvents JobDetailsBindingSource As BindingSource
+    Friend WithEvents MeasurementDataBindingSource As BindingSource
     Friend WithEvents HeaderLayoutPanel As TableLayoutPanel
     Friend WithEvents LabJobNumber As Label
     Friend WithEvents LabCustomer As Label
@@ -1075,4 +1457,37 @@ Partial Class FrmReports
     Friend WithEvents PasteToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents DeleteToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ReportsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DataGridJobs As DataGridView
+    Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+    Friend WithEvents CutToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents PasteToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents DeleteToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Friend WithEvents AddNewToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents UndoToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
+    Friend WithEvents SelectAllToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
+    Friend WithEvents Chart4 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart5 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart6 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart7 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart8 As DataVisualization.Charting.Chart
+    Friend WithEvents Chart9 As DataVisualization.Charting.Chart
+    Friend WithEvents MeasurementTypeBindingSource As BindingSource
+    Friend WithEvents EmployeeBindingSource As BindingSource
+    Friend WithEvents JobBindingSource As BindingSource
+    Friend WithEvents JobDetailsBindingSource As BindingSource
+    Friend WithEvents JobNumber As DataGridViewComboBoxColumn
+    Friend WithEvents DescriptionDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents StartDateDataGridViewTextBoxColumn As DataGridViewTextBoxColumn
+    Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
+    Friend WithEvents Description As DataGridViewTextBoxColumn
+    Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem1 As ToolStripMenuItem
+    Friend WithEvents ElementsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem3 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem5 As ToolStripMenuItem
 End Class
