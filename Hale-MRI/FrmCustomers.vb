@@ -18,11 +18,6 @@ Partial Public Class FrmCustomers
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
-    ' Define all forms this form can open.
-    ' Do not create new instances of forms directly;
-    ' use the FormInstances.ShowForm/CloseForm methods.
-    Private mFrmVessels As FrmVessels
-    Private mFrmJobs As FrmJobs
 #End Region
 #Region "Public Interface"
     ''' <summary>
@@ -198,9 +193,9 @@ Partial Public Class FrmCustomers
         ' and make it the current record.
         Try
             If Current IsNot Nothing Then
-                ShowForm(mFrmVessels, Database, User)
-                If mFrmVessels.Find(BindingSourceCurrent(VesselBindingSource)) Is Nothing Then
-                    mFrmVessels.AddNew(Current)
+                ShowForm(gFrmVessels, Database, User)
+                If gFrmVessels.Find(BindingSourceCurrent(VesselBindingSource)) Is Nothing Then
+                    gFrmVessels.AddNew(Current)
                 End If
             End If
         Catch ex As Exception
@@ -214,9 +209,9 @@ Partial Public Class FrmCustomers
         ' and make it the current record.
         Try
             If BindingSourceCurrent(VesselBindingSource) IsNot Nothing Then
-                ShowForm(mFrmJobs, Database, User)
-                If mFrmJobs.Find(BindingSourceCurrent(JobBindingSource)) Is Nothing Then
-                    mFrmJobs.AddNew(BindingSourceCurrent(VesselBindingSource))
+                ShowForm(gFrmJobs, Database, User)
+                If gFrmJobs.Find(BindingSourceCurrent(JobBindingSource)) Is Nothing Then
+                    gFrmJobs.AddNew(BindingSourceCurrent(VesselBindingSource))
                 End If
             End If
         Catch ex As Exception

@@ -1,8 +1,15 @@
 ﻿Imports System.ComponentModel
 Imports System.Data
 Imports System.Runtime.CompilerServices
+Imports LibDatabase.Contexts
 
 Public Module ModelExtensions
+    <Extension()>
+    Public Function ChangesPending(ByVal dB As HaleMRIContext) As Boolean
+        ' Returns a Boolean indicating whether there are pending changes in the DbContext.
+        Return dB.ChangeTracker.HasChanges()
+    End Function
+
     <Extension()>
     Public Function Filter(Of T)(ByVal list As IEnumerable(Of T), ByVal filterParam As Func(Of T, Boolean)) As IEnumerable(Of T)
         ' Returns an enumerable collection, IEnumerable(Of DbSet(Of T)), 

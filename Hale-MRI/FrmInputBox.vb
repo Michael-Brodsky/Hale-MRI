@@ -1,4 +1,7 @@
-﻿Public Class FrmInputBox
+﻿''' <summary>
+''' This form is used to get a single text entry from the user. 
+''' </summary>
+Public Class FrmInputBox
     Public Property Title As String
         Get
             Return Me.Text

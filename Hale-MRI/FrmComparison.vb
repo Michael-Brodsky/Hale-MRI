@@ -1,15 +1,8 @@
 ﻿Imports System.ComponentModel
-Imports System.Runtime.CompilerServices
-Imports System.Threading
 Imports System.Windows.Forms.DataVisualization.Charting
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-Imports LibDatabase.StoredProcedures
-Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
 Public Class FrmComparison
     Inherits FrmDatabaseForm

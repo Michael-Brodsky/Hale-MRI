@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FormLocalPitch
+Partial Class FrmLocalPitch
     Inherits FrmDatabaseForm
 
     'Form overrides dispose to clean up the component list.

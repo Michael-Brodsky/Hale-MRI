@@ -33,6 +33,7 @@ Partial Class FrmReports
         Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
@@ -125,8 +126,13 @@ Partial Class FrmReports
         PasteToolStripMenuItem = New ToolStripMenuItem()
         DeleteToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripMenuItem = New ToolStripMenuItem()
+        ElementsToolStripMenuItem = New ToolStripMenuItem()
         SettingsToolStripMenuItem = New ToolStripMenuItem()
         ToolStripMenuItem1 = New ToolStripMenuItem()
+        ToolStripMenuItem2 = New ToolStripMenuItem()
+        ToolStripMenuItem3 = New ToolStripMenuItem()
+        ToolStripMenuItem4 = New ToolStripMenuItem()
+        ToolStripMenuItem5 = New ToolStripMenuItem()
         ReportBindingSource = New BindingSource(components)
         TableReports = New TableLayoutPanel()
         labReports = New Label()
@@ -162,11 +168,7 @@ Partial Class FrmReports
         Chart7 = New DataVisualization.Charting.Chart()
         Chart8 = New DataVisualization.Charting.Chart()
         Chart9 = New DataVisualization.Charting.Chart()
-        ToolStripMenuItem2 = New ToolStripMenuItem()
-        ToolStripMenuItem3 = New ToolStripMenuItem()
-        ToolStripMenuItem4 = New ToolStripMenuItem()
-        ToolStripMenuItem5 = New ToolStripMenuItem()
-        ElementsToolStripMenuItem = New ToolStripMenuItem()
+        ToolTip1 = New ToolTip(components)
         CType(MeasurementDataBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         HeaderLayoutPanel.SuspendLayout()
         MenuStrip1.SuspendLayout()
@@ -913,6 +915,12 @@ Partial Class FrmReports
         ReportsToolStripMenuItem.Size = New Size(59, 20)
         ReportsToolStripMenuItem.Text = "Reports"
         ' 
+        ' ElementsToolStripMenuItem
+        ' 
+        ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
+        ElementsToolStripMenuItem.Size = New Size(67, 20)
+        ElementsToolStripMenuItem.Text = "Elements"
+        ' 
         ' SettingsToolStripMenuItem
         ' 
         SettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem1})
@@ -924,12 +932,37 @@ Partial Class FrmReports
         ' 
         ToolStripMenuItem1.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem2, ToolStripMenuItem3, ToolStripMenuItem4, ToolStripMenuItem5})
         ToolStripMenuItem1.Name = "ToolStripMenuItem1"
-        ToolStripMenuItem1.Size = New Size(180, 22)
+        ToolStripMenuItem1.Size = New Size(101, 22)
         ToolStripMenuItem1.Text = "Class"
+        ' 
+        ' ToolStripMenuItem2
+        ' 
+        ToolStripMenuItem2.Name = "ToolStripMenuItem2"
+        ToolStripMenuItem2.Size = New Size(83, 22)
+        ToolStripMenuItem2.Text = "I"
+        ' 
+        ' ToolStripMenuItem3
+        ' 
+        ToolStripMenuItem3.Name = "ToolStripMenuItem3"
+        ToolStripMenuItem3.Size = New Size(83, 22)
+        ToolStripMenuItem3.Text = "II"
+        ' 
+        ' ToolStripMenuItem4
+        ' 
+        ToolStripMenuItem4.Name = "ToolStripMenuItem4"
+        ToolStripMenuItem4.Size = New Size(83, 22)
+        ToolStripMenuItem4.Text = "III"
+        ' 
+        ' ToolStripMenuItem5
+        ' 
+        ToolStripMenuItem5.Name = "ToolStripMenuItem5"
+        ToolStripMenuItem5.Size = New Size(83, 22)
+        ToolStripMenuItem5.Text = "S"
         ' 
         ' ReportBindingSource
         ' 
         ReportBindingSource.DataSource = GetType(LibDatabase.Models.Report)
+        ReportBindingSource.Sort = "ReportName"
         ' 
         ' TableReports
         ' 
@@ -1047,6 +1080,14 @@ Partial Class FrmReports
         ' DataGridJobs
         ' 
         DataGridJobs.AutoGenerateColumns = False
+        DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle1.BackColor = SystemColors.Control
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
+        DataGridJobs.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         DataGridJobs.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobs.Columns.AddRange(New DataGridViewColumn() {JobNumber, DescriptionDataGridViewTextBoxColumn, StartDateDataGridViewTextBoxColumn, PerformedBy, Description})
         DataGridJobs.DataSource = JobDetailsBindingSource
@@ -1292,36 +1333,6 @@ Partial Class FrmReports
         Chart9.Text = "Chart9"
         Chart9.Visible = False
         ' 
-        ' ToolStripMenuItem2
-        ' 
-        ToolStripMenuItem2.Name = "ToolStripMenuItem2"
-        ToolStripMenuItem2.Size = New Size(180, 22)
-        ToolStripMenuItem2.Text = "I"
-        ' 
-        ' ToolStripMenuItem3
-        ' 
-        ToolStripMenuItem3.Name = "ToolStripMenuItem3"
-        ToolStripMenuItem3.Size = New Size(180, 22)
-        ToolStripMenuItem3.Text = "II"
-        ' 
-        ' ToolStripMenuItem4
-        ' 
-        ToolStripMenuItem4.Name = "ToolStripMenuItem4"
-        ToolStripMenuItem4.Size = New Size(180, 22)
-        ToolStripMenuItem4.Text = "III"
-        ' 
-        ' ToolStripMenuItem5
-        ' 
-        ToolStripMenuItem5.Name = "ToolStripMenuItem5"
-        ToolStripMenuItem5.Size = New Size(180, 22)
-        ToolStripMenuItem5.Text = "S"
-        ' 
-        ' ElementsToolStripMenuItem
-        ' 
-        ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
-        ElementsToolStripMenuItem.Size = New Size(67, 20)
-        ElementsToolStripMenuItem.Text = "Elements"
-        ' 
         ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7.0F, 15.0F)
@@ -1490,4 +1501,5 @@ Partial Class FrmReports
     Friend WithEvents ToolStripMenuItem3 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem5 As ToolStripMenuItem
+    Friend WithEvents ToolTip1 As ToolTip
 End Class

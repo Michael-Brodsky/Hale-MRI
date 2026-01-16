@@ -6,7 +6,9 @@ Imports System.Drawing.Printing
 
 Public Class FrmReports
     Inherits FrmDatabaseForm
+#Region "Private Members"
     Private mAllElements As List(Of Control) = Nothing              ' The list of all available report elements.
+    Private mControlIsDeleted As Boolean = False                    ' Flag indicating if a control is being deleted.   
     Private mCurrentElements As List(Of ReportElement) = Nothing    ' The list of currently loaded report elements.
     Private mCutControl As Control = Nothing                        ' The control being cut. 
     Private mJobDetails As JobDetail                                ' The current JobDetail record
@@ -14,7 +16,11 @@ Public Class FrmReports
     Private mMasterSource As BindingSource = Nothing                ' The form's "master" BindingSource.
     Private mReport As String = ""                                  ' The currently loaded report.
     Private mReportGenerator As ReportGenerator = Nothing           ' The ReportGenerator for runtime form layout and formatting.
-
+#End Region
+#Region "Public Interface"
+    ''' <summary>
+    ''' Returns the BindingSource for the measurement data displayed in the report.
+    ''' </summary>
     ''' <summary>
     ''' Returns the currently selected JobDetail,
     ''' or Nothing if there is no selected record.
@@ -38,10 +44,12 @@ Public Class FrmReports
         Set(value As Job)
             mJob = value
             If mJob IsNot Nothing Then
+                ' These are for the Job selection datagrid.
                 EmployeeBindingSource.DataSource = Database.Employees.Local.ToBindingList()
                 JobBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
                 JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail)(Database.JobDetails.OrderBy(Function(m) m.JobId).ThenBy(Function(m) m.MeasurementTypeId).ToList())
                 MeasurementTypeBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList()
+                ' This is the JobDetails data for the report.
                 MeasurementDataBindingSource.DataSource = GetMeasurementData(mJob.JobDetails.FirstOrDefault())
             End If
         End Set
@@ -59,38 +67,42 @@ Public Class FrmReports
             mJobDetails = value
             mJob = mJobDetails?.Job
             If mJobDetails IsNot Nothing Then
+                ' These are for the Job selection datagrid.
                 EmployeeBindingSource.DataSource = Database.Employees.Local.ToBindingList()
                 JobBindingSource.DataSource = Database.Jobs.Local.ToBindingList()
                 JobDetailsBindingSource.DataSource = New BindingList(Of JobDetail)(Database.JobDetails.OrderBy(Function(m) m.JobId).ThenBy(Function(m) m.MeasurementTypeId).ToList())
                 MeasurementTypeBindingSource.DataSource = Database.MeasurementTypes.Local.ToBindingList()
+                ' This is the JobDetails data for the report.
                 MeasurementDataBindingSource.DataSource = GetMeasurementData(mJobDetails)
             End If
         End Set
     End Property
-
+#End Region
+#Region "Private Interface"
     Protected Overrides Property MasterSource As BindingSource
-    Private Sub ConfigureChart()
 
-    End Sub
-
-    Private Sub ConfigureControls()
+    Private Sub ChartLoad()
 
     End Sub
 
     Private Sub ContextMenuStripShow(sender As Object, e As MouseEventArgs)
+        ' Enables/disables context menu items based on the current state.
         If e.Button = MouseButtons.Right Then
             For Each item As ToolStripItem In ContextMenuStrip1.Items
                 item.Enabled = False
             Next
+            ' If there is a cut control, enable Paste and Undo
             If mCutControl IsNot Nothing Then
-                PasteToolStripMenuItem1.Enabled = True
+                PasteToolStripMenuItem1.Enabled = Not mControlIsDeleted
                 UndoToolStripMenuItem.Enabled = True
             Else
+                ' No cut control, enable Add, Cut, Delete, Select All.   
                 AddNewToolStripMenuItem.Enabled = True
                 CutToolStripMenuItem1.Enabled = sender IsNot Me
                 DeleteToolStripMenuItem1.Enabled = sender IsNot Me
                 SelectAllToolStripMenuItem.Enabled = True
             End If
+            ' Show the context menu at the mouse location.
             Dim ctrl As Control = CType(sender, Control)
             If sender Is Me Then
                 ContextMenuStrip1.Show(Me, e.Location)
@@ -102,49 +114,93 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Sub ControlVisible(element As Control, visible As Boolean)
-        element.Visible = visible
+    Private Sub ControlVisible(ctrl As Control, visible As Boolean, Optional ByVal modify As Boolean = False)
+        ' Sets the visibility and behavior of the given control in the report,
+        ' and optionally modifies the database accordingly.
+        ctrl.Visible = visible
         If visible Then
-            AddHandler element.MouseClick, AddressOf Control_MouseClick
-            AddHandler element.Enter, AddressOf Control_Enter
-            AddHandler element.KeyDown, AddressOf Control_KeyDown
-            AddHandler element.Leave, AddressOf Control_Leave
-            AddHandler element.MouseDown, AddressOf Control_MouseDown
-            AddHandler element.MouseMove, AddressOf Control_MouseMove
-            AddHandler element.MouseUp, AddressOf Control_MouseUp
-            AddHandler element.Paint, AddressOf Control_Paint
-            AddHandler element.Resize, AddressOf Control_Resize
-            mReportGenerator.ReportElements.Add(element)
+            AddHandler ctrl.MouseClick, AddressOf Control_MouseClick
+            AddHandler ctrl.Enter, AddressOf Control_Enter
+            AddHandler ctrl.KeyDown, AddressOf Control_KeyDown
+            AddHandler ctrl.Leave, AddressOf Control_Leave
+            AddHandler ctrl.MouseDown, AddressOf Control_MouseDown
+            AddHandler ctrl.MouseHover, AddressOf Control_MouseHover
+            AddHandler ctrl.MouseMove, AddressOf Control_MouseMove
+            AddHandler ctrl.MouseUp, AddressOf Control_MouseUp
+            AddHandler ctrl.Paint, AddressOf Control_Paint
+            AddHandler ctrl.Resize, AddressOf Control_Resize
+            mReportGenerator.ReportControls.Add(ctrl)
+            If modify Then _
+            Database.ReportElements.Add(New ReportElement() With {
+                .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
+                .ElementName = ctrl.Name,
+                .PositionX = ctrl.Location.X,
+                .PositionY = ctrl.Location.Y,
+                .SizeWidth = ctrl.Size.Width,
+                .SizeHeight = ctrl.Size.Height
+            })
+
         Else
-            mReportGenerator.ReportElements.Remove(element)
-            RemoveHandler element.MouseClick, AddressOf Control_MouseClick
-            RemoveHandler element.Enter, AddressOf Control_Enter
-            RemoveHandler element.KeyDown, AddressOf Control_KeyDown
-            RemoveHandler element.Leave, AddressOf Control_Leave
-            RemoveHandler element.MouseDown, AddressOf Control_MouseDown
-            RemoveHandler element.MouseMove, AddressOf Control_MouseMove
-            RemoveHandler element.MouseUp, AddressOf Control_MouseUp
-            RemoveHandler element.Paint, AddressOf Control_Paint
-            RemoveHandler element.Resize, AddressOf Control_Resize
+            If modify Then Database.ReportElements.Remove(ReportElementGet(ctrl))
+            mReportGenerator.ReportControls.Remove(ctrl)
+            RemoveHandler ctrl.MouseClick, AddressOf Control_MouseClick
+            RemoveHandler ctrl.Enter, AddressOf Control_Enter
+            RemoveHandler ctrl.KeyDown, AddressOf Control_KeyDown
+            RemoveHandler ctrl.Leave, AddressOf Control_Leave
+            RemoveHandler ctrl.MouseDown, AddressOf Control_MouseDown
+            RemoveHandler ctrl.MouseHover, AddressOf Control_MouseHover
+            RemoveHandler ctrl.MouseMove, AddressOf Control_MouseMove
+            RemoveHandler ctrl.MouseUp, AddressOf Control_MouseUp
+            RemoveHandler ctrl.Paint, AddressOf Control_Paint
+            RemoveHandler ctrl.Resize, AddressOf Control_Resize
         End If
+        ElementMenuItemsUpdate(ctrl, visible)
+    End Sub
+
+    Protected Overrides Sub BindDataSources()
+        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        MasterSource = MeasurementDataBindingSource
+        MyBase.BindDataSources()
     End Sub
 
     Private Sub DataSourcesInitialize()
-        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
-        MasterSource = MeasurementDataBindingSource
+        'ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        'MasterSource = MeasurementDataBindingSource
+    End Sub
+
+    Private Sub ElementMenuItemsUpdate(ctrl As Control, isVisible As Boolean)
+        Dim elementsMenu As ToolStripMenuItem = ElementsToolStripMenuItem
+        Dim addnewContextMenu As ToolStripMenuItem = AddNewToolStripMenuItem
+        For Each item As ToolStripMenuItem In elementsMenu.DropDownItems
+            If item.Text = ctrl.Name Then
+                item.Checked = isVisible
+                Exit For
+            End If
+        Next
+        For Each item As ToolStripMenuItem In addnewContextMenu.DropDownItems
+            If item.Text = ctrl.Name Then
+                item.Enabled = Not isVisible
+                Exit For
+            End If
+        Next
     End Sub
 
     Private Sub ElementsToolStripMenuIntialize()
+        ' Initializes the Elements and AddNew menus with available report elements.
         Dim elementsMenu As ToolStripMenuItem = ElementsToolStripMenuItem
+        Dim addnewContextMenu As ToolStripMenuItem = AddNewToolStripMenuItem
         For Each ctrl In mAllElements
-            Dim subItem As New ToolStripMenuItem(ctrl.Name)
-            elementsMenu.DropDownItems.Add(subItem)
-            subItem.Checked = ctrl.Visible
-            AddHandler subItem.Click, AddressOf ElementsItemClickHandler
+            Dim elementsItem As New ToolStripMenuItem(ctrl.Name)
+            elementsMenu.DropDownItems.Add(elementsItem)
+            AddHandler elementsItem.Click, AddressOf ElementsItemClickHandler
+            Dim addnewItem As New ToolStripMenuItem(ctrl.Name)
+            addnewContextMenu.DropDownItems.Add(addnewItem)
+            AddHandler addnewItem.Click, AddressOf ElementsItemClickHandler
         Next
     End Sub
 
     Private Function GetMeasurementData(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
+        ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements sorted.
         Dim data = New BindingList(Of JobDetail)(
             Database.JobDetails _
                 .Where(Function(jd) jd.Id = jobDetails.Id.ToString()) _
@@ -183,6 +239,7 @@ Public Class FrmReports
     End Property
 
     Private Sub ReportAddNew()
+        ' Prompt the user for a new report name and add it to the database.
         FrmInputBox.Text = "Add New Report"
         FrmInputBox.Prompt = "Enter the name of the new report:"
         FrmInputBox.InputText = ""
@@ -197,66 +254,79 @@ Public Class FrmReports
                     .ModifiedBy = User?.Id
                 }
                 Database.Reports.Add(newReport)
-                Database.SaveChanges()
-                ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+                Database.SaveChanges()  ' Only save the new Report.
+                Dim reportsMenu As ToolStripMenuItem = ReportsToolStripMenuItem
+                Dim subItem As New ToolStripMenuItem(newReport.ReportName)
+                reportsMenu.DropDownItems.Insert(reportsMenu.DropDownItems.Count - 2, subItem)
+                AddHandler subItem.Click, AddressOf ReportsItemClickHandler
+                'ReportBindingSource.ResetBindings(False)
+                'ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
                 Report = newReportName
             End If
         End If
     End Sub
 
-    Private Sub ReportElementAddNew(elem As Control, item As ToolStripMenuItem)
-        If elem IsNot Nothing Then
-            ControlVisible(elem, True)
-            mReportGenerator.ControlPositionNew(elem)
-            Database.ReportElements.Add(New ReportElement() With {
-                .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
-                .ElementName = elem.Name,
-                .PositionX = elem.Location.X,
-                .PositionY = elem.Location.Y,
-                .SizeWidth = elem.Size.Width,
-                .SizeHeight = elem.Size.Height
-            })
-            item.Checked = True
-            Database.SaveChanges()
+    Private Sub ReportElementAddNew(ctrl As Control, item As ToolStripMenuItem)
+        ' Adds a new report element to the current report and database.
+        If ctrl IsNot Nothing Then
+            mReportGenerator.ControlPositionNew(ctrl)
+            ControlVisible(ctrl, True, True)
+            'Database.ReportElements.Add(New ReportElement() With {
+            '    .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
+            '    .ElementName = ctrl.Name,
+            '    .PositionX = ctrl.Location.X,
+            '    .PositionY = ctrl.Location.Y,
+            '    .SizeWidth = ctrl.Size.Width,
+            '    .SizeHeight = ctrl.Size.Height
+            '})
+            'Database.SaveChanges()
         End If
     End Sub
 
     Private Sub ReportElementCut(ctrl As Control)
-        If ctrl IsNot Nothing AndAlso ctrl.Parent IsNot Nothing Then
-            ' Store the control in the variable
-            mCutControl = ctrl
-            ' Remove it from its current parent (this is the "cut" action)
-            ControlVisible(ctrl, False)
-            ctrl.Parent.Controls.Remove(ctrl)
-        End If
+        ' Cuts the specified control from its current parent and stores it for pasting.
+        mCutControl = ctrl
+        mControlIsDeleted = False
+        ControlVisible(mCutControl, False, True)
+        'Database.ReportElements.Remove(
+        'base.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = mCutControl.Name)
+        ')
     End Sub
 
     Private Sub ReportElementDelete(ctrl As Control)
-        Dim elementToRemove As ReportElement = mCurrentElements.FirstOrDefault(Function(re) re.ElementName = ctrl.Name)
-        If elementToRemove IsNot Nothing Then
-            Database.ReportElements.Remove(elementToRemove)
-            Database.SaveChanges()
-            mCurrentElements.Remove(elementToRemove)
-            ControlVisible(ctrl, False)
-            mReportGenerator.ReportElements.Remove(ctrl)
-        End If
+        ' Deletes the specified control from the current report and database.
+        mCutControl = ctrl
+        mControlIsDeleted = True
+        ControlVisible(mCutControl, False, True)
+        'Dim elementToRemove As ReportElement = ReportElementGet(ctrl)
+        'If elementToRemove IsNot Nothing Then
+        '    Database.ReportElements.Remove(elementToRemove)
+        '    Database.SaveChanges()
+        '    mCurrentElements.Remove(elementToRemove)
+        '    mReportGenerator.ReportElements.Remove(ctrl)
+        'End If
     End Sub
+
+    Private Function ReportElementGet(ctrl As Control) As ReportElement
+        ' Returns the Database ReportElement corresponding to the given control in the current report.
+        Return Database.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = ctrl.Name.ToString())
+    End Function
 
     Private Sub ReportElementPaste()
         If mCutControl IsNot Nothing Then
             ' Add the control to the new destination.
             ' The location properties (Top, Left) are preserved
-            ControlVisible(mCutControl, True)
             mCutControl.Location = mReportGenerator.PasteLocation
-            mReportGenerator.ReportElements = mReportGenerator.ReportElements ' This sorts the controls by top, left position
-            Database.ReportElements.Add(New ReportElement() With {
-                .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
-                .ElementName = mCutControl.Name,
-                .PositionX = mReportGenerator.PasteLocation.X,
-                .PositionY = mReportGenerator.PasteLocation.Y,
-                .SizeWidth = mCutControl.Size.Width,
-                .SizeHeight = mCutControl.Size.Height
-            })
+            ControlVisible(mCutControl, True, True)
+            mReportGenerator.ReportControls = mReportGenerator.ReportControls ' This sorts the controls by top, left position
+            'Database.ReportElements.Add(New ReportElement() With {
+            '    .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
+            '    .ElementName = mCutControl.Name,
+            '    .PositionX = mReportGenerator.PasteLocation.X,
+            '    .PositionY = mReportGenerator.PasteLocation.Y,
+            '    .SizeWidth = mCutControl.Size.Width,
+            '    .SizeHeight = mCutControl.Size.Height
+            '})
             ' Clear the storage variable
             mCutControl = Nothing
         End If
@@ -268,28 +338,31 @@ Public Class FrmReports
             ' The location properties (Top, Left) are preserved
             ControlVisible(mCutControl, True)
             'mCutControl.Location = mReportGenerator.PasteLocation
-            mReportGenerator.ReportElements = mReportGenerator.ReportElements ' This sorts the controls by top, left position
-            Database.ReportElements.Add(New ReportElement() With {
-                .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
-                .ElementName = mCutControl.Name,
-                .PositionX = mCutControl.Location.X,
-                .PositionY = mCutControl.Location.Y,
-                .SizeWidth = mCutControl.Size.Width,
-                .SizeHeight = mCutControl.Size.Height
-            })
+            mReportGenerator.ReportControls = mReportGenerator.ReportControls ' This sorts the controls by top, left position
+            'Database.ReportElements.Add(New ReportElement() With {
+            '    .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
+            '    .ElementName = mCutControl.Name,
+            '    .PositionX = mCutControl.Location.X,
+            '    .PositionY = mCutControl.Location.Y,
+            '    .SizeWidth = mCutControl.Size.Width,
+            '    .SizeHeight = mCutControl.Size.Height
+            '})
             ' Clear the storage variable
             mCutControl = Nothing
         End If
-
     End Sub
 
-    Private Sub ReportGeneratorInitialize()
-        ' Initialize the ReportGenerator and set up event handlers for all report elements.
-        mReportGenerator = New ReportGenerator() With {
-            .ParentForm = Me,
-            .HorizontalLimit = 10,
-            .VerticalLimit = MenuStrip1.Height
-        }
+    Private Sub ReportElementUpdate(ctrl As Control)
+        Dim elementToUpdate As ReportElement = ReportElementGet(ctrl)
+        With elementToUpdate
+            .PositionX = ctrl.Location.X
+            .PositionY = ctrl.Location.Y
+            .SizeWidth = ctrl.Size.Width
+            .SizeHeight = ctrl.Size.Height
+        End With
+    End Sub
+
+    Private Sub ReportControlsInitialize()
         ' All available report elements must be listed here before setting the Report property.
         ' ADD NEW ELEMENTS HERE. Create the element, hook it up, and add it to mAllElements.
         mAllElements = New List(Of Control) From {
@@ -307,6 +380,15 @@ Public Class FrmReports
         }
     End Sub
 
+    Private Sub ReportGeneratorInitialize()
+        ' Initialize the ReportGenerator and set up event handlers for all report elements.
+        mReportGenerator = New ReportGenerator() With {
+            .ParentForm = Me,
+            .HorizontalLimit = 10,
+            .VerticalLimit = MenuStrip1.Height
+        }
+    End Sub
+
     Private Sub ReportLoad(elements As List(Of ReportElement))
         'Dim reportElements As New List(Of Control)
         For Each ctrl As Control In mAllElements
@@ -316,25 +398,25 @@ Public Class FrmReports
             Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
             If control IsNot Nothing Then
                 'reportElements.Add(control)
-                ControlVisible(control, True)
                 control.Location = New Point(re.PositionX, re.PositionY)
                 control.Size = New Size(re.SizeWidth, re.SizeHeight)
+                ControlVisible(control, True)
             End If
         Next
-        mReportGenerator.ReportElements = mReportGenerator.ReportElements
-        mCurrentElements = elements
+        mReportGenerator.ReportControls = mReportGenerator.ReportControls
+        'mCurrentElements = elements
     End Sub
 
     Private Sub ReportSave()
-        For Each elem As Control In mReportGenerator.ReportElements
-            Dim reportElement As ReportElement = Database.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = elem.Name.ToString())
-            If reportElement IsNot Nothing Then
-                reportElement.PositionX = elem.Location.X
-                reportElement.PositionY = elem.Location.Y
-                reportElement.SizeWidth = elem.Size.Width
-                reportElement.SizeHeight = elem.Size.Height
-            End If
-        Next
+        'For Each elem As Control In mReportGenerator.ReportControls
+        '    Dim reportElement As ReportElement = Database.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = elem.Name.ToString())
+        '    If reportElement IsNot Nothing Then
+        '        reportElement.PositionX = elem.Location.X
+        '        reportElement.PositionY = elem.Location.Y
+        '        reportElement.SizeWidth = elem.Size.Width
+        '        reportElement.SizeHeight = elem.Size.Height
+        '    End If
+        'Next
         Database.SaveChanges()
     End Sub
 
@@ -396,6 +478,7 @@ Public Class FrmReports
             Next
         Next
     End Sub
+#End Region
 #Region "Event Handlers"
 
     Private Sub CopyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyToolStripMenuItem.Click
@@ -416,6 +499,7 @@ Public Class FrmReports
             Dim elementName As String = clickedItem.Text
             Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = elementName)
             ReportElementAddNew(control, clickedItem)
+            'clickedItem.Checked = True
         End If
     End Sub
 
@@ -425,12 +509,13 @@ Public Class FrmReports
 
     Private Sub FrmReports_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         DataGridJobs.AutoGenerateColumns = False
-        DataSourcesInitialize()
+        'DataSourcesInitialize()
         ReportsToolStripMenuIntialize()
         ReportGeneratorInitialize()
+        ReportControlsInitialize()
+        ElementsToolStripMenuIntialize()
         ' Open the default report if one is set.
         Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
-        ElementsToolStripMenuIntialize()
     End Sub
 
     Private Sub ListReports_DoubleClick(sender As Object, e As EventArgs) Handles ListReports.DoubleClick
@@ -529,14 +614,17 @@ Public Class FrmReports
     Private Sub Control_Enter(sender As Object, e As EventArgs)
         mReportGenerator.ControlEnter(sender, e)
     End Sub
+
     Private Sub Control_KeyDown(sender As Object, e As KeyEventArgs)
         If mReportGenerator.ControlKeyDown(sender, e) = Keys.Delete Then
             ReportElementDelete(CType(sender, Control))
         End If
     End Sub
+
     Private Sub Control_Leave(sender As Object, e As EventArgs)
         mReportGenerator.ControlLeave(sender, e)
     End Sub
+
     Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
         mReportGenerator.ControlMouseDown(sender, e)
         DataGridJobs.Visible = False
@@ -547,12 +635,20 @@ Public Class FrmReports
         End If
     End Sub
 
+    Private Sub Control_MouseHover(sender As Object, e As EventArgs)
+        Dim hoveredControl As Control = CType(sender, Control)
+
+        ' Set and show the tooltip dynamically
+        Me.ToolTip1.SetToolTip(hoveredControl, hoveredControl.Name)
+    End Sub
+
     Private Sub Control_MouseMove(sender As Object, e As MouseEventArgs)
         mReportGenerator.ControlMouseMove(sender, e)
     End Sub
 
     Private Sub Control_MouseUp(sender As Object, e As MouseEventArgs)
         mReportGenerator.ControlMouseUp(sender, e)
+        ReportElementUpdate(CType(sender, Control))
     End Sub
 
     Private Sub Control_Paint(sender As Object, e As PaintEventArgs)
@@ -574,15 +670,11 @@ Public Class FrmReports
     End Sub
 
     Private Sub AddNewContextMenuItem_Click(sender As Object, e As EventArgs) Handles AddNewToolStripMenuItem.Click
-        'Not implemented. Needs a flyout menu of available elements.    
+
     End Sub
 
     Private Sub CutContextMenuItem_Click(sender As Object, e As EventArgs) Handles CutToolStripMenuItem1.Click
-        mCutControl = mReportGenerator.SelectedControl
-        ControlVisible(mCutControl, False)
-        Database.ReportElements.Remove(
-            Database.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = mCutControl.Name)
-        )
+        ReportElementCut(CType(mReportGenerator.SelectedControl, Control))
     End Sub
 
     Private Sub DeleteContextMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem1.Click
@@ -594,13 +686,24 @@ Public Class FrmReports
     End Sub
 
     Private Sub SelectAllContextMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAllToolStripMenuItem.Click
-
+        ' Not implemented
     End Sub
 
     Private Sub UndoContextMenuItem_Click(sender As Object, e As EventArgs) Handles UndoToolStripMenuItem.Click
         ReportElementUndo()
     End Sub
 
+    Protected Overrides Sub Form_Closing(sender As Object, e As FormClosingEventArgs)
+        If Database.ChangeTracker.HasChanges() Then
+            Dim result As DialogResult = MessageBox.Show("There are unsaved changes. Do you want to save them before exiting?", "Unsaved Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            If result = DialogResult.Yes Then
+                ReportSave()
+            ElseIf result = DialogResult.Cancel Then
+                e.Cancel = True
+            End If
+        End If
+        MyBase.Form_Closing(sender, e)
+    End Sub
 #End Region
 #End Region
 End Class

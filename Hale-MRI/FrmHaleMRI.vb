@@ -7,18 +7,11 @@ Public Class FrmHaleMRI
     Private mDatabase As New HaleMRIContext
     Private mWorkstationEncoders As New WorkstationEncoders()
     Private mUser As Employee
-    ' Do not create new instances of forms directly; use the FormInstances.ShowForm/CloseForm methods.
-    Private mFrmCalibration As FrmCalibration
-    Private mFrmCustomers As FrmCustomers
-    Private mFrmJobDetails As FrmJobDetails
-    Private mFrmJobs As FrmJobs
-    Private mFrmManufacturers As FrmManufacturers
-    'Private mFrmMeasurements As FrmMeasurements
-    Private mFrmMeasurements As FrmMeasurements
-    Private mFrmReports As FrmReports
-    Private mFrmPropellers As FrmPropellers
-    Private mFrmSettings As FrmSettings
-    Private mFrmVessels As FrmVessels
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+    ' NOTE: All form instances are now declared as public members of FormInstances.vb
+    ' Use those members and the FormInstances.ShowForm/CloseForm methods to show/close 
+    ' forms. Do not create new instances of forms directly.
+    ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
 #End Region
 #Region "Private Interface"
     Private Sub Login(ByVal userName As String, ByVal password As String)
@@ -54,7 +47,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdCustomers_Click(sender As Object, e As EventArgs) Handles CmdCustomers.Click
         Try
-            ShowForm(mFrmCustomers, mDatabase, mUser)
+            ShowForm(gFrmCustomers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening customers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -62,7 +55,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdJobDetails_Click(sender As Object, e As EventArgs)
         Try
-            ShowForm(mFrmJobDetails, mDatabase, mUser)
+            ShowForm(gFrmJobDetails, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening job details form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -70,8 +63,8 @@ Public Class FrmHaleMRI
 
     Private Sub CmdJobs_Click(sender As Object, e As EventArgs) Handles CmdJobs.Click
         Try
-            ShowForm(mFrmJobs, mDatabase, mUser)
-            mFrmJobs.Hardware = mWorkstationEncoders
+            ShowForm(gFrmJobs, mDatabase, mUser)
+            gFrmJobs.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening jobs form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -79,7 +72,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdManufacturers_Click(sender As Object, e As EventArgs) Handles CmdManufacturers.Click
         Try
-            ShowForm(mFrmManufacturers, mDatabase, mUser)
+            ShowForm(gFrmManufacturers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening manufacturers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -95,7 +88,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdPropellers_Click(sender As Object, e As EventArgs) Handles CmdPropellers.Click
         Try
-            ShowForm(mFrmPropellers, mDatabase, mUser)
+            ShowForm(gFrmPropellers, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening propellers form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -103,14 +96,14 @@ Public Class FrmHaleMRI
 
     Private Sub CmdReports_Click(sender As Object, e As EventArgs) Handles CmdReports.Click
         Try
-            ShowForm(mFrmReports)
+            ShowForm(gFrmReports)
         Catch ex As Exception
             MessageBox.Show("Error opening reports form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
     Private Sub CmdSettings_Click(sender As Object, e As EventArgs) Handles CmdSettings.Click
         Try
-            ShowForm(mFrmSettings, mDatabase, mUser)
+            ShowForm(gFrmSettings, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening settings form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -118,7 +111,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdVessels_Click(sender As Object, e As EventArgs) Handles CmdVessels.Click
         Try
-            ShowForm(mFrmVessels, mDatabase, mUser)
+            ShowForm(gFrmVessels, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening vessels form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -126,8 +119,8 @@ Public Class FrmHaleMRI
 
     Private Sub CmdWorkstation_Click(sender As Object, e As EventArgs) Handles CmdWorkstation.Click
         Try
-            ShowForm(mFrmCalibration)
-            mFrmCalibration.Hardware = mWorkstationEncoders
+            ShowForm(gFrmCalibration)
+            gFrmCalibration.Hardware = mWorkstationEncoders
         Catch ex As Exception
             MessageBox.Show("Error opening calibration form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -135,15 +128,19 @@ Public Class FrmHaleMRI
 
     Private Sub FrmHaleMRI_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' Dispose of any resources we created.
-        CloseForm(mFrmCalibration)
-        CloseForm(mFrmCustomers)
-        CloseForm(mFrmJobDetails)
-        CloseForm(mFrmJobs)
-        CloseForm(mFrmManufacturers)
-        CloseForm(mFrmMeasurements)
-        CloseForm(mFrmReports)
-        CloseForm(mFrmSettings)
-        CloseForm(mFrmVessels)
+        CloseForm(gFrmInputBox)
+        CloseForm(gFrmComparison)
+        CloseForm(gFrmReports)
+        CloseForm(gFrmLocalPitch)
+        CloseForm(gFrmMeasurements)
+        CloseForm(gFrmJobDetails)
+        CloseForm(gFrmJobs)
+        CloseForm(gFrmPropellers)
+        CloseForm(gFrmVessels)
+        CloseForm(gFrmCustomers)
+        CloseForm(gFrmCalibration)
+        CloseForm(gFrmManufacturers)
+        CloseForm(gFrmSettings)
         If mDatabase IsNot Nothing Then mDatabase.Dispose()
         mDatabase = Nothing
     End Sub

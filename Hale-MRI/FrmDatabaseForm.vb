@@ -43,6 +43,30 @@ Partial Public Class FrmDatabaseForm
     End Sub
 
     ''' <summary>
+    ''' Automatically called when the form is loaded.
+    ''' If the Database property has been set, this calls BindDataSources
+    ''' to bind data sources to controls.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Private Sub Form_Loading(sender As Object, e As EventArgs) Handles MyBase.Load
+        If Database IsNot Nothing Then BindDataSources()
+    End Sub
+
+    ''' <summary>
+    ''' Automatically called when the form is closing.
+    ''' This clears the Database property to ensure that
+    ''' the database context can be disposed of if no
+    ''' other forms are using it.
+    ''' </summary>
+    ''' <param name="sender"></param>
+    ''' <param name="e"></param>
+    Protected Overridable Sub Form_Closing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        ' Some forms may need to set Database to Nothing before closing.
+        Database = Nothing
+    End Sub
+
+    ''' <summary>
     ''' The "master" BindingSource for the form, if any.
     ''' This is the BindingSource that controls record navigation
     ''' and to which other BindingSources may be related in a
@@ -66,28 +90,5 @@ Partial Public Class FrmDatabaseForm
         For Each frm In openForms
             If frm IsNot Me Then frm.Refresh()  ' We don't need to refresh ourselves.
         Next
-    End Sub
-
-    ''' <summary>
-    ''' Automatically called when the form is loaded.
-    ''' If the Database property has been set, this calls BindDataSources
-    ''' to bind data sources to controls.
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Private Sub FrmDatabaseForm_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        If Database IsNot Nothing Then BindDataSources()
-    End Sub
-
-    ''' <summary>
-    ''' Automatically called when the form is closing.
-    ''' This clears the Database property to ensure that
-    ''' the database context can be disposed of if no
-    ''' other forms are using it.
-    ''' </summary>
-    ''' <param name="sender"></param>
-    ''' <param name="e"></param>
-    Private Sub FrmDatabaseForm_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
-        Database = Nothing
     End Sub
 End Class

@@ -8,6 +8,19 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 
 Module FormInstances
+    Public gFrmCalibration As FrmCalibration
+    Public gFrmComparison As FrmComparison
+    Public gFrmCustomers As FrmCustomers
+    Public gFrmInputBox As FrmInputBox
+    Public gFrmJobDetails As FrmJobDetails
+    Public gFrmJobs As FrmJobs
+    Public gFrmLocalPitch As FrmLocalPitch
+    Public gFrmManufacturers As FrmManufacturers
+    Public gFrmMeasurements As FrmMeasurements
+    Public gFrmReports As FrmReports
+    Public gFrmPropellers As FrmPropellers
+    Public gFrmSettings As FrmSettings
+    Public gFrmVessels As FrmVessels
     Public Sub ShowForm(Of F As {Form, New})(ByRef frm As F)
         frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
         If frm Is Nothing OrElse Not frm.IsHandleCreated Then

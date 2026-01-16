@@ -19,7 +19,7 @@
     <Compile Update="FrmReports.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FormLocalPitch.vb">
+    <Compile Update="FrmLocalPitch.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FrmCalibration.vb">

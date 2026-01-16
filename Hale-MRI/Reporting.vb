@@ -9,21 +9,22 @@ Imports Windows.Win32.UI
 ''' </summary>
 Public Module Reporting
     Public Class ReportGenerator
+#Region "Private Members"
         Private mDragStartPos As Point                      ' The starting mouse position of the drag operation.
         Private mIsDragging As Boolean = False              ' Indicates whether a drag operation is in progress.
         Private mIsResizing As Boolean = False              ' Indicates whether a resize operation is in progress.
         Private mLastControlPos As Point                    ' The last known position of the control being dragged.
         Private mLastControlSize As Size                    ' The last known size of the control being resized.    
-        'Private mTopSortedControls As List(Of Control)     ' The list of controls sorted by their top (Y) position.
         Private mPasteLocation As Point                     ' The location of a right mouse click.
         Private mTopLeftSortedControls As List(Of Control)  ' The list of controls sorted by their top (Y) and left (X) position.
-
+#End Region
+#Region "Public Interface"
         Public Sub New()
             mTopLeftSortedControls = New List(Of Control)()
         End Sub
 
         Public Sub New(ctrls As List(Of Control))
-            ReportElements = ctrls
+            ReportControls = ctrls
         End Sub
 
         Public Sub ControlPositionNew(newElement As Control)
@@ -162,6 +163,7 @@ Public Module Reporting
                 ControlResizeEnd(sender, e)
             End If
         End Sub
+
         Public Sub ControlRepaint(sender As Object, e As PaintEventArgs)
             ' Redraws the border of the control being repainted.
             Dim currentControl As Control = CType(sender, Control)
@@ -222,7 +224,7 @@ Public Module Reporting
             Me.SelectedControl.Invalidate()
         End Sub
 
-        Public Property ReportElements As List(Of Control)
+        Public Property ReportControls As List(Of Control)
             Get
                 Return mTopLeftSortedControls
             End Get
@@ -276,7 +278,8 @@ Public Module Reporting
         Public Property SelectedControl As Control
 
         Public Property VerticalLimit As Integer = 10
-
+#End Region
+#Region "Private Interface"
         Private Sub ElementDrop(element As Control, gridSize As Integer)
             mTopLeftSortedControls = ElementSortByTopLeft(mTopLeftSortedControls)
             ' Snaps the element to the nearest grid position based on the specified grid size.
@@ -325,6 +328,7 @@ Public Module Reporting
             Dim sortedElements = elements.OrderBy(Function(c) c.Location.Y).ThenBy(Function(c) c.Location.X).ToList()
             Return sortedElements
         End Function
+#End Region
     End Class
 #Region "Tables"
     Private Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, MeanDesign As Boolean) As DataTable

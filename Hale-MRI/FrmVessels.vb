@@ -16,11 +16,6 @@ Public Class FrmVessels
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
     Private mNewVessel As Vessel = Nothing              ' The new Vessel being added, if any.
-    ' Define all forms this form can open.
-    ' Do not create new instances of forms directly;
-    ' use the FormInstances.ShowForm/CloseForm methods.
-    Private mFrmJobs As FrmJobs
-    Private mFrmCustomers As FrmCustomers
 #End Region
 #Region "Public Interface"
     Public Sub AddNew(ByVal customer As Customer)
@@ -164,8 +159,8 @@ Public Class FrmVessels
     Private Sub DataGridVessels_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridVessels.MouseDoubleClick
         ' Open the Customers form with the selected Customer as the current record.
         Try
-            ShowForm(mFrmCustomers, Database, User)
-            mFrmCustomers.Find(Current?.Customer)
+            ShowForm(gFrmCustomers, Database, User)
+            gFrmCustomers.Find(Current?.Customer)
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "jobs", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -185,9 +180,9 @@ Public Class FrmVessels
         ' and make it the current record.
         Try
             If Current IsNot Nothing Then
-                ShowForm(mFrmJobs, Database, User)
-                If mFrmJobs.Find(BindingSourceCurrent(JobsBindingSource)) Is Nothing Then
-                    mFrmJobs.AddNew(Current)
+                ShowForm(gFrmJobs, Database, User)
+                If gFrmJobs.Find(BindingSourceCurrent(JobsBindingSource)) Is Nothing Then
+                    gFrmJobs.AddNew(Current)
                 End If
             End If
         Catch ex As Exception
