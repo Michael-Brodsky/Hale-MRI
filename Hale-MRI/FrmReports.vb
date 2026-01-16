@@ -154,6 +154,7 @@ Public Class FrmReports
             RemoveHandler ctrl.Paint, AddressOf Control_Paint
             RemoveHandler ctrl.Resize, AddressOf Control_Resize
         End If
+        If modify Then Database.SaveChanges()
         ElementMenuItemsUpdate(ctrl, visible)
     End Sub
 
@@ -224,6 +225,21 @@ Public Class FrmReports
         ' Toggles the visibility of header elements.
         Dim clickedItem = TryCast(sender, ToolStripMenuItem)
         If clickedItem IsNot Nothing Then
+        End If
+    End Sub
+
+    Private Sub LetterheadSelectFile()
+        OpenFileDialog1.Filter = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp|All Files (*.*)|*.*"
+        OpenFileDialog1.FilterIndex = 1
+        OpenFileDialog1.RestoreDirectory = True
+        If OpenFileDialog1.ShowDialog() = DialogResult.OK Then
+            Try
+                Dim selectedImage As Image = Image.FromFile(OpenFileDialog1.FileName)
+                Letterhead.Image = selectedImage
+                Letterhead.BorderStyle = BorderStyle.None
+            Catch ex As Exception
+                MessageBox.Show("Error loading image: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            End Try
         End If
     End Sub
 
@@ -405,14 +421,14 @@ Public Class FrmReports
 
     Private Sub ReportLoad(elements As List(Of ReportElement))
         For Each ctrl As Control In mAllElements
-            ControlVisible(ctrl, False)
+            ControlVisible(ctrl, False, False)
         Next
         For Each re As ReportElement In elements
             Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
             If control IsNot Nothing Then
                 control.Location = New Point(re.PositionX, re.PositionY)
                 control.Size = New Size(re.SizeWidth, re.SizeHeight)
-                ControlVisible(control, True)
+                ControlVisible(control, True, False)
             End If
         Next
         mReportGenerator.ReportControls = mReportGenerator.ReportControls
@@ -706,6 +722,10 @@ Public Class FrmReports
             End If
         End If
         MyBase.Form_Closing(sender, e)
+    End Sub
+
+    Private Sub Letterhead_DoubleClick(sender As Object, e As EventArgs) Handles Letterhead.DoubleClick
+        LetterheadSelectFile()
     End Sub
 
 #End Region

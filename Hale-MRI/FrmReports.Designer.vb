@@ -194,6 +194,7 @@ Partial Class FrmReports
         Chart9 = New DataVisualization.Charting.Chart()
         ToolTip1 = New ToolTip(components)
         Letterhead = New PictureBox()
+        OpenFileDialog1 = New OpenFileDialog()
         CType(MeasurementDataBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         Header.SuspendLayout()
         MenuStrip1.SuspendLayout()
@@ -950,14 +951,14 @@ Partial Class FrmReports
         ' ToolStripMenuItem6
         ' 
         ToolStripMenuItem6.Name = "ToolStripMenuItem6"
-        ToolStripMenuItem6.Size = New Size(180, 22)
+        ToolStripMenuItem6.Size = New Size(130, 22)
         ToolStripMenuItem6.Text = "Letterhead"
         ' 
         ' ToolStripMenuItem7
         ' 
         ToolStripMenuItem7.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem8, ToolStripMenuItem9, ToolStripMenuItem10, ToolStripMenuItem11, ToolStripMenuItem12, ToolStripMenuItem13, ToolStripMenuItem14, ToolStripMenuItem15, ToolStripMenuItem16, ToolStripMenuItem17, ToolStripMenuItem18, ToolStripMenuItem19, ToolStripMenuItem20, ToolStripMenuItem21, ToolStripMenuItem22, ToolStripMenuItem23, ToolStripMenuItem24, ToolStripMenuItem25, ToolStripMenuItem26, ToolStripMenuItem27, ToolStripMenuItem28, ToolStripMenuItem29, ToolStripMenuItem30, ToolStripMenuItem31})
         ToolStripMenuItem7.Name = "ToolStripMenuItem7"
-        ToolStripMenuItem7.Size = New Size(180, 22)
+        ToolStripMenuItem7.Size = New Size(130, 22)
         ToolStripMenuItem7.Text = "Header"
         ' 
         ' ToolStripMenuItem8
@@ -1107,7 +1108,7 @@ Partial Class FrmReports
         ' ToolStripSeparator8
         ' 
         ToolStripSeparator8.Name = "ToolStripSeparator8"
-        ToolStripSeparator8.Size = New Size(177, 6)
+        ToolStripSeparator8.Size = New Size(127, 6)
         ' 
         ' SettingsToolStripMenuItem
         ' 
@@ -1479,6 +1480,7 @@ Partial Class FrmReports
         ' 
         ' Letterhead
         ' 
+        Letterhead.BorderStyle = BorderStyle.FixedSingle
         Letterhead.Location = New Point(12, 27)
         Letterhead.MaximumSize = New Size(827, 111)
         Letterhead.MinimumSize = New Size(16, 16)
@@ -1487,6 +1489,10 @@ Partial Class FrmReports
         Letterhead.SizeMode = PictureBoxSizeMode.AutoSize
         Letterhead.TabIndex = 20
         Letterhead.TabStop = False
+        ' 
+        ' OpenFileDialog1
+        ' 
+        OpenFileDialog1.FileName = "OpenFileDialog1"
         ' 
         ' FrmReports
         ' 
@@ -1681,4 +1687,5 @@ Partial Class FrmReports
     Friend WithEvents ToolStripMenuItem29 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem30 As ToolStripMenuItem
     Friend WithEvents ToolStripMenuItem31 As ToolStripMenuItem
+    Friend WithEvents OpenFileDialog1 As OpenFileDialog
 End Class
