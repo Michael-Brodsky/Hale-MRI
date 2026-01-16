@@ -171,13 +171,15 @@ Public Class FrmReports
     Private Sub ElementMenuItemsUpdate(ctrl As Control, isVisible As Boolean)
         Dim elementsMenu As ToolStripMenuItem = ElementsToolStripMenuItem
         Dim addnewContextMenu As ToolStripMenuItem = AddNewToolStripMenuItem
-        For Each item As ToolStripMenuItem In elementsMenu.DropDownItems
+        For Each item In elementsMenu.DropDownItems
+            If TypeOf item IsNot ToolStripMenuItem Then Continue For
             If item.Text = ctrl.Name Then
                 item.Checked = isVisible
                 Exit For
             End If
         Next
         For Each item As ToolStripMenuItem In addnewContextMenu.DropDownItems
+            If TypeOf item IsNot ToolStripMenuItem Then Continue For
             If item.Text = ctrl.Name Then
                 item.Enabled = Not isVisible
                 Exit For
@@ -191,11 +193,15 @@ Public Class FrmReports
         Dim addnewContextMenu As ToolStripMenuItem = AddNewToolStripMenuItem
         For Each ctrl In mAllElements
             Dim elementsItem As New ToolStripMenuItem(ctrl.Name)
-            elementsMenu.DropDownItems.Add(elementsItem)
-            AddHandler elementsItem.Click, AddressOf ElementsItemClickHandler
+            If Not (ctrl.Name = "Letterhead" Or ctrl.Name = "Header") Then
+                elementsMenu.DropDownItems.Add(elementsItem)
+                AddHandler elementsItem.Click, AddressOf ElementsItemClickHandler
+            End If
             Dim addnewItem As New ToolStripMenuItem(ctrl.Name)
-            addnewContextMenu.DropDownItems.Add(addnewItem)
-            AddHandler addnewItem.Click, AddressOf ElementsItemClickHandler
+            If Not (ctrl.Name = "Letterhead" Or ctrl.Name = "Header") Then
+                addnewContextMenu.DropDownItems.Add(addnewItem)
+                AddHandler addnewItem.Click, AddressOf ElementsItemClickHandler
+            End If
         Next
     End Sub
 
@@ -213,6 +219,13 @@ Public Class FrmReports
         SortMeasurementData(data)
         Return data
     End Function
+
+    Private Sub HeaderItemToggle(sender As Object, e As EventArgs)
+        ' Toggles the visibility of header elements.
+        Dim clickedItem = TryCast(sender, ToolStripMenuItem)
+        If clickedItem IsNot Nothing Then
+        End If
+    End Sub
 
     Private Property Report As String
         Get
@@ -366,7 +379,8 @@ Public Class FrmReports
         ' All available report elements must be listed here before setting the Report property.
         ' ADD NEW ELEMENTS HERE. Create the element, hook it up, and add it to mAllElements.
         mAllElements = New List(Of Control) From {
-            HeaderLayoutPanel,
+            Letterhead,
+            Header,
             Chart1,
             Chart2,
             Chart3,
@@ -390,33 +404,21 @@ Public Class FrmReports
     End Sub
 
     Private Sub ReportLoad(elements As List(Of ReportElement))
-        'Dim reportElements As New List(Of Control)
         For Each ctrl As Control In mAllElements
             ControlVisible(ctrl, False)
         Next
         For Each re As ReportElement In elements
             Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
             If control IsNot Nothing Then
-                'reportElements.Add(control)
                 control.Location = New Point(re.PositionX, re.PositionY)
                 control.Size = New Size(re.SizeWidth, re.SizeHeight)
                 ControlVisible(control, True)
             End If
         Next
         mReportGenerator.ReportControls = mReportGenerator.ReportControls
-        'mCurrentElements = elements
     End Sub
 
     Private Sub ReportSave()
-        'For Each elem As Control In mReportGenerator.ReportControls
-        '    Dim reportElement As ReportElement = Database.ReportElements.FirstOrDefault(Function(re) re.Report.ReportName = mReport AndAlso re.ElementName = elem.Name.ToString())
-        '    If reportElement IsNot Nothing Then
-        '        reportElement.PositionX = elem.Location.X
-        '        reportElement.PositionY = elem.Location.Y
-        '        reportElement.SizeWidth = elem.Size.Width
-        '        reportElement.SizeHeight = elem.Size.Height
-        '    End If
-        'Next
         Database.SaveChanges()
     End Sub
 
@@ -493,14 +495,22 @@ Public Class FrmReports
 
     End Sub
 
-    Private Sub ElementsItemClickHandler(sender As Object, e As EventArgs)
-        Dim clickedItem As ToolStripMenuItem = TryCast(sender, ToolStripMenuItem)
+    Private Sub ElementsItemClickHandler(sender As Object, e As EventArgs) Handles ToolStripMenuItem6.Click, ToolStripMenuItem7.Click
+        Dim clickedItem = TryCast(sender, ToolStripMenuItem)
         If clickedItem IsNot Nothing Then
-            Dim elementName As String = clickedItem.Text
-            Dim control As Control = mAllElements.FirstOrDefault(Function(ce) ce.Name = elementName)
-            ReportElementAddNew(control, clickedItem)
-            'clickedItem.Checked = True
+            Dim control = mAllElements.FirstOrDefault(Function(ce) ce.Name = clickedItem.Text.ToString())
+            If control IsNot Nothing Then
+                If control.Visible Then
+                    ControlVisible(control, False, True)
+                Else
+                    ReportElementAddNew(control, clickedItem)
+                End If
+            End If
         End If
+    End Sub
+
+    Private Sub HeaderItemClickHandler(sender As Object, e As EventArgs) Handles ToolStripMenuItem8.Click, ToolStripMenuItem9.Click, ToolStripMenuItem10.Click, ToolStripMenuItem11.Click, ToolStripMenuItem12.Click, ToolStripMenuItem13.Click, ToolStripMenuItem14.Click, ToolStripMenuItem15.Click, ToolStripMenuItem16.Click, ToolStripMenuItem17.Click, ToolStripMenuItem18.Click, ToolStripMenuItem19.Click, ToolStripMenuItem20.Click, ToolStripMenuItem21.Click, ToolStripMenuItem22.Click, ToolStripMenuItem23.Click, ToolStripMenuItem24.Click, ToolStripMenuItem25.Click, ToolStripMenuItem26.Click, ToolStripMenuItem27.Click, ToolStripMenuItem28.Click, ToolStripMenuItem29.Click, ToolStripMenuItem30.Click, ToolStripMenuItem31.Click
+        HeaderItemToggle(sender, e)
     End Sub
 
     Private Sub ExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
@@ -518,13 +528,10 @@ Public Class FrmReports
         Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
     End Sub
 
-    Private Sub ListReports_DoubleClick(sender As Object, e As EventArgs) Handles ListReports.DoubleClick
-        Dim selectedReport = CType(ListReports.SelectedItem, Report)
-        Report = selectedReport.ReportName
-        DataGridJobs.Visible = False
-    End Sub
 
     Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+        DataGridJobs.Location = New Point((Me.ClientSize.Width - DataGridJobs.Width) \ 2, (Me.ClientSize.Height - DataGridJobs.Height) \ 2)
+        DataGridJobs.Size = New Size(Me.ClientSize.Width - 40, Me.ClientSize.Height - 80)
         DataGridJobs.Visible = True
         DataGridJobs.BringToFront()
     End Sub
@@ -669,10 +676,6 @@ Public Class FrmReports
         ContextMenuStripShow(sender, e)
     End Sub
 
-    Private Sub AddNewContextMenuItem_Click(sender As Object, e As EventArgs) Handles AddNewToolStripMenuItem.Click
-
-    End Sub
-
     Private Sub CutContextMenuItem_Click(sender As Object, e As EventArgs) Handles CutToolStripMenuItem1.Click
         ReportElementCut(CType(mReportGenerator.SelectedControl, Control))
     End Sub
@@ -704,6 +707,7 @@ Public Class FrmReports
         End If
         MyBase.Form_Closing(sender, e)
     End Sub
+
 #End Region
 #End Region
 End Class
