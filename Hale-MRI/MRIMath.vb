@@ -101,6 +101,21 @@ Module MRIMath
 
         Return chordlength
     End Function
+    Public Function GetChordLength(startAngle As Double, endAngle As Double, startDepth As Double, endDepth As Double, diameter As Double, radperc As Integer) As Double
+        'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
+        'used to get the chord length between two cell measurements in inches
+        Dim deltaangle As Double = endAngle - startAngle 'Total change in angle on a radius of one blade
+        Dim deltadepth As Double = endDepth - startDepth 'Total change in depth on a radius of one blade
+
+        Dim adjusteddiameter As Double = diameter * (radperc / 100) 'Gets the value side of a radius measurement from a radius percent needed for an arc length calculation
+
+        Dim arclength = adjusteddiameter * Math.PI * deltaangle / 360 'Gets the length of the arc/flat of the radial chord
+
+        Dim squared = Math.Pow(deltadepth, 2) + Math.Pow(arclength, 2)
+        Dim chordlength = Math.Sqrt(squared) 'Pythagorean theorem to get chord length from change in depth and arc length
+
+        Return chordlength
+    End Function
 
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
         'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))

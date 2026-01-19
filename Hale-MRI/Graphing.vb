@@ -1,7 +1,9 @@
-﻿Imports System.Windows.Forms.DataVisualization.Charting
+﻿Imports System.Drawing.Configuration
+Imports System.Windows.Forms.DataVisualization.Charting
 Imports LibDatabase.Models
 
 Module Graphing
+    Public GraphColorArray As System.Drawing.Color() = {Color.Red, Color.Green, Color.Blue, Color.Pink, Color.Yellow, Color.Cyan, ColorTranslator.FromHtml("#c87f00"), ColorTranslator.FromHtml("#c8c880"), ColorTranslator.FromHtml("#c880c8"), ColorTranslator.FromHtml("#80ff00"), Color.Black}
     Public Function ChartCreateSeries(ByVal chart As Chart, ByVal name As String, ByVal xaxis As String, ByVal yaxis As String) As Series
         ' Returns a new Series added to the given Chart with the given axis labels.
         Dim newSeries As New Series With {

@@ -1,6 +1,10 @@
-﻿Imports System.Drawing.Printing
+﻿Imports System.Drawing.Imaging
+Imports System.Drawing.Printing
+Imports System.Formats.Asn1
+Imports System.Windows.Forms.DataVisualization.Charting
 Imports Hale_MRI.Reporting
 Imports LibDatabase.Models
+Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 Imports Windows.Win32.UI
 
 ''' <summary>
@@ -255,43 +259,43 @@ Public Module Reporting
         End Function
     End Class
 #Region "Tables"
-    Private Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, MeanDesign As Boolean) As DataTable
+    Public Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, Design As Boolean) As DataTable
         Dim mJob As Job = mJobDetails.Job
         If mJobDetails Is Nothing Then
             Return New DataTable()
         End If
         Dim dtBladePitchByRadius As New DataTable()
-        Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("Blade", GetType(Integer))
+        Dim colRadius As DataColumn = dtBladePitchByRadius.Columns.Add("r/R", GetType(Integer))
         Dim rowRadiusBlade As DataRow
-        Dim x As Integer
-        For x = 1 To mJob?.PropellerBlades
-            rowRadiusBlade = dtBladePitchByRadius.Rows.Add(x)
+
+        For Each radmeas As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = 1)
+            rowRadiusBlade = dtBladePitchByRadius.Rows.Add(Math.Round(radmeas.Radius.Value).ToString + " %")
         Next
         dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
         For Each row As DataRow In dtBladePitchByRadius.Rows
             Dim totalPitch As Double = 0.0
-            Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
-            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+            Dim pitchCount As Integer = 0
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) Math.Round(r.Radius.Value).ToString + " %" = row.Item("Blade"))
                 Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
-                rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
+                rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(Math.Round(rm.Radius.Value).ToString + " %"), dtBladePitchByRadius.Rows.Add(rm.Radius.Value).ToString + " %")
                 colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
                 Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
                 rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
                 totalPitch += pitch
                 pitchCount += 1
             Next
+            Dim meancol As DataColumn = If(dtBladePitchByRadius.Columns("Mean"), dtBladePitchByRadius.Columns.Add("Mean", GetType(Double)))
             Dim avgPitch As Double = totalPitch / pitchCount
-            If MeanDesign Then
-                Dim meancol As DataColumn = If(dtBladePitchByRadius.Columns("Mean"), dtBladePitchByRadius.Columns.Add("Mean", GetType(Double)))
+            row.Item(meancol) = Math.Round(avgPitch, 2)
+            If Design Then
                 Dim designcol As DataColumn = If(dtBladePitchByRadius.Columns("Design"), dtBladePitchByRadius.Columns.Add("Design", GetType(Double)))
                 'add if here for design loaded check use design pitch if loaded and ref if not
                 row.Item(designcol) = Math.Round(mJob.DesiredPitch.Value, 2)
-                row.Item(meancol) = Math.Round(avgPitch, 2)
             End If
         Next
         Return dtBladePitchByRadius
     End Function
-    Private Function UpdateChordLengthTable(mJobDetails As JobDetail) As DataTable
+    Public Function UpdateChordLengthTable(mJobDetails As JobDetail) As DataTable
         Dim mjob As Job = mJobDetails.Job
         If mJobDetails Is Nothing Then
             Return New DataTable()
@@ -317,32 +321,484 @@ Public Module Reporting
         Return dtChordLength
     End Function
 
-    'Private Sub UpdateISOTOLTable(Tolclass As Tolerance, Mins As Boolean)
-    '    Dim ISOTable As New DataTable()
-    '    ISOTable.Columns.Add("TolType", GetType(String))
-    '    ISOTable.Columns.Add("MinsApply", GetType(String))
-    '    ISOTable.Columns.Add("TolPerc", GetType(String))
-    '    ISOTable.Columns.Add("PlusMinus", GetType(String))
-    '    ISOTable.Columns.Add("OverUnder", GetType(String))
+    Public Function UpdateISOTOLTable(basispitch As Double, Tolclass As Tolerance, Mins As Boolean) As DataTable
+        Dim ISOTable As New DataTable()
+        ISOTable.Columns.Add("TolType", GetType(String))
+        ISOTable.Columns.Add("MinsApply", GetType(String))
+        ISOTable.Columns.Add("TolPerc", GetType(String))
+        ISOTable.Columns.Add("PlusMinus", GetType(String))
+        ISOTable.Columns.Add("OverUnder", GetType(String))
 
-    '    GrdISOTolTable.DataSource = ISOTable
-    '    If Mins Then
-    '        GrdISOTolTable.Columns("MinsApply").Visible = True
-    '    Else
-    '        GrdISOTolTable.Columns("MinsApply").Visible = False
-    '    End If
-    '    Select Case Tolclass.ToleranceClass
-    '        Case "S", "I", "II"
-    '            Dim RowLocal As DataRow = ISOTable.Rows.Add("Local Pitch")
-    '            RowLocal.Item("TolType") = "Local Pitch"
-    '            RowLocal.Item("MinsApply") = "Mins"
-    '            RowLocal.Item("TolPerc") = Tolclass.LocalPitchPercent.ToString("F2") & " %"
-    '            Dim LocalMinMax As Double
-    '            If 
-    '            RowLocal.Item("PlusMinus") = "±" + (mJobDetails.WheelPitch * (Tolclass.LocalPitchPer) 'need to change wheel pitch to basis option on this form
+        'Local Pitch
+        Dim RowLocal As DataRow = ISOTable.Rows.Add("Local Pitch")
+        RowLocal.Item("TolType") = "Local Pitch"
+        RowLocal.Item("MinsApply") = "Mins"
+        RowLocal.Item("TolPerc") = Tolclass.LocalPitchPercent.ToString() & " %"
+        Dim MinMax As Double
+        MinMax = basispitch * (Tolclass.LocalPitchPercent / 100)
+        If Mins And MinMax < Tolclass.LocalPitchMinimum * kMmToInch Then 'need checks for SYS type
+            MinMax = Tolclass.LocalPitchMinimum * kMmToInch
+        End If
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In" 'need to change In to sys type once it is set up
+        RowLocal.Item("OverUnder") = (basispitch + MinMax) + " / " + (basispitch - MinMax)
 
-    '    End Select
-    'End Sub
+        'Radius Average
+        RowLocal = ISOTable.Rows.Add("Radius Average")
+        RowLocal.Item("TolType") = "Radius Average"
+        RowLocal.Item("Mins") = "Mins"
+        RowLocal.Item("TolPerc") = Tolclass.MeanPitchPerRadiusPercent.ToString() & " %"
+        MinMax = basispitch * (Tolclass.MeanPitchPerRadiusPercent / 100)
+        If Mins And MinMax < Tolclass.MeanPitchPerRadiusMinimum * kMmToInch Then
+            MinMax = Tolclass.MeanPitchPerRadiusMinimum * kMmToInch
+        End If
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (basispitch + MinMax) + " In / " + (basispitch - MinMax) + " In"
+
+        'Blade Average
+        RowLocal = ISOTable.Rows.Add("Blade Average")
+        RowLocal.Item("TolType") = "Blade Average"
+        RowLocal.Item("Mins") = "Mins"
+        RowLocal.Item("TolPerc") = Tolclass.MeanPitchPerBladePercent.ToString() & " %"
+        MinMax = basispitch * (Tolclass.MeanPitchPerBladePercent / 100)
+        If Mins And MinMax < Tolclass.MeanPitchPerBladeMinimum * kMmToInch Then
+            MinMax = Tolclass.MeanPitchPerBladeMinimum * kMmToInch
+        End If
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (basispitch + MinMax) + " In / " + (basispitch - MinMax) + " In"
+
+        'Propeller Average
+        RowLocal = ISOTable.Rows.Add("Propeller Average")
+        RowLocal.Item("TolType") = "Propeller Average"
+        RowLocal.Item("Mins") = "Mins"
+        RowLocal.Item("TolPerc") = Tolclass.MeanPitchForPropellerPercent.ToString() & " %"
+        MinMax = basispitch * (Tolclass.MeanPitchForPropellerPercent / 100)
+        If Mins And MinMax < Tolclass.MeanPitchForPropellerMinimum * kMmToInch Then
+            MinMax = Tolclass.MeanPitchForPropellerMinimum * kMmToInch
+        End If
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (basispitch + MinMax) + " In / " + (basispitch - MinMax) + " In"
+        If Mins <> True Then
+            ISOTable.Columns.RemoveAt(1)
+        End If
+        Return ISOTable
+    End Function
+
+    Public Function UpdateLocalPitchTable(mJobDetails As JobDetail, TolClass As Tolerance)
+        Dim dtLPTable As New DataTable
+        Dim mJob As Job = mJobDetails.Job
+        Dim rowRad As DataRow
+        Dim colBlade As DataColumn
+        Dim x As Integer
+        Dim y As Integer
+        For x = 0 To mJob.PropellerBlades
+            If x = 0 Then
+                colBlade = dtLPTable.Columns.Add("RadCol")
+                rowRad = dtLPTable.Rows.Add("BladeRow")
+                rowRad.Item("RadCol") = "r/R"
+            Else
+                For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+                    rowRad = If(dtLPTable.Rows.Find(rm.Radius.Value.ToString()), dtLPTable.Rows.Add(rm.Radius.Value.ToString()))
+                    For y = 1 To TolClass.LocalPitchSectors
+                        colBlade = If(dtLPTable.Columns("Blade" + rm.BladeId.ToString() + y.ToString()), dtLPTable.Columns.Add("Blade" + rm.BladeId.ToString() + y.ToString()))
+                        rowRad.Item("Blade" + rm.BladeId.ToString() + y.ToString()) = GetLocalPitch(rm.CellMeasurements, TolClass.LocalPitchSectors, y, mJob.PropellerBlades, rm.Radius, mJob.TeExclusion, mJob.LeExclusion)
+                    Next
+                Next
+            End If
+        Next
+        Return dtLPTable
+    End Function
+
+    Public Function UpdateBladeAveragesTable(mJobDetails As JobDetail) As DataTable
+        Dim dtbladeaverage As New DataTable
+        Dim mJob As Job = mJobDetails.Job
+        Dim pitchrow As DataRow = dtbladeaverage.Rows.Add("Pitch")
+        Dim BladeCol As DataColumn
+        Dim x As Integer
+        For x = 1 To mJob.PropellerBlades
+            BladeCol = dtbladeaverage.Columns.Add("Blade" + x)
+            Dim pitchtotal As Double = 0
+            Dim pitchcount As Integer = 0
+            For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+                pitchtotal += GetAverageBladePitch(rm.CellMeasurements, mJob.TeExclusion, mJob.LeExclusion)
+                pitchcount += 1
+            Next
+            pitchrow.Item(BladeCol) = pitchtotal / pitchcount
+        Next
+        Return dtbladeaverage
+    End Function
+
+    Public Function UpdateFederalToleranceListTable(BasisPitch As Double, Diameter As Double) As DataTable
+        Dim TolTable As New DataTable()
+        TolTable.Columns.Add("TolType", GetType(String))
+        TolTable.Columns.Add("TolPerc", GetType(String))
+        TolTable.Columns.Add("PlusMinus", GetType(String))
+        TolTable.Columns.Add("OverUnder", GetType(String))
+
+        'Radius
+        Dim RowLocal As DataRow = TolTable.Rows.Add("Radius")
+        RowLocal.Item("TolType") = "Radius"
+        RowLocal.Item("TolPerc") = "0.3 %"
+        Dim MinMax As Double = (Diameter / 2) * 0.003
+        RowLocal.Item("PlusMinus") = "±" + MinMax + " In"
+        RowLocal.Item("OverUnder") = ((Diameter / 2) + MinMax) + " / " + ((Diameter / 2) - MinMax)
+
+        'Local Pitch
+        RowLocal = TolTable.Rows.Add("Local Pitch")
+        RowLocal.Item("TolType") = "Local Pitch"
+        RowLocal.Item("TolPerc") = 2.ToString() & " %"
+        MinMax = BasisPitch * (2 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In" 'need to change In to sys type once it is set up
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " / " + (BasisPitch - MinMax)
+
+        'Radius Average
+        RowLocal = TolTable.Rows.Add("Radius Average")
+        RowLocal.Item("TolType") = "Section"
+        RowLocal.Item("TolPerc") = "1.5 %"
+        MinMax = BasisPitch * (1.5 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Blade Average
+        RowLocal = TolTable.Rows.Add("Blade Average")
+        RowLocal.Item("TolType") = "Blade Average"
+        RowLocal.Item("TolPerc") = "1 %"
+        MinMax = BasisPitch * (1 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Propeller Average
+        RowLocal = TolTable.Rows.Add("Propeller Average")
+        RowLocal.Item("TolType") = "Propeller Average"
+        RowLocal.Item("TolPerc") = ".75 %"
+        MinMax = BasisPitch * (0.75 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Track
+        RowLocal = TolTable.Rows.Add("Track")
+        RowLocal.Item("TolType") = "Track"
+        MinMax = BasisPitch * 0.01
+        RowLocal.Item("PlusMinus") = (MinMax) + " In"
+        Return TolTable
+    End Function
+
+    Public Function UpdateMichiganToleranceTable(BasisPitch As Double, Diameter As Double) As DataTable
+        Dim TolTable As New DataTable()
+        TolTable.Columns.Add("TolType", GetType(String))
+        TolTable.Columns.Add("TolPerc", GetType(String))
+        TolTable.Columns.Add("PlusMinus", GetType(String))
+        TolTable.Columns.Add("OverUnder", GetType(String))
+
+        'Radius
+        Dim RowLocal As DataRow = TolTable.Rows.Add("Radius")
+        RowLocal.Item("TolType") = "Radius"
+        RowLocal.Item("TolPerc") = "0.3 %"
+        Dim MinMax As Double = (Diameter / 2) * 0.003
+        RowLocal.Item("PlusMinus") = "±" + MinMax + " In"
+        RowLocal.Item("OverUnder") = ((Diameter / 2) + MinMax) + " / " + ((Diameter / 2) - MinMax)
+
+        'Local Pitch
+        RowLocal = TolTable.Rows.Add("Local Pitch")
+        RowLocal.Item("TolType") = "Local Pitch"
+        RowLocal.Item("TolPerc") = 2.ToString() & " %"
+        MinMax = BasisPitch * (2 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In" 'need to change In to sys type once it is set up
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " / " + (BasisPitch - MinMax)
+
+        'Radius Average
+        RowLocal = TolTable.Rows.Add("Radius Average")
+        RowLocal.Item("TolType") = "Section"
+        RowLocal.Item("TolPerc") = "1.5 %"
+        MinMax = BasisPitch * (1.5 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Blade Average
+        RowLocal = TolTable.Rows.Add("Blade Average")
+        RowLocal.Item("TolType") = "Blade Average"
+        RowLocal.Item("TolPerc") = "1 %"
+        MinMax = BasisPitch * (1 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Propeller Average
+        RowLocal = TolTable.Rows.Add("Propeller Average")
+        RowLocal.Item("TolType") = "Propeller Average"
+        RowLocal.Item("TolPerc") = "1 %"
+        MinMax = BasisPitch * (1 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Track
+        RowLocal = TolTable.Rows.Add("Track")
+        RowLocal.Item("TolType") = "Track"
+        MinMax = BasisPitch * 0.005
+        RowLocal.Item("PlusMinus") = (MinMax) + " In"
+        Return TolTable
+    End Function
+
+    Public Function UpdateStandardToleranceTable(BasisPitch As Double, Diameter As Double) As DataTable
+        Dim TolTable As New DataTable()
+        TolTable.Columns.Add("TolType", GetType(String))
+        TolTable.Columns.Add("TolPerc", GetType(String))
+        TolTable.Columns.Add("PlusMinus", GetType(String))
+        TolTable.Columns.Add("OverUnder", GetType(String))
+
+        'Radius
+        Dim RowLocal As DataRow = TolTable.Rows.Add("Radius")
+        RowLocal.Item("TolType") = "Radius"
+        RowLocal.Item("TolPerc") = "0.3 %"
+        Dim MinMax As Double = (Diameter / 2) * 0.003
+        RowLocal.Item("PlusMinus") = "±" + MinMax + " In"
+        RowLocal.Item("OverUnder") = ((Diameter / 2) + MinMax) + " / " + ((Diameter / 2) - MinMax)
+
+        'Local Pitch
+        RowLocal = TolTable.Rows.Add("Local Pitch")
+        RowLocal.Item("TolType") = "Local Pitch"
+        RowLocal.Item("TolPerc") = 2.ToString() & " %"
+        MinMax = BasisPitch * (2 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In" 'need to change In to sys type once it is set up
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " / " + (BasisPitch - MinMax)
+
+        'Radius Average
+        RowLocal = TolTable.Rows.Add("Radius Average")
+        RowLocal.Item("TolType") = "Radius Average"
+        RowLocal.Item("TolPerc") = "1.5 %"
+        MinMax = BasisPitch * (1.5 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Blade Average
+        RowLocal = TolTable.Rows.Add("Blade Average")
+        RowLocal.Item("TolType") = "Blade Average"
+        RowLocal.Item("TolPerc") = "1 %"
+        MinMax = BasisPitch * (1 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Propeller Average
+        RowLocal = TolTable.Rows.Add("Propeller Average")
+        RowLocal.Item("TolType") = "Propeller Average"
+        RowLocal.Item("TolPerc") = "1 %"
+        MinMax = BasisPitch * (1 / 100)
+        RowLocal.Item("PlusMinus") = "±" + (MinMax) + " In"
+        RowLocal.Item("OverUnder") = (BasisPitch + MinMax) + " In / " + (BasisPitch - MinMax) + " In"
+
+        'Track
+        RowLocal = TolTable.Rows.Add("Track")
+        RowLocal.Item("TolType") = "Track"
+        MinMax = BasisPitch * 0.005
+        RowLocal.Item("PlusMinus") = (MinMax) + " In"
+        Return TolTable
+    End Function
+
+    Public Function UpdateManualInspTable(mJob As Job) As DataTable
+        Dim dtManualInsp As New DataTable()
+        dtManualInsp.Columns.Add("InspectionItem", GetType(String))
+        dtManualInsp.Columns.Add("Yes", GetType(String))
+        dtManualInsp.Columns.Add("No", GetType(String))
+
+        Dim row As DataRow = dtManualInsp.Rows.Add("ACCEPTABLE")
+        row.Item("InspectionItem") = "ACCEPTABLE"
+        row.Item("Yes") = "YES"
+        row.Item("No") = "NO"
+        row = dtManualInsp.Rows.Add("Blade Surface")
+        row.Item("InspectionItem") = "Blade Surface"
+        row = dtManualInsp.Rows.Add("Blade Edges")
+        row.Item("InspectionItem") = "BladeEdges"
+        row = dtManualInsp.Rows.Add("Static Balance")
+        row.Item("Inspectionitem") = "Static Balance"
+        row = dtManualInsp.Rows.Add("Thcikness")
+        row.Item("InspectionItem") = "Thickness"
+        row = dtManualInsp.Rows.Add("Bore")
+        row.Item("InspectionItem") = "Bore"
+        row = dtManualInsp.Rows.Add("Keyway")
+        row.Item("InspectionItem") = "KeyWay"
+        Return dtManualInsp
+    End Function
+
+    Public Function UpdateRadiusToleranceTable(Diameter As Double, TolClass As Tolerance) As DataTable
+        Dim tolTable As New DataTable()
+        tolTable.Columns.Add("Min")
+        tolTable.Columns.Add("Design")
+        tolTable.Columns.Add("Max")
+
+        Dim row As DataRow = tolTable.Rows.Add("Label")
+        row.Item("Min") = "Min"
+        row.Item("Design") = "Design"
+        row.Item("Max") = "Max"
+        row = tolTable.Rows.Add("Tolerance")
+        Dim mintol As Double = (Diameter / 2) - ((Diameter / 2) * (TolClass.ExtremeRadiusPercent / 100))
+        row.Item("Min") = Math.Round(mintol, 2)
+        row.Item("Design") = Math.Round(Diameter / 2, 2)
+        Dim maxtol As Double = (Diameter / 2) + ((Diameter / 2) * (TolClass.ExtremeRadiusPercent / 100))
+        row.Item("Max") = Math.Round(maxtol, 2)
+        Return tolTable
+    End Function
+
+    Public Function UpdateTrackToleranceTable(BasisPitch As Double) As DataTable
+        Dim tolTable As New DataTable()
+        tolTable.Columns.Add("Tolerance")
+        Dim row As DataRow = tolTable.Rows.Add("Label")
+        row.Item("Tolerance") = "Track Tolerance"
+        row = tolTable.Rows.Add("MinMax")
+        Dim minmax = BasisPitch * 0.01
+        row.Item("Tolerance") = minmax.ToString()
+        Return tolTable
+    End Function
+
+    Public Function UpdateRadiusBladeWheelAveragePitchTable(mJobDetails As JobDetail, TolClass As Tolerance, Basispitch As Double) As DataTable
+        Dim Table As New DataTable()
+        Dim mjob As Job = mJobDetails.Job
+
+        Dim colRadius As DataColumn = Table.Columns.Add("Blade", GetType(Integer))
+        Dim rowRadiusBlade As DataRow
+        Dim x As Integer
+        For x = 1 To mjob.PropellerBlades
+            rowRadiusBlade = Table.Rows.Add(x)
+        Next
+        Table.PrimaryKey = New DataColumn() {colRadius}
+        For Each row As DataRow In Table.Rows
+            Dim totalPitch As Double = 0.0
+            Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+                Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+                rowRadiusBlade = If(Table.Rows.Find(rm.BladeId), Table.Rows.Add(rm.BladeId))
+                colRadius = If(Table.Columns(radiusPercent), Table.Columns.Add(radiusPercent, GetType(Double)))
+                Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mjob.TeExclusion, mjob.LeExclusion)
+                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
+                totalPitch += pitch
+                pitchCount += 1
+            Next
+            Dim avgPitch As Double = totalPitch / pitchCount
+            colRadius = If(Table.Columns("Average"), Table.Columns.Add("Average", GetType(Double)))
+            row.Item(colRadius) = Math.Round(avgPitch, 2)
+            colRadius = If(Table.Columns("Wheel"), Table.Columns.Add("Wheel", GetType(Double)))
+            row.Item(colRadius) = mJobDetails.WheelPitch.Value
+        Next
+        rowRadiusBlade = Table.Rows.Add("Allow")
+        Dim minmax As Double
+        minmax = Basispitch * (TolClass.MeanPitchPerRadiusPercent / 100)
+        Dim allow As String = (Basispitch + minmax).ToString() + " / " + (Basispitch - minmax).ToString()
+        For Each col As DataColumn In Table.Columns
+            If col.ColumnName = "Blade" Then
+                rowRadiusBlade.Item(col) = "Allow"
+            ElseIf col.ColumnName = "Average" Or col.ColumnName = "Wheel" Then
+                rowRadiusBlade.Item(col) = "± " + TolClass.MeanPitchPerRadiusPercent / 100 + "%"
+            Else
+                rowRadiusBlade.Item(col) = allow
+            End If
+        Next
+        Return Table
+    End Function
+
+    Public Function UpdateSkewTable(mJobDetails As JobDetail) As DataTable
+        Dim dtable As New DataTable()
+        Dim mJob As Job = mJobDetails.Job
+        Dim BladeCol As DataColumn = dtable.Columns.Add("Radius", GetType(String))
+        Dim RadRow As DataRow
+        Dim x As Integer
+        For x = 1 To mJob.PropellerBlades
+            Dim ReferenceRadius As RadiusMeasurement = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x).FirstOrDefault()
+            Dim ReferenceAngle As Double = GetChordMidAngle(ReferenceRadius.CellMeasurements)
+            Dim ReferenceDepth As Double = GetChordMidDepth(ReferenceRadius.CellMeasurements)
+            BladeCol = dtable.Columns.Add("Blade" + x, GetType(String))
+            For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+                RadRow = If(dtable.Rows.Find(Math.Round(rm.Radius.Value, 2)), dtable.Rows.Add(Math.Round(rm.Radius.Value, 2)))
+                If x = 1 Then
+                    RadRow.Item("Radius") = rm.Radius + "%"
+                End If
+                If rm.Radius = ReferenceRadius.Radius Then
+                    RadRow.Item(BladeCol) = "Ref"
+                Else
+                    Dim rmdepth As Double = GetChordMidDepth(rm.CellMeasurements)
+                    Dim rmangle As Double = GetChordMidAngle(rm.CellMeasurements)
+                    Dim anglediff As Double = rmangle - ReferenceAngle
+                    Dim chordDiff As Double = GetChordLength(ReferenceAngle, rmangle, ReferenceDepth, rmdepth, mJob.PropellerDiameter, rm.Radius)
+                    Dim diffs As String = anglediff + "Deg / " + chordDiff + " In"
+                    RadRow.Item(BladeCol) = diffs
+                End If
+            Next
+        Next
+        Return dtable
+    End Function
+
+    Public Function UpdateAngularSpacingTable(mJobDetails As JobDetail) As DataTable
+        Dim dTable As New DataTable()
+        Dim mJob As Job = mJobDetails.Job
+        Dim bladecol As DataColumn = dTable.Columns.Add("Blade", GetType(String))
+        bladecol = dTable.Columns.Add("Ang", GetType(String))
+        Dim bladerow As DataRow
+        Dim x As Integer
+        For x = 0 To mJob.PropellerBlades
+            If x = 0 Then
+                bladerow = dTable.Rows.Add("Design")
+                bladerow.Item("Blade") = "Design"
+                bladerow.Item("Ang") = (360 / mJob.PropellerBlades).ToString() + " Deg"
+            Else
+                bladerow = dTable.Rows.Add("Blade" + x.ToString())
+                bladerow.Item("Blade") = "Blade " + x.ToString()
+                If x = 1 Then
+                    bladerow.Item("Ang") = "Ref"
+                Else
+                    Dim refangle = GetChordMidAngle(mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = 1 And Math.Round(r.Radius.Value) = 70).FirstOrDefault().CellMeasurements)
+                    Dim currangle = GetChordMidAngle(mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x And Math.Round(r.Radius.Value) = 70).FirstOrDefault().CellMeasurements)
+                    Dim anglespace As Double = currangle - refangle - ((360 / mJob.PropellerBlades) * (x - 1))
+                    bladerow.Item("Ang") = anglespace.ToString("F2") + " Deg"
+                End If
+            End If
+        Next
+        Return dTable
+    End Function
+#End Region
+#Region "Graphs"
+    Public Sub UpdateBladeAverageGraph(Graph As Chart, mJobDetails As JobDetail, Tolclass As Tolerance, basispitch As Double)
+        Graph.Series.Clear()
+        Graph.ChartAreas.Clear()
+        Graph.Legends.Clear()
+        Graph.Titles.Clear()
+        Graph.Annotations.Clear()
+        Graph.PaletteCustomColors = GraphColorArray
+
+        Dim cArea As ChartArea = Graph.ChartAreas.Add("BladeAverage")
+        Dim ser As Series = Graph.Series.Add("Pitch")
+        ser.ChartType = SeriesChartType.Bar
+        ser.ChartArea = cArea.Name
+
+        cArea.Axes(0).Minimum = 0
+        cArea.Axes(0).Maximum = basispitch * 1.2
+        cArea.Axes(0).Interval = 1
+        cArea.Axes(0).MinorTickMark.Enabled = True
+        cArea.Axes(0).MinorTickMark.Interval = 1
+        cArea.Axes(0).MajorTickMark.Enabled = True
+        cArea.Axes(0).MajorTickMark.Interval = 5
+
+        cArea.Axes(1).Minimum = 1
+        cArea.Axes(1).Maximum = mJobDetails.Job.PropellerBlades
+        cArea.Axes(1).Interval = 1
+
+        Dim x As Integer
+        For x = 1 To mJobDetails.Job.PropellerBlades
+            Dim avgpitch As Double = 0
+            Dim pitchcount As Integer = 0
+            For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+                avgpitch += GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
+                pitchcount += 1
+            Next
+            If pitchcount > 0 Then
+                avgpitch /= pitchcount
+            End If
+            ser.Points.AddXY(avgpitch, x)
+        Next
+        'need to add tolerance lines
+        Dim slineunder As New StripLine()
+        slineunder.IntervalOffset = basispitch - (basispitch * (Tolclass.MeanPitchPerBladePercent / 100))
+        slineunder.StripWidth = 0.01
+        slineunder.BorderColor = Color.Black
+        slineunder.BorderWidth = 2
+        cArea.Axes(0).StripLines.Add(slineunder)
+
+    End Sub
 #End Region
 
 End Module
