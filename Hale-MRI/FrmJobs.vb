@@ -21,17 +21,10 @@ Public Class FrmJobs
     Private mFilter As Object = Nothing                 ' The current form filter object, if any.
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The form's "master" BindingSource.
-    Private mMeasurementsEnabled As Boolean = True
+    Private mMeasurementsEnabled As Boolean = True      ' Flag indicating whether measurements can be added/viewed for the current Job.
     Private mNavigator As RecordNavigationBar = Nothing ' The form's RecordNavigationBar.
     Private mNewJob As Job = Nothing                    ' The new Job being added, if any.
-    Private mRequiredFields As List(Of Control)
-    ' Declare all forms this form can open.
-    ' Do not create new instances of forms directly;
-    ' use the FormInstances.ShowForm/CloseForm methods.
-    Private mFrmCustomers As FrmCustomers
-    Private mFrmVessels As FrmVessels
-    Private mFrmManufacturers As FrmManufacturers
-    Private mFrmMeasurements As FrmMeasurements
+    Private mRequiredFields As List(Of Control)         ' The controls bound to required fields.
 #End Region
 #Region "Public Interface"
     Public Sub AddNew(ByVal vessel As Vessel)
@@ -429,8 +422,8 @@ Public Class FrmJobs
     Private Sub ComboCustomers_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboCustomers.MouseClick
         Try
             If SelectedCustomer IsNot Nothing AndAlso ComboCustomers.DoubleClicked() Then
-                ShowForm(mFrmCustomers, Database, User)
-                mFrmCustomers.Find(SelectedCustomer)
+                ShowForm(gFrmCustomers, Database, User)
+                gFrmCustomers.Find(SelectedCustomer)
             End If
         Catch ex As Exception
             MessageBox.Show("Error opening the customers form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -465,9 +458,9 @@ Public Class FrmJobs
                 If Not mMeasurementsEnabled Then
                     MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
                 ElseIf CurrentJob IsNot Nothing Then
-                    ShowForm(mFrmMeasurements, Database, User)
-                    mFrmMeasurements.Hardware = Hardware
-                    mFrmMeasurements.Job = CurrentJob
+                    ShowForm(gFrmMeasurements, Database, User)
+                    gFrmMeasurements.Hardware = Hardware
+                    gFrmMeasurements.Job = CurrentJob
                 End If
             End If
         Catch ex As Exception
@@ -492,8 +485,8 @@ Public Class FrmJobs
     Private Sub ComboManufacturer_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboManufacturer.MouseClick
         Try
             If ComboManufacturer.SelectedItem IsNot Nothing AndAlso ComboManufacturer.DoubleClicked() Then
-                ShowForm(mFrmManufacturers, Database, User)
-                mFrmManufacturers.Find(ComboManufacturer.SelectedItem)
+                ShowForm(gFrmManufacturers, Database, User)
+                gFrmManufacturers.Find(ComboManufacturer.SelectedItem)
             End If
         Catch ex As Exception
             MessageBox.Show("Error opening the manufacturers form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -516,8 +509,8 @@ Public Class FrmJobs
     Private Sub ComboVessels_MouseClick(sender As Object, e As MouseEventArgs) Handles ComboVessels.MouseClick
         Try
             If SelectedVessel IsNot Nothing AndAlso ComboVessels.DoubleClicked() Then
-                ShowForm(mFrmVessels, Database, User)
-                mFrmVessels.Find(SelectedVessel)
+                ShowForm(gFrmVessels, Database, User)
+                gFrmVessels.Find(SelectedVessel)
             End If
         Catch ex As Exception
             MessageBox.Show("Error opening the vessels form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
@@ -542,9 +535,9 @@ Public Class FrmJobs
     Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs)
         ' Open the measurements form with the clicked JobDetail record.
         Try
-            ShowForm(mFrmMeasurements, Database, User)
-            mFrmMeasurements.Hardware = Hardware
-            mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+            ShowForm(gFrmMeasurements, Database, User)
+            gFrmMeasurements.Hardware = Hardware
+            gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
         Catch ex As Exception
             MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -558,13 +551,13 @@ Public Class FrmJobs
             If Not mMeasurementsEnabled Then
                 MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
             ElseIf Current IsNot Nothing Then
-                ShowForm(mFrmMeasurements, Database, User)
-                mFrmMeasurements.Hardware = Hardware
+                ShowForm(gFrmMeasurements, Database, User)
+                gFrmMeasurements.Hardware = Hardware
                 If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
-                    mFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+                    gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
                 Else
-                    mFrmMeasurements.Job = CurrentJob
-                    mFrmMeasurements.AddNew(Current)
+                    gFrmMeasurements.Job = CurrentJob
+                    gFrmMeasurements.AddNew(Current)
                 End If
             End If
         Catch ex As Exception
@@ -616,6 +609,10 @@ Public Class FrmJobs
         Catch ex As Exception
             MessageBox.Show("Error opening the jobs form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
+    End Sub
+
+    Protected Overrides Sub Form_Closing(sender As Object, e As FormClosingEventArgs)
+        MyBase.Form_Closing(sender, e)
     End Sub
 
     Private Sub JobsBindingSource_CurrentChanged(sender As Object, e As EventArgs)

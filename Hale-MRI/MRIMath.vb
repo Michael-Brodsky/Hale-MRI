@@ -7,7 +7,7 @@ Module MRIMath
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = startangle - endangle
-        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
+        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
         If cl <> 0 Then
             startangle -= (deltaangle * TeExclusion / cl)
             endangle += (deltaangle * LeExclusion / cl)
@@ -49,7 +49,7 @@ Module MRIMath
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = startangle - endangle
-        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
+        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
         If cl <> 0 Then
             startangle -= (deltaangle * TeExclusion / cl)
             endangle += (deltaangle * LeExclusion / cl)
@@ -61,6 +61,7 @@ Module MRIMath
         Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
         Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
     End Function
+
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
@@ -86,11 +87,11 @@ Module MRIMath
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)
     End Function
 
-    Public Function GetChordLength(cm As List(Of CellMeasurement), diameter As Double, radperc As Integer) As Double
+    Public Function GetChordLength(angleFirst As Double, angleLast As Double, depthFirst As Double, depthLast As Double, diameter As Double, radperc As Integer) As Double
         'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
         'used to get the chord length between two cell measurements in inches
-        Dim deltaangle As Double = cm.LastOrDefault().Angle - cm.FirstOrDefault().Angle 'Total change in angle on a radius of one blade
-        Dim deltadepth As Double = cm.LastOrDefault().Depth - cm.FirstOrDefault().Depth 'Total change in depth on a radius of one blade
+        Dim deltaangle As Double = angleLast - angleFirst 'Total change in angle on a radius of one blade
+        Dim deltadepth As Double = depthLast - depthFirst 'Total change in depth on a radius of one blade
 
         Dim adjusteddiameter As Double = diameter * (radperc / 100) 'Gets the value side of a radius measurement from a radius percent needed for an arc length calculation
 

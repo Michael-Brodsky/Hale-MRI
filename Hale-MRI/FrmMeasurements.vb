@@ -25,13 +25,6 @@ Public Class FrmMeasurements
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
     Private mScanIncrement As Double = 1.8                      ' The angle increment between samples in degrees(this will be recalculated on form load but this is the default value).
     Private mLastScannedAngle As Double = Double.MaxValue       ' The last angle measurement saved during scanning (Used with mScanIncrement to determine when to save a new measurement).
-    ' Other forms we can work with.
-    Private mFrmCustomers As FrmCustomers
-    Private mFrmJobs As FrmJobs
-    Private mFrmManufacturers As FrmManufacturers
-    Private mFrmReports As FrmReports
-    Private mFrmVessels As FrmVessels
-    Private mFrmLocalPitch As FormLocalPitch
 
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -1077,8 +1070,8 @@ Public Class FrmMeasurements
 
     Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
         If Current IsNot Nothing Then
-            ShowForm(mFrmReports, Database, User)
-            mFrmReports.JobDetails = Current
+            ShowForm(gFrmReports, Database, User)
+            gFrmReports.JobDetails = Current
         End If
     End Sub
 
@@ -1090,11 +1083,13 @@ Public Class FrmMeasurements
         mScanIncrement = EncoderStatusStrip1.Hardware.Workstation.ScanIncrement
     End Sub
 
-    Private Sub Form1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+    Protected Overrides Sub Form_Closing(sender As Object, e As FormClosingEventArgs)
         On Error Resume Next
         EncoderStatusStrip1.TimerOn = False
         DataGridJobDetails.EndEdit()
         DataGridJobDetails.DataSource = Nothing
+        'JobDetailsBindingSource.SuspendBinding()
+        MyBase.Form_Closing(sender, e)
     End Sub
 
     Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load, MyBase.Load
@@ -1236,28 +1231,28 @@ Public Class FrmMeasurements
 
     Private Sub TxtCustomer_DoubleClick(sender As Object, e As EventArgs) Handles TxtCustomer.DoubleClick
         If Job IsNot Nothing Then
-            ShowForm(mFrmCustomers, Database, User)
-            mFrmCustomers.Find(Job?.Vessel?.Customer)
+            ShowForm(gFrmCustomers, Database, User)
+            gFrmCustomers.Find(Job?.Vessel?.Customer)
         End If
     End Sub
 
     Private Sub TxtJobNumber_DoubleClick(sender As Object, e As EventArgs) Handles TxtJobNumber.DoubleClick
         If Job IsNot Nothing Then
-            ShowForm(mFrmJobs, Database, User)
-            mFrmJobs.Find(Job)
+            ShowForm(gFrmJobs, Database, User)
+            gFrmJobs.Find(Job)
         End If
     End Sub
     Private Sub TxtManufacturer_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles TxtManufacturer.MouseDoubleClick
         If Job IsNot Nothing Then
-            ShowForm(mFrmManufacturers, Database, User)
-            mFrmManufacturers.Find(Job?.PropellerManufacturer)
+            ShowForm(gFrmManufacturers, Database, User)
+            gFrmManufacturers.Find(Job?.PropellerManufacturer)
         End If
     End Sub
 
     Private Sub TxtVessel_DoubleClick(sender As Object, e As EventArgs) Handles TxtVessel.DoubleClick
         If Job IsNot Nothing Then
-            ShowForm(mFrmVessels, Database, User)
-            mFrmVessels.Find(Job?.Vessel)
+            ShowForm(gFrmVessels, Database, User)
+            gFrmVessels.Find(Job?.Vessel)
         End If
     End Sub
 
@@ -1344,10 +1339,6 @@ Public Class FrmMeasurements
             LabTolAPIII.ForeColor = Color.DimGray
             LabTolAPC.ForeColor = Color.DimGray
         End If
-    End Sub
-
-    Private Sub Form1_Closing(sender As Object, e As CancelEventArgs) Handles Me.Closing
-
     End Sub
 
     Private Sub CmdSetRef_Click(sender As Object, e As EventArgs) Handles CmdSetRef.Click

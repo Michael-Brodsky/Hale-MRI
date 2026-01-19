@@ -16,10 +16,6 @@ Public Class FrmManufacturers
     Private mFilterOn As Boolean = False                ' Flag indicating whether the current form filter is active.
     Private mMasterSource As BindingSource = Nothing    ' The current "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing ' Derived forms' RecordNavigationBar.
-    ' Define all forms this form can open.
-    ' Do not create new instances of forms directly;
-    ' use the FormInstances.ShowForm/CloseForm methods.
-    Private mFrmPropellers As FrmPropellers
 #End Region
 #Region "Public Interface"
     ''' <summary>
@@ -159,8 +155,8 @@ Public Class FrmManufacturers
 #Region "Event Handlers"
     Private Sub DataGridPropeller_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs) Handles DataGridPropellers.CellMouseDoubleClick
         Try
-            ShowForm(mFrmPropellers, Database, User)
-            mFrmPropellers.Find(PropellersBindingSource.Current.Id)
+            ShowForm(gFrmPropellers, Database, User)
+            gFrmPropellers.Find(PropellersBindingSource.Current.Id)
         Catch ex As Exception
             MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "propellers", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

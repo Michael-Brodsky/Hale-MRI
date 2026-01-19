@@ -3,6 +3,7 @@ Imports System.Drawing.Printing
 Imports System.Formats.Asn1
 Imports System.Windows.Forms.DataVisualization.Charting
 Imports Hale_MRI.Reporting
+Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore.Metadata.Internal
 Imports Windows.Win32.UI
@@ -12,16 +13,41 @@ Imports Windows.Win32.UI
 ''' </summary>
 Public Module Reporting
     Public Class ReportGenerator
+#Region "Private Members"
         Private mDragStartPos As Point                      ' The starting mouse position of the drag operation.
         Private mIsDragging As Boolean = False              ' Indicates whether a drag operation is in progress.
         Private mIsResizing As Boolean = False              ' Indicates whether a resize operation is in progress.
         Private mLastControlPos As Point                    ' The last known position of the control being dragged.
         Private mLastControlSize As Size                    ' The last known size of the control being resized.    
-        Private mTopSortedControls As List(Of Control)      ' The list of controls sorted by their top (Y) position.
+        Private mPasteLocation As Point                     ' The location of a right mouse click.
         Private mTopLeftSortedControls As List(Of Control)  ' The list of controls sorted by their top (Y) and left (X) position.
-        Public Sub New(controls As List(Of Control))
-            mTopSortedControls = ElementSortByTop(controls)
-            mTopLeftSortedControls = ElementSortByTopLeft(controls)
+#End Region
+#Region "Public Interface"
+        Public Sub New()
+            mTopLeftSortedControls = New List(Of Control)()
+        End Sub
+
+        Public Sub New(ctrls As List(Of Control))
+            ReportControls = ctrls
+        End Sub
+
+        Public Sub ControlPositionNew(newElement As Control)
+            ' Position a new control element in the first location on the form into which it will fit.
+            Dim p As New Point(Me.HorizontalLimit, Me.VerticalLimit)
+            For i As Integer = 0 To mTopLeftSortedControls.Count - 1
+                newElement.Location = p
+                If newElement.Bounds.IntersectsWith(mTopLeftSortedControls(i).Bounds) Then
+                    If mTopLeftSortedControls(i).Right + Me.HorizontalLimit + newElement.Width <= ParentForm.ClientSize.Width Then
+                        p.X = mTopLeftSortedControls(i).Right + Me.HorizontalLimit
+                    Else
+                        p.X = Me.HorizontalLimit
+                        p.Y = mTopLeftSortedControls(i).Bottom + Me.VerticalLimit
+                    End If
+                    Continue For
+                End If
+                mTopLeftSortedControls.Insert(i, newElement)
+                Exit For
+            Next
         End Sub
 
         Public Sub ControlCursorChange(sender As Object, e As MouseEventArgs, borderSize As Integer)
@@ -78,6 +104,30 @@ Public Module Reporting
 
         End Sub
 
+        Public Function ControlKeyDown(sender As Object, e As KeyEventArgs) As Integer
+            Dim keyHandled As Integer = 0
+            Dim currentControl As Control = CType(sender, Control)
+            If currentControl IsNot Nothing Then
+                mLastControlPos = currentControl.Location
+                If currentControl Is SelectedControl Then
+                    Select Case e.KeyCode
+                        Case Keys.Up
+                            currentControl.Top -= 1
+                        Case Keys.Down
+                            currentControl.Top += 1
+                        Case Keys.Left
+                            currentControl.Left -= 1
+                        Case Keys.Right
+                            currentControl.Left += 1
+                        Case Keys.Delete
+                            ' Handled by parent form
+                    End Select
+                End If
+                keyHandled = e.KeyValue
+            End If
+            Return keyHandled
+        End Function
+
         Public Sub ControlLeave(sender As Object, e As EventArgs)
 
         End Sub
@@ -89,6 +139,7 @@ Public Module Reporting
         Public Sub ControlMouseDown(sender As Object, e As MouseEventArgs)
             ' Initiates resizing if the mouse is on the border of the control,
             ' else initiates drag drop.
+            mPasteLocation = e.Location
             ControlSelect(sender, Nothing)
             If Me.SelectedControl.Cursor = Cursors.Default Then
                 ControlDragStart(sender, e)
@@ -116,6 +167,7 @@ Public Module Reporting
                 ControlResizeEnd(sender, e)
             End If
         End Sub
+
         Public Sub ControlRepaint(sender As Object, e As PaintEventArgs)
             ' Redraws the border of the control being repainted.
             Dim currentControl As Control = CType(sender, Control)
@@ -176,10 +228,20 @@ Public Module Reporting
             Me.SelectedControl.Invalidate()
         End Sub
 
+        Public Property ReportControls As List(Of Control)
+            Get
+                Return mTopLeftSortedControls
+            End Get
+            Set(value As List(Of Control))
+                mTopLeftSortedControls = ElementSortByTopLeft(value)
+            End Set
+        End Property
+
         Public Property EnteredControl As Control
 
         Public Sub FormMouseDown(sender As Object, e As MouseEventArgs)
             ' Clears the selected control when clicking on the form background.
+            mPasteLocation = e.Location
             If Me.SelectedControl IsNot Nothing Then
                 Me.SelectedControl.Invalidate()
                 Me.SelectedControl = Nothing
@@ -188,7 +250,19 @@ Public Module Reporting
 
         Public Property GridSize As Integer = 10
 
-        Public Property HorizontalLimit As Integer = 0
+        Public Property HorizontalLimit As Integer = 10
+
+        Public ReadOnly Property LastControlPosition As Point
+            Get
+                Return mLastControlPos
+            End Get
+        End Property
+
+        Public ReadOnly Property PasteLocation As Point
+            Get
+                Return mPasteLocation
+            End Get
+        End Property
 
         Public Property ParentForm As Form
 
@@ -207,8 +281,9 @@ Public Module Reporting
 
         Public Property SelectedControl As Control
 
-        Public Property VerticalLimit As Integer = 0
-
+        Public Property VerticalLimit As Integer = 10
+#End Region
+#Region "Private Interface"
         Private Sub ElementDrop(element As Control, gridSize As Integer)
             mTopLeftSortedControls = ElementSortByTopLeft(mTopLeftSortedControls)
             ' Snaps the element to the nearest grid position based on the specified grid size.
@@ -225,7 +300,7 @@ Public Module Reporting
 
         Private Function ElementIsAbove(element As Control, other As Control) As Boolean
             ' Determines if 'element' control is above 'other' control based on Y coordinate.
-            'Return element.Location.Y < other.Location.Y
+            Return element.Location.Y < other.Location.Y
         End Function
 
         Private Sub ElementMoveAbove(element As Control, other As Control, elements As List(Of Control), gridSize As Integer)
@@ -257,6 +332,7 @@ Public Module Reporting
             Dim sortedElements = elements.OrderBy(Function(c) c.Location.Y).ThenBy(Function(c) c.Location.X).ToList()
             Return sortedElements
         End Function
+#End Region
     End Class
 #Region "Tables"
     Public Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, Design As Boolean) As DataTable
@@ -313,7 +389,7 @@ Public Module Reporting
                 Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
                 rowBlade = If(dtChordLength.Rows.Find(rm.BladeId), dtChordLength.Rows.Add(rm.BladeId))
                 colRadius = If(dtChordLength.Columns(radiusPercent), dtChordLength.Columns.Add(radiusPercent, GetType(Double)))
-                Dim ChordLength As Double = GetChordLength(rm.CellMeasurements.ToList(), mjob.PropellerDiameter, CInt(radiusPercent))
+                Dim ChordLength As Double = GetChordLength(rm.CellMeasurements.FirstOrDefault.Angle.Value, rm.CellMeasurements.LastOrDefault.Angle.Value, rm.CellMeasurements.FirstOrDefault.Depth.Value, rm.CellMeasurements.LastOrDefault.Depth.Value, mjob.PropellerDiameter, CInt(radiusPercent))
                 rowBlade.Item(colRadius) = Math.Round(ChordLength, 2)
             Next
             colRadius = If(dtChordLength.Columns("Track"), dtChordLength.Columns.Add("Track", GetType(Double))) ' need to figure out what this is

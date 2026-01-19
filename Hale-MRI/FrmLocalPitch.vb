@@ -11,7 +11,7 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
-Public Class FormLocalPitch
+Public Class FrmLocalPitch
     Inherits FrmDatabaseForm
 #Region "Private Members"
     Private mJobDetails As JobDetail                            ' The current JobDetail record
@@ -151,7 +151,6 @@ Public Class FormLocalPitch
     End Sub
 
 #End Region
-
 #Region "Event Handlers"
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
         ' Handles Navigator events so we can update our controls accordingly.

@@ -47,6 +47,10 @@ Namespace Contexts
 
         Public Overridable Property ReferenceCells As DbSet(Of ReferenceCell)
 
+        Public Overridable Property Reports As DbSet(Of Report)
+
+        Public Overridable Property ReportElements As DbSet(Of ReportElement)
+
         Public Overridable Property Rotations As DbSet(Of Rotation)
 
         Public Overridable Property Settings As DbSet(Of Setting)
@@ -510,6 +514,65 @@ Namespace Contexts
                     entity.HasOne(Function(d) d.IdNavigation).WithOne(Function(p) p.ReferenceCell).
                         HasForeignKey(Of ReferenceCell)(Function(d) d.Id).
                         HasConstraintName("Job DetailsReference Cell")
+                End Sub)
+
+            modelBuilder.Entity(Of Report)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.HasIndex(Function(e) e.SnapToGrid, "Snap To Grid")
+
+                    entity.Property(Function(e) e.Id).
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.GridSize).
+                        HasDefaultValue(0S).
+                        HasColumnName("Grid Size")
+                    entity.Property(Function(e) e.IsDefault).
+                        HasDefaultValueSql("No").
+                        HasColumnType("bit").
+                        HasColumnName("Is Default")
+                    entity.Property(Function(e) e.LastModifed).HasColumnName("Last Modifed")
+                    entity.Property(Function(e) e.LetterHeadFile).
+                        HasMaxLength(255).
+                        HasColumnName("LetterHead File")
+                    entity.Property(Function(e) e.ModifiedBy).HasColumnName("Modified By")
+                    entity.Property(Function(e) e.ReportName).
+                        IsRequired().
+                        HasMaxLength(255).
+                        HasColumnName("Report Name")
+                    entity.Property(Function(e) e.SnapToGrid).
+                        HasDefaultValueSql("No").
+                        HasColumnType("bit").
+                        HasColumnName("Snap To Grid")
+                End Sub)
+
+            modelBuilder.Entity(Of ReportElement)(
+                Sub(entity)
+                    entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
+
+                    entity.ToTable("Report Elements")
+
+                    entity.HasIndex(Function(e) e.Id, "ID")
+
+                    entity.HasIndex(Function(e) e.ReportId, "Report ID")
+
+                    entity.Property(Function(e) e.Id).
+                        HasColumnType("counter").
+                        HasColumnName("ID")
+                    entity.Property(Function(e) e.ElementName).
+                        HasMaxLength(255).
+                        HasColumnName("Element Name")
+                    entity.Property(Function(e) e.PositionX).HasDefaultValue(0S)
+                    entity.Property(Function(e) e.PositionY).HasDefaultValue(0S)
+                    entity.Property(Function(e) e.ReportId).HasColumnName("Report ID")
+                    entity.Property(Function(e) e.SizeHeight).HasDefaultValue(0S)
+                    entity.Property(Function(e) e.SizeWidth).HasDefaultValue(0S)
+
+                    entity.HasOne(Function(d) d.Report).WithMany(Function(p) p.ReportElements).
+                        HasForeignKey(Function(d) d.ReportId).
+                        OnDelete(DeleteBehavior.ClientSetNull).
+                        HasConstraintName("ReportsReport Elements")
                 End Sub)
 
             modelBuilder.Entity(Of Rotation)(

@@ -1,15 +1,8 @@
 ﻿Imports System.ComponentModel
-Imports System.Runtime.CompilerServices
-Imports System.Threading
 Imports System.Windows.Forms.DataVisualization.Charting
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
-Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
-Imports LibDatabase.StoredProcedures
-Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
 Public Class FrmComparison
     Inherits FrmDatabaseForm
@@ -141,7 +134,7 @@ Public Class FrmComparison
                 If ProgLoaded AndAlso ProgRadius IsNot Nothing Then
                     Dim IncludedAngle As Double = Math.Abs(ProgRadius.CellMeasurements.LastOrDefault().Angle.Value - ProgRadius.CellMeasurements.FirstOrDefault().Angle.Value)
                     If ChkGraphEntireScan.Checked = False Then
-                        Dim cl As Double = GetChordLength(ProgRadius.CellMeasurements, mJob.PropellerDiameter, Math.Round(ProgRadius.Radius.Value))
+                        Dim cl As Double = GetChordLength(ProgRadius.CellMeasurements.FirstOrDefault().Angle.Value, ProgRadius.CellMeasurements.LastOrDefault().Angle.Value, ProgRadius.CellMeasurements.FirstOrDefault().Depth.Value, ProgRadius.CellMeasurements.LastOrDefault().Depth.Value, Job.PropellerDiameter, CInt(ProgRadius.Radius.Value))
                         Dim lezoneangle As Double = IncludedAngle * (Job.LeExclusion / cl)
                         Dim tezoneangle As Double = IncludedAngle * (Job.TeExclusion / cl)
                         IncludedAngle = IncludedAngle - lezoneangle - tezoneangle
@@ -150,7 +143,7 @@ Public Class FrmComparison
                     'GetTrackHeight() need to figure out method of getting the correct radiusMeasurement for graph
                     Dim x As Integer
                     For x = 1 To 20
-                        Dim trackheight As Double = GetLocalHeight(ProgRadius.CellMeasurements.ToList(), 20, x, Job.PropellerDiameter, ProgRadius.Radius.Value, mJob.TeExclusion, mJob.TeExclusion)
+                        Dim trackheight As Double = GetLocalHeight(ProgRadius.CellMeasurements.ToList(), 20, x, Job.PropellerDiameter, ProgRadius.Radius.Value, 0.0, 0.0)
                         'need method to get heights relative to track position - find ideal height difference between points
                         'using height between points we can use a difference * points from ref to get actual height at track position to calculate blade heights
                         'reverse engineer pitch calculation to get heights
