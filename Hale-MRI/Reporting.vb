@@ -2,6 +2,7 @@
 Imports System.Drawing.Printing
 Imports System.Formats.Asn1
 Imports System.Windows.Forms.DataVisualization.Charting
+Imports System.Xml
 Imports Hale_MRI.Reporting
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
@@ -287,15 +288,15 @@ Public Module Reporting
         Private Sub ElementDrop(element As Control, gridSize As Integer)
             mTopLeftSortedControls = ElementSortByTopLeft(mTopLeftSortedControls)
             ' Snaps the element to the nearest grid position based on the specified grid size.
-            'For Each ctrl As Control In mTopSortedControls
-            '    If ctrl IsNot element Then
-            '        If ElementIsAbove(element, ctrl) Then
-            '            ElementMoveAbove(element, ctrl, mTopSortedControls, 10)
-            '            Exit Sub
-            '        End If
-            '    End If
-            'Next
-            'ElementReturnToLastPosition(element, mLastControlPos)
+            For Each ctrl As Control In mTopLeftSortedControls
+                If ctrl IsNot element Then
+                    If ElementIsAbove(element, ctrl) Then
+                        ElementMoveAbove(element, ctrl, mTopLeftSortedControls, 10)
+                        Exit Sub
+                    End If
+                End If
+            Next
+            ElementReturnToLastPosition(element, mLastControlPos)
         End Sub
 
         Private Function ElementIsAbove(element As Control, other As Control) As Boolean
@@ -305,20 +306,20 @@ Public Module Reporting
 
         Private Sub ElementMoveAbove(element As Control, other As Control, elements As List(Of Control), gridSize As Integer)
             ' Moves the element above the other element in the list of elements.
-            'Dim otherIndex As Integer = elements.IndexOf(other)
-            'Dim otherLocation As Point = other.Location
-            'elements.Remove(element)
-            'elements.Insert(otherIndex, element)
-            'element.Location = otherLocation
-            '' Reposition all lower elements based on their new order.
-            'For i = otherIndex + 1 To elements.Count - 1
-            '    elements(i).Location = New Point(elements(i).Location.X, elements(i - 1).Location.Y + elements(i - 1).Height + gridSize)
-            'Next
+            Dim otherIndex As Integer = elements.IndexOf(other)
+            Dim otherLocation As Point = other.Location
+            elements.Remove(element)
+            elements.Insert(otherIndex, element)
+            element.Location = otherLocation
+            ' Reposition all lower elements based on their new order.
+            For i = otherIndex + 1 To elements.Count - 1
+                elements(i).Location = New Point(elements(i).Location.X, elements(i - 1).Location.Y + elements(i - 1).Height + gridSize)
+            Next
         End Sub
 
         Private Sub ElementReturnToLastPosition(element As Control, lastPos As Point)
             ' Returns the element to its last known position.
-            'element.Location = lastPos
+            element.Location = lastPos
         End Sub
 
         Private Function ElementSortByTop(elements As List(Of Control)) As List(Of Control)
@@ -668,7 +669,7 @@ Public Module Reporting
         Return TolTable
     End Function
 
-    Public Function UpdateManualInspTable(mJob As Job) As DataTable
+    Public Function UpdateManualInspTable() As DataTable
         Dim dtManualInsp As New DataTable()
         dtManualInsp.Columns.Add("InspectionItem", GetType(String))
         dtManualInsp.Columns.Add("Yes", GetType(String))
@@ -834,45 +835,208 @@ Public Module Reporting
         Graph.Legends.Clear()
         Graph.Titles.Clear()
         Graph.Annotations.Clear()
-        Graph.PaletteCustomColors = GraphColorArray
 
         Dim cArea As ChartArea = Graph.ChartAreas.Add("BladeAverage")
         Dim ser As Series = Graph.Series.Add("Pitch")
         ser.ChartType = SeriesChartType.Bar
         ser.ChartArea = cArea.Name
+        cArea.AxisY2.Enabled = AxisEnabled.False
+        cArea.AxisX2.Enabled = AxisEnabled.False
+
+        cArea.Axes(1).Minimum = 0
+        cArea.Axes(1).Maximum = basispitch * 1.2
+        cArea.Axes(1).Interval = 1
+        cArea.Axes(1).MinorTickMark.Enabled = True
+        cArea.Axes(1).MinorTickMark.Interval = 1
+        cArea.Axes(1).MajorTickMark.Enabled = True
+        cArea.Axes(1).MajorTickMark.Interval = 5
+        cArea.Axes(1).MajorGrid.Enabled = True
+        cArea.Axes(1).MajorGrid.Interval = basispitch * 1.2
 
         cArea.Axes(0).Minimum = 0
-        cArea.Axes(0).Maximum = basispitch * 1.2
+        cArea.Axes(0).Maximum = mJobDetails.Job.PropellerBlades + 1
         cArea.Axes(0).Interval = 1
-        cArea.Axes(0).MinorTickMark.Enabled = True
-        cArea.Axes(0).MinorTickMark.Interval = 1
-        cArea.Axes(0).MajorTickMark.Enabled = True
-        cArea.Axes(0).MajorTickMark.Interval = 5
-
-        cArea.Axes(1).Minimum = 1
-        cArea.Axes(1).Maximum = mJobDetails.Job.PropellerBlades
-        cArea.Axes(1).Interval = 1
+        cArea.Axes(0).Title = "Blade"
+        cArea.Axes(0).TitleFont = New Font("Arial", 14, FontStyle.Bold)
+        cArea.Axes(0).IsMarginVisible = True
 
         Dim x As Integer
         For x = 1 To mJobDetails.Job.PropellerBlades
             Dim avgpitch As Double = 0
             Dim pitchcount As Integer = 0
             For Each rm As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
-                avgpitch += GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
+                avgpitch += GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
                 pitchcount += 1
             Next
             If pitchcount > 0 Then
                 avgpitch /= pitchcount
             End If
-            ser.Points.AddXY(avgpitch, x)
+            Dim pointind As Integer = ser.Points.AddXY(x, avgpitch)
+            ser.Points(pointind).Color = GraphColorArray(x - 1)
         Next
-        'need to add tolerance lines
-        Dim slineunder As New StripLine()
-        slineunder.IntervalOffset = basispitch - (basispitch * (Tolclass.MeanPitchPerBladePercent / 100))
-        slineunder.StripWidth = 0.01
-        slineunder.BorderColor = Color.Black
-        slineunder.BorderWidth = 2
-        cArea.Axes(0).StripLines.Add(slineunder)
+        Dim slineunder As New StripLine With {
+            .IntervalOffset = basispitch - (basispitch * (Tolclass.MeanPitchPerBladePercent / 100)),
+            .StripWidth = 0.01,
+            .BorderColor = Color.Black,
+            .BorderWidth = 2,
+            .Text = (basispitch - (basispitch * (Tolclass.MeanPitchPerBladePercent / 100))).ToString(),
+            .TextOrientation = TextOrientation.Horizontal,
+            .TextLineAlignment = StringAlignment.Near,
+            .ForeColor = Color.Red
+        }
+        cArea.Axes(1).StripLines.Add(slineunder)
+        Dim slineover As New StripLine With {
+            .IntervalOffset = basispitch + (basispitch * (Tolclass.MeanPitchPerBladePercent / 100)),
+            .StripWidth = 0.01,
+            .BorderColor = Color.Black,
+            .BorderWidth = 2,
+            .Text = (basispitch + (basispitch * (Tolclass.MeanPitchPerBladePercent / 100))).ToString(),
+            .TextOrientation = TextOrientation.Horizontal,
+            .TextLineAlignment = StringAlignment.Far,
+            .ForeColor = Color.Blue
+        }
+        cArea.Axes(1).StripLines.Add(slineover)
+
+    End Sub
+    Public Sub UpdateBladeHeightGraph(heightgraph As Chart, mJobDetails As JobDetail)
+        'This pulls reference values from the Measurements form, the measurements form must be initialized for this to work
+        If gFrmMeasurements Is Nothing Then
+            Return
+        End If
+        heightgraph.Series.Clear()
+        heightgraph.ChartAreas.Clear()
+        heightgraph.Legends.Clear()
+        heightgraph.Titles.Clear()
+        heightgraph.Annotations.Clear()
+
+        Const kHeightOffset As Double = 0.2 ' Offset to add to data points for visual comparison?
+        Dim refBlade As Integer? = gFrmMeasurements.ComboReferenceBlade.SelectedValue
+        Dim refPoint As String = gFrmMeasurements.ComboReferencePoint.SelectedValue
+        Dim refRadius As Double = gFrmMeasurements.ComboReferenceRadius.SelectedValue
+        ' If all three reference values are given, calculate and plot the data.
+        If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
+            Dim seriesHeight As Series = ChartCreateSeries(heightgraph, "BladeHeight", "Blade", "Height")
+            Dim radiusMeasurements As List(Of RadiusMeasurement) = mJobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = refBlade).OrderBy(Function(r) CType(r.Radius, Double)).ToList()
+            Dim innerRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault() ' RadiusMeasurement at smallest radius
+            Dim outerRm As RadiusMeasurement = radiusMeasurements?.LastOrDefault()  ' RadiusMeasurement at largest radius
+            Dim refRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault(Function(r) Math.Round(CType(r.Radius, Double)) = refRadius)    ' RadiusMeasurement at reference radius
+            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)                 ' Depth at reference radius and point
+            ' Plot each blade's data points
+            If innerRm Is Nothing Or outerRm Is Nothing Then
+                Return
+            End If
+            For i As Integer = 1 To mJobDetails?.Job?.PropellerBlades
+                Dim b As Integer = i
+                Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
+                If rm IsNot Nothing Then
+                    Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
+                    Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
+                    ChartAddPoint(heightgraph, seriesHeight, $"{b}", bladeHeight, (b = refBlade))
+                End If
+                heightgraph.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
+            Next
+        End If
+    End Sub
+
+    Private Sub UpdateAngularPositionGraph(angPosGraph As Chart, mJobDetails As JobDetail)
+        If gFrmMeasurements Is Nothing Then
+            Return
+        End If
+        Const kHeightOffset As Double = 0.2 ' Offset to add to data points for visual comparison?
+        Dim refBlade As Integer? = gFrmMeasurements.ComboReferenceBlade.SelectedValue
+        Dim refPoint As String = gFrmMeasurements.ComboReferencePoint.SelectedValue
+        Dim refRadius As Double = gFrmMeasurements.ComboReferenceRadius.SelectedValue
+        ' If all three reference values are given, calculate and plot the data.
+        If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
+            Dim seriesPosition As Series = ChartCreateSeries(angPosGraph, "AngularPosition", "Blade", "Position")
+            Dim radiusMeasurements As List(Of RadiusMeasurement) = mJobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = refBlade).OrderBy(Function(r) CType(r.Radius, Double)).ToList()
+            Dim innerRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault() ' RadiusMeasurement at smallest radius
+            Dim innerDepth As Double = TrackGetDepth(innerRm, refPoint)             ' Depth at smallest radius and reference point
+            Dim outerRm As RadiusMeasurement = radiusMeasurements?.LastOrDefault()  ' RadiusMeasurement at largest radius
+            Dim outerDepth As Double = TrackGetDepth(outerRm, refPoint)             ' Depth at largest radius and reference point
+            Dim refRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault(Function(r) Math.Round(CType(r.Radius, Double)) = refRadius)    ' RadiusMeasurement at reference radius
+            Dim refDepth As Double = TrackGetDepth(refRm, refPoint)                 ' Depth at reference radius and point
+            Dim refAngle As Double = TrackGetAngle(refRm, refPoint)                 ' Angle at reference radius and point
+            ' Plot each blade's data points
+            If innerRm Is Nothing Or outerRm Is Nothing Then
+                Return
+            End If
+            For i As Integer = 1 To mJobDetails?.Job?.PropellerBlades
+                Dim b As Integer = i
+                Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
+                If rm IsNot Nothing Then
+                    Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
+                    Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
+                    Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
+                    Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle) - ((360 / mJobDetails.Job?.PropellerBlades) * Math.Abs(refBlade.Value - rm.BladeId.Value)) + kHeightOffset
+                    ChartAddPoint(angPosGraph, seriesPosition, $"{b}", bladePosition, (b = refBlade))
+                End If
+                angPosGraph.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
+            Next
+        End If
+    End Sub
+    Public Sub UpdateLineGraph(rm As RadiusMeasurement, LineChart As Chart, Progcm As List(Of CellMeasurement), Database As HaleMRIContext)
+        'Might have to change this as it directly pulls the visual, including scaling loaded progression and all other settings, from the comparison form
+
+        'this is a group of variables that will be pulled from the comparison form. They will be given set values for testing purposes
+        Dim centerRef As Boolean = True
+        Dim RefPitch As Double = 22
+        Dim entireScan As Boolean = False
+        Dim showTrack As Boolean = False
+        Dim spline As Boolean = False
+        Dim sectors As Integer = 10
+        Dim refheights As List(Of Double) = GetRefHeightsStraight(centerRef, RefPitch, rm.JobDetails.Job.PropellerBlades)
+
+        LineChart.Series.Clear()
+        LineChart.ChartAreas.Clear()
+        LineChart.Legends.Clear()
+        LineChart.Titles.Clear()
+        LineChart.Annotations.Clear()
+
+        LineChart.PaletteCustomColors = GraphColorArray
+        Dim cArea As ChartArea = LineChart.ChartAreas.Add("LPLineArea")
+        Dim ser As Series = LineChart.Series.Add("LPLineSeries")
+        Dim refser As Series = LineChart.Series.Add("Ref")
+        Dim tolhighser As Series = LineChart.Series.Add("TolHigh")
+        Dim tollowser As Series = LineChart.Series.Add("TolLow")
+
+        Dim x As Integer
+        If Progcm Is Nothing Then
+            For x = 0 To 10
+                refser.Points.Add(x * 10, 0)
+            Next
+        Else
+            Dim tollisthigh As List(Of Double) = GetRefHeightsHighTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
+            Dim tollistlow As List(Of Double) = GetRefHeightsLowTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
+            For x = 0 To 10
+                Dim height As Double
+                If x = 0 Then
+                    height = GetLocalHeightStartSector(Progcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, rm.JobDetails.Job.TeExclusion, rm.JobDetails.Job.LeExclusion)
+                Else
+                    height = GetLocalHeightEndSector(Progcm, 10, x, rm.JobDetails.Job.PropellerDiameter, rm.Radius, rm.JobDetails.Job.TeExclusion, rm.JobDetails.Job.LeExclusion)
+                End If
+                height -= refheights(x) 'need to add a change in here that changes height based on center ref point and the ref height at that point
+                refser.Points.Add(x * 10, height)
+            Next
+        End If
+
+        If spline = False Then
+            ser.ChartType = SeriesChartType.Line
+            refser.ChartType = SeriesChartType.Line
+        Else
+            ser.ChartType = SeriesChartType.Spline
+            refser.ChartType = SeriesChartType.Spline
+        End If
+
+        ser.ChartArea = cArea.Name
+        LineChart.ChartAreas(0).Position.Auto = False
+        LineChart.ChartAreas(0).Position.Height = 100
+        LineChart.ChartAreas(0).Position.Width = 100
+        LineChart.ChartAreas(0).AxisX.Minimum = -5
+        LineChart.ChartAreas(0).AxisX.Maximum = 105
+        LineChart.ChartAreas(0).AxisY.Minimum = 1 ' need to add control for managing y Axis Scaling
+        LineChart.ChartAreas(0).AxisY.Maximum = 10
+
 
     End Sub
 #End Region

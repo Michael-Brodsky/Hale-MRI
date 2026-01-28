@@ -940,6 +940,8 @@ Public Class FrmMeasurements
                     ChartAddPoint(ChartBladeHeight, seriesHeight, $"{b}", bladeHeight, (b = refBlade))
                     ChartAddPoint(ChartAngularPosition, seriesPosition, $"{b}", bladePosition, (b = refBlade))
                 End If
+                ChartBladeHeight.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
+                ChartAngularPosition.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
             Next
             ShowRake(innerDepth, outerDepth, innerRm.Radius, outerRm.Radius, refRadius)
         End If

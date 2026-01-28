@@ -139,7 +139,12 @@ Public Class FrmReports
                 .SizeWidth = ctrl.Size.Width,
                 .SizeHeight = ctrl.Size.Height
             })
-
+            If JobDetails IsNot Nothing Then
+                Select Case ctrl.Name
+                    Case "Chart1"
+                        UpdateBladeAverageGraph(Chart1, JobDetails, GetToleranceTable(Database, "II"), Job?.DesiredPitch)
+                End Select
+            End If
         Else
             If modify Then Database.ReportElements.Remove(ReportElementGet(ctrl))
             mReportGenerator.ReportControls.Remove(ctrl)
@@ -165,8 +170,8 @@ Public Class FrmReports
     End Sub
 
     Private Sub DataSourcesInitialize()
-        'ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
-        'MasterSource = MeasurementDataBindingSource
+        ReportBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        MasterSource = MeasurementDataBindingSource
     End Sub
 
     Private Sub ElementMenuItemsUpdate(ctrl As Control, isVisible As Boolean)
@@ -300,15 +305,15 @@ Public Class FrmReports
         If ctrl IsNot Nothing Then
             mReportGenerator.ControlPositionNew(ctrl)
             ControlVisible(ctrl, True, True)
-            'Database.ReportElements.Add(New ReportElement() With {
-            '    .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
-            '    .ElementName = ctrl.Name,
-            '    .PositionX = ctrl.Location.X,
-            '    .PositionY = ctrl.Location.Y,
-            '    .SizeWidth = ctrl.Size.Width,
-            '    .SizeHeight = ctrl.Size.Height
-            '})
-            'Database.SaveChanges()
+            Database.ReportElements.Add(New ReportElement() With {
+                .Report = Database.Reports.FirstOrDefault(Function(r) r.ReportName = mReport),
+                .ElementName = ctrl.Name,
+                .PositionX = ctrl.Location.X,
+                .PositionY = ctrl.Location.Y,
+                .SizeWidth = ctrl.Size.Width,
+                .SizeHeight = ctrl.Size.Height
+            })
+            Database.SaveChanges()
         End If
     End Sub
 
@@ -327,7 +332,7 @@ Public Class FrmReports
         mCutControl = ctrl
         mControlIsDeleted = True
         ControlVisible(mCutControl, False, True)
-        'Dim elementToRemove As ReportElement = ReportElementGet(ctrl)
+        Dim elementToRemove As ReportElement = ReportElementGet(ctrl)
         'If elementToRemove IsNot Nothing Then
         '    Database.ReportElements.Remove(elementToRemove)
         '    Database.SaveChanges()
@@ -432,6 +437,7 @@ Public Class FrmReports
             End If
         Next
         mReportGenerator.ReportControls = mReportGenerator.ReportControls
+
     End Sub
 
     Private Sub ReportSave()
@@ -498,7 +504,6 @@ Public Class FrmReports
     End Sub
 #End Region
 #Region "Event Handlers"
-
     Private Sub CopyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyToolStripMenuItem.Click
 
     End Sub
@@ -543,7 +548,6 @@ Public Class FrmReports
         ' Open the default report if one is set.
         Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
     End Sub
-
 
     Private Sub OpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
         DataGridJobs.Location = New Point((Me.ClientSize.Width - DataGridJobs.Width) \ 2, (Me.ClientSize.Height - DataGridJobs.Height) \ 2)
