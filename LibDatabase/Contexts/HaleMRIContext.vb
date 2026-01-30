@@ -520,7 +520,7 @@ Namespace Contexts
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
 
-                    entity.HasIndex(Function(e) e.SnapToGrid, "Snap To Grid")
+                    entity.HasIndex(Function(e) e.HorizontalLimit, "Snap To Grid")
 
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
@@ -528,6 +528,9 @@ Namespace Contexts
                     entity.Property(Function(e) e.GridSize).
                         HasDefaultValue(0S).
                         HasColumnName("Grid Size")
+                    entity.Property(Function(e) e.HorizontalLimit).
+                        HasDefaultValue(0S).
+                        HasColumnName("Horizontal Limit")
                     entity.Property(Function(e) e.IsDefault).
                         HasDefaultValueSql("No").
                         HasColumnType("bit").
@@ -541,10 +544,9 @@ Namespace Contexts
                         IsRequired().
                         HasMaxLength(255).
                         HasColumnName("Report Name")
-                    entity.Property(Function(e) e.SnapToGrid).
-                        HasDefaultValueSql("No").
-                        HasColumnType("bit").
-                        HasColumnName("Snap To Grid")
+                    entity.Property(Function(e) e.VerticalLimit).
+                        HasDefaultValue(0S).
+                        HasColumnName("Vertical Limit")
                 End Sub)
 
             modelBuilder.Entity(Of ReportElement)(
@@ -560,6 +562,7 @@ Namespace Contexts
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
+                    entity.Property(Function(e) e.Data).HasMaxLength(255)
                     entity.Property(Function(e) e.ElementName).
                         HasMaxLength(255).
                         HasColumnName("Element Name")
@@ -568,6 +571,9 @@ Namespace Contexts
                     entity.Property(Function(e) e.ReportId).HasColumnName("Report ID")
                     entity.Property(Function(e) e.SizeHeight).HasDefaultValue(0S)
                     entity.Property(Function(e) e.SizeWidth).HasDefaultValue(0S)
+                    entity.Property(Function(e) e.Zorder).
+                        HasDefaultValue(0S).
+                        HasColumnName("ZOrder")
 
                     entity.HasOne(Function(d) d.Report).WithMany(Function(p) p.ReportElements).
                         HasForeignKey(Function(d) d.ReportId).

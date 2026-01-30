@@ -63,7 +63,7 @@ Partial Public Class FrmDatabaseForm
     ''' <param name="e"></param>
     Protected Overridable Sub Form_Closing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
         ' Some forms may need to set Database to Nothing before closing.
-        Database = Nothing
+        If Not e.Cancel Then Database = Nothing
     End Sub
 
     ''' <summary>

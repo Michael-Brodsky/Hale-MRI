@@ -11,6 +11,32 @@
     <Configurations>Debug;Release;NoEncoders</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineTrace>False</DefineTrace>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DefineTrace>False</DefineTrace>
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Optimize>True</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NoEncoders|AnyCPU'">
+    <DefineConstants>$(DefineConstants)NO_ENCODERS,DEBUG</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NoEncoders|x64'">
+    <DefineConstants>$(DefineConstants)NO_ENCODERS,DEBUG</DefineConstants>
+  </PropertyGroup>
+
   <ItemGroup>
     <Compile Remove="Form3.Designer.vb" />
     <Compile Remove="Form3.vb" />

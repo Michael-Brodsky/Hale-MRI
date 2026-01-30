@@ -15,19 +15,13 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_4406A92F4A7842F99D9E634F015730F8"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_5AF7082BCA7E4DAA81AFC5DAF9C0009C"
-        "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_A457079966F94695A2A8BF509F4BCE8B"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC292EFC6FC249D79DCCD85C09992041"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -160,12 +154,12 @@
         }
         "File"
         {
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5AF7082BCA7E4DAA81AFC5DAF9C0009C"
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC292EFC6FC249D79DCCD85C09992041"
             {
-            "SourcePath" = "8:C:\\Hale MRI 4\\HaleMRI.accdb"
-            "TargetName" = "8:HaleMRI.accdb"
+            "SourcePath" = "8:..\\Hale-MRI\\bin\\NoEncoders\\net8.0-windows\\Hale-MRI.deps.json"
+            "TargetName" = "8:Hale-MRI.deps.json"
             "Tag" = "8:"
-            "Folder" = "8:_EC9CEC29639548FCA73D2D90A7C113FB"
+            "Folder" = "8:_411309BC282543AAB47EEBCB69E0FCFF"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -249,7 +243,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Setup"
         "ProductCode" = "8:{F0CA23C8-A777-46C0-AC50-222AD93BE64B}"
-        "PackageCode" = "8:{996DC091-8523-4137-BAC6-798A481AFFA9}"
+        "PackageCode" = "8:{FF9363CF-B9FF-4C78-B502-475C6D1605DE}"
         "UpgradeCode" = "8:{E4638581-8863-452F-B95A-9A079B972CFE}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -782,34 +776,6 @@
         }
         "ProjectOutput"
         {
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_4406A92F4A7842F99D9E634F015730F8"
-            {
-            "SourcePath" = "8:..\\Hale-MRI\\obj\\NoEncoders\\net8.0-windows\\Hale-MRI.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_411309BC282543AAB47EEBCB69E0FCFF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            "ProjectOutputGroupRegister" = "3:1"
-            "OutputConfiguration" = "8:"
-            "OutputGroupCanonicalName" = "8:Built"
-            "OutputProjectGuid" = "8:{2C064271-685B-476E-97E8-9A622813CB5C}"
-            "ShowKeyOutput" = "11:TRUE"
-                "ExcludeFilters"
-                {
-                }
-            }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_A457079966F94695A2A8BF509F4BCE8B"
             {
             "SourcePath" = "8:..\\Hale-MRI\\obj\\NoEncoders\\net8.0-windows\\apphost.exe"

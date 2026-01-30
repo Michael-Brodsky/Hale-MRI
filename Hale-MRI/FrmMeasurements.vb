@@ -221,13 +221,6 @@ Public Class FrmMeasurements
         TxtRadius.Text = radius.Value.ToString()
         TxtDepth.Text = depth.ToString()
         TxtRadiusPercent.Text = (radius.Percent * 100).ToString()
-        MeasurementsSave(angle, depth, radius)
-        mCm += 1
-        If mCm = mEncoderData(mRd).CellMeasurements.Count Then
-            ChkScan.Checked = False
-            'Scanning = False
-            mCm = 0
-        End If
     End Sub
 
     Private Sub MeasurementsGet(lastAngle As Double)
@@ -1070,8 +1063,8 @@ Public Class FrmMeasurements
 
     Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
         If Current IsNot Nothing Then
-            ShowForm(gFrmReports, Database, User)
-            gFrmReports.JobDetails = Current
+            ShowForm(gFrmReports2, Database, User)
+            gFrmReports2.JobDetails = Current
         End If
     End Sub
 
@@ -1358,10 +1351,6 @@ Public Class FrmMeasurements
             Return
         End If
         'resetting counts is multiplying by calibrations
-    End Sub
-
-    Private Sub Form1_KeyDown(sender As Object, e As KeyEventArgs) Handles MyBase.KeyDown
-
     End Sub
 #End Region
 End Class

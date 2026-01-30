@@ -16,9 +16,6 @@
     <Compile Update="FrmMeasurements.vb">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Update="FrmReports.vb">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Update="FrmLocalPitch.vb">
       <SubType>Form</SubType>
     </Compile>
@@ -41,6 +38,12 @@
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FrmPropellers.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmReports.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Update="FrmReportsEditor.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Update="FrmSettings.vb">

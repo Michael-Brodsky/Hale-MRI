@@ -351,7 +351,7 @@ Public Class FrmJobs
     Private Sub ScanDataPick()
         Dim ofd As New OpenFileDialog With {
             .Title = "Select Scan Data File",
-            .Filter = "ScanData Files (*.txt)|*.txt|All Files (*.*)|*.*",
+            .Filter = STR_DIALOG_FILTER_SCANDATA,
             .InitialDirectory = If(SettingsGet(Database, STR_SETTING_APPLICATION_DEFAULT_FOLDER), Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments))
         }
         If ofd.ShowDialog() = DialogResult.OK Then TxtScanDataFile.Text = ofd.FileName
