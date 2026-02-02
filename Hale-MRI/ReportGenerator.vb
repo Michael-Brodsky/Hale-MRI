@@ -113,6 +113,7 @@ Public Class ReportGenerator
     Private Const kUndoMax As Integer = 32                      ' Maximum sise of the undo stack in elements.
 #End Region
 #Region "Private Members"
+    Private mBounds As Rectangle                                ' the bounding Rectangle within which a control can be dragged/resized.
     Private mDragStartPos As Point                              ' The starting mouse position of the drag operation.
     Private mEdit As Edits = Edits.None                         ' Bitmask indicating which edit operations are currently permissible.
     Private mGridSize As Integer = 0                            ' The report grid size, in pixels.
@@ -148,6 +149,16 @@ Public Class ReportGenerator
     End Sub
 #End Region
 #Region "Public Interface"
+    Public Property Bounds As Rectangle
+        Get
+            Return mBounds
+        End Get
+        Set(value As Rectangle)
+            ReportControlsReposition(value)
+            mBounds = value
+        End Set
+    End Property
+
     '''''''''''''''''''''''''''''''''''''''''''''''''''' 
     ' These methods are provided for clients to handle
     ' events not handled here, e.g. menu events.
@@ -297,6 +308,7 @@ Public Class ReportGenerator
     End Sub
 
     Private Sub ControlsAddInTo(controls As List(Of ReportControl), ByRef into As List(Of ReportControl), Optional ByVal clone As Boolean = False)
+        ' Adds a list of ReportControls to a List, optionally adding their clones.
         If clone Then
             For Each rc As ReportControl In controls
                 into.Add(CType(rc.Clone, ReportControl))
@@ -628,6 +640,9 @@ Done:
         End If
     End Sub
 
+    Private Sub ReportControlsReposition(rect As Rectangle)
+
+    End Sub
     Private Sub ReportControlsReposition(Optional vLimit As Integer = -1, Optional hLimit As Integer = -1, Optional gridSz As Integer = -1)
         If vLimit > -1 AndAlso vLimit > mVerticalLimit Then
 

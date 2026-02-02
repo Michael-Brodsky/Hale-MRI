@@ -24,15 +24,17 @@ Partial Class FrmReports
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         ReportsBindingSource = New BindingSource(components)
         FormMenuStrip = New MenuStrip()
         FileToolStripMenuItem = New ToolStripMenuItem()
+        FileNewToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator11 = New ToolStripSeparator()
         OpenToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator1 = New ToolStripSeparator()
         CloseToolStripMenuItem = New ToolStripMenuItem()
@@ -56,6 +58,8 @@ Partial Class FrmReports
         ReportsToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripSeparator1 = New ToolStripSeparator()
         ReportsEditToolStripMenuItem = New ToolStripMenuItem()
+        ReportsImportToolStripMenuItem = New ToolStripMenuItem()
+        ReportsExportToolStripMenuItem = New ToolStripMenuItem()
         ElementsToolStripMenuItem = New ToolStripMenuItem()
         LetterheadImageToolStripMenuItem = New ToolStripMenuItem()
         HeaderItemsToolStripMenuItem = New ToolStripMenuItem()
@@ -159,7 +163,6 @@ Partial Class FrmReports
         LabMeasuredDiameter = New Label()
         LabMarkedDiameter = New Label()
         LabRotation = New Label()
-        OpenFileDialog1 = New OpenFileDialog()
         Chart1 = New DataVisualization.Charting.Chart()
         Chart2 = New DataVisualization.Charting.Chart()
         PrintDocument = New Printing.PrintDocument()
@@ -196,10 +199,21 @@ Partial Class FrmReports
         ' 
         ' FileToolStripMenuItem
         ' 
-        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {OpenToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
+        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {FileNewToolStripMenuItem, ToolStripSeparator11, OpenToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
         FileToolStripMenuItem.Name = "FileToolStripMenuItem"
         FileToolStripMenuItem.Size = New Size(37, 20)
         FileToolStripMenuItem.Text = "File"
+        ' 
+        ' FileNewToolStripMenuItem
+        ' 
+        FileNewToolStripMenuItem.Name = "FileNewToolStripMenuItem"
+        FileNewToolStripMenuItem.Size = New Size(186, 22)
+        FileNewToolStripMenuItem.Text = "New"
+        ' 
+        ' ToolStripSeparator11
+        ' 
+        ToolStripSeparator11.Name = "ToolStripSeparator11"
+        ToolStripSeparator11.Size = New Size(183, 6)
         ' 
         ' OpenToolStripMenuItem
         ' 
@@ -256,19 +270,19 @@ Partial Class FrmReports
         ' PrintToolStripMenuItem
         ' 
         PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
-        PrintToolStripMenuItem.Size = New Size(180, 22)
+        PrintToolStripMenuItem.Size = New Size(143, 22)
         PrintToolStripMenuItem.Text = "Print"
         ' 
         ' PrintPreviewToolStripMenuItem
         ' 
         PrintPreviewToolStripMenuItem.Name = "PrintPreviewToolStripMenuItem"
-        PrintPreviewToolStripMenuItem.Size = New Size(180, 22)
+        PrintPreviewToolStripMenuItem.Size = New Size(143, 22)
         PrintPreviewToolStripMenuItem.Text = "Print Preview"
         ' 
         ' PageSetupToolStripMenuItem
         ' 
         PageSetupToolStripMenuItem.Name = "PageSetupToolStripMenuItem"
-        PageSetupToolStripMenuItem.Size = New Size(180, 22)
+        PageSetupToolStripMenuItem.Size = New Size(143, 22)
         PageSetupToolStripMenuItem.Text = "Page Setup"
         ' 
         ' ToolStripSeparator2
@@ -346,7 +360,7 @@ Partial Class FrmReports
         ' 
         ' ReportsToolStripMenuItem
         ' 
-        ReportsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ReportsToolStripSeparator1, ReportsEditToolStripMenuItem})
+        ReportsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ReportsToolStripSeparator1, ReportsEditToolStripMenuItem, ReportsImportToolStripMenuItem, ReportsExportToolStripMenuItem})
         ReportsToolStripMenuItem.Name = "ReportsToolStripMenuItem"
         ReportsToolStripMenuItem.Size = New Size(59, 20)
         ReportsToolStripMenuItem.Text = "Reports"
@@ -354,13 +368,26 @@ Partial Class FrmReports
         ' ReportsToolStripSeparator1
         ' 
         ReportsToolStripSeparator1.Name = "ReportsToolStripSeparator1"
-        ReportsToolStripSeparator1.Size = New Size(91, 6)
+        ReportsToolStripSeparator1.Size = New Size(107, 6)
         ' 
         ' ReportsEditToolStripMenuItem
         ' 
         ReportsEditToolStripMenuItem.Name = "ReportsEditToolStripMenuItem"
-        ReportsEditToolStripMenuItem.Size = New Size(94, 22)
+        ReportsEditToolStripMenuItem.Size = New Size(110, 22)
         ReportsEditToolStripMenuItem.Text = "Edit"
+        ' 
+        ' ReportsImportToolStripMenuItem
+        ' 
+        ReportsImportToolStripMenuItem.Name = "ReportsImportToolStripMenuItem"
+        ReportsImportToolStripMenuItem.Size = New Size(110, 22)
+        ReportsImportToolStripMenuItem.Text = "Import"
+        ' 
+        ' ReportsExportToolStripMenuItem
+        ' 
+        ReportsExportToolStripMenuItem.Enabled = False
+        ReportsExportToolStripMenuItem.Name = "ReportsExportToolStripMenuItem"
+        ReportsExportToolStripMenuItem.Size = New Size(110, 22)
+        ReportsExportToolStripMenuItem.Text = "Export"
         ' 
         ' ElementsToolStripMenuItem
         ' 
@@ -866,7 +893,7 @@ Partial Class FrmReports
         ' 
         LabFilename.Anchor = AnchorStyles.Left
         LabFilename.AutoSize = True
-        LabFilename.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabFilename.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabFilename.ForeColor = SystemColors.ControlText
         LabFilename.Location = New Point(553, 6)
         LabFilename.Name = "LabFilename"
@@ -892,7 +919,7 @@ Partial Class FrmReports
         ' 
         LabJobId.Anchor = AnchorStyles.Left
         LabJobId.AutoSize = True
-        LabJobId.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabJobId.ForeColor = SystemColors.ControlText
         LabJobId.Location = New Point(278, 6)
         LabJobId.Name = "LabJobId"
@@ -904,7 +931,7 @@ Partial Class FrmReports
         ' 
         LabJobNumber.Anchor = AnchorStyles.Left
         LabJobNumber.AutoSize = True
-        LabJobNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabJobNumber.ForeColor = SystemColors.ControlText
         LabJobNumber.Location = New Point(3, 6)
         LabJobNumber.Name = "LabJobNumber"
@@ -916,7 +943,7 @@ Partial Class FrmReports
         ' 
         LabCustomer.Anchor = AnchorStyles.Left
         LabCustomer.AutoSize = True
-        LabCustomer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabCustomer.ForeColor = SystemColors.ControlText
         LabCustomer.Location = New Point(3, 34)
         LabCustomer.Name = "LabCustomer"
@@ -928,7 +955,7 @@ Partial Class FrmReports
         ' 
         LabVessel.Anchor = AnchorStyles.Left
         LabVessel.AutoSize = True
-        LabVessel.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabVessel.ForeColor = SystemColors.ControlText
         LabVessel.Location = New Point(3, 62)
         LabVessel.Name = "LabVessel"
@@ -940,7 +967,7 @@ Partial Class FrmReports
         ' 
         LabManufacturer.Anchor = AnchorStyles.Left
         LabManufacturer.AutoSize = True
-        LabManufacturer.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabManufacturer.ForeColor = SystemColors.ControlText
         LabManufacturer.Location = New Point(3, 90)
         LabManufacturer.Name = "LabManufacturer"
@@ -953,7 +980,7 @@ Partial Class FrmReports
         ' 
         LabPartNumber.Anchor = AnchorStyles.Left
         LabPartNumber.AutoSize = True
-        LabPartNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabPartNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabPartNumber.ForeColor = SystemColors.ControlText
         LabPartNumber.Location = New Point(3, 118)
         LabPartNumber.Name = "LabPartNumber"
@@ -966,7 +993,7 @@ Partial Class FrmReports
         ' 
         LabSerialNumber.Anchor = AnchorStyles.Left
         LabSerialNumber.AutoSize = True
-        LabSerialNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabSerialNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabSerialNumber.ForeColor = SystemColors.ControlText
         LabSerialNumber.Location = New Point(3, 146)
         LabSerialNumber.Name = "LabSerialNumber"
@@ -978,7 +1005,7 @@ Partial Class FrmReports
         ' 
         LabStampNumber.Anchor = AnchorStyles.Left
         LabStampNumber.AutoSize = True
-        LabStampNumber.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabStampNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabStampNumber.ForeColor = SystemColors.ControlText
         LabStampNumber.Location = New Point(3, 174)
         LabStampNumber.Name = "LabStampNumber"
@@ -990,7 +1017,7 @@ Partial Class FrmReports
         ' 
         LabInspectedBy.Anchor = AnchorStyles.Left
         LabInspectedBy.AutoSize = True
-        LabInspectedBy.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabInspectedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabInspectedBy.ForeColor = SystemColors.ControlText
         LabInspectedBy.Location = New Point(3, 202)
         LabInspectedBy.Name = "LabInspectedBy"
@@ -1129,7 +1156,7 @@ Partial Class FrmReports
         ' 
         LabClass.Anchor = AnchorStyles.Left
         LabClass.AutoSize = True
-        LabClass.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabClass.ForeColor = SystemColors.ControlText
         LabClass.Location = New Point(278, 34)
         LabClass.Name = "LabClass"
@@ -1141,7 +1168,7 @@ Partial Class FrmReports
         ' 
         LabRepairStatus.Anchor = AnchorStyles.Left
         LabRepairStatus.AutoSize = True
-        LabRepairStatus.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabRepairStatus.ForeColor = SystemColors.ControlText
         LabRepairStatus.Location = New Point(278, 62)
         LabRepairStatus.Name = "LabRepairStatus"
@@ -1153,7 +1180,7 @@ Partial Class FrmReports
         ' 
         LabStyle.Anchor = AnchorStyles.Left
         LabStyle.AutoSize = True
-        LabStyle.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabStyle.ForeColor = SystemColors.ControlText
         LabStyle.Location = New Point(278, 90)
         LabStyle.Name = "LabStyle"
@@ -1165,7 +1192,7 @@ Partial Class FrmReports
         ' 
         LabMaterial.Anchor = AnchorStyles.Left
         LabMaterial.AutoSize = True
-        LabMaterial.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMaterial.ForeColor = SystemColors.ControlText
         LabMaterial.Location = New Point(278, 118)
         LabMaterial.Name = "LabMaterial"
@@ -1177,7 +1204,7 @@ Partial Class FrmReports
         ' 
         LabBore.Anchor = AnchorStyles.Left
         LabBore.AutoSize = True
-        LabBore.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabBore.ForeColor = SystemColors.ControlText
         LabBore.Location = New Point(278, 146)
         LabBore.Name = "LabBore"
@@ -1189,7 +1216,7 @@ Partial Class FrmReports
         ' 
         LabDAR.Anchor = AnchorStyles.Left
         LabDAR.AutoSize = True
-        LabDAR.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabDAR.ForeColor = SystemColors.ControlText
         LabDAR.Location = New Point(278, 174)
         LabDAR.Name = "LabDAR"
@@ -1201,7 +1228,7 @@ Partial Class FrmReports
         ' 
         LabCup.Anchor = AnchorStyles.Left
         LabCup.AutoSize = True
-        LabCup.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabCup.ForeColor = SystemColors.ControlText
         LabCup.Location = New Point(278, 202)
         LabCup.Name = "LabCup"
@@ -1310,7 +1337,7 @@ Partial Class FrmReports
         ' 
         LabScanDate.Anchor = AnchorStyles.Left
         LabScanDate.AutoSize = True
-        LabScanDate.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabScanDate.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabScanDate.ForeColor = SystemColors.ControlText
         LabScanDate.Location = New Point(553, 34)
         LabScanDate.Name = "LabScanDate"
@@ -1322,7 +1349,7 @@ Partial Class FrmReports
         ' 
         LabPerformedBy.Anchor = AnchorStyles.Left
         LabPerformedBy.AutoSize = True
-        LabPerformedBy.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabPerformedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabPerformedBy.ForeColor = SystemColors.ControlText
         LabPerformedBy.Location = New Point(553, 62)
         LabPerformedBy.Name = "LabPerformedBy"
@@ -1334,7 +1361,7 @@ Partial Class FrmReports
         ' 
         LabMarkedPitch.Anchor = AnchorStyles.Left
         LabMarkedPitch.AutoSize = True
-        LabMarkedPitch.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabMarkedPitch.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMarkedPitch.ForeColor = SystemColors.ControlText
         LabMarkedPitch.Location = New Point(553, 174)
         LabMarkedPitch.Name = "LabMarkedPitch"
@@ -1346,7 +1373,7 @@ Partial Class FrmReports
         ' 
         LabWheelPitch.Anchor = AnchorStyles.Left
         LabWheelPitch.AutoSize = True
-        LabWheelPitch.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabWheelPitch.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabWheelPitch.ForeColor = SystemColors.ControlText
         LabWheelPitch.Location = New Point(553, 202)
         LabWheelPitch.Name = "LabWheelPitch"
@@ -1358,7 +1385,7 @@ Partial Class FrmReports
         ' 
         LabMeasuredDiameter.Anchor = AnchorStyles.Left
         LabMeasuredDiameter.AutoSize = True
-        LabMeasuredDiameter.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabMeasuredDiameter.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMeasuredDiameter.ForeColor = SystemColors.ControlText
         LabMeasuredDiameter.Location = New Point(553, 146)
         LabMeasuredDiameter.Name = "LabMeasuredDiameter"
@@ -1370,7 +1397,7 @@ Partial Class FrmReports
         ' 
         LabMarkedDiameter.Anchor = AnchorStyles.Left
         LabMarkedDiameter.AutoSize = True
-        LabMarkedDiameter.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabMarkedDiameter.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMarkedDiameter.ForeColor = SystemColors.ControlText
         LabMarkedDiameter.Location = New Point(553, 118)
         LabMarkedDiameter.Name = "LabMarkedDiameter"
@@ -1382,7 +1409,7 @@ Partial Class FrmReports
         ' 
         LabRotation.Anchor = AnchorStyles.Left
         LabRotation.AutoSize = True
-        LabRotation.Font = New Font("Segoe UI", 9.0F, FontStyle.Bold)
+        LabRotation.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabRotation.ForeColor = SystemColors.ControlText
         LabRotation.Location = New Point(553, 90)
         LabRotation.Name = "LabRotation"
@@ -1390,22 +1417,18 @@ Partial Class FrmReports
         LabRotation.TabIndex = 39
         LabRotation.Text = "Rotation"
         ' 
-        ' OpenFileDialog1
-        ' 
-        OpenFileDialog1.FileName = "OpenFileDialog1"
-        ' 
         ' Chart1
         ' 
-        ChartArea3.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea3)
-        Legend3.Name = "Legend1"
-        Chart1.Legends.Add(Legend3)
+        ChartArea1.Name = "ChartArea1"
+        Chart1.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        Chart1.Legends.Add(Legend1)
         Chart1.Location = New Point(12, 374)
         Chart1.Name = "Chart1"
-        Series3.ChartArea = "ChartArea1"
-        Series3.Legend = "Legend1"
-        Series3.Name = "Series1"
-        Chart1.Series.Add(Series3)
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        Chart1.Series.Add(Series1)
         Chart1.Size = New Size(293, 172)
         Chart1.TabIndex = 23
         Chart1.Text = "Chart1"
@@ -1413,16 +1436,16 @@ Partial Class FrmReports
         ' 
         ' Chart2
         ' 
-        ChartArea4.Name = "ChartArea1"
-        Chart2.ChartAreas.Add(ChartArea4)
-        Legend4.Name = "Legend1"
-        Chart2.Legends.Add(Legend4)
+        ChartArea2.Name = "ChartArea1"
+        Chart2.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        Chart2.Legends.Add(Legend2)
         Chart2.Location = New Point(151, 393)
         Chart2.Name = "Chart2"
-        Series4.ChartArea = "ChartArea1"
-        Series4.Legend = "Legend1"
-        Series4.Name = "Series1"
-        Chart2.Series.Add(Series4)
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        Chart2.Series.Add(Series2)
         Chart2.Size = New Size(293, 172)
         Chart2.TabIndex = 24
         Chart2.Text = "Chart2"
@@ -1441,9 +1464,9 @@ Partial Class FrmReports
         PrintPreviewDialog.Name = "PrintPreviewDialog1"
         PrintPreviewDialog.Visible = False
         ' 
-        ' FrmReports2
+        ' FrmReports
         ' 
-        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
+        AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
         Controls.Add(Chart2)
@@ -1452,7 +1475,7 @@ Partial Class FrmReports
         Controls.Add(Letterhead)
         Controls.Add(FormMenuStrip)
         KeyPreview = True
-        Name = "FrmReports2"
+        Name = "FrmReports"
         Text = "FrmReports"
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         FormMenuStrip.ResumeLayout(False)
@@ -1594,7 +1617,6 @@ Partial Class FrmReports
     Friend WithEvents ReportsEditToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
     Friend WithEvents SelectAllToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents OpenFileDialog1 As OpenFileDialog
     Friend WithEvents EmployeeBindingSource As BindingSource
     Friend WithEvents JobBindingSource As BindingSource
     Friend WithEvents VesselBindingSource As BindingSource
@@ -1608,4 +1630,8 @@ Partial Class FrmReports
     Friend WithEvents PrintDocument As Printing.PrintDocument
     Friend WithEvents PrintPreviewDialog As PrintPreviewDialog
     Friend WithEvents PageSetupDialog As PageSetupDialog
+    Friend WithEvents FileNewToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator11 As ToolStripSeparator
+    Friend WithEvents ReportsImportToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReportsExportToolStripMenuItem As ToolStripMenuItem
 End Class

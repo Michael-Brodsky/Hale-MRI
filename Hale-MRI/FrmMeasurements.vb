@@ -1063,8 +1063,8 @@ Public Class FrmMeasurements
 
     Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
         If Current IsNot Nothing Then
-            ShowForm(gFrmReports2, Database, User)
-            gFrmReports2.JobDetails = Current
+            ShowForm(gFrmReports, Database, User)
+            gFrmReports.JobDetails = Current
         End If
     End Sub
 

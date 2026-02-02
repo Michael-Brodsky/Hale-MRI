@@ -1,6 +1,6 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
 Partial Class FrmReportsEditor
-    Inherits FrmDatabaseForm
+    Inherits Form
 
     'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()> _
@@ -42,7 +42,7 @@ Partial Class FrmReportsEditor
         DataGridReports.DataSource = ReportsBindingSource
         DataGridReports.Location = New Point(12, 12)
         DataGridReports.Name = "DataGridReports"
-        DataGridReports.Size = New Size(524, 377)
+        DataGridReports.Size = New Size(464, 377)
         DataGridReports.TabIndex = 0
         ' 
         ' EmployeesBindingSource
@@ -89,9 +89,9 @@ Partial Class FrmReportsEditor
         ' 
         ' FrmReportsEditor
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
-        ClientSize = New Size(550, 450)
+        ClientSize = New Size(489, 450)
         Controls.Add(DataGridReports)
         Name = "FrmReportsEditor"
         Text = "Reports Editor"

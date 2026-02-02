@@ -1,11 +1,15 @@
 ﻿Imports System.ComponentModel
 Imports System.Drawing.Printing
+Imports System.IO
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Tab
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.Migrations.Operations
+Imports Newtonsoft.Json.Linq
 
 ''' <summary>
-''' Form for Opening, Closing, Editting and Printing reports.
+''' Form for Opening, Closing, Editing and Printing reports.
 ''' Manages database Report entities and serves as the 
 ''' palette for displaying report elements (controls).
 ''' NOTE:
@@ -13,8 +17,8 @@ Imports Microsoft.EntityFrameworkCore
 '''     (e.g. menus, form size) and maintains database
 '''     currency with respect to report layouts. The visual
 '''     report elements are managed by the ReportGenerator
-'''     (e.g. contol visibility, size, location, drag/drop
-'''     and edting). This form should not modify any report
+'''     (e.g. control visibility, size, location, drag/drop
+'''     and editing). This form should not modify any report
 '''     controls, as this may cause unexpected behavior.
 '''     
 ''' </summary>
@@ -66,7 +70,7 @@ Public Class FrmReports
         MyBase.BindDataSources()
     End Sub
 
-    Private Sub ContextMenuMenuItemsEnable()
+    Private Sub ContextMenuOpening()
         ' Enable context menu items according the current report and edit state.
         If mReport Is Nothing Then
             For Each item As ToolStripItem In ReportContextMenuStrip.Items
@@ -99,20 +103,65 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Function ElementsMenuItemGet(txt As String) As ToolStripMenuItem
-        ' Returns the ElementsToolStripMenuItem whose Text matches the given txt.
-        Dim menuItem As ToolStripMenuItem = Nothing
-        For Each item As ToolStripItem In Me.ElementsToolStripMenuItem.DropDownItems
-            If TypeOf item Is ToolStripMenuItem Then
-                Dim tmpItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
-                If tmpItem.Text = txt Then
-                    menuItem = tmpItem
-                    Exit For
+    Private Sub EditDropDownOpening()
+        ' Enables/disables Edit menu items according to the ReportGenerator's 
+        ' current Edit state.
+        If mReport Is Nothing Then
+            For Each item As ToolStripItem In EditToolStripMenuItem.DropDownItems
+                item.Enabled = False
+            Next
+        Else
+            ' Only selected text can be copied. Duplicate report elements are not allowed.
+            If TypeOf Me.ActiveControl Is TextBoxBase Then
+                If CType(Me.ActiveControl, TextBoxBase).SelectionLength > 0 Then
+                    CopyToolStripMenuItem.Enabled = True
+                Else
+                    CopyToolStripMenuItem.Enabled = False
                 End If
+            Else
+                CopyToolStripMenuItem.Enabled = False
+            End If
+            CutToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Cut)
+            DeleteToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Delete)
+            PasteToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Paste)
+            SelectAllToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.SelectAll)
+        End If
+    End Sub
+
+    Private Sub ElementsDropdownOpening()
+        ' Checks/unchecks and enables/disables Elements menu items according
+        ' to the current visibility or report elements.
+        For Each item As ToolStripItem In ElementsToolStripMenuItem.DropDownItems
+            If TypeOf item Is ToolStripMenuItem Then
+                Dim toolstripItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
+                toolstripItem.Checked = mReportGenerator.VisibleControls.Any(Function(rc) rc.Name = toolstripItem.Text)
+                ' The Header and Letterhead itemsChecked state also effects the 
+                ' HeaderItemsToolStripMenuItem and LetterheadImageToolStripMenuItem menu items
+                Select Case toolstripItem.Text
+                    Case "Header"
+                        ElementsToolStripMenuItem.DropDownItems.Item("HeaderItemsToolStripMenuItem").Enabled = toolstripItem.Checked
+                    Case "Letterhead"
+                        ElementsToolStripMenuItem.DropDownItems.Item("LetterheadImageToolStripMenuItem").Enabled = toolstripItem.Checked
+                    Case Else
+                End Select
             End If
         Next
-        Return menuItem
-    End Function
+    End Sub
+
+    'Private Function ElementsMenuItemGet(txt As String) As ToolStripMenuItem
+    '    ' Returns the ElementsToolStripMenuItem whose Text matches the given txt.
+    '    Dim menuItem As ToolStripMenuItem = Nothing
+    '    For Each item As ToolStripItem In Me.ElementsToolStripMenuItem.DropDownItems
+    '        If TypeOf item Is ToolStripMenuItem Then
+    '            Dim tmpItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
+    '            If tmpItem.Text = txt Then
+    '                menuItem = tmpItem
+    '                Exit For
+    '            End If
+    '        End If
+    '    Next
+    '    Return menuItem
+    'End Function
 
     Private Sub FormResizeTo(e As PrintEventArgs)
 
@@ -163,21 +212,30 @@ Public Class FrmReports
         Dim selectedImage As Image = Image.FromFile(fileName)
         Letterhead.Image = selectedImage
         Letterhead.BorderStyle = BorderStyle.None
+        mReport.ReportElements.First(Function(lh) lh.ElementName = "Letterhead").Data = fileName
     End Sub
 
     Private Sub LetterheadSelect()
         ' Opens a file dialog allowing the user to select the
         ' letterhead image file.
-        OpenFileDialog1.Filter = STR_DIALOG_FILTER_IMAGE
-        OpenFileDialog1.FilterIndex = 1
-        OpenFileDialog1.RestoreDirectory = True
-        If OpenFileDialog1.ShowDialog() = DialogResult.OK Then
-            Try
-                LetterheadOpen(OpenFileDialog1.FileName)
-                mReport.LetterHeadFile = OpenFileDialog1.FileName
-            Catch ex As Exception
-                MessageBox.Show("Error loading image: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
-            End Try
+        Dim openFileDialog1 As New OpenFileDialog With {
+            .Filter = STR_DIALOG_FILTER_IMAGE,
+            .FilterIndex = 1,
+            .RestoreDirectory = True
+        }
+        If openFileDialog1.ShowDialog() = DialogResult.OK Then
+            LetterheadOpen(openFileDialog1.FileName)
+        End If
+    End Sub
+
+    Private Sub PageSetup(sender As Object, e As EventArgs)
+        ' Opens the page setup dialog.
+        PageSetupDialog.Document = PrintDocument
+        If PageSetupDialog.ShowDialog() = DialogResult.OK Then
+            Dim margins As Printing.Margins = PrintDocument.DefaultPageSettings.Margins
+            Dim paperSize As PaperSize = PrintDocument.DefaultPageSettings.PaperSize
+            Dim isLandscape As Boolean = PrintDocument.DefaultPageSettings.Landscape
+            If ResizeToPageBounds Then FormResizeTo(PageSetupDialog.Document)
         End If
     End Sub
 
@@ -185,38 +243,78 @@ Public Class FrmReports
 
     End Sub
 
+    Private Sub PrintPage(sender As Object, e As PrintPageEventArgs)
+        ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
+        ' paper's printable area.
+        ' TODO: See what fits on one page and handle multiple pages if needed. Set captureWidth and captureHeight
+        ' based on e.PageBounds and e.MarginBounds.
+        mReportGenerator.ReportGenerate(sender, e)
+        Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
+        Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + FormMenuStrip.Height
+        Dim captureWidth As Integer = Me.ClientSize.Width
+        Dim captureHeight As Integer = Me.ClientSize.Height
+        Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
+        Dim formBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
+        Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
+        Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
+        Using g As Graphics = Graphics.FromImage(croppedBitmap)
+            g.DrawImage(formBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
+        End Using
+        If ResizeToPageBounds Then
+            e.Graphics.DrawImage(croppedBitmap, e.MarginBounds.Left, e.MarginBounds.Top)    ' Center the image within the page margins
+        Else
+            Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
+            Using g As Graphics = Graphics.FromImage(scaledBitmap)
+                g.DrawImage(croppedBitmap, New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height))    ' Scale to paper printable area (inside margins).
+            End Using
+            e.Graphics.DrawImage(scaledBitmap, e.MarginBounds.Left, e.MarginBounds.Top)     ' Center the image within the page margins
+        End If
+        formBitmap.Dispose()
+        croppedBitmap.Dispose()
+        e.HasMorePages = False
+    End Sub
+
+    Private Sub PrintPreview(sender As Object, e As EventArgs)
+        ' Opens the print preview dialog.
+        PrintPreviewDialog.Document = PrintDocument
+        If PrintPreviewDialog.ShowDialog() = DialogResult.OK Then
+            PrintDocument.Print()
+        End If
+    End Sub
+
     Private Function ReportControlToElement(rc As ReportGenerator.ReportControl) As ReportElement
         ' Returns the Database ReportElement corresponding to the given ReportControl in the current report.
         Return mReport.ReportElements.FirstOrDefault(Function(re) re.ElementName = rc.Name.ToString())
     End Function
 
-    Private Property Report As String
+    Private Property Report As Report
         Get
-            Return If(mReport?.ReportName, "")
+            Return mReport
         End Get
-        Set(value As String)
-            Me.Text = "Reports"
-            If Not String.IsNullOrEmpty(value) Then
-                mReport = Database.Reports _
-                    .Include(Function(r) r.ReportElements) _
-                    .FirstOrDefault(Function(r) r.ReportName = value.ToString())
-            Else
-                mReport = Nothing
+        Set(value As Report)
+            mReport = value
+            If value IsNot Nothing Then
+                Me.Text = value.ReportName
+                mReportGenerator.GridSize = value.GridSize
+                ReportsExportToolStripMenuItem.Enabled = True
+                ReportElementsLoad(value.ReportElements)
             End If
-            If mReport IsNot Nothing Then
-                Me.Text = mReport.ReportName
-                mReportGenerator.GridSize = mReport.GridSize
-            End If
-            ReportLoad(mReport?.ReportElements)
         End Set
     End Property
+
+    Private Sub ReportAddNew(rpt As Report)
+        ' Adds a new report to the database and the Reports menu drop down list.
+        Database.Reports.Add(rpt)
+        Database.SaveChanges()
+        ReportsToolStripMenuAdd(New ToolStripMenuItem(rpt.ReportName))
+    End Sub
 
     Private Function ReportClose() As DialogResult
         ' Closes the current report.
         Dim result As DialogResult = DialogResult.None
-        ReportUpdate() ' Update the current Report and ReportElements. If anything changed, prompt user to save chages.
+        ReportUpdate() ' Update the current Report and ReportElements. If anything changed, prompt user to save changes.
         If Database.ChangeTracker.HasChanges() Then
-            result = MessageBox.Show("There are unsaved changes. Do you want to save them before exiting?", "Unsaved Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            result = MessageBox.Show("There are unsaved changes. Do you want to save them?", "Unsaved Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
             Select Case result
                 Case DialogResult.Yes
                     Database.SaveChanges()
@@ -227,7 +325,14 @@ Public Class FrmReports
                 Case Else
             End Select
         End If
-        If result <> DialogResult.Cancel Then Report = Nothing
+        If result <> DialogResult.Cancel Then
+            For Each re As ReportGenerator.ReportControl In mReportGenerator.VisibleControls
+                mReportGenerator.ControlHide(re)
+            Next
+            Me.Text = "Reports"
+            ReportsExportToolStripMenuItem.Enabled = False
+            mReport = Nothing
+        End If
         Return result
     End Function
 
@@ -254,8 +359,56 @@ Public Class FrmReports
 
     Private Sub ReportEditorOpen()
         ' Opens the Reports editor form.
-        ShowForm(gFrmReportsEditor, Database, User)
+        Dim editor As New FrmReportsEditor(Me.ReportsBindingSource, Me.EmployeeBindingSource)
+        editor.ShowDialog()
+        Dim rpt As Report = editor.Current
+        If rpt IsNot Me.Report Then
+            If Me.Report IsNot Nothing Then
+                If ReportClose() = DialogResult.Cancel Then Exit Sub
+                Me.Report = ReportOpen(rpt.ReportName)
+            End If
+        End If
     End Sub
+
+    Private Sub ReportElementsLoad(elements As List(Of ReportElement))
+        ' Makes the selected ReportControl.Controls and HeaderItem.Controls visible and
+        ' loads any data.
+        If elements IsNot Nothing Then
+            Dim visibleControls As List(Of ReportGenerator.ReportControl) = New List(Of ReportGenerator.ReportControl)()
+            For Each re As ReportElement In elements
+                Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
+                Select Case reportControl.Control.Name
+                    Case "Letterhead"
+                        If re.Data IsNot Nothing Then LetterheadOpen(re.Data)
+                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
+                    Case "Header"
+                        If re.Data IsNot Nothing Then
+                            Dim headerItems As List(Of String) = re.Data.Split(";"c).ToList()
+                            Dim visibleItems As List(Of ReportGenerator.HeaderItem) =
+                                mReportGenerator.HeaderItems.Values _
+                                    .Where(Function(p) headerItems.Contains(p.Name)) _
+                                    .ToList()
+                            For Each item As ReportGenerator.HeaderItem In visibleItems
+                                item.Control.Visible = True
+                                item.Label.Visible = True
+                            Next
+                        End If
+                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Header").Bounds.Bottom, mReportGenerator.VerticalLimit)
+                    Case Else
+                End Select
+                reportControl.Control.Location = New Point(re.PositionX, re.PositionY)
+                reportControl.Control.Size = New Size(re.SizeWidth, re.SizeHeight)
+                visibleControls.Add(reportControl)
+            Next
+            mReportGenerator.VisibleControls = visibleControls
+        Else
+            mReportGenerator.VisibleControls = Nothing
+        End If
+    End Sub
+
+    Private Function ReportElementToControl(elem As ReportElement, ByVal from As List(Of ReportGenerator.ReportControl)) As ReportGenerator.ReportControl
+        Return from.FirstOrDefault(Function(rc) rc.Name = elem.ElementName)
+    End Function
 
     Private Sub ReportElementToggle(ByRef menuItem As ToolStripMenuItem)
         Dim item As ToolStripMenuItem = menuItem
@@ -268,8 +421,67 @@ Public Class FrmReports
         menuItem.Checked = Not menuItem.Checked
     End Sub
 
-    Private Function ReportElementToControl(elem As ReportElement, ByVal from As List(Of ReportGenerator.ReportControl)) As ReportGenerator.ReportControl
-        Return from.FirstOrDefault(Function(rc) rc.Name = elem.ElementName)
+    Private Sub ReportExport()
+        Dim saveFileDialog1 As New SaveFileDialog() With {
+            .Filter = STR_DIALOG_FILTER_CSV,
+            .FilterIndex = 1,
+            .RestoreDirectory = True
+        }
+        If saveFileDialog1.ShowDialog() = DialogResult.OK Then
+            ReportToFile(saveFileDialog1.FileName)
+        End If
+    End Sub
+
+    Private Function ReportFromFile(fileName As String) As Report
+        Dim rpt As Report = Nothing
+        If File.Exists(fileName) Then
+            Dim elems As New List(Of ReportElement)
+            Dim content As String() = File.ReadAllLines(fileName)
+            For Each line As String In content
+                line = line.Trim()
+                If line.Length > 0 AndAlso line(0) <> "'"c Then
+                    Dim values As String() = line.Split(";"c)
+                    Select Case values(0)
+                        Case "<Report>"
+                            rpt = ReportFromFileReport(values.Skip(1).ToArray())
+                        Case "<Element>"
+                            elems.Add(ReportFromFileElement(values.Skip(1).ToArray()))
+                        Case Else
+                    End Select
+                End If
+            Next
+            If rpt IsNot Nothing Then
+                For Each re As ReportElement In elems
+                    rpt.ReportElements.Add(re)
+                Next
+            End If
+        End If
+        Return rpt
+    End Function
+
+    Private Function ReportFromFileElement(ByVal values() As String) As ReportElement
+        Return New ReportElement With {
+            .ElementName = values(0),
+            .PositionX = values(1),
+            .PositionY = values(2),
+            .SizeWidth = values(3),
+            .SizeHeight = values(4),
+            .Zorder = values(5),
+            .Data = values(6)
+        }
+    End Function
+
+    Private Function ReportFromFileReport(values() As String) As Report
+        Return New Report() With {
+            .ReportName = values(0),
+            .LastModifed = Date.Parse(values(1)),
+            .ModifiedBy = values(2),
+            .LetterHeadFile = values(3),
+            .IsDefault = Boolean.Parse(values(4)),
+            .HorizontalLimit = Integer.Parse(values(5)),
+            .VerticalLimit = Integer.Parse(values(6)),
+            .GridSize = Integer.Parse(values(7))
+        }
     End Function
 
     Private Sub ReportGeneratorInitialize()
@@ -322,40 +534,21 @@ Public Class FrmReports
         Next
     End Sub
 
-    Private Sub ReportLoad(elements As List(Of ReportElement))
-        ' Makes the selected ReportElement.Controls and HeaderItem.Controls visible and
-        ' load the Letterhead image file if specified.
-        If elements IsNot Nothing Then
-            Dim controlsList As List(Of ReportGenerator.ReportControl) = New List(Of ReportGenerator.ReportControl)()
-            For Each re As ReportElement In elements
-                Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
-                Dim ctrl As Control = Me.Controls(reportControl.Name)
-                Select Case ctrl.Name
-                    Case "Letterhead"
-                        If mReport.LetterHeadFile IsNot Nothing Then LetterheadOpen(mReport.LetterHeadFile)
-                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
-                    Case "Header"
-                        If re.Data IsNot Nothing Then
-                            Dim headerItems As List(Of String) = re.Data.Split(";"c).ToList()
-                            Dim visibleItems As List(Of ReportGenerator.HeaderItem) =
-                                mReportGenerator.HeaderItems.Values _
-                                    .Where(Function(p) headerItems.Contains(p.Name)) _
-                                    .ToList()
-                            For Each item As ReportGenerator.HeaderItem In visibleItems
-                                item.Control.Visible = True
-                                item.Label.Visible = True
-                            Next
-                        End If
-                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Header").Bounds.Bottom, mReportGenerator.VerticalLimit)
-                    Case Else
-                End Select
-                ctrl.Location = New Point(re.PositionX, re.PositionY)
-                ctrl.Size = New Size(re.SizeWidth, re.SizeHeight)
-                controlsList.Add(reportControl)
-            Next
-            mReportGenerator.VisibleControls = controlsList
-        Else
-            mReportGenerator.VisibleControls = Nothing
+    Private Sub ReportImport()
+        Dim openFileDialog1 As New OpenFileDialog With {
+            .Filter = STR_DIALOG_FILTER_CSV,
+            .FilterIndex = 1,
+            .RestoreDirectory = True
+        }
+        If openFileDialog1.ShowDialog() = DialogResult.OK Then
+            Dim newReport As Report = ReportFromFile(openFileDialog1.FileName)
+            If newReport IsNot Nothing Then
+                If Report IsNot Nothing Then
+                    If ReportClose() = DialogResult.Cancel Then Exit Sub
+                End If
+                ReportAddNew(newReport)
+                Report = newReport
+            End If
         End If
     End Sub
 
@@ -363,13 +556,38 @@ Public Class FrmReports
         Dim reportName As String = String.Empty
         FrmInputBox.Text = "Save Report As"
         FrmInputBox.Prompt = "Enter the new name of the report:"
-        FrmInputBox.InputText = ""
+        FrmInputBox.InputText = Me.Report.ReportName
+        FrmInputBox.TxtInput.Select()
+        FrmInputBox.TxtInput.SelectAll()
         Dim result As DialogResult = FrmInputBox.ShowDialog()
         If result = DialogResult.OK Then reportName = FrmInputBox.InputText
         Return reportName
     End Function
 
-    Private Property ResizeToPagePounds As Boolean
+    Private Sub ReportToFile(fileName As String)
+        Const commentReport As String = "'---Report---"
+        Const commentElements As String = "'---Elements---"
+        Dim content As String =
+            $"{commentReport}{Environment.NewLine}" &
+            $"<Report>;{Report.ReportName};{Report.LastModifed.ToString()};{Report.ModifiedBy};{Report.LetterHeadFile};{Report.IsDefault.ToString()};{Report.HorizontalLimit};{Report.VerticalLimit};{Report.GridSize}{Environment.NewLine}"
+        content += commentElements & Environment.NewLine
+        For Each re As ReportElement In mReport.ReportElements
+            content += $"<Element>;{re.ElementName};{re.PositionX};{re.PositionY};{re.SizeWidth};{re.SizeHeight};{re.Zorder};{re.Data}{Environment.NewLine}"
+        Next
+        File.WriteAllText(fileName, content)
+    End Sub
+
+    Private Function ReportOpen(ByVal reportName As String) As Report
+        Dim result As Report = Nothing
+        If Not String.IsNullOrEmpty(reportName) Then
+            result = Database.Reports _
+                .Include(Function(r) r.ReportElements) _
+                .FirstOrDefault(Function(r) r.ReportName = reportName.ToString())
+        End If
+        Return result
+    End Function
+
+    Private Property ResizeToPageBounds As Boolean
         Get
             Return mResizeToPagePounds
         End Get
@@ -389,21 +607,34 @@ Public Class FrmReports
         End Set
     End Property
 
-    Private Sub ReportSave(Optional reportName As String = "")
+    Private Sub ReportSave()
         ' Save the current report layout to the database.
         ReportUpdate()
-        If Not String.IsNullOrEmpty(reportName) Then mReport.ReportName = reportName
         If Database.ChangeTracker.HasChanges() Then Database.SaveChanges()
+    End Sub
+
+    Private Sub ReportSaveAs()
+        ' Save the current report layout to the database with a different name.
+        If Me.Report IsNot Nothing Then
+            Dim reportsMenuItem As ToolStripMenuItem = ToolStripMenuItemGet(ReportsToolStripMenuItem, Me.Report.ReportName)
+            Me.Report.ReportName = ReportNameInput()
+            ReportSave()
+            Me.Text = Me.Report.ReportName
+            If reportsMenuItem IsNot Nothing Then reportsMenuItem.Text = Me.Report.ReportName
+        End If
+    End Sub
+
+    Private Sub ReportsToolStripMenuAdd(item As ToolStripMenuItem, Optional ByVal index As Integer = 0)
+        ' Adds a report to the ReportsToolStripMenu
+        ReportsToolStripMenuItem.DropDownItems.Insert(index, item)
+        AddHandler item.Click, AddressOf ReportsItemClickHandler
     End Sub
 
     Private Sub ReportsToolStripMenuInitialize()
         ' Populate the Reports menu with available reports from the database.
-        Dim reportsMenu As ToolStripMenuItem = ReportsToolStripMenuItem
         Dim i As Integer = 0
         For Each rpt As Report In ReportsBindingSource
-            Dim subItem As New ToolStripMenuItem(rpt.ReportName)
-            reportsMenu.DropDownItems.Insert(i, subItem)
-            AddHandler subItem.Click, AddressOf ReportsItemClickHandler
+            ReportsToolStripMenuAdd(New ToolStripMenuItem(rpt.ReportName), i)
             i += 1
         Next
     End Sub
@@ -475,6 +706,20 @@ Public Class FrmReports
             mReport.GridSize = mReportGenerator.GridSize
         End If
     End Sub
+
+    Private Function ToolStripMenuItemGet(menu As ToolStripMenuItem, txt As String) As ToolStripMenuItem
+        Dim menuItem As ToolStripMenuItem = Nothing
+        For Each item As ToolStripItem In menu.DropDownItems
+            If TypeOf item Is ToolStripMenuItem Then
+                If item.Text = txt Then
+                    menuItem = CType(item, ToolStripMenuItem)
+                    Exit For
+                End If
+            End If
+        Next
+        Return menuItem
+    End Function
+
 #End Region
 #Region "Event Handlers"
 #Region "Form Events"
@@ -483,8 +728,7 @@ Public Class FrmReports
     End Sub
 
     Protected Overrides Sub Form_Closing(sender As Object, e As FormClosingEventArgs)
-        ReportUpdate()
-        Dim result As DialogResult = ReportClose()
+        Dim result As DialogResult = If(Report IsNot Nothing, ReportClose(), DialogResult.None)
         e.Cancel = (result = DialogResult.Cancel)
         MyBase.Form_Closing(sender, e)
     End Sub
@@ -495,9 +739,10 @@ Public Class FrmReports
         ReportGeneratorInitialize()
         ReportsToolStripMenuInitialize()
         FormResizeTo(New PrintDocument())
-        Me.ResizeToPagePounds = True
+        Me.ResizeToPageBounds = True
         ' Open the default report if one is set.
-        Report = If(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName, "")
+        'Report = ReportOpen(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName)
+        Report = ReportOpen(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName)
     End Sub
 
     Private Sub Form_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
@@ -527,83 +772,24 @@ Public Class FrmReports
 #End Region
 #Region "Print Events"
     Private Sub PrintDocument_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument.PrintPage
-        ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
-        ' paper's printable area.
-        ' TODO: See what fits on one page and handle multiple pages if needed. Set captureWidth and captureHeight
-        ' based on e.PageBounds and e.MarginBounds.
-        mReportGenerator.ReportGenerate(sender, e)
-        Exit Sub
-        Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
-        Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + FormMenuStrip.Height
-        Dim captureWidth As Integer = Me.ClientSize.Width
-        Dim captureHeight As Integer = Me.ClientSize.Height
-        Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
-        Dim formBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
-        Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
-        Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
-        Using g As Graphics = Graphics.FromImage(croppedBitmap)
-            g.DrawImage(formBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
-        End Using
-        Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
-        Using g As Graphics = Graphics.FromImage(scaledBitmap)
-            g.DrawImage(croppedBitmap, New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height))    ' Scale to paper printable area (inside margins).
-        End Using
-        e.Graphics.DrawImage(scaledBitmap, e.MarginBounds.Left, e.MarginBounds.Top)  ' Center the image within the page margins
-        formBitmap.Dispose()
-        croppedBitmap.Dispose()
-        e.HasMorePages = False
+        PrintPage(sender, e)
     End Sub
 
     Private Sub PrintToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrintToolStripMenuItem.Click
         PrintDocument.Print()
-        'PrintPreviewDialog1.Document = PrintDocument1
-        'If PrintPreviewDialog1.ShowDialog() = DialogResult.OK Then
-        '    PrintDocument1.Print()
-        'End If
     End Sub
 
     Private Sub PrintPreviewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrintPreviewToolStripMenuItem.Click
-        PrintPreviewDialog.Document = PrintDocument
-        If PrintPreviewDialog.ShowDialog() = DialogResult.OK Then
-            PrintDocument.Print()
-        End If
+        PrintPreview(sender, e)
     End Sub
 
     Private Sub PageSetupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PageSetupToolStripMenuItem.Click
-        PageSetupDialog.Document = PrintDocument
-        If PageSetupDialog.ShowDialog() = DialogResult.OK Then
-            Dim margins As Printing.Margins = PrintDocument.DefaultPageSettings.Margins
-            Dim paperSize As PaperSize = PrintDocument.DefaultPageSettings.PaperSize
-            Dim isLandscape As Boolean = PrintDocument.DefaultPageSettings.Landscape
-            If ResizeToPagePounds Then FormResizeTo(PageSetupDialog.Document)
-        End If
+        PageSetup(sender, e)
     End Sub
-
 #End Region
 #Region "Form Menu Events"
     Private Sub EditToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles EditToolStripMenuItem.DropDownOpening
-        ' Enables/disables Edit menu items according to the ReportGenerator's 
-        ' current Edit state.
-        If mReport Is Nothing Then
-            For Each item As ToolStripItem In EditToolStripMenuItem.DropDownItems
-                item.Enabled = False
-            Next
-        Else
-            ' Only selected text can be copied. Duplicate report elements are not allowed.
-            If TypeOf Me.ActiveControl Is TextBoxBase Then
-                If CType(Me.ActiveControl, TextBoxBase).SelectionLength > 0 Then
-                    CopyToolStripMenuItem.Enabled = True
-                Else
-                    CopyToolStripMenuItem.Enabled = False
-                End If
-            Else
-                CopyToolStripMenuItem.Enabled = False
-            End If
-            CutToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Cut)
-            DeleteToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Delete)
-            PasteToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Paste)
-            SelectAllToolStripMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.SelectAll)
-        End If
+        EditDropDownOpening()
     End Sub
     Private Sub EditCopyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyToolStripMenuItem.Click
         SendKeys.Send("^C")
@@ -622,7 +808,11 @@ Public Class FrmReports
     End Sub
 
     Private Sub ElementsLetterheadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadImageToolStripMenuItem.Click
-        LetterheadSelect()
+        Try
+            LetterheadSelect()
+        Catch ex As Exception
+            MessageBox.Show("Error loading letterhead: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+        End Try
     End Sub
 
 
@@ -631,36 +821,26 @@ Public Class FrmReports
     End Sub
 
     Private Sub ElementsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles ElementsToolStripMenuItem.DropDownOpening
-        ' Checks/unchecks and enables/disables Elements menu items according
-        ' to the current visibility or report elements.
-        For Each item As ToolStripItem In ElementsToolStripMenuItem.DropDownItems
-            If TypeOf item Is ToolStripMenuItem Then
-                Dim toolstripItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
-                toolstripItem.Checked = mReportGenerator.VisibleControls.Any(Function(rc) rc.Name = toolstripItem.Text)
-                ' The Header and Letterhead itemsChecked state also effects the 
-                ' HeaderItemsToolStripMenuItem and LetterheadImageToolStripMenuItem menu items
-                Select Case toolstripItem.Text
-                    Case "Header"
-                        ElementsToolStripMenuItem.DropDownItems.Item("HeaderItemsToolStripMenuItem").Enabled = toolstripItem.Checked
-                    Case "Letterhead"
-                        ElementsToolStripMenuItem.DropDownItems.Item("LetterheadImageToolStripMenuItem").Enabled = toolstripItem.Checked
-                    Case Else
-                End Select
-            End If
-        Next
+        ElementsDropdownOpening()
     End Sub
 
     Private Sub FileCloseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseToolStripMenuItem.Click
-        Dim unused = ReportClose()
+        If Report IsNot Nothing Then ReportClose()
+        'Dim result As DialogResult = If(Report IsNot Nothing, ReportClose(), DialogResult.None)
+        'If result <> DialogResult.Cancel Then Report = Nothing
     End Sub
-
 
     Private Sub FileExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
         CloseForm(Me)
     End Sub
 
-    Private Sub FileOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+    Private Sub FileNewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FileNewToolStripMenuItem.Click
+        If Report IsNot Nothing Then ReportClose()
+        'ReportCreateNew()
+    End Sub
 
+    Private Sub FileOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
+        ReportEditorOpen()
     End Sub
 
     Private Sub FileSaveToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveToolStripMenuItem.Click
@@ -668,7 +848,7 @@ Public Class FrmReports
     End Sub
 
     Private Sub FileSaveAsToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SaveAsToolStripMenuItem.Click
-        ReportSave(ReportNameInput())
+        ReportSaveAs()
     End Sub
 
     Private Sub HeaderItemsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles HeaderItemsToolStripMenuItem.DropDownOpening
@@ -684,17 +864,24 @@ Public Class FrmReports
     End Sub
 
     Private Sub ReportsItemClickHandler(sender As Object, e As EventArgs)
-        Dim clickedItem As ToolStripItem = TryCast(sender, ToolStripMenuItem)
-        If clickedItem IsNot Nothing Then Report = clickedItem.Text
+        Report = ReportOpen(CType(sender, ToolStripMenuItem).Text)
     End Sub
 
     Private Sub ReportsEditToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsEditToolStripMenuItem.Click
         ReportEditorOpen()
     End Sub
+
+    Private Sub ReportsExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsExportToolStripMenuItem.Click
+        ReportExport()
+    End Sub
+
+    Private Sub ReportsImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsImportToolStripMenuItem.Click
+        ReportImport()
+    End Sub
 #End Region
 #Region "Context Menu Events"
     Private Sub ReportContextMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles ReportContextMenuStrip.Opening
-        ContextMenuMenuItemsEnable()
+        ContextMenuOpening()
     End Sub
 
     Private Sub BringToFrontContextMenuItem_Click(sender As Object, e As EventArgs) Handles BringToFrontContextMenuItem.Click
