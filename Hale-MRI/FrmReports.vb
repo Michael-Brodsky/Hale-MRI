@@ -152,23 +152,15 @@ Public Class FrmReports
         Next
     End Sub
 
-    'Private Function ElementsMenuItemGet(txt As String) As ToolStripMenuItem
-    '    ' Returns the ElementsToolStripMenuItem whose Text matches the given txt.
-    '    Dim menuItem As ToolStripMenuItem = Nothing
-    '    For Each item As ToolStripItem In Me.ElementsToolStripMenuItem.DropDownItems
-    '        If TypeOf item Is ToolStripMenuItem Then
-    '            Dim tmpItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
-    '            If tmpItem.Text = txt Then
-    '                menuItem = tmpItem
-    '                Exit For
-    '            End If
-    '        End If
-    '    Next
-    '    Return menuItem
-    'End Function
-
-    Private Sub FormResizeTo(e As PrintEventArgs)
-
+    Private Sub FormMenuConfigure(rpt As Report)
+        ' Enable menu items according to whether a Report is currently open.
+        If rpt IsNot Nothing Then
+            ElementsToolStripMenuItem.Enabled = True
+        Else
+            ElementsToolStripMenuItem.Enabled = False
+        End If
+        SettingsToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
+        ReportContextMenuStrip.Enabled = ElementsToolStripMenuItem.Enabled
     End Sub
 
     Private Sub FormResizeTo(pd As PrintDocument)
@@ -297,6 +289,8 @@ Public Class FrmReports
                 mReportGenerator.GridSize = If(value.GridSize, 0)
                 ReportsExportToolStripMenuItem.Enabled = True
                 ReportElementsLoad(value.ReportElements)
+                FormMenuConfigure(value)
+                ElementsToolStripMenuItem.Enabled = True
             End If
         End Set
     End Property
@@ -330,6 +324,7 @@ Public Class FrmReports
             Me.Text = "Reports"
             ReportsExportToolStripMenuItem.Enabled = False
             mReport = Nothing
+            FormMenuConfigure(mReport)
         End If
         Return result
     End Function
@@ -470,7 +465,7 @@ Public Class FrmReports
             .SizeWidth = values(3),
             .SizeHeight = values(4),
             .Zorder = values(5),
-            .Data = values(6)
+            .Data = If(Not String.IsNullOrEmpty(values(6)), values(6), Nothing)
         }
     End Function
 
@@ -493,8 +488,8 @@ Public Class FrmReports
             .ReportControls = New List(Of ReportGenerator.ReportControl) From {
                 New ReportGenerator.ReportControl(Letterhead, True, False, False, Nothing, Nothing, Nothing),
                 New ReportGenerator.ReportControl(Header, True, False, False, Nothing, Nothing, Nothing),
-                New ReportGenerator.ReportControl(Chart1, True, True, True, Nothing, Nothing, Nothing),
-                New ReportGenerator.ReportControl(Chart2, True, True, True, Nothing, Nothing, Nothing)
+                New ReportGenerator.ReportControl(ChartBladeHeight, True, True, True, Nothing, Nothing, New ReportDataDelegate(AddressOf Reporting.ChartBladeHeight_Data)),
+                New ReportGenerator.ReportControl(ChartAngularPosition, True, True, True, Nothing, Nothing, New ReportDataDelegate(AddressOf Reporting.ChartAngularPosition_Data))
             },
            .HeaderItems = New Dictionary(Of String, ReportGenerator.HeaderItem) From {
                 {"Job No.", New ReportGenerator.HeaderItem(TxtJobNumber, LabJobNumber, "JobNo")},
@@ -528,6 +523,8 @@ Public Class FrmReports
             AddHandler elementMenuItem.Click, AddressOf Me.ReportElement_Clicked
             AddHandler rc.Control.MouseDown, AddressOf Me.Control_MouseDown
         Next
+        ' TODO: Header dropdown items are hardcoded in the designer. Probably should be 
+        ' added programmatically, like ReportControls above, in case they change.
         For Each hd As ReportGenerator.HeaderItem In mReportGenerator.HeaderItems.Values.ToList()
             AddHandler hd.Control.Click, AddressOf Me.HeaderItem_Click
         Next
@@ -569,6 +566,7 @@ Public Class FrmReports
             result = Database.Reports _
                 .Include(Function(r) r.ReportElements) _
                 .FirstOrDefault(Function(r) r.ReportName = reportName.ToString())
+            ReportDataGet() ' See function for explanation.
         End If
         Return result
     End Function
@@ -698,7 +696,7 @@ Public Class FrmReports
         If headerElement IsNot Nothing Then
             Dim headerItems As List(Of String) = Nothing
             If headerElement.Data IsNot Nothing Then headerItems = headerElement.Data.Split(";"c).ToList
-            If headerItems Is Nothing OrElse Not visibleItems.SequenceEqual(headerItems) Then
+            If headerItems IsNot Nothing AndAlso visibleItems IsNot Nothing AndAlso Not visibleItems.SequenceEqual(headerItems) Then
                 headerElement.Data = String.Join(";", visibleItems)
             End If
         End If
@@ -916,5 +914,41 @@ Public Class FrmReports
         SendKeys.Send("^B")
     End Sub
 #End Region
+#End Region
+#Region "Data Delegates"
+    Private Sub ReportDataGet()
+        ' NOTE: Data delegates should be called once for each ReportControl, the first time it becomes visible.
+        ' Data Delegates can be passed any client control, e.g. FrmMeasurements.ChartBladeHeight,
+        ' FrmReports.ChartBladeHeight, etc., but can only work with one control at a time. For instance, I
+        ' copied the code for Reporting.ChartBladeHeight() from FrmMeasurements.ShowTrack(), but it seems we're
+        ' doing several things at once in FrmMeasurements.ShowTrack() on two graphs, so that will have to be
+        ' split up into two separate methods. Once that's done, you can just call Reporting.ChartBladeHeight()
+        ' from FrmMeasurements.ShowTrack(), passing the args in a ReportDataArgs guy (in FrmMeasurements.ShowTrack()
+        ' you would call   directly:
+        '   ChartBladeHeight_Data
+        '   (
+        '       ChartBladeHeight,     
+        '       New ReportDataArgs
+        '       (
+        '           ComboReferenceBlade.SelectedValue,
+        '           ComboReferencePoint.SelectedValue,
+        '           ComboReferenceRadius.SelectedValue,
+        '           JobDetails
+        '       )
+        '   )
+        '
+        ' Here, we will have to get the args from some Report setting and provide controls to select those.
+        ' I just hardcoded some values to demonstrate.
+        Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.First(Function(ctrl) ctrl.Name = "ChartBladeHeight")
+        rc.Data.DynamicInvoke(ChartBladeHeight, New ReportDataArgs(1, "Mid", 49.99, JobDetails))
+        rc.HasData = True
+
+        rc = mReportGenerator.ReportControls.First(Function(ctrl) ctrl.Name = "ChartAngularPosition")
+        rc.Data.DynamicInvoke(ChartAngularPosition, New ReportDataArgs(1, "Mid", 49.99, JobDetails))
+        rc.HasData = True
+
+        ' This does create some redundancy in the calls, esp in FrmMeasurements.ShowTrack()
+        ' when calling ShowRake(). I'll see if there's a way to make it more efficient.
+    End Sub
 #End Region
 End Class

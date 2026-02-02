@@ -163,11 +163,11 @@ Partial Class FrmReports
         LabMeasuredDiameter = New Label()
         LabMarkedDiameter = New Label()
         LabRotation = New Label()
-        Chart1 = New DataVisualization.Charting.Chart()
-        Chart2 = New DataVisualization.Charting.Chart()
         PrintDocument = New Printing.PrintDocument()
         PrintPreviewDialog = New PrintPreviewDialog()
         PageSetupDialog = New PageSetupDialog()
+        ChartBladeHeight = New DataVisualization.Charting.Chart()
+        ChartAngularPosition = New DataVisualization.Charting.Chart()
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         FormMenuStrip.SuspendLayout()
         ReportContextMenuStrip.SuspendLayout()
@@ -179,8 +179,8 @@ Partial Class FrmReports
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(Chart1, ComponentModel.ISupportInitialize).BeginInit()
-        CType(Chart2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' ReportsBindingSource
@@ -392,6 +392,7 @@ Partial Class FrmReports
         ' ElementsToolStripMenuItem
         ' 
         ElementsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {LetterheadImageToolStripMenuItem, HeaderItemsToolStripMenuItem, ToolStripSeparator8})
+        ElementsToolStripMenuItem.Enabled = False
         ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
         ElementsToolStripMenuItem.Size = New Size(67, 20)
         ElementsToolStripMenuItem.Text = "Elements"
@@ -561,6 +562,7 @@ Partial Class FrmReports
         ' SettingsToolStripMenuItem
         ' 
         SettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ToolStripMenuItem1})
+        SettingsToolStripMenuItem.Enabled = False
         SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
         SettingsToolStripMenuItem.Size = New Size(61, 20)
         SettingsToolStripMenuItem.Text = "Settings"
@@ -1417,40 +1419,6 @@ Partial Class FrmReports
         LabRotation.TabIndex = 39
         LabRotation.Text = "Rotation"
         ' 
-        ' Chart1
-        ' 
-        ChartArea1.Name = "ChartArea1"
-        Chart1.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        Chart1.Legends.Add(Legend1)
-        Chart1.Location = New Point(12, 374)
-        Chart1.Name = "Chart1"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        Chart1.Series.Add(Series1)
-        Chart1.Size = New Size(293, 172)
-        Chart1.TabIndex = 23
-        Chart1.Text = "Chart1"
-        Chart1.Visible = False
-        ' 
-        ' Chart2
-        ' 
-        ChartArea2.Name = "ChartArea1"
-        Chart2.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        Chart2.Legends.Add(Legend2)
-        Chart2.Location = New Point(151, 393)
-        Chart2.Name = "Chart2"
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        Chart2.Series.Add(Series2)
-        Chart2.Size = New Size(293, 172)
-        Chart2.TabIndex = 24
-        Chart2.Text = "Chart2"
-        Chart2.Visible = False
-        ' 
         ' PrintDocument
         ' 
         ' 
@@ -1464,13 +1432,48 @@ Partial Class FrmReports
         PrintPreviewDialog.Name = "PrintPreviewDialog1"
         PrintPreviewDialog.Visible = False
         ' 
+        ' ChartBladeHeight
+        ' 
+        ChartArea1.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea1)
+        Legend1.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend1)
+        ChartBladeHeight.Location = New Point(13, 388)
+        ChartBladeHeight.Margin = New Padding(0, 1, 0, 0)
+        ChartBladeHeight.Name = "ChartBladeHeight"
+        Series1.ChartArea = "ChartArea1"
+        Series1.Legend = "Legend1"
+        Series1.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series1)
+        ChartBladeHeight.Size = New Size(312, 137)
+        ChartBladeHeight.TabIndex = 25
+        ChartBladeHeight.Text = "Track"
+        ChartBladeHeight.Visible = False
+        ' 
+        ' ChartAngularPosition
+        ' 
+        ChartArea2.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea2)
+        Legend2.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend2)
+        ChartAngularPosition.Location = New Point(340, 388)
+        ChartAngularPosition.Name = "ChartAngularPosition"
+        Series2.ChartArea = "ChartArea1"
+        Series2.Legend = "Legend1"
+        Series2.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series2)
+        ChartAngularPosition.Size = New Size(306, 137)
+        ChartAngularPosition.TabIndex = 26
+        ChartAngularPosition.Text = "Track"
+        ChartAngularPosition.Visible = False
+        ' 
         ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         ClientSize = New Size(850, 1061)
-        Controls.Add(Chart2)
-        Controls.Add(Chart1)
+        Controls.Add(ChartAngularPosition)
+        Controls.Add(ChartBladeHeight)
         Controls.Add(Header)
         Controls.Add(Letterhead)
         Controls.Add(FormMenuStrip)
@@ -1490,8 +1493,8 @@ Partial Class FrmReports
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(Chart1, ComponentModel.ISupportInitialize).EndInit()
-        CType(Chart2, ComponentModel.ISupportInitialize).EndInit()
+        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).EndInit()
+        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
     End Sub
@@ -1622,8 +1625,6 @@ Partial Class FrmReports
     Friend WithEvents VesselBindingSource As BindingSource
     Friend WithEvents CustomerBindingSource As BindingSource
     Friend WithEvents ManufacturerBindingSource As BindingSource
-    Friend WithEvents Chart1 As DataVisualization.Charting.Chart
-    Friend WithEvents Chart2 As DataVisualization.Charting.Chart
     Friend WithEvents BringToFrontContextMenuItem As ToolStripMenuItem
     Friend WithEvents SendToBackContextMenuItem As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
@@ -1634,4 +1635,6 @@ Partial Class FrmReports
     Friend WithEvents ToolStripSeparator11 As ToolStripSeparator
     Friend WithEvents ReportsImportToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ReportsExportToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
+    Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
 End Class

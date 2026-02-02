@@ -1,10 +1,6 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.Collections.Specialized
 Imports System.Drawing.Printing
-Imports System.Net.Security
-Imports Microsoft.EntityFrameworkCore.Migrations.Operations
-Imports Newtonsoft.Json.Linq
-Imports Windows.Win32.UI
 
 Public Class ReportGenerator
 #Region "Types and Constants"
@@ -20,7 +16,7 @@ Public Class ReportGenerator
         ZOrder = 64     ' BringToFront/SendToBack enabled.
     End Enum
 
-    ' Enumerats valid control resize "grab" points.
+    ' Enumerates valid control resize "grab" points.
     Public Enum ResizePoints
         None = 0
         RightEdge = 1
@@ -38,6 +34,7 @@ Public Class ReportGenerator
         Implements ICloneable
         Public Control As Control       ' The display control. 
         Public Data As [Delegate]       ' Display control's data delegate.
+        Public HasData As Boolean       ' Indicates whether the control has display data.
         Public IsMovable As Boolean     ' Indicates whether the display control is moveable, including z-order. 
         Public IsSelectable As Boolean  ' Indicates whether the display control is selectable. 
         Public IsSizeable As Boolean    ' Indicates whether the display control is sizeable. 
