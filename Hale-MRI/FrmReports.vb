@@ -7,6 +7,7 @@ Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Imports Newtonsoft.Json.Linq
+Imports LibDatabase.StoredProcedures
 
 ''' <summary>
 ''' Form for Opening, Closing, Editing and Printing reports.
@@ -24,10 +25,13 @@ Imports Newtonsoft.Json.Linq
 ''' </summary>
 Public Class FrmReports
     Inherits FrmDatabaseForm
+#Region "Types abd Constants"
+    Private Const kNewReportName As String = "*New Report*"
+#End Region
 #Region "Private Members"
     Private mJobDetails As JobDetail = Nothing              ' The current JobDetail record
     Private mReport As Report = Nothing                     ' The current report.
-    Private mReportGenerator As ReportGenerator = Nothing  ' The ReportGenerator for runtime report layout and formatting.
+    Private mReportGenerator As ReportGenerator = Nothing   ' The ReportGenerator for runtime report layout and formatting.
     Private mResizeToPagePounds As Boolean = False          ' Indicates whether this form is sized to the current printer page size.
 #End Region
 #Region "Public Interface"
@@ -282,11 +286,6 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Function ReportControlToElement(rc As ReportGenerator.ReportControl) As ReportElement
-        ' Returns the Database ReportElement corresponding to the given ReportControl in the current report.
-        Return mReport.ReportElements.FirstOrDefault(Function(re) re.ElementName = rc.Name.ToString())
-    End Function
-
     Private Property Report As Report
         Get
             Return mReport
@@ -295,17 +294,16 @@ Public Class FrmReports
             mReport = value
             If value IsNot Nothing Then
                 Me.Text = value.ReportName
-                mReportGenerator.GridSize = value.GridSize
+                mReportGenerator.GridSize = If(value.GridSize, 0)
                 ReportsExportToolStripMenuItem.Enabled = True
                 ReportElementsLoad(value.ReportElements)
             End If
         End Set
     End Property
 
-    Private Sub ReportAddNew(rpt As Report)
+    Private Sub ReportAddNew(ByRef rpt As Report)
         ' Adds a new report to the database and the Reports menu drop down list.
         Database.Reports.Add(rpt)
-        Database.SaveChanges()
         ReportsToolStripMenuAdd(New ToolStripMenuItem(rpt.ReportName))
     End Sub
 
@@ -334,6 +332,11 @@ Public Class FrmReports
             mReport = Nothing
         End If
         Return result
+    End Function
+
+    Private Function ReportControlToElement(rc As ReportGenerator.ReportControl) As ReportElement
+        ' Returns the Database ReportElement corresponding to the given ReportControl in the current report.
+        Return mReport.ReportElements.FirstOrDefault(Function(re) re.ElementName = rc.Name.ToString())
     End Function
 
     Private Function ReportDataLoad(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
@@ -474,13 +477,9 @@ Public Class FrmReports
     Private Function ReportFromFileReport(values() As String) As Report
         Return New Report() With {
             .ReportName = values(0),
-            .LastModifed = Date.Parse(values(1)),
-            .ModifiedBy = values(2),
-            .LetterHeadFile = values(3),
-            .IsDefault = Boolean.Parse(values(4)),
-            .HorizontalLimit = Integer.Parse(values(5)),
-            .VerticalLimit = Integer.Parse(values(6)),
-            .GridSize = Integer.Parse(values(7))
+            .LastModifed = Date.Now,
+            .ModifiedBy = Me.User.Id,
+            .GridSize = Integer.Parse(values(1))
         }
     End Function
 
@@ -546,8 +545,8 @@ Public Class FrmReports
                 If Report IsNot Nothing Then
                     If ReportClose() = DialogResult.Cancel Then Exit Sub
                 End If
-                ReportAddNew(newReport)
                 Report = newReport
+                ReportAddNew(newReport)
             End If
         End If
     End Sub
@@ -564,19 +563,6 @@ Public Class FrmReports
         Return reportName
     End Function
 
-    Private Sub ReportToFile(fileName As String)
-        Const commentReport As String = "'---Report---"
-        Const commentElements As String = "'---Elements---"
-        Dim content As String =
-            $"{commentReport}{Environment.NewLine}" &
-            $"<Report>;{Report.ReportName};{Report.LastModifed.ToString()};{Report.ModifiedBy};{Report.LetterHeadFile};{Report.IsDefault.ToString()};{Report.HorizontalLimit};{Report.VerticalLimit};{Report.GridSize}{Environment.NewLine}"
-        content += commentElements & Environment.NewLine
-        For Each re As ReportElement In mReport.ReportElements
-            content += $"<Element>;{re.ElementName};{re.PositionX};{re.PositionY};{re.SizeWidth};{re.SizeHeight};{re.Zorder};{re.Data}{Environment.NewLine}"
-        Next
-        File.WriteAllText(fileName, content)
-    End Sub
-
     Private Function ReportOpen(ByVal reportName As String) As Report
         Dim result As Report = Nothing
         If Not String.IsNullOrEmpty(reportName) Then
@@ -586,6 +572,19 @@ Public Class FrmReports
         End If
         Return result
     End Function
+
+    Private Sub ReportToFile(fileName As String)
+        Const commentReport As String = "'---Report---"
+        Const commentElements As String = "'---Elements---"
+        Dim content As String =
+            $"{commentReport}{Environment.NewLine}" &
+            $"<Report>;{Report.ReportName};{Report.GridSize}{Environment.NewLine}"
+        content += commentElements & Environment.NewLine
+        For Each re As ReportElement In mReport.ReportElements
+            content += $"<Element>;{re.ElementName};{re.PositionX};{re.PositionY};{re.SizeWidth};{re.SizeHeight};{re.Zorder};{If(re.Data, "")}{Environment.NewLine}"
+        Next
+        File.WriteAllText(fileName, content)
+    End Sub
 
     Private Property ResizeToPageBounds As Boolean
         Get
@@ -643,6 +642,11 @@ Public Class FrmReports
         ' Update ReportElements in the database.
         If mReport Is Nothing OrElse mReport.ReportElements Is Nothing OrElse mReportGenerator Is Nothing Then
             Return
+        End If
+
+        ' If this is a new unsaved report, save it now.
+        If mReport.Id Is Nothing Then
+            Database.SaveChanges()
         End If
 
         ' Remove any deleted elements
@@ -740,9 +744,6 @@ Public Class FrmReports
         ReportsToolStripMenuInitialize()
         FormResizeTo(New PrintDocument())
         Me.ResizeToPageBounds = True
-        ' Open the default report if one is set.
-        'Report = ReportOpen(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName)
-        Report = ReportOpen(Database.Reports.FirstOrDefault(Function(dr) dr.IsDefault = True)?.ReportName)
     End Sub
 
     Private Sub Form_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
@@ -835,8 +836,11 @@ Public Class FrmReports
     End Sub
 
     Private Sub FileNewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles FileNewToolStripMenuItem.Click
-        If Report IsNot Nothing Then ReportClose()
-        'ReportCreateNew()
+        If ReportClose() = DialogResult.Cancel Then Exit Sub
+        Me.Report = New Report() With {
+            .ReportName = $"New Report  ({(Database.Reports.Local.Where(Function(r) r.ReportName Like kNewReportName).Count() + 1)})"
+        }
+        ReportAddNew(Me.Report)
     End Sub
 
     Private Sub FileOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles OpenToolStripMenuItem.Click
