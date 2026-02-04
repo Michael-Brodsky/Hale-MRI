@@ -3,7 +3,7 @@
 Public Module FileLogger
     ' Thread-safe minimal file logger for simple value logging.
     Private ReadOnly lockObj As New Object()
-    Private ReadOnly logDirectoryName As String = Path.Combine("C:\Users\super\OneDrive\Documents", "logs")
+    Private ReadOnly logDirectoryName As String = Path.Combine(Directory.GetCurrentDirectory(), "logs")
     Private ReadOnly logFileName As String = Path.Combine(logDirectoryName, "app.log")
 
     Private Sub EnsureLogDirectory()
