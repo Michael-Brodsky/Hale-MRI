@@ -4,7 +4,7 @@ Imports Microsoft.EntityFrameworkCore
 'Imports Admin
 Public Class FrmHaleMRI
 #Region "Private Members"
-    Private mDatabase As New HaleMRIContext
+    Private mDatabase As HaleMRIContext
     Private mWorkstationEncoders As New WorkstationEncoders()
     Private mUser As Employee
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
@@ -148,7 +148,11 @@ Public Class FrmHaleMRI
     Private Sub FrmHaleMRI_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Ensure database created and load all data except the "Measurements" tables.
         Try
+#If DEBUG Then
+            MessageBox.Show("This is a Debug build.")
             mDatabase.Database.EnsureCreated()
+#End If
+            mDatabase = New HaleMRIContext()
             mDatabase.Customers.Load()
             mDatabase.Vessels.Load()
             mDatabase.Jobs.Load()

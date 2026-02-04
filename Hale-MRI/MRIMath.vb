@@ -120,6 +120,7 @@ Module MRIMath
     End Function
 
     Public Function GetRefHeightsHighTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
+        'Returns a list of height values that are already modified based on ref point for use in Line graphs
         Dim Numbers As New List(Of Double)
         refpitch += refpitch * (Tolclass.LocalPitchPercent / 100)
         Dim angperblade As Double = 360 / blades
@@ -148,6 +149,7 @@ Module MRIMath
     End Function
 
     Public Function GetRefHeightsLowTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
+        'Returns a list of height values that are already modified based on ref point for use in Line graphs
         Dim Numbers As New List(Of Double)
         refpitch -= refpitch * (Tolclass.LocalPitchPercent / 100)
         Dim angperblade As Double = 360 / blades
@@ -176,6 +178,7 @@ Module MRIMath
     End Function
 
     Public Function GetRefHeightsStraight(center As Boolean, refpitch As Double, blades As Integer) As List(Of Double)
+        'Returns a list of height values for use in line graphs
         Dim numbers As New List(Of Double)
         Dim x As Integer
         Dim angperblade As Double = 360 / blades

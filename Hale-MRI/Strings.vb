@@ -1,7 +1,6 @@
 ﻿''' <summary>
 ''' Defines common string constants used throughout the application.
 ''' </summary>
-
 Module Strings
     ' Constants for various string messages/user prompts used in the application
     Public Const STR_TITLE_DEFAULT As String = "Hale-MRI"
@@ -18,7 +17,7 @@ Module Strings
     Public Const STR_ERR_OBJECT_LOAD As String = "Error loading the {0}: {1}"
 
     ' String parameters for functions.
-    Public Const STR_PARAM_DECIMAL_PLACES As String = "F2"  ' This is a ~Settings parameter in new dB.
+    Public Const STR_PARAM_DECIMAL_PLACES As String = "F2"  ' This is a ~Settings parameter in dB.
 
     ' Setting names used in ~Settings table.
     Public Const STR_SETTING_COMPANY_NAME As String = "Company Name"
@@ -33,4 +32,11 @@ Module Strings
     Public Const STR_SETTING_ENCODER_DATA_DEFAULT_FOLDER As String = "Encoder Data Default Folder"
     Public Const STR_SETTING_ENCODER_DEFAULT_SAMPLE_PERIOD As String = "Encoder Default Sample Interval"
     Public Const STR_SETTING_ENCODER_MAX_SAMPLES_PER_SCAN As String = "Encoder Max Samples Per Scan"
+
+    ' File dialog filter strings.
+    Public Const STR_DIALOG_FILTER_ALL As String = "All Files (*.*)|*.*"
+    Public Const STR_DIALOG_FILTER_DATABASE As String = "Database Files|*.mdb;*.accdb;*.sqlite;*.db|All Files (*.*)|*.*"
+    Public Const STR_DIALOG_FILTER_IMAGE As String = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp|All Files (*.*)|*.*"
+    Public Const STR_DIALOG_FILTER_SCANDATA As String = "ScanData Files (*.txt)|*.txt|All Files (*.*)|*.*"
+    Public Const STR_DIALOG_FILTER_TEXT As String = "Text Files (*.txt)|*.txt|All Files (*.*)|*.*"
 End Module
