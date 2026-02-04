@@ -36,6 +36,7 @@ Partial Class FrmReports
         FileNewToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator11 = New ToolStripSeparator()
         OpenToolStripMenuItem = New ToolStripMenuItem()
+        FileRecentToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator1 = New ToolStripSeparator()
         CloseToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator3 = New ToolStripSeparator()
@@ -56,8 +57,8 @@ Partial Class FrmReports
         ToolStripSeparator9 = New ToolStripSeparator()
         SelectAllToolStripMenuItem = New ToolStripMenuItem()
         JobsToolStripMenuItem = New ToolStripMenuItem()
-        JobsRecentToolStripMenuItem = New ToolStripMenuItem()
         JobsOpenToolStripMenuItem = New ToolStripMenuItem()
+        JobsRecentToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator13 = New ToolStripSeparator()
         JobsCloseToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripMenuItem = New ToolStripMenuItem()
@@ -150,7 +151,6 @@ Partial Class FrmReports
         PageSetupDialog = New PageSetupDialog()
         ChartBladeHeight = New DataVisualization.Charting.Chart()
         ChartAngularPosition = New DataVisualization.Charting.Chart()
-        FileRecentToolStripMenuItem = New ToolStripMenuItem()
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         FormMenuStrip.SuspendLayout()
         ReportContextMenuStrip.SuspendLayout()
@@ -203,6 +203,12 @@ Partial Class FrmReports
         OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
         OpenToolStripMenuItem.Size = New Size(186, 22)
         OpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' FileRecentToolStripMenuItem
+        ' 
+        FileRecentToolStripMenuItem.Name = "FileRecentToolStripMenuItem"
+        FileRecentToolStripMenuItem.Size = New Size(186, 22)
+        FileRecentToolStripMenuItem.Text = "Recent"
         ' 
         ' ToolStripSeparator1
         ' 
@@ -348,27 +354,27 @@ Partial Class FrmReports
         JobsToolStripMenuItem.Size = New Size(42, 20)
         JobsToolStripMenuItem.Text = "Jobs"
         ' 
-        ' JobsRecentToolStripMenuItem
-        ' 
-        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
-        JobsRecentToolStripMenuItem.Size = New Size(180, 22)
-        JobsRecentToolStripMenuItem.Text = "Recent"
-        ' 
         ' JobsOpenToolStripMenuItem
         ' 
         JobsOpenToolStripMenuItem.Name = "JobsOpenToolStripMenuItem"
-        JobsOpenToolStripMenuItem.Size = New Size(180, 22)
+        JobsOpenToolStripMenuItem.Size = New Size(110, 22)
         JobsOpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' JobsRecentToolStripMenuItem
+        ' 
+        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
+        JobsRecentToolStripMenuItem.Size = New Size(110, 22)
+        JobsRecentToolStripMenuItem.Text = "Recent"
         ' 
         ' ToolStripSeparator13
         ' 
         ToolStripSeparator13.Name = "ToolStripSeparator13"
-        ToolStripSeparator13.Size = New Size(177, 6)
+        ToolStripSeparator13.Size = New Size(107, 6)
         ' 
         ' JobsCloseToolStripMenuItem
         ' 
         JobsCloseToolStripMenuItem.Name = "JobsCloseToolStripMenuItem"
-        JobsCloseToolStripMenuItem.Size = New Size(180, 22)
+        JobsCloseToolStripMenuItem.Size = New Size(110, 22)
         JobsCloseToolStripMenuItem.Text = "Close"
         ' 
         ' ReportsToolStripMenuItem
@@ -1376,12 +1382,6 @@ Partial Class FrmReports
         ChartAngularPosition.TabIndex = 26
         ChartAngularPosition.Text = "Track"
         ChartAngularPosition.Visible = False
-        ' 
-        ' FileRecentToolStripMenuItem
-        ' 
-        FileRecentToolStripMenuItem.Name = "FileRecentToolStripMenuItem"
-        FileRecentToolStripMenuItem.Size = New Size(186, 22)
-        FileRecentToolStripMenuItem.Text = "Recent"
         ' 
         ' FrmReports
         ' 

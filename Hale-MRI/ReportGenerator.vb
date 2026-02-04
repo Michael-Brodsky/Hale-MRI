@@ -47,7 +47,11 @@ Public Class ReportGenerator
         Public MaxSize As Size          ' The display control's maximum size (0 = no max).
         Public MinSize As Size          ' The display control's minimum size (0 = no min).
         Public Name As String           ' This object's human-readable name.
-
+        Public ReadOnly Property ZOrder As Integer
+            Get
+                Return If(Me.Control IsNot Nothing, Me.Control.Parent.Controls.GetChildIndex(Me.Control), kNoCurrentSelection)
+            End Get
+        End Property
         Public Sub New(ctrl As Control, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                        Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As [Delegate] = Nothing)
             ' Constructor
@@ -99,7 +103,7 @@ Public Class ReportGenerator
     Private kControlBorderInflate As Size = New Size(2, 2)      ' Control's selection border offset from the control's border.
     Private kControlBorderColor As Color = Color.Blue           ' Control's selection border color
     Private kControlBorderStyle As ButtonBorderStyle = ButtonBorderStyle.Solid  ' Control's selection border style.
-    Private Const kUndoMax As Integer = 32                      ' Maximum sise of the undo stack in elements.
+    Private Const kUndoMax As Integer = 32                      ' Maximum size of the undo stack in elements.
 #End Region
 #Region "Private Members"
     Private mBounds As Rectangle                                ' the bounding Rectangle within which a control can be dragged/resized.
@@ -269,7 +273,6 @@ Public Class ReportGenerator
             LayoutSet(ReportControls)
         End Set
     End Property
-
 #End Region
 #Region "Private Interface"
     Private Function CtrlToReportControl(ctrl As Control, collection As ObservableCollection(Of ReportControl)) As ReportControl
