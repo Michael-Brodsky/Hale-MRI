@@ -76,18 +76,6 @@ Public Class ReportGenerator
         End Function
     End Class
 
-    ' Header item container type.
-    Public Class HeaderItem
-        Public Control As Control   ' The header item display control.
-        Public Label As Label       ' The display control's associated Label.
-        Public Name As String       ' This object's human-readable name.
-        Public Sub New(ctrl As Control, lab As Label, name As String)
-            Me.Control = ctrl
-            Me.Label = lab
-            Me.Name = name
-        End Sub
-    End Class
-
     ' ReportEvent arguments type.
     Public Class ReportEventArgs
         Public Property EventName As String
@@ -190,8 +178,6 @@ Public Class ReportGenerator
             End If
         End Set
     End Property
-
-    Public Property HeaderItems As Dictionary(Of String, HeaderItem)
 
     Public Property HorizontalLimit As Integer
         Get

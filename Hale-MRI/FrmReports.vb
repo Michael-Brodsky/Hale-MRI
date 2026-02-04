@@ -1,31 +1,68 @@
 ﻿Imports System.ComponentModel
 Imports System.Drawing.Printing
 Imports System.IO
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Tab
+Imports Hale_MRI.ReportGenerator
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
+Imports LibDatabase.StoredProcedures
 Imports Microsoft.EntityFrameworkCore
 Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Imports Newtonsoft.Json.Linq
-Imports LibDatabase.StoredProcedures
 
 ''' <summary>
 ''' Form for Opening, Closing, Editing and Printing reports.
 ''' Manages database Report entities and serves as the 
-''' palette for displaying report elements (controls).
+''' palette for displaying report elements (charts, graphs).
 ''' NOTE:
 '''     This form only manages itself and its own controls 
-'''     (e.g. menus, form size) and maintains database
-'''     currency with respect to report layouts. The visual
-'''     report elements are managed by the ReportGenerator
-'''     (e.g. control visibility, size, location, drag/drop
-'''     and editing). This form should not modify any report
-'''     controls, as this may cause unexpected behavior.
+'''     (e.g. menus, form size, header, letterhead) and 
+'''     maintains database currency with respect to report 
+'''     layouts. The visual elements are managed by the
+'''     ReportGenerator (e.g. control visibility, size, 
+'''     location, drag/drop, editing and printing). This 
+'''     form should not modify any ReportControls or their
+'''     properies, as this may cause unexpected behavior.
 '''     
 ''' </summary>
 Public Class FrmReports
     Inherits FrmDatabaseForm
-#Region "Types abd Constants"
+#Region "Types and Constants"
+    ' Header item container type.
+    Private Class HeaderItem
+        Public Property Control As Control      ' The value display control.
+        Public ReadOnly Property Id As String   ' The display control's database id - Stored in the Header ReportElement's Data field.
+            Get
+                Return If(Me.Control IsNot Nothing, Control.Tag, "")
+            End Get
+        End Property
+        Public Property Label As Label          ' The display control's associated Label.
+        Public Property MenuItem As ToolStripMenuItem   ' The HeaderItems' associated ToolStripMenuItem.
+        Public Property Visible As Boolean
+            Get
+                Return If(Me.Control IsNot Nothing, Me.Control.Visible, False)
+            End Get
+            Set(value As Boolean)
+                If Me.Control IsNot Nothing Then Me.Control.Visible = value
+                If Me.Label IsNot Nothing Then Me.Label.Visible = value
+            End Set
+        End Property
+        Public Sub New(ctrl As Control, lab As Label, menuItem As ToolStripMenuItem)
+            Me.Control = ctrl
+            Me.Label = lab
+            Me.MenuItem = menuItem
+            If menuItem IsNot Nothing Then
+                AddHandler menuItem.CheckedChanged, AddressOf Me.HeaderItemToolStripMenuItem_CheckedChanged
+            End If
+        End Sub
+        Private Sub HeaderItemToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs)
+            ' Integrates header control visibility and its corresponding
+            ' ToolStripMenuItem.Checked state.
+            Me.Visible = Me.MenuItem.Checked
+        End Sub
+    End Class
+
     Private Const kNewReportName As String = "*New Report*"
 #End Region
 #Region "Private Members"
@@ -139,17 +176,26 @@ Public Class FrmReports
             If TypeOf item Is ToolStripMenuItem Then
                 Dim toolstripItem As ToolStripMenuItem = CType(item, ToolStripMenuItem)
                 toolstripItem.Checked = mReportGenerator.VisibleControls.Any(Function(rc) rc.Name = toolstripItem.Text)
-                ' The Header and Letterhead itemsChecked state also effects the 
-                ' HeaderItemsToolStripMenuItem and LetterheadImageToolStripMenuItem menu items
-                Select Case toolstripItem.Text
-                    Case "Header"
-                        ElementsToolStripMenuItem.DropDownItems.Item("HeaderItemsToolStripMenuItem").Enabled = toolstripItem.Checked
-                    Case "Letterhead"
-                        ElementsToolStripMenuItem.DropDownItems.Item("LetterheadImageToolStripMenuItem").Enabled = toolstripItem.Checked
-                    Case Else
-                End Select
             End If
         Next
+    End Sub
+
+    Private Sub ElementsToolStripMenuInitialize()
+        ' Populate the Elements menu with all available ReportControls.
+        For Each rc As ReportGenerator.ReportControl In mReportGenerator.ReportControls
+            If Not (rc.Name = "Header" Or rc.Name = "Letterhead") Then
+                Dim elementMenuItem As ToolStripMenuItem = Me.ElementsToolStripMenuItem.DropDownItems.Add(rc.Name)
+                AddHandler elementMenuItem.Click, AddressOf Me.ReportsElementsToolStripMenuItem_Click
+                AddHandler rc.Control.MouseDown, AddressOf Me.Control_MouseDown
+            End If
+        Next
+    End Sub
+
+    Private Sub FileDropDownOpening()
+        CloseToolStripMenuItem.Enabled = Me.Report IsNot Nothing
+        ' These don't work because reasons.
+        'SaveToolStripMenuItem.Enabled = Database.ChangeTracker.HasChanges()
+        'SaveAsToolStripMenuItem.Enabled = SaveToolStripMenuItem.Enabled
     End Sub
 
     Private Sub FormMenuConfigure(rpt As Report)
@@ -181,28 +227,77 @@ Public Class FrmReports
         Me.MaximizeBox = False
     End Sub
 
+    Private Sub HeaderControlShow(ByVal show As Boolean)
+        ' Adjust the Report layout to make room for the Header.
+
+    End Sub
+
+    Private Sub HeaderInitialize()
+        ' This creates a list of HeaderItems from the controls in
+        ' the HeaderLayotPanel automatically, eliminating the need
+        ' to initalize a list manually. Adding/removing header
+        ' controls is done entirely at design time, requiring no
+        ' additional code.
+        Dim headerControls As List(Of Control) = Header.Controls.Cast(Of Control)().
+            OrderByDescending(Function(c) c.TabStop).
+            ThenBy(Function(c) c.TabIndex).
+            ToList()
+        HeaderItems = New Dictionary(Of String, HeaderItem)
+        For Each ctrl As Control In headerControls
+            If TypeOf ctrl IsNot Label Then
+                Dim lab As Label = Header.Controls.OfType(Of Label)().FirstOrDefault(Function(c) c.Tag IsNot Nothing AndAlso c.Tag.ToString() = ctrl.Name.ToString())
+                If lab IsNot Nothing Then
+                    Dim menuItem As ToolStripMenuItem = HeaderToolStripMenuItem.DropDownItems.Add(lab.Text)
+                    AddHandler menuItem.Click, AddressOf HeaderItemToolStripMenuItem_Click
+                    HeaderItems.Add(lab.Text, New HeaderItem(ctrl, lab, menuItem))
+                End If
+            End If
+        Next
+    End Sub
+
+    Private Property HeaderItems As Dictionary(Of String, HeaderItem)   ' Stores a list of all available header controls and their states.
+
     Private Sub HeaderItemToggle(menuItem As ToolStripMenuItem)
         ' Checks/unchecks header menus items according to their
         ' corresponding control's current visibility.
-        Dim headerItem As ReportGenerator.HeaderItem = Nothing
-        If Not mReportGenerator.HeaderItems.TryGetValue(menuItem.Text, headerItem) Then Return
+        Dim headerItem As HeaderItem = HeaderItems(menuItem.Text)
         menuItem.Checked = Not menuItem.Checked
-        headerItem.Control.Visible = menuItem.Checked
-        headerItem.Label.Visible = headerItem.Control.Visible
+        headerItem.Visible = menuItem.Checked
     End Sub
 
-    Private Sub HeaderMenuItemsCheck()
-        ' Checks/unchecks Elements-->Header Items menu items according to 
-        ' their corresponding HeaderItem visibility.
-        Dim visibleItems As List(Of ReportGenerator.HeaderItem) =
-            mReportGenerator.HeaderItems.Values.Where(Function(hi) hi.Control.Visible).ToList()
-        For Each item As ToolStripMenuItem In HeaderItemsToolStripMenuItem.DropDownItems
+    Private Sub HeaderDropDownOpening()
+        ' Checks/unchecks Header dropdown items according to 
+        ' their current visibility.
+        Dim visibleItems As List(Of HeaderItem) =
+            HeaderItems.Values.Where(Function(hi) hi.Visible).ToList()
+        For Each item As ToolStripMenuItem In HeaderToolStripMenuItem.DropDownItems
             item.Checked = visibleItems.Any(Function(hi) hi.Label.Text = item.Text)
         Next
-
     End Sub
 
-    Private Sub LetterheadOpen(fileName As String)
+    Private Sub HeaderControlToggle()
+        ' Toggles the visibility of the Header ReportControl (the layout panel)
+        ' and enables the Header drop down items accordingly.
+        Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.First(Function(c) c.Name = "Header")
+        HeaderToolStripMenuItem.Checked = Not HeaderToolStripMenuItem.Checked
+        If HeaderToolStripMenuItem.Checked Then
+            mReportGenerator.ControlShow(rc)
+        Else
+            mReportGenerator.ControlHide(rc)
+        End If
+        For Each item As ToolStripItem In HeaderToolStripMenuItem.DropDownItems
+            If TypeOf item Is ToolStripMenuItem Then
+                item.Enabled = HeaderToolStripMenuItem.Checked
+            End If
+        Next
+    End Sub
+
+    Private Sub LetterheadControlShow(ByVal show As Boolean)
+        ' Adjust the Report layout to make room for the Letterhead.
+        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
+    End Sub
+
+    Private Sub LetterheadFileOpen(ByVal fileName As String)
         ' Loads the selected image file into the letterhead
         ' PictureBox and removes the border.
         Dim selectedImage As Image = Image.FromFile(fileName)
@@ -211,7 +306,7 @@ Public Class FrmReports
         mReport.ReportElements.First(Function(lh) lh.ElementName = "Letterhead").Data = fileName
     End Sub
 
-    Private Sub LetterheadSelect()
+    Private Sub LetterheadFileSelect()
         ' Opens a file dialog allowing the user to select the
         ' letterhead image file.
         Dim openFileDialog1 As New OpenFileDialog With {
@@ -220,7 +315,7 @@ Public Class FrmReports
             .RestoreDirectory = True
         }
         If openFileDialog1.ShowDialog() = DialogResult.OK Then
-            LetterheadOpen(openFileDialog1.FileName)
+            LetterheadFileOpen(openFileDialog1.FileName)
         End If
     End Sub
 
@@ -236,7 +331,7 @@ Public Class FrmReports
     End Sub
 
     Private Sub PopupsHide()
-
+        ' Not used - may want to hide context menus and other forms when certain events occur.
     End Sub
 
     Private Sub PrintPage(sender As Object, e As PrintPageEventArgs)
@@ -368,58 +463,76 @@ Public Class FrmReports
         End If
     End Sub
 
+    Private Sub ReportElementAddNew(rc As ReportGenerator.ReportControl)
+        ' Adds a new ReportElement to the current Report with the given ReportControls properties.
+        mReport.ReportElements.Add(New ReportElement() With {
+            .ElementName = rc.Name,
+            .PositionX = rc.Control.Location.X,
+            .PositionY = rc.Control.Location.Y,
+            .SizeWidth = rc.Control.Size.Width,
+            .SizeHeight = rc.Control.Size.Height
+        })
+    End Sub
+
     Private Sub ReportElementsLoad(elements As List(Of ReportElement))
-        ' Makes the selected ReportControl.Controls and HeaderItem.Controls visible and
-        ' loads any data.
+        ' Makes the listed ReportElements' corresponding ReportControls and
+        ' HeaderItems visible and loads any control data.
+        HeaderItems.Values.ToList().ForEach(Sub(hi) hi.MenuItem.Checked = False)
+        mReportGenerator.VisibleControls = Nothing
         If elements IsNot Nothing Then
-            Dim visibleControls As List(Of ReportGenerator.ReportControl) = New List(Of ReportGenerator.ReportControl)()
-            For Each re As ReportElement In elements
-                Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = re.ElementName)
-                Select Case reportControl.Control.Name
+            Dim visibleControls As New List(Of ReportGenerator.ReportControl)()
+            For Each reportElement As ReportElement In elements
+                Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = reportElement.ElementName)
+                ' The Header and Letterhead controls have additional requirements
+                ' not handled by the ReportGenerator, so we handle them here.
+                Select Case reportControl.Name
                     Case "Letterhead"
-                        If re.Data IsNot Nothing Then LetterheadOpen(re.Data)
-                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
+                        LetterheadControlShow(True)
+                        If reportElement.Data IsNot Nothing Then LetterheadFileOpen(reportElement.Data)
                     Case "Header"
-                        If re.Data IsNot Nothing Then
-                            Dim headerItems As List(Of String) = re.Data.Split(";"c).ToList()
-                            Dim visibleItems As List(Of ReportGenerator.HeaderItem) =
-                                mReportGenerator.HeaderItems.Values _
-                                    .Where(Function(p) headerItems.Contains(p.Name)) _
-                                    .ToList()
-                            For Each item As ReportGenerator.HeaderItem In visibleItems
-                                item.Control.Visible = True
-                                item.Label.Visible = True
-                            Next
+                        If reportElement.Data IsNot Nothing Then
+                            Dim itemList As List(Of String) = reportElement.Data.Split(";"c).ToList()
+                            Dim visibleItems As List(Of HeaderItem) =
+                                HeaderItems.Values.
+                                Where(Function(hi) itemList.Contains(hi.Id)).
+                                ToList()
+                            visibleItems.ForEach(Sub(hi) hi.MenuItem.Checked = True)
                         End If
+                        HeaderControlShow(True)
                         mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Header").Bounds.Bottom, mReportGenerator.VerticalLimit)
                     Case Else
                 End Select
-                reportControl.Control.Location = New Point(re.PositionX, re.PositionY)
-                reportControl.Control.Size = New Size(re.SizeWidth, re.SizeHeight)
+                ' Initially set the control's location and size, 
+                ' and add it to the list of visisble controls.
+                reportControl.Control.Location = New Point(reportElement.PositionX, reportElement.PositionY)
+                reportControl.Control.Size = New Size(reportElement.SizeWidth, reportElement.SizeHeight)
                 visibleControls.Add(reportControl)
             Next
             mReportGenerator.VisibleControls = visibleControls
-        Else
-            mReportGenerator.VisibleControls = Nothing
         End If
     End Sub
 
-    Private Function ReportElementToControl(elem As ReportElement, ByVal from As List(Of ReportGenerator.ReportControl)) As ReportGenerator.ReportControl
+    Private Function ReportElementToControl(ByVal elem As ReportElement, ByVal from As List(Of ReportGenerator.ReportControl)) As ReportGenerator.ReportControl
+        ' Returns a ReportElement's corresponding ReportControl.
         Return from.FirstOrDefault(Function(rc) rc.Name = elem.ElementName)
     End Function
 
     Private Sub ReportElementToggle(ByRef menuItem As ToolStripMenuItem)
+        ' Toggles the visibility of the ReportControl referenced
+        ' by the given menuItem and sets the menuItem.Checked 
+        ' state accordingly.
         Dim item As ToolStripMenuItem = menuItem
-        Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(c) c.Name = item.Text)
-        If menuItem.Checked Then
-            mReportGenerator.ControlHide(rc)
-        Else
-            mReportGenerator.ControlShow(rc)
-        End If
+        Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.First(Function(c) c.Name = item.Text)
         menuItem.Checked = Not menuItem.Checked
+        If menuItem.Checked Then
+            mReportGenerator.ControlShow(rc)
+        Else
+            mReportGenerator.ControlHide(rc)
+        End If
     End Sub
 
     Private Sub ReportExport()
+        ' Exports a Report as a csv file.
         Dim saveFileDialog1 As New SaveFileDialog() With {
             .Filter = STR_DIALOG_FILTER_CSV,
             .FilterIndex = 1,
@@ -431,6 +544,8 @@ Public Class FrmReports
     End Sub
 
     Private Function ReportFromFile(fileName As String) As Report
+        ' Read a Report and layout data from a csv file and
+        ' adds it to the database.
         Dim rpt As Report = Nothing
         If File.Exists(fileName) Then
             Dim elems As New List(Of ReportElement)
@@ -458,6 +573,7 @@ Public Class FrmReports
     End Function
 
     Private Function ReportFromFileElement(ByVal values() As String) As ReportElement
+        ' Returns a new ReportElement created from a list of strings.
         Return New ReportElement With {
             .ElementName = values(0),
             .PositionX = values(1),
@@ -470,6 +586,7 @@ Public Class FrmReports
     End Function
 
     Private Function ReportFromFileReport(values() As String) As Report
+        ' Returns a new Report created from a list of strings.
         Return New Report() With {
             .ReportName = values(0),
             .LastModifed = Date.Now,
@@ -479,7 +596,10 @@ Public Class FrmReports
     End Function
 
     Private Sub ReportGeneratorInitialize()
-        ' Initialize the ReportGenerator and set up event handlers for all report elements.
+        ' Initialize the ReportGenerator.
+        ' Note: HeaderItems have been removed from the ReportGenerator
+        ' and are now handled by this form automatically.
+        ' We only need to intialize the ReportControls and that's it.
         mReportGenerator = New ReportGenerator() With {
             .ParentForm = Me,
             .HorizontalLimit = 0,
@@ -490,47 +610,12 @@ Public Class FrmReports
                 New ReportGenerator.ReportControl(Header, True, False, False, Nothing, Nothing, Nothing),
                 New ReportGenerator.ReportControl(ChartBladeHeight, True, True, True, Nothing, Nothing, New ReportDataDelegate(AddressOf Reporting.ChartBladeHeight_Data)),
                 New ReportGenerator.ReportControl(ChartAngularPosition, True, True, True, Nothing, Nothing, New ReportDataDelegate(AddressOf Reporting.ChartAngularPosition_Data))
-            },
-           .HeaderItems = New Dictionary(Of String, ReportGenerator.HeaderItem) From {
-                {"Job No.", New ReportGenerator.HeaderItem(TxtJobNumber, LabJobNumber, "JobNo")},
-                {"Customer", New ReportGenerator.HeaderItem(TxtCustomer, LabCustomer, "Cust")},
-                {"Vessel", New ReportGenerator.HeaderItem(TxtVessel, LabVessel, "Vess")},
-                {"Manufacturer", New ReportGenerator.HeaderItem(TxtManufacturer, LabManufacturer, "Mfg")},
-                {"Part No.", New ReportGenerator.HeaderItem(TxtPartNumber, LabPartNumber, "P/N")},
-                {"S/N", New ReportGenerator.HeaderItem(TxtSerialNumber, LabSerialNumber, "S/N")},
-                {"Stamp No.", New ReportGenerator.HeaderItem(TxtStampNumber, LabStampNumber, "Stamp")},
-                {"Inspected By", New ReportGenerator.HeaderItem(TxtInspectedBy, LabInspectedBy, "InspBy")},
-                {"Job Id", New ReportGenerator.HeaderItem(TxtJobId, LabJobId, "JobId")},
-                {"Class", New ReportGenerator.HeaderItem(TxtClass, LabClass, "Cls")},
-                {"Repair Status", New ReportGenerator.HeaderItem(TxtRepairStatus, LabRepairStatus, "RStat")},
-                {"Style", New ReportGenerator.HeaderItem(TxtStyle, LabStyle, "Style")},
-                {"Material", New ReportGenerator.HeaderItem(TxtMaterial, LabMaterial, "Matl")},
-                {"Bore", New ReportGenerator.HeaderItem(TxtBore, LabBore, "Bore")},
-                {"DAR", New ReportGenerator.HeaderItem(TxtDAR, LabDAR, "DAR")},
-                {"Cup", New ReportGenerator.HeaderItem(TxtCup, LabCup, "Bore")},
-                {"File Name", New ReportGenerator.HeaderItem(TxtFileName, LabFilename, "File")},
-                {"Scan Date", New ReportGenerator.HeaderItem(TxtScanDate, LabScanDate, "DAR")},
-                {"Performed By", New ReportGenerator.HeaderItem(TxtPerformedBy, LabPerformedBy, "PerfBy")},
-                {"Rotation", New ReportGenerator.HeaderItem(TxtRotation, LabRotation, "Rotn")},
-                {"Marked Dia", New ReportGenerator.HeaderItem(TxtMarkedDiameter, LabMarkedDiameter, "MrkDia")},
-                {"Measured Dia", New ReportGenerator.HeaderItem(TxtMeasuredDiameter, LabMeasuredDiameter, "MeasDia")},
-                {"Marked Pitch", New ReportGenerator.HeaderItem(TxtMarkedPitch, LabMarkedPitch, "MrkPit")},
-                {"Wheel Pitch", New ReportGenerator.HeaderItem(TxtWheelPitch, LabWheelPitch, "WhlPit")}
             }
         }
-        For Each rc As ReportGenerator.ReportControl In mReportGenerator.ReportControls
-            Dim elementMenuItem As ToolStripMenuItem = Me.ElementsToolStripMenuItem.DropDownItems.Add(rc.Name)
-            AddHandler elementMenuItem.Click, AddressOf Me.ReportElement_Clicked
-            AddHandler rc.Control.MouseDown, AddressOf Me.Control_MouseDown
-        Next
-        ' TODO: Header dropdown items are hardcoded in the designer. Probably should be 
-        ' added programmatically, like ReportControls above, in case they change.
-        For Each hd As ReportGenerator.HeaderItem In mReportGenerator.HeaderItems.Values.ToList()
-            AddHandler hd.Control.Click, AddressOf Me.HeaderItem_Click
-        Next
     End Sub
 
     Private Sub ReportImport()
+        ' Imports a Report from a csv file.
         Dim openFileDialog1 As New OpenFileDialog With {
             .Filter = STR_DIALOG_FILTER_CSV,
             .FilterIndex = 1,
@@ -549,6 +634,7 @@ Public Class FrmReports
     End Sub
 
     Private Function ReportNameInput() As String
+        ' Prompt user for a Report name.
         Dim reportName As String = String.Empty
         FrmInputBox.Text = "Save Report As"
         FrmInputBox.Prompt = "Enter the new name of the report:"
@@ -561,6 +647,7 @@ Public Class FrmReports
     End Function
 
     Private Function ReportOpen(ByVal reportName As String) As Report
+        ' Open a Report record by name.
         Dim result As Report = Nothing
         If Not String.IsNullOrEmpty(reportName) Then
             result = Database.Reports _
@@ -572,6 +659,7 @@ Public Class FrmReports
     End Function
 
     Private Sub ReportToFile(fileName As String)
+        ' Writes the current Report and layout data to a csv file.
         Const commentReport As String = "'---Report---"
         Const commentElements As String = "'---Elements---"
         Dim content As String =
@@ -593,7 +681,7 @@ Public Class FrmReports
                 ' Disable the form maximize box.
                 Me.MaximizeBox = False
             Else
-                ' Set form bounds to the screen working area
+                ' Set form bounds to the screen working area.
                 Me.MaximizedBounds = Screen.FromControl(Me).WorkingArea
                 Me.MaximumSize = Size.Empty
 
@@ -637,12 +725,11 @@ Public Class FrmReports
     End Sub
 
     Private Sub ReportUpdate()
-        ' Update ReportElements in the database.
-        If mReport Is Nothing OrElse mReport.ReportElements Is Nothing OrElse mReportGenerator Is Nothing Then
-            Return
-        End If
+        ' Update ReportElements in the database. Remove any hidden elements from the Report,
+        ' add any visible elements not in the Report, and check element properties for
+        ' changes.
 
-        ' If this is a new unsaved report, save it now.
+        ' If this is a new unsaved report, save it now so we get a valid ReportId.
         If mReport.Id Is Nothing Then
             Database.SaveChanges()
         End If
@@ -677,35 +764,37 @@ Public Class FrmReports
                 If re.PositionY <> rc.Control.Location.Y Then
                     re.PositionY = rc.Control.Location.Y
                 End If
+                ' Need a Z-Order check.
             Else
-                mReport.ReportElements.Add(New ReportElement() With {
-                    .ReportId = mReport.Id,
-                    .ElementName = rc.Name,
-                    .PositionX = rc.Control.Location.X,
-                    .PositionY = rc.Control.Location.Y,
-                    .SizeWidth = rc.Control.Size.Width,
-                    .SizeHeight = rc.Control.Size.Height
-                })
+                ReportElementAddNew(rc)
             End If
         Next
 
         ' Update header items
-        Dim visibleItems As List(Of String) =
-            mReportGenerator.HeaderItems.Values.Where(Function(hi) hi.Control.Visible).Select(Function(hi) hi.Name).ToList()
-        Dim headerElement As ReportElement = mReport.ReportElements.FirstOrDefault(Function(re) re.Report Is mReport And re.ElementName = "Header")
-        If headerElement IsNot Nothing Then
-            Dim headerItems As List(Of String) = Nothing
-            If headerElement.Data IsNot Nothing Then headerItems = headerElement.Data.Split(";"c).ToList
-            If headerItems IsNot Nothing AndAlso visibleItems IsNot Nothing AndAlso Not visibleItems.SequenceEqual(headerItems) Then
-                headerElement.Data = String.Join(";", visibleItems)
+        Dim headerControl As ReportGenerator.ReportControl = mReportGenerator.VisibleControls.FirstOrDefault(Function(rc) rc.Name = "Header")
+        ' If the Header control is visible
+        If headerControl IsNot Nothing Then
+            Dim visibleHeaderItems As List(Of String) =
+                HeaderItems.Values.Where(Function(hi) hi.Visible).Select(Function(hi) hi.Id).ToList()
+            Dim headerElement As ReportElement = mReport.ReportElements.FirstOrDefault(Function(re) re.Report Is mReport And re.ElementName = "Header")
+            ' Either add it to the Report, or ...
+            If headerElement Is Nothing Then
+                ReportElementAddNew(headerControl)
+            End If
+            Dim headerElementItems As List(Of String) = If(headerElement.Data IsNot Nothing, headerElement.Data.Split(";"c).ToList, New List(Of String))
+            ' ... update its properties.
+            If Not visibleHeaderItems.SequenceEqual(headerElementItems) Then
+                headerElement.Data = String.Join(";", visibleHeaderItems)
             End If
         End If
 
-        ' Save report metadata if anything changed.
+        ' Update Report properties
+        If mReport.GridSize <> mReportGenerator.GridSize Then mReport.GridSize = mReportGenerator.GridSize
+
+        ' Update report metadata if anything changed.
         If Database.ChangeTracker.HasChanges() Then
             mReport.LastModifed = Now
             mReport.ModifiedBy = Me.User.Id
-            mReport.GridSize = mReportGenerator.GridSize
         End If
     End Sub
 
@@ -725,6 +814,10 @@ Public Class FrmReports
 #End Region
 #Region "Event Handlers"
 #Region "Form Events"
+    ' Some (most) of these need Try blocks!!!
+    ' Change the method name for clarity, I just
+    ' used the auto-generated names, which are,
+    ' of course, stoopid.
     Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
         ContextMenuStripShow(sender, e)
     End Sub
@@ -740,6 +833,9 @@ Public Class FrmReports
         Me.KeyPreview = True
         ReportGeneratorInitialize()
         ReportsToolStripMenuInitialize()
+        ElementsToolStripMenuInitialize()
+        HeaderInitialize()
+        ' These set the form size to the default printer paper size. Not strictly necessary.
         FormResizeTo(New PrintDocument())
         Me.ResizeToPageBounds = True
     End Sub
@@ -802,13 +898,9 @@ Public Class FrmReports
         SendKeys.Send("{DEL}")
     End Sub
 
-    Private Sub ElementsHeaderItemClickHandler(sender As Object, e As EventArgs) Handles ToolStripMenuItem8.Click, ToolStripMenuItem9.Click, ToolStripMenuItem10.Click, ToolStripMenuItem11.Click, ToolStripMenuItem12.Click, ToolStripMenuItem13.Click, ToolStripMenuItem14.Click, ToolStripMenuItem15.Click, ToolStripMenuItem16.Click, ToolStripMenuItem17.Click, ToolStripMenuItem18.Click, ToolStripMenuItem19.Click, ToolStripMenuItem20.Click, ToolStripMenuItem21.Click, ToolStripMenuItem22.Click, ToolStripMenuItem23.Click, ToolStripMenuItem24.Click, ToolStripMenuItem25.Click, ToolStripMenuItem26.Click, ToolStripMenuItem27.Click, ToolStripMenuItem28.Click, ToolStripMenuItem29.Click, ToolStripMenuItem30.Click, ToolStripMenuItem31.Click
-        HeaderItemToggle(CType(sender, ToolStripMenuItem))
-    End Sub
-
-    Private Sub ElementsLetterheadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadImageToolStripMenuItem.Click
+    Private Sub ElementsLetterheadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadToolStripMenuItem.Click
         Try
-            LetterheadSelect()
+            LetterheadFileSelect()
         Catch ex As Exception
             MessageBox.Show("Error loading letterhead: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
@@ -825,8 +917,6 @@ Public Class FrmReports
 
     Private Sub FileCloseToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CloseToolStripMenuItem.Click
         If Report IsNot Nothing Then ReportClose()
-        'Dim result As DialogResult = If(Report IsNot Nothing, ReportClose(), DialogResult.None)
-        'If result <> DialogResult.Cancel Then Report = Nothing
     End Sub
 
     Private Sub FileExitToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ExitToolStripMenuItem.Click
@@ -853,16 +943,24 @@ Public Class FrmReports
         ReportSaveAs()
     End Sub
 
-    Private Sub HeaderItemsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles HeaderItemsToolStripMenuItem.DropDownOpening
-        HeaderMenuItemsCheck()
+    Private Sub FileToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles FileToolStripMenuItem.DropDownOpening
+        FileDropDownOpening()
     End Sub
 
-    Private Sub ReportElement_Clicked(sender As Object, e As EventArgs)
+    Private Sub HeaderToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles HeaderToolStripMenuItem.DropDownOpening
+        HeaderDropDownOpening()
+    End Sub
+
+    Private Sub ReportsElementsToolStripMenuItem_Click(sender As Object, e As EventArgs)
         ReportElementToggle(CType(sender, ToolStripMenuItem))
     End Sub
 
-    Private Sub HeaderItem_Click(sender As Object, e As EventArgs)
-        mReportGenerator.SelectedControls = Nothing
+    Private Sub HeaderItemToolStripMenuItem_Click(sender As Object, e As EventArgs)
+        HeaderItemToggle(CType(sender, ToolStripMenuItem))
+    End Sub
+
+    Private Sub HeaderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HeaderToolStripMenuItem.Click
+        HeaderControlToggle()
     End Sub
 
     Private Sub ReportsItemClickHandler(sender As Object, e As EventArgs)
@@ -919,12 +1017,12 @@ Public Class FrmReports
     Private Sub ReportDataGet()
         ' NOTE: Data delegates should be called once for each ReportControl, the first time it becomes visible.
         ' Data Delegates can be passed any client control, e.g. FrmMeasurements.ChartBladeHeight,
-        ' FrmReports.ChartBladeHeight, etc., but can only work with one control at a time. For instance, I
+        ' FrmReports.ChartAngularPosition, etc., but can only work with one control at a time. For instance, I
         ' copied the code for Reporting.ChartBladeHeight() from FrmMeasurements.ShowTrack(), but it seems we're
         ' doing several things at once in FrmMeasurements.ShowTrack() on two graphs, so that will have to be
         ' split up into two separate methods. Once that's done, you can just call Reporting.ChartBladeHeight()
         ' from FrmMeasurements.ShowTrack(), passing the args in a ReportDataArgs guy (in FrmMeasurements.ShowTrack()
-        ' you would call   directly:
+        ' you would call directly:
         '   ChartBladeHeight_Data
         '   (
         '       ChartBladeHeight,     
@@ -937,12 +1035,16 @@ Public Class FrmReports
         '       )
         '   )
         '
-        ' Here, we will have to get the args from some Report setting and provide controls to select those.
-        ' I just hardcoded some values to demonstrate.
+        ' If reports supports control settings (like Reference Blade, Point, Radius, etc.) we will have to provide
+        ' the controls and any args from them. The display control and any additional settings controls can be put
+        ' into a GroupBox, which then becomes the containg ReportControl object.
+        ' I just hardcoded some values to demonstrate the calls.
         Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.First(Function(ctrl) ctrl.Name = "ChartBladeHeight")
         rc.Data.DynamicInvoke(ChartBladeHeight, New ReportDataArgs(1, "Mid", 49.99, JobDetails))
         rc.HasData = True
-
+        ' Note that I use 'First' not 'FirstOrDefault' to get the ReportControl by Name and there is
+        ' no If rc Is Nothing Then. This is because it would be a design-time error (misnamed objects)
+        ' to return nothing and the additional overhead is unwarranted.
         rc = mReportGenerator.ReportControls.First(Function(ctrl) ctrl.Name = "ChartAngularPosition")
         rc.Data.DynamicInvoke(ChartAngularPosition, New ReportDataArgs(1, "Mid", 49.99, JobDetails))
         rc.HasData = True
