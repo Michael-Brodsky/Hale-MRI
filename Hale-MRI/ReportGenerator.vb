@@ -2,6 +2,10 @@
 Imports System.Collections.Specialized
 Imports System.Drawing.Printing
 
+''' <summary>
+''' Class that manages report visual elements 
+''' and editing.
+''' </summary>
 Public Class ReportGenerator
 #Region "Types and Constants"
     ' Enumerates valid edit permissions values

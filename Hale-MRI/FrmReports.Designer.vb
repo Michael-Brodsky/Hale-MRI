@@ -24,12 +24,12 @@ Partial Class FrmReports
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
         Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FrmReports))
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend3 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
+        Dim ChartArea4 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
+        Dim Legend4 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
+        Dim Series4 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         ReportsBindingSource = New BindingSource(components)
         FormMenuStrip = New MenuStrip()
         FileToolStripMenuItem = New ToolStripMenuItem()
@@ -145,6 +145,11 @@ Partial Class FrmReports
         PageSetupDialog = New PageSetupDialog()
         ChartBladeHeight = New DataVisualization.Charting.Chart()
         ChartAngularPosition = New DataVisualization.Charting.Chart()
+        JobsToolStripMenuItem = New ToolStripMenuItem()
+        JobsRecentToolStripMenuItem = New ToolStripMenuItem()
+        JobsOpenToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator13 = New ToolStripSeparator()
+        JobsCloseToolStripMenuItem = New ToolStripMenuItem()
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         FormMenuStrip.SuspendLayout()
         ReportContextMenuStrip.SuspendLayout()
@@ -167,7 +172,7 @@ Partial Class FrmReports
         ' 
         ' FormMenuStrip
         ' 
-        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem})
+        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem})
         FormMenuStrip.Location = New Point(0, 0)
         FormMenuStrip.Name = "FormMenuStrip"
         FormMenuStrip.Size = New Size(850, 24)
@@ -345,25 +350,25 @@ Partial Class FrmReports
         ' ReportsToolStripSeparator1
         ' 
         ReportsToolStripSeparator1.Name = "ReportsToolStripSeparator1"
-        ReportsToolStripSeparator1.Size = New Size(107, 6)
+        ReportsToolStripSeparator1.Size = New Size(177, 6)
         ' 
         ' ReportsEditToolStripMenuItem
         ' 
         ReportsEditToolStripMenuItem.Name = "ReportsEditToolStripMenuItem"
-        ReportsEditToolStripMenuItem.Size = New Size(110, 22)
+        ReportsEditToolStripMenuItem.Size = New Size(180, 22)
         ReportsEditToolStripMenuItem.Text = "Edit"
         ' 
         ' ReportsImportToolStripMenuItem
         ' 
         ReportsImportToolStripMenuItem.Name = "ReportsImportToolStripMenuItem"
-        ReportsImportToolStripMenuItem.Size = New Size(110, 22)
+        ReportsImportToolStripMenuItem.Size = New Size(180, 22)
         ReportsImportToolStripMenuItem.Text = "Import"
         ' 
         ' ReportsExportToolStripMenuItem
         ' 
         ReportsExportToolStripMenuItem.Enabled = False
         ReportsExportToolStripMenuItem.Name = "ReportsExportToolStripMenuItem"
-        ReportsExportToolStripMenuItem.Size = New Size(110, 22)
+        ReportsExportToolStripMenuItem.Size = New Size(180, 22)
         ReportsExportToolStripMenuItem.Text = "Export"
         ' 
         ' ElementsToolStripMenuItem
@@ -1308,17 +1313,17 @@ Partial Class FrmReports
         ' 
         ' ChartBladeHeight
         ' 
-        ChartArea1.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea1)
-        Legend1.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend1)
+        ChartArea3.Name = "ChartArea1"
+        ChartBladeHeight.ChartAreas.Add(ChartArea3)
+        Legend3.Name = "Legend1"
+        ChartBladeHeight.Legends.Add(Legend3)
         ChartBladeHeight.Location = New Point(13, 388)
         ChartBladeHeight.Margin = New Padding(0, 1, 0, 0)
         ChartBladeHeight.Name = "ChartBladeHeight"
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series1)
+        Series3.ChartArea = "ChartArea1"
+        Series3.Legend = "Legend1"
+        Series3.Name = "Series1"
+        ChartBladeHeight.Series.Add(Series3)
         ChartBladeHeight.Size = New Size(312, 137)
         ChartBladeHeight.TabIndex = 25
         ChartBladeHeight.Text = "Track"
@@ -1326,20 +1331,50 @@ Partial Class FrmReports
         ' 
         ' ChartAngularPosition
         ' 
-        ChartArea2.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea2)
-        Legend2.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend2)
+        ChartArea4.Name = "ChartArea1"
+        ChartAngularPosition.ChartAreas.Add(ChartArea4)
+        Legend4.Name = "Legend1"
+        ChartAngularPosition.Legends.Add(Legend4)
         ChartAngularPosition.Location = New Point(340, 388)
         ChartAngularPosition.Name = "ChartAngularPosition"
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series2)
+        Series4.ChartArea = "ChartArea1"
+        Series4.Legend = "Legend1"
+        Series4.Name = "Series1"
+        ChartAngularPosition.Series.Add(Series4)
         ChartAngularPosition.Size = New Size(306, 137)
         ChartAngularPosition.TabIndex = 26
         ChartAngularPosition.Text = "Track"
         ChartAngularPosition.Visible = False
+        ' 
+        ' JobsToolStripMenuItem
+        ' 
+        JobsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {JobsRecentToolStripMenuItem, JobsOpenToolStripMenuItem, ToolStripSeparator13, JobsCloseToolStripMenuItem})
+        JobsToolStripMenuItem.Name = "JobsToolStripMenuItem"
+        JobsToolStripMenuItem.Size = New Size(42, 20)
+        JobsToolStripMenuItem.Text = "Jobs"
+        ' 
+        ' JobsRecentToolStripMenuItem
+        ' 
+        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
+        JobsRecentToolStripMenuItem.Size = New Size(180, 22)
+        JobsRecentToolStripMenuItem.Text = "Recent"
+        ' 
+        ' JobsOpenToolStripMenuItem
+        ' 
+        JobsOpenToolStripMenuItem.Name = "JobsOpenToolStripMenuItem"
+        JobsOpenToolStripMenuItem.Size = New Size(180, 22)
+        JobsOpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' ToolStripSeparator13
+        ' 
+        ToolStripSeparator13.Name = "ToolStripSeparator13"
+        ToolStripSeparator13.Size = New Size(177, 6)
+        ' 
+        ' JobsCloseToolStripMenuItem
+        ' 
+        JobsCloseToolStripMenuItem.Name = "JobsCloseToolStripMenuItem"
+        JobsCloseToolStripMenuItem.Size = New Size(180, 22)
+        JobsCloseToolStripMenuItem.Text = "Close"
         ' 
         ' FrmReports
         ' 
@@ -1488,4 +1523,9 @@ Partial Class FrmReports
     Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
     Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
     Friend WithEvents LetterheadImageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsRecentToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsOpenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator13 As ToolStripSeparator
+    Friend WithEvents JobsCloseToolStripMenuItem As ToolStripMenuItem
 End Class

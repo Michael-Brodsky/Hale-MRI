@@ -12,33 +12,44 @@ Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Imports Newtonsoft.Json.Linq
 
 ''' <summary>
-''' Form for Opening, Closing, Editing and Printing reports.
-''' Manages database Report entities and serves as the 
-''' palette for displaying report elements (charts, graphs).
-''' NOTE:
-'''     This form only manages itself and its own controls 
-'''     (e.g. menus, form size, header, letterhead) and 
-'''     maintains database currency with respect to report 
-'''     layouts. The visual elements are managed by the
-'''     ReportGenerator (e.g. control visibility, size, 
-'''     location, drag/drop, editing and printing). This 
-'''     form should not modify any ReportControls or their
-'''     properies, as this may cause unexpected behavior.
-'''     
+''' Class that manages report Opening, Closing, Editing, 
+''' Printing and Database currency.
 ''' </summary>
 Public Class FrmReports
     Inherits FrmDatabaseForm
+    ' This form serves as a palette for displaying and 
+    ' printing report elements (charts, graphs, tables, etc).
+    ' NOTE:
+    '     This form only manages itself and its own controls 
+    '     (e.g. menus, form size, header, letterhead) and 
+    '     maintains database currency with respect to report 
+    '     layouts. The visual elements are managed by the
+    '     ReportGenerator (e.g. control visibility, size, 
+    '     location, drag/drop, editing and printing). This 
+    '     form should not modify any ReportControls or their
+    '     properties, as this may cause unexpected behavior.
+    '     Report elements get their properties and data from
+    '     the Reporting module, which must define a delegate
+    '     method that must be assigned to the containing 
+    '     ReportControls's Data member.
+    '     
+    '     ReportControl - refers to objects that encapsulate 
+    '     report controls (charts, graphs), and are defined
+    '     and managed by the ReportGenerator.
+    '     
+    '     ReportElement - refers to database entities defined
+    '     in LibDatabase.Models and managed by this Form.
 #Region "Types and Constants"
     ' Header item container type.
     Private Class HeaderItem
-        Public Property Control As Control      ' The value display control.
-        Public ReadOnly Property Id As String   ' The display control's database id - Stored in the Header ReportElement's Data field.
+        Public Property Control As Control      ' The display control.
+        Public ReadOnly Property Id As String   ' The display control's database id - Stored in the Header ReportElement's Data field when visible.
             Get
                 Return If(Me.Control IsNot Nothing, Control.Tag, "")
             End Get
         End Property
         Public Property Label As Label          ' The display control's associated Label.
-        Public Property MenuItem As ToolStripMenuItem   ' The HeaderItems' associated ToolStripMenuItem.
+        Public Property MenuItem As ToolStripMenuItem   ' This object's associated ToolStripMenuItem.
         Public Property Visible As Boolean
             Get
                 Return If(Me.Control IsNot Nothing, Me.Control.Visible, False)
@@ -72,25 +83,25 @@ Public Class FrmReports
     Private mResizeToPagePounds As Boolean = False          ' Indicates whether this form is sized to the current printer page size.
 #End Region
 #Region "Public Interface"
-    ''' <summary>
-    ''' Returns the currently selected JobDetail,
-    ''' or Nothing if there is no selected record.
-    ''' </summary>
+    ' <summary>
+    ' Returns the currently selected JobDetail,
+    ' or Nothing if there is no selected record.
+    ' </summary>
     Public ReadOnly Property Current As JobDetail
         Get
             Return BindingSourceCurrent(ReportDataBindingSource)
         End Get
     End Property
 
-    ''' <summary>
-    ''' Sets or gets the database context for this form.
-    ''' </summary>
+    ' <summary>
+    ' Sets or gets the database context for this form.
+    ' </summary>
     Public Overrides Property Database As HaleMRIContext
 
-    ''' <summary>
-    ''' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
-    ''' </summary>
-    ''' <returns></returns>
+    ' <summary>
+    ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
+    ' </summary>
+    ' <returns></returns>
     Public Property JobDetails As JobDetail
         Get
             Return mJobDetails
@@ -290,6 +301,10 @@ Public Class FrmReports
                 item.Enabled = HeaderToolStripMenuItem.Checked
             End If
         Next
+    End Sub
+
+    Private Sub JobsDropDownOpening()
+        JobsCloseToolStripMenuItem.Enabled = Me.JobDetails IsNot Nothing
     End Sub
 
     Private Sub LetterheadControlShow(ByVal show As Boolean)
@@ -961,6 +976,10 @@ Public Class FrmReports
 
     Private Sub HeaderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HeaderToolStripMenuItem.Click
         HeaderControlToggle()
+    End Sub
+
+    Private Sub JobsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles JobsToolStripMenuItem.DropDownOpening
+        JobsDropDownOpening()
     End Sub
 
     Private Sub ReportsItemClickHandler(sender As Object, e As EventArgs)
