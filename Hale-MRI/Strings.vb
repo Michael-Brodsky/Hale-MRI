@@ -35,6 +35,7 @@ Module Strings
 
     ' File dialog filter strings.
     Public Const STR_DIALOG_FILTER_ALL As String = "All Files (*.*)|*.*"
+    Public Const STR_DIALOG_FILTER_CSV As String = "CSV Files |*.csv;*.txt|All Files (*.*)|*.*"
     Public Const STR_DIALOG_FILTER_DATABASE As String = "Database Files|*.mdb;*.accdb;*.sqlite;*.db|All Files (*.*)|*.*"
     Public Const STR_DIALOG_FILTER_IMAGE As String = "Image Files|*.jpg;*.jpeg;*.png;*.gif;*.bmp|All Files (*.*)|*.*"
     Public Const STR_DIALOG_FILTER_SCANDATA As String = "ScanData Files (*.txt)|*.txt|All Files (*.*)|*.*"

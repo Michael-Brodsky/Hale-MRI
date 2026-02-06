@@ -23,7 +23,7 @@ Public Class ReportGenerator
         ZOrder = 64     ' BringToFront/SendToBack enabled.
     End Enum
 
-    ' Enumerats valid control resize "grab" points.
+    ' Enumerates valid control resize "grab" points.
     Public Enum ResizePoints
         None = 0
         RightEdge = 1
@@ -41,6 +41,7 @@ Public Class ReportGenerator
         Implements ICloneable
         Public Control As Control       ' The display control. 
         Public Data As [Delegate]       ' Display control's data delegate.
+        Public HasData As Boolean       ' Indicates whether the control has display data.
         Public IsMovable As Boolean     ' Indicates whether the display control is moveable, including z-order. 
         Public IsSelectable As Boolean  ' Indicates whether the display control is selectable. 
         Public IsSizeable As Boolean    ' Indicates whether the display control is sizeable. 
@@ -82,18 +83,6 @@ Public Class ReportGenerator
         End Function
     End Class
 
-    ' Header item container type.
-    Public Class HeaderItem
-        Public Control As Control   ' The header item display control.
-        Public Label As Label       ' The display control's associated Label.
-        Public Name As String       ' This object's human-readable name.
-        Public Sub New(ctrl As Control, lab As Label, name As String)
-            Me.Control = ctrl
-            Me.Label = lab
-            Me.Name = name
-        End Sub
-    End Class
-
     ' ReportEvent arguments type.
     Public Class ReportEventArgs
         Public Property EventName As String
@@ -116,6 +105,7 @@ Public Class ReportGenerator
     Private Const kUndoMax As Integer = 32                      ' Maximum sise of the undo stack in elements.
 #End Region
 #Region "Private Members"
+    Private mBounds As Rectangle                                ' the bounding Rectangle within which a control can be dragged/resized.
     Private mDragStartPos As Point                              ' The starting mouse position of the drag operation.
     Private mEdit As Edits = Edits.None                         ' Bitmask indicating which edit operations are currently permissible.
     Private mGridSize As Integer = 0                            ' The report grid size, in pixels.
@@ -151,6 +141,16 @@ Public Class ReportGenerator
     End Sub
 #End Region
 #Region "Public Interface"
+    Public Property Bounds As Rectangle
+        Get
+            Return mBounds
+        End Get
+        Set(value As Rectangle)
+            ReportControlsReposition(value)
+            mBounds = value
+        End Set
+    End Property
+
     '''''''''''''''''''''''''''''''''''''''''''''''''''' 
     ' These methods are provided for clients to handle
     ' events not handled here, e.g. menu events.
@@ -185,8 +185,6 @@ Public Class ReportGenerator
             End If
         End Set
     End Property
-
-    Public Property HeaderItems As Dictionary(Of String, HeaderItem)
 
     Public Property HorizontalLimit As Integer
         Get
@@ -300,6 +298,7 @@ Public Class ReportGenerator
     End Sub
 
     Private Sub ControlsAddInTo(controls As List(Of ReportControl), ByRef into As List(Of ReportControl), Optional ByVal clone As Boolean = False)
+        ' Adds a list of ReportControls to a List, optionally adding their clones.
         If clone Then
             For Each rc As ReportControl In controls
                 into.Add(CType(rc.Clone, ReportControl))
@@ -631,6 +630,9 @@ Done:
         End If
     End Sub
 
+    Private Sub ReportControlsReposition(rect As Rectangle)
+
+    End Sub
     Private Sub ReportControlsReposition(Optional vLimit As Integer = -1, Optional hLimit As Integer = -1, Optional gridSz As Integer = -1)
         If vLimit > -1 AndAlso vLimit > mVerticalLimit Then
 

@@ -520,33 +520,19 @@ Namespace Contexts
                 Sub(entity)
                     entity.HasKey(Function(e) e.Id).HasName("PrimaryKey")
 
-                    entity.HasIndex(Function(e) e.HorizontalLimit, "Snap To Grid")
-
                     entity.Property(Function(e) e.Id).
                         HasColumnType("counter").
                         HasColumnName("ID")
+                    entity.Property(Function(e) e.Description).HasMaxLength(255)
                     entity.Property(Function(e) e.GridSize).
                         HasDefaultValue(0S).
                         HasColumnName("Grid Size")
-                    entity.Property(Function(e) e.HorizontalLimit).
-                        HasDefaultValue(0S).
-                        HasColumnName("Horizontal Limit")
-                    entity.Property(Function(e) e.IsDefault).
-                        HasDefaultValueSql("No").
-                        HasColumnType("bit").
-                        HasColumnName("Is Default")
                     entity.Property(Function(e) e.LastModifed).HasColumnName("Last Modifed")
-                    entity.Property(Function(e) e.LetterHeadFile).
-                        HasMaxLength(255).
-                        HasColumnName("LetterHead File")
                     entity.Property(Function(e) e.ModifiedBy).HasColumnName("Modified By")
                     entity.Property(Function(e) e.ReportName).
                         IsRequired().
                         HasMaxLength(255).
                         HasColumnName("Report Name")
-                    entity.Property(Function(e) e.VerticalLimit).
-                        HasDefaultValue(0S).
-                        HasColumnName("Vertical Limit")
                 End Sub)
 
             modelBuilder.Entity(Of ReportElement)(
@@ -577,7 +563,6 @@ Namespace Contexts
 
                     entity.HasOne(Function(d) d.Report).WithMany(Function(p) p.ReportElements).
                         HasForeignKey(Function(d) d.ReportId).
-                        OnDelete(DeleteBehavior.ClientSetNull).
                         HasConstraintName("ReportsReport Elements")
                 End Sub)
 

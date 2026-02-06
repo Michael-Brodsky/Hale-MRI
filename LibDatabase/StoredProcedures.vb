@@ -61,6 +61,29 @@ Public Module StoredProcedures
         End If
     End Sub
 #End Region
+    Public Function GetTemporaryId(Of T As Class)(ByVal entity As T, ByVal context As DbContext) As Integer?
+        ' Returns the temporary primary key of the given entity before context.SaveChanges() called.
+        Dim entry = context.Entry(entity)
+        Dim pk = entry.Metadata.FindPrimaryKey()
+
+        If entry.State = Microsoft.EntityFrameworkCore.EntityState.Added Then
+
+            For Each [property] In pk.Properties
+                Dim tempValue = entry.[Property]([property].Name).CurrentValue
+
+                If entry.[Property]([property].Name).IsTemporary Then
+                    Try
+                        Return CType(tempValue, Integer?)
+                    Finally
+                    End Try
+                    Exit For
+                End If
+            Next
+        End If
+
+        Return Nothing
+    End Function
+
     Public Function GetRelatedEntities(Of T As Class)(db As HaleMRIContext, propertyName As String, key As Object) As List(Of T)
         ' Returns a list of entities of type T that match the specified property name and key.
         ' This function is used to retrieve entities from the database context based on a specific property and key.
