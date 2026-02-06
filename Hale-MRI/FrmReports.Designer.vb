@@ -36,6 +36,7 @@ Partial Class FrmReports
         FileNewToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator11 = New ToolStripSeparator()
         OpenToolStripMenuItem = New ToolStripMenuItem()
+        FileRecentToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator1 = New ToolStripSeparator()
         CloseToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator3 = New ToolStripSeparator()
@@ -55,6 +56,11 @@ Partial Class FrmReports
         DeleteToolStripMenuItem = New ToolStripMenuItem()
         ToolStripSeparator9 = New ToolStripSeparator()
         SelectAllToolStripMenuItem = New ToolStripMenuItem()
+        JobsToolStripMenuItem = New ToolStripMenuItem()
+        JobsOpenToolStripMenuItem = New ToolStripMenuItem()
+        JobsRecentToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator13 = New ToolStripSeparator()
+        JobsCloseToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripMenuItem = New ToolStripMenuItem()
         ReportsToolStripSeparator1 = New ToolStripSeparator()
         ReportsEditToolStripMenuItem = New ToolStripMenuItem()
@@ -167,7 +173,7 @@ Partial Class FrmReports
         ' 
         ' FormMenuStrip
         ' 
-        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem})
+        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem})
         FormMenuStrip.Location = New Point(0, 0)
         FormMenuStrip.Name = "FormMenuStrip"
         FormMenuStrip.Size = New Size(850, 24)
@@ -176,7 +182,7 @@ Partial Class FrmReports
         ' 
         ' FileToolStripMenuItem
         ' 
-        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {FileNewToolStripMenuItem, ToolStripSeparator11, OpenToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
+        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {FileNewToolStripMenuItem, ToolStripSeparator11, OpenToolStripMenuItem, FileRecentToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
         FileToolStripMenuItem.Name = "FileToolStripMenuItem"
         FileToolStripMenuItem.Size = New Size(37, 20)
         FileToolStripMenuItem.Text = "File"
@@ -197,6 +203,12 @@ Partial Class FrmReports
         OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
         OpenToolStripMenuItem.Size = New Size(186, 22)
         OpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' FileRecentToolStripMenuItem
+        ' 
+        FileRecentToolStripMenuItem.Name = "FileRecentToolStripMenuItem"
+        FileRecentToolStripMenuItem.Size = New Size(186, 22)
+        FileRecentToolStripMenuItem.Text = "Recent"
         ' 
         ' ToolStripSeparator1
         ' 
@@ -334,6 +346,36 @@ Partial Class FrmReports
         SelectAllToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.A
         SelectAllToolStripMenuItem.Size = New Size(164, 22)
         SelectAllToolStripMenuItem.Text = "Select All"
+        ' 
+        ' JobsToolStripMenuItem
+        ' 
+        JobsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {JobsOpenToolStripMenuItem, JobsRecentToolStripMenuItem, ToolStripSeparator13, JobsCloseToolStripMenuItem})
+        JobsToolStripMenuItem.Name = "JobsToolStripMenuItem"
+        JobsToolStripMenuItem.Size = New Size(42, 20)
+        JobsToolStripMenuItem.Text = "Jobs"
+        ' 
+        ' JobsOpenToolStripMenuItem
+        ' 
+        JobsOpenToolStripMenuItem.Name = "JobsOpenToolStripMenuItem"
+        JobsOpenToolStripMenuItem.Size = New Size(110, 22)
+        JobsOpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' JobsRecentToolStripMenuItem
+        ' 
+        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
+        JobsRecentToolStripMenuItem.Size = New Size(110, 22)
+        JobsRecentToolStripMenuItem.Text = "Recent"
+        ' 
+        ' ToolStripSeparator13
+        ' 
+        ToolStripSeparator13.Name = "ToolStripSeparator13"
+        ToolStripSeparator13.Size = New Size(107, 6)
+        ' 
+        ' JobsCloseToolStripMenuItem
+        ' 
+        JobsCloseToolStripMenuItem.Name = "JobsCloseToolStripMenuItem"
+        JobsCloseToolStripMenuItem.Size = New Size(110, 22)
+        JobsCloseToolStripMenuItem.Text = "Close"
         ' 
         ' ReportsToolStripMenuItem
         ' 
@@ -1488,4 +1530,10 @@ Partial Class FrmReports
     Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
     Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
     Friend WithEvents LetterheadImageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsRecentToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents JobsOpenToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator13 As ToolStripSeparator
+    Friend WithEvents JobsCloseToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents FileRecentToolStripMenuItem As ToolStripMenuItem
 End Class

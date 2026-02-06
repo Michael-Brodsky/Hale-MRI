@@ -12,33 +12,44 @@ Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Imports Newtonsoft.Json.Linq
 
 ''' <summary>
-''' Form for Opening, Closing, Editing and Printing reports.
-''' Manages database Report entities and serves as the 
-''' palette for displaying report elements (charts, graphs).
-''' NOTE:
-'''     This form only manages itself and its own controls 
-'''     (e.g. menus, form size, header, letterhead) and 
-'''     maintains database currency with respect to report 
-'''     layouts. The visual elements are managed by the
-'''     ReportGenerator (e.g. control visibility, size, 
-'''     location, drag/drop, editing and printing). This 
-'''     form should not modify any ReportControls or their
-'''     properies, as this may cause unexpected behavior.
-'''     
+''' Class that manages report Opening, Closing, Editing, 
+''' Printing and Database currency.
 ''' </summary>
 Public Class FrmReports
     Inherits FrmDatabaseForm
+    ' This form serves as a palette for displaying and 
+    ' printing report elements (charts, graphs, tables, etc).
+    ' NOTE:
+    '     This form only manages itself and its own controls 
+    '     (e.g. menus, form size, header, letterhead) and 
+    '     maintains database currency with respect to report 
+    '     layouts. The visual elements are managed by the
+    '     ReportGenerator (e.g. control visibility, size, 
+    '     location, drag/drop, editing and print rendering). 
+    '     This form should not modify any ReportControls or 
+    '     properties, as this may cause unexpected behavior.
+    '     Report elements get their properties and data from
+    '     the Reporting module, which must define a delegate
+    '     method that must be assigned to the containing 
+    '     ReportControls's Data member.
+    '     
+    '     ReportControl - refers to objects that encapsulate 
+    '     report controls (charts, graphs), and are defined
+    '     and managed by the ReportGenerator.
+    '     
+    '     ReportElement - refers to database entities defined
+    '     in LibDatabase.Models and managed by this Form.
 #Region "Types and Constants"
     ' Header item container type.
     Private Class HeaderItem
-        Public Property Control As Control      ' The value display control.
-        Public ReadOnly Property Id As String   ' The display control's database id - Stored in the Header ReportElement's Data field.
+        Public Property Control As Control      ' The display control.
+        Public ReadOnly Property Id As String   ' The display control's database id - Stored in the Header ReportElement's Data field when visible.
             Get
                 Return If(Me.Control IsNot Nothing, Control.Tag, "")
             End Get
         End Property
         Public Property Label As Label          ' The display control's associated Label.
-        Public Property MenuItem As ToolStripMenuItem   ' The HeaderItems' associated ToolStripMenuItem.
+        Public Property MenuItem As ToolStripMenuItem   ' This object's associated ToolStripMenuItem.
         Public Property Visible As Boolean
             Get
                 Return If(Me.Control IsNot Nothing, Me.Control.Visible, False)
@@ -72,25 +83,25 @@ Public Class FrmReports
     Private mResizeToPagePounds As Boolean = False          ' Indicates whether this form is sized to the current printer page size.
 #End Region
 #Region "Public Interface"
-    ''' <summary>
-    ''' Returns the currently selected JobDetail,
-    ''' or Nothing if there is no selected record.
-    ''' </summary>
+    ' <summary>
+    ' Returns the currently selected JobDetail,
+    ' or Nothing if there is no selected record.
+    ' </summary>
     Public ReadOnly Property Current As JobDetail
         Get
             Return BindingSourceCurrent(ReportDataBindingSource)
         End Get
     End Property
 
-    ''' <summary>
-    ''' Sets or gets the database context for this form.
-    ''' </summary>
+    ' <summary>
+    ' Sets or gets the database context for this form.
+    ' </summary>
     Public Overrides Property Database As HaleMRIContext
 
-    ''' <summary>
-    ''' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
-    ''' </summary>
-    ''' <returns></returns>
+    ' <summary>
+    ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
+    ' </summary>
+    ' <returns></returns>
     Public Property JobDetails As JobDetail
         Get
             Return mJobDetails
@@ -192,10 +203,10 @@ Public Class FrmReports
     End Sub
 
     Private Sub FileDropDownOpening()
+        ' Enables File menu items according to the current Report.
         CloseToolStripMenuItem.Enabled = Me.Report IsNot Nothing
-        ' These don't work because reasons.
-        'SaveToolStripMenuItem.Enabled = Database.ChangeTracker.HasChanges()
-        'SaveAsToolStripMenuItem.Enabled = SaveToolStripMenuItem.Enabled
+        SaveToolStripMenuItem.Enabled = Me.Report IsNot Nothing
+        SaveAsToolStripMenuItem.Enabled = Me.Report IsNot Nothing
     End Sub
 
     Private Sub FormMenuConfigure(rpt As Report)
@@ -234,8 +245,8 @@ Public Class FrmReports
 
     Private Sub HeaderInitialize()
         ' This creates a list of HeaderItems from the controls in
-        ' the HeaderLayotPanel automatically, eliminating the need
-        ' to initalize a list manually. Adding/removing header
+        ' the HeaderLayoutPanel automatically, eliminating the need
+        ' to initialize a list manually. Adding/removing header
         ' controls is done entirely at design time, requiring no
         ' additional code.
         Dim headerControls As List(Of Control) = Header.Controls.Cast(Of Control)().
@@ -290,6 +301,10 @@ Public Class FrmReports
                 item.Enabled = HeaderToolStripMenuItem.Checked
             End If
         Next
+    End Sub
+
+    Private Sub JobsDropDownOpening()
+        JobsCloseToolStripMenuItem.Enabled = Me.JobDetails IsNot Nothing
     End Sub
 
     Private Sub LetterheadControlShow(ByVal show As Boolean)
@@ -351,15 +366,11 @@ Public Class FrmReports
         Using g As Graphics = Graphics.FromImage(croppedBitmap)
             g.DrawImage(formBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
         End Using
-        If ResizeToPageBounds Then
-            e.Graphics.DrawImage(croppedBitmap, e.MarginBounds.Left, e.MarginBounds.Top)    ' Center the image within the page margins
-        Else
-            Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
-            Using g As Graphics = Graphics.FromImage(scaledBitmap)
+        Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
+        Using g As Graphics = Graphics.FromImage(scaledBitmap)
                 g.DrawImage(croppedBitmap, New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height))    ' Scale to paper printable area (inside margins).
             End Using
             e.Graphics.DrawImage(scaledBitmap, e.MarginBounds.Left, e.MarginBounds.Top)     ' Center the image within the page margins
-        End If
         formBitmap.Dispose()
         croppedBitmap.Dispose()
         e.HasMorePages = False
@@ -503,13 +514,39 @@ Public Class FrmReports
                     Case Else
                 End Select
                 ' Initially set the control's location and size, 
-                ' and add it to the list of visisble controls.
+                ' and add it to the list of visible controls.
                 reportControl.Control.Location = New Point(reportElement.PositionX, reportElement.PositionY)
                 reportControl.Control.Size = New Size(reportElement.SizeWidth, reportElement.SizeHeight)
                 visibleControls.Add(reportControl)
             Next
             mReportGenerator.VisibleControls = visibleControls
         End If
+    End Sub
+
+    Private Sub ReportElementsUpdate()
+        ' Remove any deleted elements
+        Dim toRemove As List(Of ReportElement) = mReport.ReportElements _
+            .Where(Function(re) ReportElementToControl(re, mReportGenerator.VisibleControls) Is Nothing) _
+            .ToList()
+
+        If toRemove.Count > 0 Then
+            ' Remove from EF change tracker in a single call
+            Database.ReportElements.RemoveRange(toRemove)
+            ' Also remove from the in-memory collection to keep UI/model consistent
+            For Each re In toRemove
+                mReport.ReportElements.Remove(re)
+            Next
+        End If
+
+        ' Update/add any changed/added elements.
+        For Each rc As ReportGenerator.ReportControl In mReportGenerator.VisibleControls
+            Dim re As ReportElement = ReportControlToElement(rc)
+            If re IsNot Nothing Then
+                ReportElementUpdate(re, rc)
+            Else
+                ReportElementAddNew(rc)
+            End If
+        Next
     End Sub
 
     Private Function ReportElementToControl(ByVal elem As ReportElement, ByVal from As List(Of ReportGenerator.ReportControl)) As ReportGenerator.ReportControl
@@ -528,6 +565,23 @@ Public Class FrmReports
             mReportGenerator.ControlShow(rc)
         Else
             mReportGenerator.ControlHide(rc)
+        End If
+    End Sub
+    Private Sub ReportElementUpdate(ByRef re As ReportElement, ByVal rc As ReportGenerator.ReportControl)
+        If re.SizeHeight <> rc.Control.Height Then
+            re.SizeHeight = rc.Control.Height
+        End If
+        If re.SizeWidth <> rc.Control.Width Then
+            re.SizeWidth = rc.Control.Width
+        End If
+        If re.PositionX <> rc.Control.Location.X Then
+            re.PositionX = rc.Control.Location.X
+        End If
+        If re.PositionY <> rc.Control.Location.Y Then
+            re.PositionY = rc.Control.Location.Y
+        End If
+        If re.Zorder <> rc.ZOrder Then
+            re.Zorder = rc.ZOrder
         End If
     End Sub
 
@@ -599,7 +653,7 @@ Public Class FrmReports
         ' Initialize the ReportGenerator.
         ' Note: HeaderItems have been removed from the ReportGenerator
         ' and are now handled by this form automatically.
-        ' We only need to intialize the ReportControls and that's it.
+        ' We only need to initialize the ReportControls and that's it.
         mReportGenerator = New ReportGenerator() With {
             .ParentForm = Me,
             .HorizontalLimit = 0,
@@ -612,6 +666,24 @@ Public Class FrmReports
                 New ReportGenerator.ReportControl(ChartAngularPosition, True, True, True, Nothing, Nothing, New ReportDataDelegate(AddressOf Reporting.ChartAngularPosition_Data))
             }
         }
+    End Sub
+
+    Private Sub ReportHeaderUpdate(ByRef he As ReportElement, ByVal hc As ReportGenerator.ReportControl)
+        If hc IsNot Nothing Then
+            ' If the Header control is visible
+            Dim hcItems As List(Of String) =
+                HeaderItems.Values.Where(Function(hi) hi.Visible).Select(Function(hi) hi.Id).ToList()
+            ' Either add it to the Report, or ...
+            If he Is Nothing Then
+                ReportElementAddNew(hc)
+            Else
+                Dim heItems As List(Of String) = If(he.Data IsNot Nothing, he.Data.Split(";"c).ToList, New List(Of String))
+                ' ... update its properties.
+                If Not hcItems.SequenceEqual(heItems) Then
+                    he.Data = String.Join(";", hcItems)
+                End If
+            End If
+        End If
     End Sub
 
     Private Sub ReportImport()
@@ -631,6 +703,11 @@ Public Class FrmReports
                 ReportAddNew(newReport)
             End If
         End If
+    End Sub
+
+    Private Sub ReportMetadataUpdate()
+        mReport.LastModifed = Now
+        mReport.ModifiedBy = Me.User.Id
     End Sub
 
     Private Function ReportNameInput() As String
@@ -657,6 +734,10 @@ Public Class FrmReports
         End If
         Return result
     End Function
+
+    Private Sub ReportPropertiesUpdate()
+        If mReport.GridSize <> mReportGenerator.GridSize Then mReport.GridSize = mReportGenerator.GridSize
+    End Sub
 
     Private Sub ReportToFile(fileName As String)
         ' Writes the current Report and layout data to a csv file.
@@ -734,67 +815,20 @@ Public Class FrmReports
             Database.SaveChanges()
         End If
 
-        ' Remove any deleted elements
-        Dim toRemove As List(Of ReportElement) = mReport.ReportElements _
-            .Where(Function(re) ReportElementToControl(re, mReportGenerator.VisibleControls) Is Nothing) _
-            .ToList()
+        ' Update the Report.ReportElements to contain only the currently visible ReportControls.
+        ReportElementsUpdate()
 
-        If toRemove.Count > 0 Then
-            ' Remove from EF change tracker in a single call
-            Database.ReportElements.RemoveRange(toRemove)
-            ' Also remove from the in-memory collection to keep UI/model consistent
-            For Each re In toRemove
-                mReport.ReportElements.Remove(re)
-            Next
-        End If
-
-        ' Update/add any changed/added elements.
-        For Each rc As ReportGenerator.ReportControl In mReportGenerator.VisibleControls
-            Dim re As ReportElement = ReportControlToElement(rc)
-            If re IsNot Nothing Then
-                If re.SizeHeight <> rc.Control.Height Then
-                    re.SizeHeight = rc.Control.Height
-                End If
-                If re.SizeWidth <> rc.Control.Width Then
-                    re.SizeWidth = rc.Control.Width
-                End If
-                If re.PositionX <> rc.Control.Location.X Then
-                    re.PositionX = rc.Control.Location.X
-                End If
-                If re.PositionY <> rc.Control.Location.Y Then
-                    re.PositionY = rc.Control.Location.Y
-                End If
-                ' Need a Z-Order check.
-            Else
-                ReportElementAddNew(rc)
-            End If
-        Next
-
-        ' Update header items
+        ' Update header items.
         Dim headerControl As ReportGenerator.ReportControl = mReportGenerator.VisibleControls.FirstOrDefault(Function(rc) rc.Name = "Header")
-        ' If the Header control is visible
-        If headerControl IsNot Nothing Then
-            Dim visibleHeaderItems As List(Of String) =
-                HeaderItems.Values.Where(Function(hi) hi.Visible).Select(Function(hi) hi.Id).ToList()
-            Dim headerElement As ReportElement = mReport.ReportElements.FirstOrDefault(Function(re) re.Report Is mReport And re.ElementName = "Header")
-            ' Either add it to the Report, or ...
-            If headerElement Is Nothing Then
-                ReportElementAddNew(headerControl)
-            End If
-            Dim headerElementItems As List(Of String) = If(headerElement.Data IsNot Nothing, headerElement.Data.Split(";"c).ToList, New List(Of String))
-            ' ... update its properties.
-            If Not visibleHeaderItems.SequenceEqual(headerElementItems) Then
-                headerElement.Data = String.Join(";", visibleHeaderItems)
-            End If
-        End If
+        Dim headerElement As ReportElement = mReport.ReportElements.FirstOrDefault(Function(re) re.Report Is mReport And re.ElementName = "Header")
+        ReportHeaderUpdate(headerElement, headerControl)
 
-        ' Update Report properties
-        If mReport.GridSize <> mReportGenerator.GridSize Then mReport.GridSize = mReportGenerator.GridSize
+        ' Update Report properties.
+        ReportPropertiesUpdate()
 
         ' Update report metadata if anything changed.
         If Database.ChangeTracker.HasChanges() Then
-            mReport.LastModifed = Now
-            mReport.ModifiedBy = Me.User.Id
+            ReportMetadataUpdate()
         End If
     End Sub
 
@@ -963,6 +997,10 @@ Public Class FrmReports
         HeaderControlToggle()
     End Sub
 
+    Private Sub JobsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles JobsToolStripMenuItem.DropDownOpening
+        JobsDropDownOpening()
+    End Sub
+
     Private Sub ReportsItemClickHandler(sender As Object, e As EventArgs)
         Report = ReportOpen(CType(sender, ToolStripMenuItem).Text)
     End Sub
@@ -1037,7 +1075,7 @@ Public Class FrmReports
         '
         ' If reports supports control settings (like Reference Blade, Point, Radius, etc.) we will have to provide
         ' the controls and any args from them. The display control and any additional settings controls can be put
-        ' into a GroupBox, which then becomes the containg ReportControl object.
+        ' into a GroupBox, which then becomes the containing ReportControl object.
         ' I just hardcoded some values to demonstrate the calls.
         Dim rc As ReportGenerator.ReportControl = mReportGenerator.ReportControls.First(Function(ctrl) ctrl.Name = "ChartBladeHeight")
         rc.Data.DynamicInvoke(ChartBladeHeight, New ReportDataArgs(1, "Mid", 49.99, JobDetails))
