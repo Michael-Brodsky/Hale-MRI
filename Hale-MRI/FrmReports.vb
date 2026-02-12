@@ -551,6 +551,7 @@ Public Class FrmReports
                 Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = reportElement.ElementName)
                 ' The Header and Letterhead controls have additional requirements
                 ' not handled by the ReportGenerator, so we handle them here.
+                If reportControl Is Nothing Then Continue For
                 Select Case reportControl.Name
                     Case "Letterhead"
                         LetterheadControlShow(True)

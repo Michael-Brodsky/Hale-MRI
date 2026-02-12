@@ -18,8 +18,8 @@ Module FormInstances
     Public gFrmManufacturers As FrmManufacturers
     Public gFrmMeasurements As FrmMeasurements
     Public gFrmPropellers As FrmPropellers
-    'Public gFrmReports As FrmReports
-    Public gFrmReports As FrmReports2
+    Public gFrmReports As FrmReports
+    'Public gFrmReports As FrmReports2
     Public gFrmSettings As FrmSettings
     Public gFrmVessels As FrmVessels
     Public Sub ShowForm(Of F As {Form, New})(ByRef frm As F)

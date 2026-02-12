@@ -1,4 +1,5 @@
-﻿Imports System.Windows.Forms.DataVisualization.Charting
+﻿Imports System.Drawing.Configuration
+Imports System.Windows.Forms.DataVisualization.Charting
 Imports LibDatabase.Models
 
 Module Graphing

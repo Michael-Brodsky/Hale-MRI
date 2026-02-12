@@ -7,7 +7,7 @@ Module MRIMath
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = startangle - endangle
-        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
+        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
         If cl <> 0 Then
             startangle -= (deltaangle * TeExclusion / cl)
             endangle += (deltaangle * LeExclusion / cl)
@@ -49,7 +49,7 @@ Module MRIMath
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = startangle - endangle
-        Dim cl As Double = GetChordLength(cm.FirstOrDefault().Angle.Value, cm.LastOrDefault().Angle.Value, cm.FirstOrDefault().Depth.Value, cm.LastOrDefault().Depth.Value, diameter, CInt(radiusPercent))
+        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
         If cl <> 0 Then
             startangle -= (deltaangle * TeExclusion / cl)
             endangle += (deltaangle * LeExclusion / cl)
@@ -60,6 +60,140 @@ Module MRIMath
         Dim sectorstartcell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorstartangle).LastOrDefault()
         Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
         Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
+    End Function
+
+    Public Function GetLocalHeightStartSector(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
+        'Returns the local Height of the start of a sector for use in Line Graphs
+        Dim startangle As Double = cm.FirstOrDefault().Angle
+        Dim endangle As Double = cm.LastOrDefault().Angle
+        Dim deltaangle As Double = startangle - endangle
+        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
+        If cl <> 0 Then
+            startangle -= (deltaangle * TeExclusion / cl)
+            endangle += (deltaangle * LeExclusion / cl)
+        End If ' bunch of math that finds the angle bounds of the sector excluding TE and LE Exclusion zones
+        Dim sectorArc As Double = (startangle - endangle) / sectors
+        Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
+
+        Dim sectorstartovercell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorstartangle).LastOrDefault()
+        Dim sectorstartundercell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorstartangle).FirstOrDefault()
+        Dim sectorstartdepth As Double = 0.0
+        Dim Ratio As Double = 0.0
+        If sectorstartovercell IsNot Nothing AndAlso sectorstartundercell IsNot Nothing Then
+            'Linear interpolation to find the depth at the exact sector start angle
+            If sectorstartangle - sectorstartundercell.Angle <> 0 Then
+                If sectorstartovercell.Angle - sectorstartundercell.Angle <> 0 Then
+                    Ratio = (sectorstartangle - sectorstartundercell.Angle) / (sectorstartovercell.Angle - sectorstartundercell.Angle)
+                End If
+            End If
+            sectorstartdepth = sectorstartundercell.Depth + (Ratio * (sectorstartovercell.Depth - sectorstartundercell.Depth))
+        End If
+        Return sectorstartdepth
+    End Function
+
+    Public Function GetLocalHeightEndSector(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
+        Dim startangle As Double = cm.FirstOrDefault().Angle
+        Dim endangle As Double = cm.LastOrDefault().Angle
+        Dim deltaangle As Double = startangle - endangle
+        Dim cl As Double = GetChordLength(cm, diameter, CInt(radiusPercent))
+        If cl <> 0 Then
+            startangle -= (deltaangle * TeExclusion / cl)
+            endangle += (deltaangle * LeExclusion / cl)
+        End If ' bunch of math that finds the angle bounds of the sector excluding TE and LE Exclusion zones
+        Dim sectorArc As Double = (startangle - endangle) / sectors
+        Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
+        Dim sectorendangle As Double = sectorstartangle - sectorArc
+        Dim sectorendundercell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorendangle).FirstOrDefault()
+        Dim sectorendovercell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).LastOrDefault()
+        Dim sectorenddepth As Double = 0.0
+        Dim Ratio As Double = 0.0
+        If sectorendovercell IsNot Nothing AndAlso sectorendundercell IsNot Nothing Then
+            'Linear interpolation to find the depth at the exact sector end angle
+            If sectorendangle - sectorendundercell.Angle <> 0 Then
+                If sectorendovercell.Angle - sectorendundercell.Angle <> 0 Then
+                    Ratio = (sectorendangle - sectorendundercell.Angle) / (sectorendovercell.Angle - sectorendundercell.Angle)
+                End If
+            End If
+            sectorenddepth = sectorendundercell.Depth + (Ratio * (sectorendovercell.Depth - sectorendundercell.Depth))
+        End If
+        Return sectorenddepth
+    End Function
+
+    Public Function GetRefHeightsHighTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
+        'Returns a list of height values that are already modified based on ref point for use in Line graphs
+        Dim Numbers As New List(Of Double)
+        refpitch += refpitch * (Tolclass.LocalPitchPercent / 100)
+        Dim angperblade As Double = 360 / blades
+        Dim anglediffbetweenpoints As Double = angperblade / 10
+        Dim heightdiffbetweenpoints As Double = (refpitch * anglediffbetweenpoints) / 360
+        Dim x As Integer
+        For x = 0 To 10
+            If x = 0 Then
+                Numbers.Add(GetLocalHeightStartSector(cm, 10, 1, cm(0).RadiusMeasurement.JobDetails.Job.PropellerDiameter, cm(0).RadiusMeasurement.Radius, cm(0).RadiusMeasurement.JobDetails.Job.TeExclusion, cm(0).RadiusMeasurement.JobDetails.Job.LeExclusion))
+            Else
+                Numbers.Add(GetLocalHeightEndSector(cm, 10, 1, cm(0).RadiusMeasurement.JobDetails.Job.PropellerDiameter, cm(0).RadiusMeasurement.Radius, cm(0).RadiusMeasurement.JobDetails.Job.TeExclusion, cm(0).RadiusMeasurement.JobDetails.Job.LeExclusion))
+            End If
+        Next
+        If center Then
+            For x = 0 To 10
+                Numbers.Item(x) -= Numbers.Item(5)
+                Numbers.Item(x) += heightdiffbetweenpoints * (5 - x)
+            Next
+        Else
+            For x = 0 To 10
+                Numbers.Item(x) -= Numbers.Item(0)
+                Numbers.Item(x) += heightdiffbetweenpoints * x
+            Next
+        End If
+        Return Numbers
+    End Function
+
+    Public Function GetRefHeightsLowTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
+        'Returns a list of height values that are already modified based on ref point for use in Line graphs
+        Dim Numbers As New List(Of Double)
+        refpitch -= refpitch * (Tolclass.LocalPitchPercent / 100)
+        Dim angperblade As Double = 360 / blades
+        Dim anglediffbetweenpoints As Double = angperblade / 10
+        Dim heightdiffbetweenpoints As Double = (refpitch * anglediffbetweenpoints) / 360
+        Dim x As Integer
+        For x = 0 To 10
+            If x = 0 Then
+                Numbers.Add(GetLocalHeightStartSector(cm, 10, 1, cm(0).RadiusMeasurement.JobDetails.Job.PropellerDiameter, cm(0).RadiusMeasurement.Radius, cm(0).RadiusMeasurement.JobDetails.Job.TeExclusion, cm(0).RadiusMeasurement.JobDetails.Job.LeExclusion))
+            Else
+                Numbers.Add(GetLocalHeightEndSector(cm, 10, 1, cm(0).RadiusMeasurement.JobDetails.Job.PropellerDiameter, cm(0).RadiusMeasurement.Radius, cm(0).RadiusMeasurement.JobDetails.Job.TeExclusion, cm(0).RadiusMeasurement.JobDetails.Job.LeExclusion))
+            End If
+        Next
+        If center Then
+            For x = 0 To 10
+                Numbers.Item(x) -= Numbers.Item(5)
+                Numbers.Item(x) += heightdiffbetweenpoints * (5 - x)
+            Next
+        Else
+            For x = 0 To 10
+                Numbers.Item(x) -= Numbers.Item(0)
+                Numbers.Item(x) += heightdiffbetweenpoints * x
+            Next
+        End If
+        Return Numbers
+    End Function
+
+    Public Function GetRefHeightsStraight(center As Boolean, refpitch As Double, blades As Integer) As List(Of Double)
+        'Returns a list of height values for use in line graphs
+        Dim numbers As New List(Of Double)
+        Dim x As Integer
+        Dim angperblade As Double = 360 / blades
+        Dim anglediffbetweenpoints As Double = angperblade / 10
+        Dim heightdiffbetweenpoints As Double = (refpitch * anglediffbetweenpoints) / 360
+        If center Then
+            For x = 0 To 10
+                numbers.Add(heightdiffbetweenpoints * Math.Abs(5 - x))
+            Next
+        Else
+            For x = 0 To 10
+                numbers.Add(heightdiffbetweenpoints * x)
+            Next
+        End If
+        Return numbers
     End Function
 
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
@@ -87,11 +221,26 @@ Module MRIMath
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)
     End Function
 
-    Public Function GetChordLength(angleFirst As Double, angleLast As Double, depthFirst As Double, depthLast As Double, diameter As Double, radperc As Integer) As Double
+    Public Function GetChordLength(cm As List(Of CellMeasurement), diameter As Double, radperc As Integer) As Double
         'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
         'used to get the chord length between two cell measurements in inches
-        Dim deltaangle As Double = angleLast - angleFirst 'Total change in angle on a radius of one blade
-        Dim deltadepth As Double = depthLast - depthFirst 'Total change in depth on a radius of one blade
+        Dim deltaangle As Double = cm.LastOrDefault().Angle - cm.FirstOrDefault().Angle 'Total change in angle on a radius of one blade
+        Dim deltadepth As Double = cm.LastOrDefault().Depth - cm.FirstOrDefault().Depth 'Total change in depth on a radius of one blade
+
+        Dim adjusteddiameter As Double = diameter * (radperc / 100) 'Gets the value side of a radius measurement from a radius percent needed for an arc length calculation
+
+        Dim arclength = adjusteddiameter * Math.PI * deltaangle / 360 'Gets the length of the arc/flat of the radial chord
+
+        Dim squared = Math.Pow(deltadepth, 2) + Math.Pow(arclength, 2)
+        Dim chordlength = Math.Sqrt(squared) 'Pythagorean theorem to get chord length from change in depth and arc length
+
+        Return chordlength
+    End Function
+    Public Function GetChordLength(startAngle As Double, endAngle As Double, startDepth As Double, endDepth As Double, diameter As Double, radperc As Integer) As Double
+        'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
+        'used to get the chord length between two cell measurements in inches
+        Dim deltaangle As Double = endAngle - startAngle 'Total change in angle on a radius of one blade
+        Dim deltadepth As Double = endDepth - startDepth 'Total change in depth on a radius of one blade
 
         Dim adjusteddiameter As Double = diameter * (radperc / 100) 'Gets the value side of a radius measurement from a radius percent needed for an arc length calculation
 

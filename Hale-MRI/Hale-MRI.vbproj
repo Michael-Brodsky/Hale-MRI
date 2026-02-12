@@ -65,6 +65,7 @@
     <EmbeddedResource Remove="Form3.resx" />
     <EmbeddedResource Remove="Form4.resx" />
     <EmbeddedResource Remove="FrmJobs_old.resx" />
+    <EmbeddedResource Remove="FrmReportsEditor.resx" />
     <EmbeddedResource Remove="newFrmJobs.resx" />
     <EmbeddedResource Remove="ReportHeader.resx" />
     <EmbeddedResource Remove="ReportLetterhead.resx" />
