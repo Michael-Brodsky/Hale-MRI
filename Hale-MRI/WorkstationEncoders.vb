@@ -15,7 +15,7 @@ Public Class WorkstationEncoders
     Private mEncoders As EncoderHardware            ' Encoder hardware instance
 #End Region
 #Region "Public Interface"
-    Public Property PollingInterval As Long = 200   ' Encoder polling interval in milliseconds
+    Public Property PollingInterval As Long = kEncoderPollingIntervalDefault   ' Encoder polling interval in milliseconds
     Public Property Encoders As EncoderHardware     ' Gets or sets the encoder hardware instance.
         Get
             Return mEncoders

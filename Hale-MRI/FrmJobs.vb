@@ -92,6 +92,12 @@ Public Class FrmJobs
 
     Public Property Hardware As WorkstationEncoders ' We need to pass this to the measurements form.
 
+    Public ReadOnly Property JobDetails As JobDetail ' Used when form is modal and used only to select a JobDetail.
+        Get
+            Return BindingSourceCurrent(JobDetailsBindingSource)
+        End Get
+    End Property
+
     Public Overrides Sub Refresh()
         MyBase.Refresh()
         'JobDetailsBindingSource.ResetBindings(False)
@@ -455,12 +461,16 @@ Public Class FrmJobs
         ' Open the measurements form with the clicked Job record.
         Try
             If ComboJobs.DoubleClicked() Then
-                If Not mMeasurementsEnabled Then
-                    MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                ElseIf CurrentJob IsNot Nothing Then
-                    ShowForm(gFrmMeasurements, Database, User)
-                    gFrmMeasurements.Hardware = Hardware
-                    gFrmMeasurements.Job = CurrentJob
+                If Me.Modal Then
+                    Me.DialogResult = DialogResult.OK
+                Else
+                    If Not mMeasurementsEnabled Then
+                        MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                    ElseIf CurrentJob IsNot Nothing Then
+                        ShowForm(gFrmMeasurements, Database, User)
+                        gFrmMeasurements.Hardware = Hardware
+                        gFrmMeasurements.Job = CurrentJob
+                    End If
                 End If
             End If
         Catch ex As Exception
@@ -532,37 +542,45 @@ Public Class FrmJobs
         End Try
     End Sub
 
-    Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs)
-        ' Open the measurements form with the clicked JobDetail record.
-        Try
-            ShowForm(gFrmMeasurements, Database, User)
-            gFrmMeasurements.Hardware = Hardware
-            gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
-        Catch ex As Exception
-            MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
-    End Sub
+    'Private Sub DataGridJobDetails_CellMouseDoubleClick(sender As Object, e As DataGridViewCellMouseEventArgs)
+    '    ' Open the measurements form with the clicked JobDetail record.
+    '    Try
+    '        If Me.Modal Then
+    '            Me.DialogResult = DialogResult.OK
+    '        Else
+    '            ShowForm(gFrmMeasurements, Database, User)
+    '            gFrmMeasurements.Hardware = Hardware
+    '            gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+    '        End If
+    '    Catch ex As Exception
+    '        MessageBox.Show("Error opening the job details form: " & ex.Message, STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+    '    End Try
+    'End Sub
 
     Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
         ' Open the JobDetails (Measurements) form with the selected Vessel as the current record or,
         ' if the Customer has no Vessels, create a new Vessel for the Customer
         ' and make it the current record.
-        Try
-            If Not mMeasurementsEnabled Then
-                MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
-            ElseIf Current IsNot Nothing Then
-                ShowForm(gFrmMeasurements, Database, User)
-                gFrmMeasurements.Hardware = Hardware
-                If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
-                    gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
-                Else
-                    gFrmMeasurements.Job = CurrentJob
-                    gFrmMeasurements.AddNew(Current)
+        'Try
+        If Me.Modal Then
+                Me.DialogResult = DialogResult.OK
+            Else
+                If Not mMeasurementsEnabled Then
+                    MessageBox.Show("All required fields, shown in red, must be completed and the record saved before opening the measurements form.", STR_TITLE_DEFAULT, MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                ElseIf Current IsNot Nothing Then
+                    ShowForm(gFrmMeasurements, Database, User)
+                    gFrmMeasurements.Hardware = Hardware
+                    If BindingSourceCurrent(JobDetailsBindingSource) IsNot Nothing Then
+                        gFrmMeasurements.JobDetails = BindingSourceCurrent(JobDetailsBindingSource)
+                    Else
+                        gFrmMeasurements.Job = CurrentJob
+                        gFrmMeasurements.AddNew(Current)
+                    End If
                 End If
             End If
-        Catch ex As Exception
-            MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
-        End Try
+        'Catch ex As Exception
+        'MessageBox.Show(String.Format(STR_ERR_FORM_OPEN, "vessels", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
+        'End Try
     End Sub
 
     Private Sub FormJobs_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing

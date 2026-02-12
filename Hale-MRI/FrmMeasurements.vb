@@ -1,8 +1,6 @@
 ﻿Imports System.ComponentModel
-Imports System.Runtime.CompilerServices
-Imports System.Threading
+Imports System.Security.Cryptography
 Imports System.Windows.Forms.DataVisualization.Charting
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports Hale_MRI.EncoderStatusStrip
 Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
@@ -899,75 +897,69 @@ Public Class FrmMeasurements
     End Sub
 
     Private Sub ShowTrack()
-        If mJobDetails Is Nothing Then
-            Return
-        End If
+        'If mJobDetails Is Nothing Then
+        '    Return
+        'End If
         'Const kHeightOffset As Double = 0.2 ' Offset to add to data points for visual comparison?
-        Dim refBlade As Integer? = ComboReferenceBlade.SelectedValue
-        Dim refPoint As String = ComboReferencePoint.SelectedValue
-        Dim refRadius As Double = ComboReferenceRadius.SelectedValue
-        ' If all three reference values are given, calculate and plot the data.
-        If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
-            ' Example code using the new Reporting.ReportDataDelegate.
-            ' Delegates can be shared across multiple client controls,
-            ' e.g both this form and FrmReports have ChartBladeHeight
-            ' and they need the same data. Now we can call the delegate,
-            ' passing in the control. See module Reporting and also
-            ' FrmReports.ReportDataGet() for more details.
-            ChartBladeHeight_Data _
-            (
-                ChartBladeHeight,
-                New ReportDataArgs _
-                (
-                    refBlade,
-                    refPoint,
-                    refRadius,
-                    JobDetails
-                )
-            )
+        'Dim refBlade As Integer? = ComboReferenceBlade.SelectedValue
+        'Dim refPoint As String = ComboReferencePoint.SelectedValue
+        'Dim refRadius As Double = ComboReferenceRadius.SelectedValue
+        '' If all three reference values are given, calculate and plot the data.
+        'If refBlade IsNot Nothing AndAlso refPoint IsNot Nothing AndAlso refRadius > 0 Then
+        '    Dim ChartBladeHeight As Chart = ChartBladeHeight1.Chart1
+        '    Dim seriesHeight As Series = ChartCreateSeries(ChartBladeHeight, "BladeHeight", "Blade", "Height")
+        '    'Dim seriesPosition As Series = ChartCreateSeries(ChartAngularPosition, "AngularPosition", "Blade", "Position")
+        '    Dim radiusMeasurements As List(Of RadiusMeasurement) = mJobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = refBlade).OrderBy(Function(r) CType(r.Radius, Double)).ToList()
+        '    Dim innerRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault() ' RadiusMeasurement at smallest radius
+        '    Dim innerDepth As Double = TrackGetDepth(innerRm, refPoint)             ' Depth at smallest radius and reference point
+        '    Dim outerRm As RadiusMeasurement = radiusMeasurements?.LastOrDefault()  ' RadiusMeasurement at largest radius
+        '    Dim outerDepth As Double = TrackGetDepth(outerRm, refPoint)             ' Depth at largest radius and reference point
+        '    Dim refRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault(Function(r) Math.Round(CType(r.Radius, Double)) = refRadius)    ' RadiusMeasurement at reference radius
+        '    Dim refDepth As Double = TrackGetDepth(refRm, refPoint)                 ' Depth at reference radius and point
+        '    Dim refAngle As Double = TrackGetAngle(refRm, refPoint)                 ' Angle at reference radius and point
+        '    ' Plot each blade's data points
+        '    If innerRm Is Nothing Or outerRm Is Nothing Then
+        '        Return
+        '    End If
+        '    For i As Integer = 1 To Job?.PropellerBlades
+        '        Dim b As Integer = i
+        '        Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
+        '        If rm IsNot Nothing Then
+        '            Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
+        '            Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
+        '            Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
+        '            Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle) - ((360 / Job?.PropellerBlades) * Math.Abs(refBlade.Value - rm.BladeId.Value)) + kHeightOffset
+        '            ChartAddPoint(ChartBladeHeight, seriesHeight, $"{b}", bladeHeight, (b = refBlade))
+        '            'ChartAddPoint(ChartAngularPosition, seriesPosition, $"{b}", bladePosition, (b = refBlade))
+        '        End If
+        '        ChartBladeHeight.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
+        '        'ChartAngularPosition.Series(0).Points(i - 1).Color = GraphColorArray(i - 1)
+        '    Next
+        '    ShowRake(innerDepth, outerDepth, innerRm.Radius, outerRm.Radius, refRadius)
+        'End If
+        ChartBladeHeight1.BladeCount = mJobDetails?.Job?.PropellerBlades
+        ChartBladeHeight1.ReferenceBlade = ComboReferenceBlade.SelectedValue
+        ChartBladeHeight1.ReferencePoint = ComboReferencePoint.SelectedValue
+        ChartBladeHeight1.ReferenceRadius = ComboReferenceRadius.SelectedValue
+        ChartBladeHeight1.Data = mJobDetails?.RadiusMeasurements
+        ChartBladeHeight1.RadiusMeasurements = mJobDetails?.RadiusMeasurements?.
+            Where(Function(r) r.BladeId = ChartBladeHeight1.ReferenceBlade).
+            OrderBy(Function(r) CType(r.Radius, Double)).ToList()
 
-            ChartAngularPosition_Data _
-            (
-                ChartAngularPosition,
-                New ReportDataArgs _
-                (
-                    refBlade,
-                    refPoint,
-                    refRadius,
-                    JobDetails
-                )
-            )
+        ChartAngularPosition1.BladeCount = ChartBladeHeight1.BladeCount
+        ChartAngularPosition1.ReferenceBlade = ChartBladeHeight1.ReferenceBlade
+        ChartAngularPosition1.ReferencePoint = ChartBladeHeight1.ReferencePoint
+        ChartAngularPosition1.ReferenceRadius = ChartBladeHeight1.ReferenceRadius
+        ChartAngularPosition1.Data = ChartBladeHeight1.Data
+        ChartAngularPosition1.RadiusMeasurements = ChartBladeHeight1.RadiusMeasurements
 
-            'These are only for ShowRake()
-            Dim radiusMeasurements As List(Of RadiusMeasurement) = mJobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = refBlade).OrderBy(Function(r) CType(r.Radius, Double)).ToList()
-            Dim innerRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault() ' RadiusMeasurement at smallest radius
-            Dim innerDepth As Double = TrackGetDepth(innerRm, refPoint)             ' Depth at smallest radius and reference point
-            Dim outerRm As RadiusMeasurement = radiusMeasurements?.LastOrDefault()  ' RadiusMeasurement at largest radius
-            Dim outerDepth As Double = TrackGetDepth(outerRm, refPoint)             ' Depth at largest radius and reference point
-
-            ShowRake(innerDepth, outerDepth, innerRm.Radius, outerRm.Radius, refRadius)
-            'Dim seriesHeight As Series = ChartCreateSeries(ChartBladeHeight, "BladeHeight", "Blade", "Height")
-            'Dim seriesPosition As Series = ChartCreateSeries(ChartAngularPosition, "AngularPosition", "Blade", "Position")
-            'Dim refRm As RadiusMeasurement = radiusMeasurements?.FirstOrDefault(Function(r) Math.Round(CType(r.Radius, Double)) = refRadius)    ' RadiusMeasurement at reference radius
-            'Dim refDepth As Double = TrackGetDepth(refRm, refPoint)                 ' Depth at reference radius and point
-            'Dim refAngle As Double = TrackGetAngle(refRm, refPoint)                 ' Angle at reference radius and point
-            '' Plot each blade's data points
-            'If innerRm Is Nothing Or outerRm Is Nothing Then
-            '    Return
-            'End If
-            'For i As Integer = 1 To Job?.PropellerBlades
-            '    Dim b As Integer = i
-            '    Dim rm As RadiusMeasurement = mJobDetails?.RadiusMeasurements?.FirstOrDefault(Function(r) r.BladeId = b)
-            '    If rm IsNot Nothing Then
-            '        Dim bladeDepth As Double = TrackGetDepth(rm, refPoint)
-            '        Dim bladeAngle As Double = TrackGetAngle(rm, refPoint)
-            '        Dim bladeHeight As Double = Math.Abs(refDepth - bladeDepth) + kHeightOffset
-            '        Dim bladePosition As Double = Math.Abs(refAngle - bladeAngle) - ((360 / Job?.PropellerBlades) * Math.Abs(refBlade.Value - rm.BladeId.Value)) + kHeightOffset
-            '        ChartAddPoint(ChartBladeHeight, seriesHeight, $"{b}", bladeHeight, (b = refBlade))
-            '        ChartAddPoint(ChartAngularPosition, seriesPosition, $"{b}", bladePosition, (b = refBlade))
-            '    End If
-            'Next
-        End If
+        ShowRake(
+            ChartBladeHeight1.InnerDepth,
+            ChartBladeHeight1.OuterDepth,
+            ChartBladeHeight1.InnerRadius?.Radius,
+            ChartBladeHeight1.OuterRadius?.Radius,
+            ChartBladeHeight1.ReferenceRadius
+        )
     End Sub
 
     Private Sub ShowBladePlot()
@@ -1040,11 +1032,11 @@ Public Class FrmMeasurements
         Next
     End Sub
 
-    Private Sub ShowRake(ByVal innerDepth As Double, ByVal outerDepth As Double, ByVal innerRadius As Double, ByVal outerRadius As Double, ByVal radius As Double)
-        Dim deltaDepth As Double = innerDepth - outerDepth
-        Dim lengthRadius As Double = (radius * outerRadius / 100.0) - (radius * innerRadius / 100.0)
-        Dim rake As Double = Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI)
-        TxtRake.Text = rake.ToString(STR_PARAM_DECIMAL_PLACES)
+    Private Sub ShowRake(ByVal innerDepth As Double?, ByVal outerDepth As Double?, ByVal innerRadius As Double?, ByVal outerRadius As Double?, ByVal radius As Double?)
+        Dim deltaDepth As Double? = innerDepth - outerDepth
+        Dim lengthRadius As Double? = (radius * outerRadius / 100.0) - (radius * innerRadius / 100.0)
+        Dim rake As Double? = If(deltaDepth.HasValue AndAlso lengthRadius.HasValue, Math.Atan2(deltaDepth, lengthRadius) * (180.0 / Math.PI), Nothing)
+        TxtRake.Text = rake?.ToString(STR_PARAM_DECIMAL_PLACES)
     End Sub
 #End Region
 #Region "Event Handlers"
@@ -1095,8 +1087,9 @@ Public Class FrmMeasurements
 
     Private Sub DataGridJobDetails_MouseDoubleClick(sender As Object, e As MouseEventArgs) Handles DataGridJobDetails.MouseDoubleClick
         If Current IsNot Nothing Then
+            'ShowForm(gFrmReports)
             ShowForm(gFrmReports, Database, User)
-            gFrmReports.JobDetails = Current
+            'gFrmReports.JobDetails = Current
         End If
     End Sub
 
@@ -1117,7 +1110,7 @@ Public Class FrmMeasurements
         MyBase.Form_Closing(sender, e)
     End Sub
 
-    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load, MyBase.Load
+    Private Sub Form1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ' Initialize form controls. This method needs to initialize all form controls
             ' based on some predefined "states". For example: if no encoders are detected,

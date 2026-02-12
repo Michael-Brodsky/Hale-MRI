@@ -49,3 +49,4 @@ C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\x64\Debug\net8.0\LibEncoder.
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\x64\Debug\net8.0\LibEncoder.Resources.resources
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\x64\Debug\net8.0\LibEncoder.vbproj.GenerateResource.cache
 C:\Users\super\source\repos\Hale-MRI\LibEncoder\obj\x64\Debug\net8.0\LibEncoder.vbproj.Up2Date
+C:\Users\super\source\repos\Hale-MRI\LibEncoder\bin\x64\Debug\net8.0\USB4.dll

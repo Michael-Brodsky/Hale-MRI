@@ -47,11 +47,13 @@ Public Class ReportGenerator
         Public MaxSize As Size          ' The display control's maximum size (0 = no max).
         Public MinSize As Size          ' The display control's minimum size (0 = no min).
         Public Name As String           ' This object's human-readable name.
+
         Public ReadOnly Property ZOrder As Integer
             Get
                 Return If(Me.Control IsNot Nothing, Me.Control.Parent.Controls.GetChildIndex(Me.Control), kNoCurrentSelection)
             End Get
         End Property
+
         Public Sub New(ctrl As Control, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                        Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As [Delegate] = Nothing)
             ' Constructor
@@ -110,7 +112,7 @@ Public Class ReportGenerator
     Private mDragStartPos As Point                              ' The starting mouse position of the drag operation.
     Private mEdit As Edits = Edits.None                         ' Bitmask indicating which edit operations are currently permissible.
     Private mGridSize As Integer = 0                            ' The report grid size, in pixels.
-    Private mHorizontalLimit As Integer = 0                     ' The limit of where a control can be horizontally dragged/resized.
+    'Private mHorizontalLimit As Integer = 0                     ' The limit of where a control can be horizontally dragged/resized.
     Private mIsDragging As Boolean = False                      ' Indicates whether a drag operation is in progress.
     Private mIsMultiSelect As Boolean = False                   ' Indicates whether multiple selection is active.
     Private mIsResizing As Boolean = False                      ' Indicates whether a resize operation is in progress.
@@ -119,7 +121,7 @@ Public Class ReportGenerator
     Private mResizeInProgress As Boolean = False                ' Indicates that a resize action has fired either the Control_LocationChanged or Control_Resize event.
     Private mResizePoint As ResizePoints                        ' The resize cursor/type of resize operation.
     Private mUndoStack As New Stack(Of List(Of ReportControl))  ' Stores a LIFO list of report layout snapshots (objects must be Clones).
-    Private mVerticalLimit As Integer = 0                       ' The limit of where a control can be vertically dragged/resized.
+    ' Private mVerticalLimit As Integer = 0                       ' The limit of where a control can be vertically dragged/resized.
     Private WithEvents mReportControls As New ObservableCollection(Of ReportControl)    ' The collection of all available report controls.
     Private WithEvents mSelectedControls As New ObservableCollection(Of ReportControl)  ' The collection of currently selected controls
     Private WithEvents mVisibleControls As New ObservableCollection(Of ReportControl)   ' The collection of currently visible report controls.
@@ -147,8 +149,10 @@ Public Class ReportGenerator
             Return mBounds
         End Get
         Set(value As Rectangle)
-            ReportControlsReposition(value)
-            mBounds = value
+            If value <> mBounds Then
+                ReportControlsReposition(value)
+                mBounds = value
+            End If
         End Set
     End Property
 
@@ -161,7 +165,7 @@ Public Class ReportGenerator
     End Sub
 
     Public Sub ControlShow(rc As ReportControl)
-        If rc IsNot Nothing Then mVisibleControls.Add(rc)
+        If rc IsNot Nothing AndAlso Not mVisibleControls.Any(Function(vc) vc.Name = rc.Name) Then mVisibleControls.Add(rc)
     End Sub
 
     Public Sub DeleteSelected()
@@ -181,20 +185,8 @@ Public Class ReportGenerator
         End Get
         Set(value As Integer)
             If value <> mGridSize Then
-                ReportControlsReposition(,, value)
+                ReportControlsReposition(, value)
                 mGridSize = value
-            End If
-        End Set
-    End Property
-
-    Public Property HorizontalLimit As Integer
-        Get
-            Return mHorizontalLimit
-        End Get
-        Set(value As Integer)
-            If value <> mHorizontalLimit Then
-                ReportControlsReposition(, value,)
-                mHorizontalLimit = value
             End If
         End Set
     End Property
@@ -246,18 +238,6 @@ Public Class ReportGenerator
             ' items and add the new items individually.
             ControlsRemoveFrom(SelectedControls, mSelectedControls)
             If value IsNot Nothing Then ControlsAddInTo(value, mSelectedControls)
-        End Set
-    End Property
-
-    Public Property VerticalLimit As Integer
-        Get
-            Return mVerticalLimit
-        End Get
-        Set(value As Integer)
-            ReportControlsReposition(value,,)
-            If value <> mVerticalLimit Then
-                mVerticalLimit = value
-            End If
         End Set
     End Property
 
@@ -352,18 +332,17 @@ Public Class ReportGenerator
                 If rc.IsMovable Then
                     ' Enforce horizontal and vertical limits.
                     Dim loc As New Point(rc.LastPosition.X + deltaX, rc.LastPosition.Y + deltaY)
-                    If HorizontalLimit > 0 Then
-                        If loc.X < HorizontalLimit Then loc.X = HorizontalLimit
-                        If (loc.X + rc.Control.Width) > (mParentForm.ClientRectangle.Right - HorizontalLimit) Then
-                            loc.X = mParentForm.ClientRectangle.Right - HorizontalLimit - rc.Control.Width
-                        End If
+                    If loc.X < Bounds.X Then
+                        loc.X = Bounds.X
+                    ElseIf (loc.X + rc.Control.Width) > Bounds.Width Then
+                        loc.X = Bounds.Width - rc.Control.Width
                     End If
-                    If VerticalLimit > 0 Then
-                        If loc.Y < VerticalLimit Then loc.Y = VerticalLimit
-                        If (loc.Y + rc.Control.Height) > (mParentForm.ClientRectangle.Bottom - GridSize) Then
-                            loc.Y = mParentForm.ClientRectangle.Bottom - GridSize - rc.Control.Height
-                        End If
+                    If loc.Y < Bounds.Y Then
+                        loc.X = Bounds.Y
+                    ElseIf (loc.Y + rc.Control.Height) > Bounds.Height Then
+                        loc.Y = Bounds.Height - rc.Control.Height
                     End If
+                    ' Relocate the control to the paste position.
                     rc.Control.Location = loc
                 End If
                 mVisibleControls.Add(rc)
@@ -493,30 +472,43 @@ Public Class ReportGenerator
     End Sub
 
     Private Sub DragMove(ctrl As Control, e As MouseEventArgs)
-        For Each sc In mSelectedControls
+        ' Drag selected controls to a new location.
+        Dim newLocations As New List(Of Point)()
+
+        ' Get the mouse position offset from the drag start location.
+        Dim cursorPos As Point = e.Location
+        Dim deltaX As Integer = cursorPos.X - mDragStartPos.X
+        Dim deltaY As Integer = cursorPos.Y - mDragStartPos.Y
+        ' Apply grid snapping if GridSize is set
+        If GridSize > 0 Then
+            deltaX = Math.Round(deltaX / GridSize) * GridSize
+            deltaY = Math.Round(deltaY / GridSize) * GridSize
+        End If
+        If deltaX = 0 And deltaY = 0 Then Exit Sub
+
+        For Each sc In SelectedControls
+            Dim location As New Point()
             If sc.IsMovable Then
-                Dim cursorPos As Point = e.Location
-                Dim deltaX As Integer = cursorPos.X - mDragStartPos.X
-                Dim deltaY As Integer = cursorPos.Y - mDragStartPos.Y
                 Dim newX As Integer = sc.Control.Left + deltaX
                 Dim newY As Integer = sc.Control.Top + deltaY
-                ' Apply grid snapping if GridSize is set
-                If GridSize > 0 Then
-                    newX = Math.Round(newX / GridSize) * GridSize
-                    newY = Math.Round(newY / GridSize) * GridSize
-                End If
-                ' Enforce horizontal and vertical limits if set
-                If HorizontalLimit > 0 Then
-                    newX = Math.Max(HorizontalLimit, newX)
-                    newX = Math.Min(newX, mParentForm.ClientRectangle.Right - sc.Control.Width - HorizontalLimit)
-                End If
-                If VerticalLimit > 0 Then
-                    newY = Math.Max(VerticalLimit, newY)
-                    newY = Math.Min(newY, mParentForm.ClientRectangle.Bottom - sc.Control.Height - GridSize)
-                End If
-                ' Position the control at the new location.
-                sc.Control.Location = New Point(newX, newY)
+                ' Enforce Bounds limits. Stop moving when any selected controls goes out of bounds.
+                If newX < Bounds.X OrElse
+                newX > (Bounds.Width - sc.Control.Width) OrElse
+                newY < Bounds.Y OrElse
+                newY > (Bounds.Height - sc.Control.Height) Then Exit Sub
+                location.X = newX
+                location.Y = newY
             End If
+            newLocations.Add(location)
+        Next
+
+        ' Relocate selected controls to their new positions.
+        Dim i As Integer
+        For Each sc In SelectedControls
+            If newLocations(i) <> Point.Empty Then
+                sc.Control.Location = newLocations(i)
+            End If
+            i += 1
         Next
     End Sub
 
@@ -566,7 +558,7 @@ Public Class ReportGenerator
         ' the last element from the UndoStack if they're the same.
         Dim i As Integer
         For i = 0 To SelectedControls.Count - 1
-            If SelectedControls(i).LastPosition <> SelectedControls(i).Control.Location Then
+            If SelectedControls(i).LastPosition <> SelectedControls(i).Control.Location OrElse SelectedControls(i).LastPosition <> SelectedControls(i).Control.Location Then
                 LayoutSet(SelectedControls, True)
                 GoTo Done
             End If
@@ -630,19 +622,26 @@ Done:
         End If
     End Sub
 
-    Private Sub ReportControlsReposition(rect As Rectangle)
+    Private Sub ReportControlsReposition(Optional boundsRect As Rectangle = Nothing, Optional gridSz? As Integer = Nothing)
+        For Each rc As ReportControl In VisibleControls
+            If boundsRect <> Rectangle.Empty Then
+                Dim loc As Rectangle = rc.Control.Bounds
+                If loc.X < boundsRect.X Then
+                    loc.X = boundsRect.X
+                ElseIf (loc.X + loc.Width) > boundsRect.Width Then
+                    loc.X = boundsRect.Width - loc.Width
+                End If
+                If loc.Y < boundsRect.Y Then
+                    loc.Y = boundsRect.Y
+                ElseIf (loc.Y + loc.Height) > boundsRect.Height Then
+                    loc.Y = boundsRect.Height - loc.Height
+                End If
+                rc.Control.Location = loc.Location
+            End If
+            If gridSz IsNot Nothing Then
 
-    End Sub
-    Private Sub ReportControlsReposition(Optional vLimit As Integer = -1, Optional hLimit As Integer = -1, Optional gridSz As Integer = -1)
-        If vLimit > -1 AndAlso vLimit > mVerticalLimit Then
-
-        End If
-        If hLimit > -1 AndAlso vLimit > mVerticalLimit Then
-
-        End If
-        If gridSz > -1 AndAlso gridSz > mGridSize Then
-
-        End If
+            End If
+        Next
     End Sub
 
     Private Function ReportControlsSort(controls As List(Of ReportControl)) As List(Of ReportControl)
@@ -659,20 +658,25 @@ Done:
     End Sub
 
     Private Sub ResizeMove(ctrl As Control, e As MouseEventArgs)
+        Dim newBounds As New List(Of Rectangle)
         ' Compute the offset of the current mouse position from the drag start position.
         Dim cursorPos As Point = ctrl.PointToScreen(e.Location)
         Dim deltaX As Integer = cursorPos.X - mDragStartPos.X
         Dim deltaY As Integer = cursorPos.Y - mDragStartPos.Y
+
+        ' Apply grid snapping if GridSize is set
+        If GridSize > 0 Then
+            deltaX = Math.Round(deltaX / GridSize) * GridSize
+            deltaY = Math.Round(deltaY / GridSize) * GridSize
+        End If
+        If deltaX = 0 And deltaY = 0 Then Exit Sub
+
         For Each sc In mSelectedControls
+            Dim bound As New Rectangle()
             If sc.IsSizeable Then
-                ' Apply grid snapping if GridSize is set
-                If GridSize > 0 Then
-                    deltaX = Math.Round(deltaX / GridSize) * GridSize
-                    deltaY = Math.Round(deltaY / GridSize) * GridSize
-                End If
-                If deltaX = 0 And deltaY = 0 Then Exit Sub
                 Dim newSize As Size
                 Dim newLocation As Point
+
                 ' Stretch the control according to the edge grabbed and the mouse move direction.
                 Select Case mResizePoint
                     Case ResizePoints.RightEdge
@@ -699,31 +703,38 @@ Done:
                     Case Else
                         Exit Sub
                 End Select
-                ' Enforce horizontal and vertical limits if set.
-                If HorizontalLimit > 0 Then
-                    Dim locationLimit As New Point(If(newLocation <> Point.Empty, newLocation, sc.Control.Location))
-                    Dim sizeLimit As New Size(If(newSize <> Size.Empty, newSize, sc.Control.Size))
-                    If (locationLimit.X < HorizontalLimit Or (locationLimit.X + sizeLimit.Width) > (mParentForm.ClientRectangle.Right - HorizontalLimit)) Then Exit Sub
-                End If
-                If VerticalLimit > 0 Then
-                    Dim locationLimit As New Point(If(newLocation <> Point.Empty, newLocation, sc.Control.Location))
-                    Dim sizeLimit As New Size(If(newSize <> Size.Empty, newSize, sc.Control.Size))
-                    If (locationLimit.Y < VerticalLimit Or (locationLimit.Y + sizeLimit.Height) > (mParentForm.ClientRectangle.Bottom - GridSize)) Then Exit Sub
-                End If
-                ' Re-size/locate the control accordingly.
-                If newSize <> Size.Empty Then
-                    If sc.MinSize <> Size.Empty Then
-                        If (newSize.Width < sc.MinSize.Width Or newSize.Height < sc.MinSize.Height) Then Exit Sub
-                    End If
-                    If sc.MaxSize <> Size.Empty Then
-                        If (newSize.Width > sc.MaxSize.Width Or newSize.Height > sc.MaxSize.Height) Then Exit Sub
-                    End If
-                    sc.Control.Size = newSize
-                End If
-                If newLocation <> Point.Empty Then
-                    sc.Control.Location = newLocation
-                End If
+
+                ' Enforce Bounds ...
+                Dim hLocation As New Point(If(newLocation <> Point.Empty, newLocation, sc.Control.Location))
+                Dim hSize As New Size(If(newSize <> Size.Empty, newSize, sc.Control.Size))
+                Dim vLocation As New Point(If(newLocation <> Point.Empty, newLocation, sc.Control.Location))
+                Dim vSize As New Size(If(newSize <> Size.Empty, newSize, sc.Control.Size))
+                If hLocation.X < Bounds.X OrElse
+                (hLocation.X + hSize.Width) > Bounds.Width OrElse
+                vLocation.Y < Bounds.Y OrElse
+                (vLocation.Y + vSize.Height) > Bounds.Height Then Exit Sub
+
+                ' ...and Size limits.
+                If sc.MaxSize <> Size.Empty AndAlso
+                (newSize.Width > sc.MaxSize.Width Or newSize.Height > sc.MaxSize.Height) Then Exit Sub
+
+                ' Save the new control bounds.
+                bound.Location = newLocation
+                bound.Size = newSize
             End If
+            newBounds.Add(bound)
+        Next
+
+        ' Resize/relocate controls to their new bounds.
+        Dim i As Integer
+        For Each sc In SelectedControls
+            If newBounds(i).Location <> Point.Empty Then
+                sc.Control.Location = newBounds(i).Location
+            End If
+            If newBounds(i).Size <> Size.Empty Then
+                sc.Control.Size = newBounds(i).Size
+            End If
+            i += 1
         Next
     End Sub
 

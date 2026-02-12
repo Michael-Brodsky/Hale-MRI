@@ -28,7 +28,7 @@ Public Class USDigital
     Private Const STR_ERR_COUNT As String = "Encoder count error."
     Private Const STR_ERR_ENCODER_INVALID As String = "Invalid encoder number."
     ' Private members
-    Private Shared mUSB4 As New USB4Wrapper.USB4 ' USB4 Wrapper Class
+    Private Shared mUSB4 As USB4Wrapper.USB4 = Nothing
     Private mDeviceCount As Integer = 0         ' Device count from USB4_Initialize(), non-zero if board initialized successfully
     Private mAngleCalibration As Double = CALIBRATION_DEFAULT   ' Current angle calibration value, defaults to 1.0
     Private mDepthCalibration As Double = CALIBRATION_DEFAULT   ' Current depth calibration value, defaults to 1.0

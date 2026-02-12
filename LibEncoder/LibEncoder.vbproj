@@ -8,6 +8,24 @@
     <Configurations>Debug;Release;NoEncoders</Configurations>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <Optimize>False</Optimize>
+    <DefineDebug>True</DefineDebug>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Optimize>False</Optimize>
+    <DefineDebug>True</DefineDebug>
+  </PropertyGroup>
+
   <ItemGroup Condition="'$(Configuration)' == 'NoEncoders'">
 	<Compile Remove="USDigital.vb" />
   </ItemGroup>
@@ -25,6 +43,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="USB4.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="USB4Wrapper.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
