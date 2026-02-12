@@ -223,14 +223,209 @@ Module Reporting
 
     End Sub
 
-    Public Sub ChartSummaryBladesBySector_Data(ByRef Sender As Object, e As ReportDataArgs)
+    Public Sub ChartLocalPitchBarBladesBySector_Data(ByRef Sender As Object, e As ReportDataArgs)
         Dim Graph As Chart = CType(Sender, Chart)
         Dim mJobDetails As JobDetail = CType(e.Args(0), JobDetail)
         Dim TolClass As Tolerance = CType(e.Args(1), Tolerance)
         Dim Radius As Double = CType(e.Args(2), Double)
-        Dim BasisPitch As Double = CType(e.Args(3), Double)
+        Dim Basis As String = CType(e.Args(3), String)
+        Dim BasisPitch As Double
+        If Basis = "Marked" Then
+            BasisPitch = mJobDetails.Job.MarkedPitch
+        ElseIf Basis = "Desired" Then
+            BasisPitch = mJobDetails.Job.DesiredPitch
+        ElseIf Basis = "Progressive" Then
+            BasisPitch = mJobDetails.WheelPitch
+        ElseIf Basis = "Design" Then
+            BasisPitch = 0
+        Else
+            Basis = "Mean"
+            BasisPitch = mJobDetails.WheelPitch
+        End If
+
+        Graph.Titles.Clear()
+        Graph.ChartAreas.Clear()
+        Graph.Series.Clear()
+        Graph.Legends.Clear()
+
+        Dim cArea As ChartArea = Graph.ChartAreas.Add("Pitch")
+        Dim x As Integer
+        Dim y As Integer
+        For x = 1 To mJobDetails.Job.PropellerBlades
+            Dim ser As Series = Graph.Series.Add("Blade" + x.ToString())
+            ser.ChartType = SeriesChartType.Column
+            ser.ChartArea = cArea.Name
+            ser.Color = GraphColorArray(x)
+            Dim BladeData As RadiusMeasurement = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x And r.Radius = Radius).FirstOrDefault()
+            For y = 1 To TolClass.LocalPitchSectors
+                Dim localpitch As Double = GetLocalPitch(BladeData.CellMeasurements, TolClass.LocalPitchSectors, y, mJobDetails.Job.PropellerDiameter, Radius, mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
+                If y = 1 And TolClass.LocalPitchSectors = 1 Then
+                    ser.Points.AddXY("Total Radius", localpitch)
+                ElseIf y = 1 And TolClass.LocalPitchSectors <> 1 Then
+                    ser.Points.AddXY("LE", localpitch)
+                ElseIf y = TolClass.LocalPitchSectors And y <> 1 Then
+                    ser.Points.AddXY("TE", localpitch)
+                Else
+                    ser.Points.AddXY(y.ToString(), localpitch)
+                End If
+            Next
+        Next
+
+        cArea.AxisY.Minimum = BasisPitch * 0.8
+        cArea.AxisY.Maximum = BasisPitch * 1.2
+
+        'need to handle striplines for Progressive pitch - measured against average for that section on that radius 
+        ' also need to be able to make strip lines appear on one section of bars
+
+        Dim leg As Legend = Graph.Legends.Add("Legend")
+        leg.Alignment = StringAlignment.Center
+        leg.Title = Radius.ToString() + "Radius - Compare to " + Basis + " - Minimums Apply"
+
+        Dim title As Title = Graph.Titles.Add("TopTitle")
+        If TolClass.ToleranceClass = "C" Then
+            title.Text = "Local Pitch Custom Class"
+        Else
+            title.Text = "Local Pitch ISO 484 " + TolClass.ToleranceClass
+        End If
+        title = Graph.Titles.Add("YTitle")
+        title.Alignment = ContentAlignment.TopCenter
+        cArea.AxisY.Title = "Segment Pitch"
 
 
+    End Sub
+
+    'make actual summary graph function
+
+    Public Sub ChartSummary_Data(ByRef Sender As Object, e As ReportDataArgs)
+        Dim Graph As Chart = CType(Sender, Chart)
+        Dim mJobDetails As JobDetail = CType(e.Args(0), JobDetail)
+        Dim TolClass As Tolerance = CType(e.Args(1), Tolerance)
+        Dim Basis As String = CType(e.Args(2), String)
+        Dim APP As Boolean = CType(e.Args(3), Boolean)
+        Dim BasisPitch As Double
+        If Basis = "Marked" Then
+            BasisPitch = mJobDetails.Job.MarkedPitch
+        ElseIf Basis = "Desired" Then
+            BasisPitch = mJobDetails.Job.DesiredPitch
+        ElseIf Basis = "Design" Then
+            BasisPitch = 0
+        Else
+            Basis = "Mean"
+            BasisPitch = mJobDetails.WheelPitch
+        End If
+        Graph.Titles.Clear()
+        Graph.ChartAreas.Clear()
+        Graph.Series.Clear()
+        Graph.Legends.Clear()
+        Dim cArea As ChartArea = Graph.ChartAreas.Add("Summary")
+        Dim leg As Legend = Graph.Legends.Add("Legend")
+        leg.Alignment = StringAlignment.Center
+        leg.Docking = Docking.Top
+        leg.Title = mJobDetails.Job.Vessel.Customer.ToString() + " " + mJobDetails.Job.Vessel.VesselName.ToString() + " " + mJobDetails.Job.PropellerRotation.ToString() + " " + mJobDetails.StartDate.ToString() + " Class " + mJobDetails.ToleranceClass.ToString()
+        Graph.Titles.Add("Title").Text = "Hale MRI - Summary Graph"
+        cArea.AxisY.Title = "Pitch"
+        cArea.AxisX.MajorGrid.Enabled = False
+        cArea.AxisX.MinorGrid.Enabled = False
+        cArea.AxisX.MinorTickMark.Enabled = False
+        cArea.AxisY.Minimum = BasisPitch * 0.8
+        cArea.AxisY.Maximum = BasisPitch * 1.2
+        cArea.AxisY.Interval = BasisPitch * 0.1
+        cArea.AxisY.MajorGrid.Enabled = False
+        cArea.AxisY.MinorGrid.Enabled = False
+        cArea.AxisY.MajorTickMark.Enabled = True
+        cArea.AxisY.MinorTickMark.Enabled = True
+        Graph.Annotations.Clear()
+        Graph.Annotations.Add(New TextAnnotation With {
+                              .Text = "Tol Basis - " + Basis + " Pitch = " + BasisPitch.ToString(),
+                              .AnchorX = 0.25,
+                              .AnchorY = 0.25
+        })
+        If APP Then
+            Graph.Annotations.Add(New TextAnnotation With {
+                                  .Text = "Allow Progressive Pitch",
+                                  .AnchorX = 0.25,
+                                  .AnchorY = 0.3
+            })
+        End If ' play with location to put in correct position
+        Dim x As Integer
+        For x = 1 To mJobDetails.Job.PropellerBlades
+            Dim ser As Series = Graph.Series.Add("Blade" + x.ToString())
+            Dim avgpitch As Double = 0
+            Dim pitchcount As Integer = 0
+            ser.ChartType = SeriesChartType.Column
+            ser.ChartArea = cArea.Name
+            ser.Color = GraphColorArray(x)
+            Dim BladeData As List(Of RadiusMeasurement) = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+            For Each rm As RadiusMeasurement In BladeData
+                Dim pitch = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
+                avgpitch += pitch
+                pitchcount += 1
+                ser.Points.AddXY(Math.Round(CType(rm.Radius, Double)).ToString(), pitch)
+                If x = 1 Then ' set up strip lines on each column based on tolerance class and APP
+                    If APP = False Then
+                        Dim sline As New StripLine With {
+                            .IntervalOffset = BasisPitch - (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Blue,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                            }
+                        cArea.AxisY.StripLines.Add(sline)
+                        sline = New StripLine With {
+                            .IntervalOffset = BasisPitch + (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Red,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                        }
+                        cArea.AxisY.StripLines.Add(sline)
+                        sline = New StripLine With {
+                            .IntervalOffset = BasisPitch,
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Black,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                        }
+                    Else
+                        Dim appPitch As Double = 0
+                        For Each rm2 As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(rad) Math.Round(rad.Radius.Value) = Math.Round(rm.Radius.Value))
+                            appPitch += GetAverageBladePitch(rm2.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
+                        Next
+                        appPitch /= mJobDetails.Job.PropellerBlades
+                        Dim sline As New StripLine With {
+                            .IntervalOffset = appPitch - (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Blue,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                        }
+                        cArea.AxisY.StripLines.Add(sline)
+                        sline = New StripLine With {
+                            .IntervalOffset = appPitch + (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Red,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                        }
+                        cArea.AxisY.StripLines.Add(sline)
+                        sline = New StripLine With {
+                            .IntervalOffset = appPitch,
+                            .BorderWidth = 1,
+                            .BorderDashStyle = ChartDashStyle.Solid,
+                            .BorderColor = Color.Black,
+                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+                        }
+                    End If
+                End If
+            Next
+            avgpitch /= pitchcount
+            ser.Points.AddXY("Bld Avg", avgpitch)
+        Next
+        Dim seri As Series = Graph.Series.Add("Wheel")
+        seri.ChartType = SeriesChartType.Column
+        seri.ChartArea = cArea.Name
+        seri.Color = GraphColorArray(3)
+        seri.Points.AddXY("Wheel Avg", mJobDetails.WheelPitch)
 
     End Sub
 
