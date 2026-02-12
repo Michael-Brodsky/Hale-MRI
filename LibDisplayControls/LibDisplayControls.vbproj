@@ -1,0 +1,42 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <Optimize>False</Optimize>
+  </PropertyGroup>
+	
+  <ItemGroup>
+    <Import Include="System.Data" />
+    <Import Include="System.Drawing" />
+    <Import Include="System.Windows.Forms" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WinForms.DataVisualization" Version="1.10.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibDatabase\LibDatabase.vbproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="ChartAngularPosition.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ChartBladeHeight.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="DisplayControl.vb" />
+    <Compile Update="ReportHeader.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ReportLetterhead.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+  </ItemGroup>
+
+</Project>

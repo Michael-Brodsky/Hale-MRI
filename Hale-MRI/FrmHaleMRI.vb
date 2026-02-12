@@ -5,7 +5,7 @@ Imports Microsoft.EntityFrameworkCore
 Public Class FrmHaleMRI
 #Region "Private Members"
     Private mDatabase As HaleMRIContext
-    Private mWorkstationEncoders As New WorkstationEncoders()
+    Private mWorkstationEncoders As WorkstationEncoders
     Private mUser As Employee
     ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
     ' NOTE: All form instances are now declared as public members of FormInstances.vb
@@ -148,11 +148,11 @@ Public Class FrmHaleMRI
     Private Sub FrmHaleMRI_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Ensure database created and load all data except the "Measurements" tables.
         Try
+            mDatabase = New HaleMRIContext()
 #If DEBUG Then
             MessageBox.Show("This is a Debug build.")
             mDatabase.Database.EnsureCreated()
 #End If
-            mDatabase = New HaleMRIContext()
             mDatabase.Customers.Load()
             mDatabase.Vessels.Load()
             mDatabase.Jobs.Load()

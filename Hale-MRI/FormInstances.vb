@@ -19,6 +19,7 @@ Module FormInstances
     Public gFrmMeasurements As FrmMeasurements
     Public gFrmPropellers As FrmPropellers
     Public gFrmReports As FrmReports
+    'Public gFrmReports As FrmReports2
     Public gFrmSettings As FrmSettings
     Public gFrmVessels As FrmVessels
     Public Sub ShowForm(Of F As {Form, New})(ByRef frm As F)
@@ -34,7 +35,7 @@ Module FormInstances
         End If
     End Sub
 
-    Public Sub ShowForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, ByVal user As Employee, Optional ByVal windowState As FormWindowState = FormWindowState.Normal, Optional ByVal modal As Boolean = False)
+    Public Sub ShowForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, ByVal user As Employee, Optional ByVal windowState As FormWindowState = FormWindowState.Normal)
         frm = Application.OpenForms.OfType(Of F)().FirstOrDefault()
         If frm Is Nothing OrElse Not frm.IsHandleCreated Then
             ' If no instance of the form is open, create and show a new instance
@@ -42,25 +43,24 @@ Module FormInstances
                 .Database = dB,
                 .User = user
             }
-            If modal Then
-                ' Show the form as a modal dialog
-                frm.ShowDialog()
-            Else
-                ' Show the form in the given window state
-                frm.WindowState = windowState
-                frm.Show()
-            End If
+            ' Show the form in the given window state
+            frm.WindowState = windowState
+            frm.Show()
         Else
-            If modal Then
-                ' Show the form as a modal dialog
-                frm.ShowDialog()
-            Else
-                ' If an instance is already open, bring it to the front
-                frm.WindowState = windowState
-                frm.BringToFront()
-            End If
+            ' If an instance is already open, bring it to the front
+            frm.WindowState = windowState
+            frm.BringToFront()
         End If
     End Sub
+
+    Public Function ShowFormModal(Of F As {FrmDatabaseForm, New})(ByRef frm As F, ByRef dB As HaleMRIContext, ByVal user As Employee, Optional ByVal windowState As FormWindowState = FormWindowState.Normal) As DialogResult
+        Dim dlg = New F With {
+                    .Database = dB,
+                    .User = user
+                }
+        ' Show a new instance of the form as a modal dialog
+        Return dlg.ShowDialog()
+    End Function
 
     Public Sub RefreshForm(Of F As {FrmDatabaseForm, New})(ByRef frm As F)
         ' If the form is open, refresh it.

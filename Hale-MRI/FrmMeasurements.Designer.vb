@@ -27,13 +27,7 @@ Partial Class FrmMeasurements
         Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend1 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Legend2 As System.Windows.Forms.DataVisualization.Charting.Legend = New DataVisualization.Charting.Legend()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
         JobDetailsBindingSource = New BindingSource(components)
         DataGridJobDetails = New DataGridView()
@@ -86,8 +80,6 @@ Partial Class FrmMeasurements
         PictureBoxLogo = New PictureBox()
         PanelTrack = New Panel()
         tLayoutTrack = New TableLayoutPanel()
-        ChartBladeHeight = New DataVisualization.Charting.Chart()
-        ChartAngularPosition = New DataVisualization.Charting.Chart()
         LabRefBlade = New Label()
         ComboReferenceBlade = New ComboBox()
         LabRefPoint = New Label()
@@ -97,6 +89,8 @@ Partial Class FrmMeasurements
         ComboReferencePoint = New ComboBox()
         TxtRake = New TextBox()
         LabTrackPanel = New Label()
+        ChartBladeHeight1 = New LibDisplayControls.ChartBladeHeight()
+        ChartAngularPosition1 = New LibDisplayControls.ChartAngularPosition()
         PanelPlot = New Panel()
         tLayoutPlotPanel = New TableLayoutPanel()
         LabPlot = New Label()
@@ -187,8 +181,6 @@ Partial Class FrmMeasurements
         CType(PictureBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
         PanelTrack.SuspendLayout()
         tLayoutTrack.SuspendLayout()
-        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).BeginInit()
-        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).BeginInit()
         PanelPlot.SuspendLayout()
         tLayoutPlotPanel.SuspendLayout()
         CType(chartPlot, ComponentModel.ISupportInitialize).BeginInit()
@@ -831,7 +823,7 @@ Partial Class FrmMeasurements
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11.0F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
         DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
@@ -878,8 +870,6 @@ Partial Class FrmMeasurements
         tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
         tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
         tLayoutTrack.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 40F))
-        tLayoutTrack.Controls.Add(ChartBladeHeight, 0, 1)
-        tLayoutTrack.Controls.Add(ChartAngularPosition, 2, 1)
         tLayoutTrack.Controls.Add(LabRefBlade, 1, 1)
         tLayoutTrack.Controls.Add(ComboReferenceBlade, 1, 2)
         tLayoutTrack.Controls.Add(LabRefPoint, 1, 3)
@@ -889,6 +879,8 @@ Partial Class FrmMeasurements
         tLayoutTrack.Controls.Add(ComboReferencePoint, 1, 4)
         tLayoutTrack.Controls.Add(TxtRake, 1, 8)
         tLayoutTrack.Controls.Add(LabTrackPanel, 0, 0)
+        tLayoutTrack.Controls.Add(ChartBladeHeight1, 0, 1)
+        tLayoutTrack.Controls.Add(ChartAngularPosition1, 2, 1)
         tLayoutTrack.Dock = DockStyle.Fill
         tLayoutTrack.Location = New Point(0, 0)
         tLayoutTrack.Margin = New Padding(0)
@@ -905,43 +897,6 @@ Partial Class FrmMeasurements
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.Size = New Size(780, 158)
         tLayoutTrack.TabIndex = 0
-        ' 
-        ' ChartBladeHeight
-        ' 
-        ChartArea1.Name = "ChartArea1"
-        ChartBladeHeight.ChartAreas.Add(ChartArea1)
-        ChartBladeHeight.Dock = DockStyle.Fill
-        Legend1.Name = "Legend1"
-        ChartBladeHeight.Legends.Add(Legend1)
-        ChartBladeHeight.Location = New Point(0, 21)
-        ChartBladeHeight.Margin = New Padding(0, 1, 0, 0)
-        ChartBladeHeight.Name = "ChartBladeHeight"
-        tLayoutTrack.SetRowSpan(ChartBladeHeight, 8)
-        Series1.ChartArea = "ChartArea1"
-        Series1.Legend = "Legend1"
-        Series1.Name = "Series1"
-        ChartBladeHeight.Series.Add(Series1)
-        ChartBladeHeight.Size = New Size(312, 137)
-        ChartBladeHeight.TabIndex = 0
-        ChartBladeHeight.Text = "Track"
-        ' 
-        ' ChartAngularPosition
-        ' 
-        ChartArea2.Name = "ChartArea1"
-        ChartAngularPosition.ChartAreas.Add(ChartArea2)
-        ChartAngularPosition.Dock = DockStyle.Fill
-        Legend2.Name = "Legend1"
-        ChartAngularPosition.Legends.Add(Legend2)
-        ChartAngularPosition.Location = New Point(471, 23)
-        ChartAngularPosition.Name = "ChartAngularPosition"
-        tLayoutTrack.SetRowSpan(ChartAngularPosition, 8)
-        Series2.ChartArea = "ChartArea1"
-        Series2.Legend = "Legend1"
-        Series2.Name = "Series1"
-        ChartAngularPosition.Series.Add(Series2)
-        ChartAngularPosition.Size = New Size(306, 132)
-        ChartAngularPosition.TabIndex = 1
-        ChartAngularPosition.Text = "Track"
         ' 
         ' LabRefBlade
         ' 
@@ -1037,6 +992,52 @@ Partial Class FrmMeasurements
         LabTrackPanel.TabIndex = 12
         LabTrackPanel.Text = "Track"
         ' 
+        ' ChartBladeHeight1
+        ' 
+        ChartBladeHeight1.BladeCount = Nothing
+        ChartBladeHeight1.Data = Nothing
+        ChartBladeHeight1.Dock = DockStyle.Fill
+        ChartBladeHeight1.IsMovable = False
+        ChartBladeHeight1.IsSelectable = False
+        ChartBladeHeight1.IsSizeable = False
+        ChartBladeHeight1.LastPosition = New Point(0, 0)
+        ChartBladeHeight1.LastSize = New Size(0, 0)
+        ChartBladeHeight1.Location = New Point(3, 23)
+        ChartBladeHeight1.MaxSize = New Size(0, 0)
+        ChartBladeHeight1.MinSize = New Size(0, 0)
+        ChartBladeHeight1.Name = "ChartBladeHeight1"
+        ChartBladeHeight1.RadiusMeasurements = Nothing
+        ChartBladeHeight1.ReferenceBlade = Nothing
+        ChartBladeHeight1.ReferencePoint = Nothing
+        ChartBladeHeight1.ReferenceRadius = Nothing
+        tLayoutTrack.SetRowSpan(ChartBladeHeight1, 8)
+        ChartBladeHeight1.Selected = False
+        ChartBladeHeight1.Size = New Size(306, 132)
+        ChartBladeHeight1.TabIndex = 13
+        ' 
+        ' ChartAngularPosition1
+        ' 
+        ChartAngularPosition1.BladeCount = Nothing
+        ChartAngularPosition1.Data = Nothing
+        ChartAngularPosition1.Dock = DockStyle.Fill
+        ChartAngularPosition1.IsMovable = False
+        ChartAngularPosition1.IsSelectable = False
+        ChartAngularPosition1.IsSizeable = False
+        ChartAngularPosition1.LastPosition = New Point(0, 0)
+        ChartAngularPosition1.LastSize = New Size(0, 0)
+        ChartAngularPosition1.Location = New Point(471, 23)
+        ChartAngularPosition1.MaxSize = New Size(0, 0)
+        ChartAngularPosition1.MinSize = New Size(0, 0)
+        ChartAngularPosition1.Name = "ChartAngularPosition1"
+        ChartAngularPosition1.RadiusMeasurements = Nothing
+        ChartAngularPosition1.ReferenceBlade = Nothing
+        ChartAngularPosition1.ReferencePoint = Nothing
+        ChartAngularPosition1.ReferenceRadius = Nothing
+        tLayoutTrack.SetRowSpan(ChartAngularPosition1, 8)
+        ChartAngularPosition1.Selected = False
+        ChartAngularPosition1.Size = New Size(306, 132)
+        ChartAngularPosition1.TabIndex = 14
+        ' 
         ' PanelPlot
         ' 
         PanelPlot.BorderStyle = BorderStyle.Fixed3D
@@ -1096,17 +1097,17 @@ Partial Class FrmMeasurements
         ' 
         ' chartPlot
         ' 
-        ChartArea3.Name = "ChartArea1"
-        chartPlot.ChartAreas.Add(ChartArea3)
+        ChartArea1.Name = "ChartArea1"
+        chartPlot.ChartAreas.Add(ChartArea1)
         chartPlot.Dock = DockStyle.Fill
         chartPlot.Location = New Point(103, 18)
         chartPlot.Name = "chartPlot"
         tLayoutPlotPanel.SetRowSpan(chartPlot, 10)
-        Series3.ChartArea = "ChartArea1"
-        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Radar
-        Series3.IsVisibleInLegend = False
-        Series3.Name = "Series1"
-        chartPlot.Series.Add(Series3)
+        Series1.ChartArea = "ChartArea1"
+        Series1.ChartType = DataVisualization.Charting.SeriesChartType.Radar
+        Series1.IsVisibleInLegend = False
+        Series1.Name = "Series1"
+        chartPlot.Series.Add(Series1)
         chartPlot.Size = New Size(260, 218)
         chartPlot.TabIndex = 0
         chartPlot.Text = "ChartPlot"
@@ -2098,8 +2099,6 @@ Partial Class FrmMeasurements
         PanelTrack.ResumeLayout(False)
         tLayoutTrack.ResumeLayout(False)
         tLayoutTrack.PerformLayout()
-        CType(ChartBladeHeight, ComponentModel.ISupportInitialize).EndInit()
-        CType(ChartAngularPosition, ComponentModel.ISupportInitialize).EndInit()
         PanelPlot.ResumeLayout(False)
         tLayoutPlotPanel.ResumeLayout(False)
         tLayoutPlotPanel.PerformLayout()
@@ -2168,8 +2167,6 @@ Partial Class FrmMeasurements
     Friend WithEvents LabPanelJob As Label
     Friend WithEvents TxtJobNumber As TextBox
     Friend WithEvents tLayoutTrack As TableLayoutPanel
-    Friend WithEvents ChartBladeHeight As DataVisualization.Charting.Chart
-    Friend WithEvents ChartAngularPosition As DataVisualization.Charting.Chart
     Friend WithEvents LabRefBlade As Label
     Friend WithEvents ComboReferenceBlade As ComboBox
     Friend WithEvents LabRefPoint As Label
@@ -2260,5 +2257,7 @@ Partial Class FrmMeasurements
     Friend WithEvents CmdLocalPitchForm As Button
     Friend WithEvents CmdMeasureForm As Button
     Friend WithEvents CmdComparisonForm As Button
+    Friend WithEvents ChartBladeHeight1 As LibDisplayControls.ChartBladeHeight
+    Friend WithEvents ChartAngularPosition1 As LibDisplayControls.ChartAngularPosition
     'Friend WithEvents ComboPlotRefBlade As ComboBox
 End Class

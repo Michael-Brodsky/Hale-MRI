@@ -1257,6 +1257,23 @@
           "bin/placeholder/LibDatabase.dll": {}
         }
       },
+      "LibDisplayControls/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "LibDatabase": "1.0.0",
+          "WinForms.DataVisualization": "1.10.0"
+        },
+        "compile": {
+          "bin/placeholder/LibDisplayControls.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/LibDisplayControls.dll": {}
+        },
+        "frameworkReferences": [
+          "Microsoft.WindowsDesktop.App.WindowsForms"
+        ]
+      },
       "LibEncoder/1.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v8.0",
@@ -3122,6 +3139,11 @@
       "path": "../LibDatabase/LibDatabase.vbproj",
       "msbuildProject": "../LibDatabase/LibDatabase.vbproj"
     },
+    "LibDisplayControls/1.0.0": {
+      "type": "project",
+      "path": "../LibDisplayControls/LibDisplayControls.vbproj",
+      "msbuildProject": "../LibDisplayControls/LibDisplayControls.vbproj"
+    },
     "LibEncoder/1.0.0": {
       "type": "project",
       "path": "../LibEncoder/LibEncoder.vbproj",
@@ -3136,6 +3158,7 @@
       "EntityFrameworkCore.Jet.OleDb >= 8.0.0",
       "EntityFrameworkCore.VisualBasic >= 8.0.0",
       "LibDatabase >= 1.0.0",
+      "LibDisplayControls >= 1.0.0",
       "LibEncoder >= 1.0.0",
       "Microsoft.EntityFrameworkCore >= 8.0.6",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.6",
@@ -3180,6 +3203,9 @@
           "projectReferences": {
             "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj": {
               "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj"
+            },
+            "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj": {
+              "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj"
             },
             "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj": {
               "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj"

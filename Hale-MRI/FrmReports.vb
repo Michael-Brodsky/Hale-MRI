@@ -1,6 +1,9 @@
 ﻿Imports System.ComponentModel
+Imports System.Drawing
+Imports System.Drawing.Imaging
 Imports System.Drawing.Printing
 Imports System.IO
+Imports System.Windows.Forms.AxHost
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports System.Windows.Forms.VisualStyles.VisualStyleElement.Tab
 Imports Hale_MRI.ReportGenerator
@@ -52,7 +55,7 @@ Public Class FrmReports
         Public Property MenuItem As ToolStripMenuItem   ' This object's associated ToolStripMenuItem.
         Public Property Visible As Boolean
             Get
-                Return If(Me.Control IsNot Nothing, Me.Control.Visible, False)
+                Return Me.Control IsNot Nothing AndAlso Me.Control.Visible
             End Get
             Set(value As Boolean)
                 If Me.Control IsNot Nothing Then Me.Control.Visible = value
@@ -117,7 +120,7 @@ Public Class FrmReports
 #End Region
 #Region "Private Interface"
     Protected Overrides Sub BindDataSources()
-        ReportsBindingSource.DataSource = Database.Reports.Local.ToBindingList()
+        ReportsBindingSource.DataSource = New BindingList(Of Report)(Database.Reports.ToList())
         MasterSource = ReportDataBindingSource
         MyBase.BindDataSources()
     End Sub
@@ -205,9 +208,12 @@ Public Class FrmReports
     Private Sub FileDropDownOpening()
         ' Enables File menu items according to the current Report.
         CloseToolStripMenuItem.Enabled = Me.Report IsNot Nothing
+        FilePrintToolStripMenuItem.Enabled = Me.Report IsNot Nothing
         SaveToolStripMenuItem.Enabled = Me.Report IsNot Nothing
         SaveAsToolStripMenuItem.Enabled = Me.Report IsNot Nothing
     End Sub
+
+    Private Property FormLastSize As Size
 
     Private Sub FormMenuConfigure(rpt As Report)
         ' Enable menu items according to whether a Report is currently open.
@@ -216,31 +222,50 @@ Public Class FrmReports
         Else
             ElementsToolStripMenuItem.Enabled = False
         End If
-        SettingsToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
         ReportContextMenuStrip.Enabled = ElementsToolStripMenuItem.Enabled
+        ViewToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
     End Sub
+
+    Private Property FormPrintDocument As PrintDocument ' The current PrintDocument for resizing the form to the paper size.
 
     Private Sub FormResizeTo(pd As PrintDocument)
         ' Get default printer settings to determine page bounds
         Dim pageBounds As Rectangle = pd.DefaultPageSettings.Bounds
         Dim pageMargins As Margins = pd.DefaultPageSettings.Margins
 
+        ' Save the current form size.
+        If Not ResizeToPageBounds Then FormLastSize = Me.Size
+
         ' Set form bounds to match the printable area
-        Me.Bounds = pageBounds
-        Me.MaximizedBounds = Me.Bounds
-        Me.MaximumSize = New Size(Me.Bounds.Width, Me.Bounds.Height)
+        Me.Size = pageBounds.Size
+        Me.MaximumSize = Me.Size
 
         ' Set the ReportGenerator Vertical and HorizontalLimit to the page margins.
-        mReportGenerator.HorizontalLimit = pageMargins.Left
-        mReportGenerator.VerticalLimit = pageMargins.Top
-
+        'mReportGenerator.Bounds = New Rectangle(pageMargins.Left, pageMargins.Top, pageMargins.Right - pageMargins.Left, pageMargins.Bottom - pageMargins.Top)
         ' Disable the form maximize box.
         Me.MaximizeBox = False
+
+        ' Save the current printer paper size.
+        FormPrintDocument = pd
+    End Sub
+
+    Private Sub FormResizeTo(sz As Size)
+        ' Set the form bounds to the entire screen.
+        Me.MaximumSize = New Size(Screen.PrimaryScreen.WorkingArea.Size)
+
+        ' Set the form size to the given size.
+        Me.Size = sz
+
+        ' Enable the form maximize box.
+        Me.MaximizeBox = True
     End Sub
 
     Private Sub HeaderControlShow(ByVal show As Boolean)
         ' Adjust the Report layout to make room for the Header.
-
+        Dim bounds As Rectangle = mReportGenerator.Bounds
+        bounds.Y = Math.Max(Header.Bounds.Bottom, bounds.Y)
+        mReportGenerator.Bounds = bounds
+        'mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Header").Bounds.Bottom, mReportGenerator.VerticalLimit)
     End Sub
 
     Private Sub HeaderInitialize()
@@ -250,8 +275,8 @@ Public Class FrmReports
         ' controls is done entirely at design time, requiring no
         ' additional code.
         Dim headerControls As List(Of Control) = Header.Controls.Cast(Of Control)().
-            OrderByDescending(Function(c) c.TabStop).
-            ThenBy(Function(c) c.TabIndex).
+            Where(Function(c) c.TabStop = True).
+            OrderBy(Function(c) c.TabIndex).
             ToList()
         HeaderItems = New Dictionary(Of String, HeaderItem)
         For Each ctrl As Control In headerControls
@@ -307,9 +332,29 @@ Public Class FrmReports
         JobsCloseToolStripMenuItem.Enabled = Me.JobDetails IsNot Nothing
     End Sub
 
+    Private Sub JobSelectorOpen()
+        Dim dlg As New FrmJobs With {
+            .Database = Database,
+            .User = User
+        }
+        If dlg.ShowDialog() = DialogResult.OK Then
+            JobSelect(gFrmJobs.JobDetails)
+        End If
+    End Sub
+
+    Private Sub JobSelect(jd As JobDetail)
+        Me.JobDetails = jd
+        For Each rc As ReportGenerator.ReportControl In mReportGenerator.VisibleControls
+            rc.Control.Refresh()
+        Next
+    End Sub
+
     Private Sub LetterheadControlShow(ByVal show As Boolean)
         ' Adjust the Report layout to make room for the Letterhead.
-        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
+        Dim bounds As Rectangle = mReportGenerator.Bounds
+        bounds.Y = Math.Max(Letterhead.Bounds.Bottom, bounds.Y)
+        mReportGenerator.Bounds = bounds
+        'mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Letterhead").Bounds.Bottom, mReportGenerator.VerticalLimit)
     End Sub
 
     Private Sub LetterheadFileOpen(ByVal fileName As String)
@@ -352,9 +397,24 @@ Public Class FrmReports
     Private Sub PrintPage(sender As Object, e As PrintPageEventArgs)
         ' Prints the inside of the form's client area, excluding borders and title bar, scaled to the
         ' paper's printable area.
-        ' TODO: See what fits on one page and handle multiple pages if needed. Set captureWidth and captureHeight
-        ' based on e.PageBounds and e.MarginBounds.
-        mReportGenerator.ReportGenerate(sender, e)
+        Dim formBitmap As Bitmap = PrintCaptureFormImage(True)
+        Dim printableArea As New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height)
+        Dim printBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
+        If ResizeToPageBounds Then
+            Using g As Graphics = Graphics.FromImage(printBitmap)
+                g.DrawImage(formBitmap, printableArea, printableArea, GraphicsUnit.Pixel)   ' Crop to paper printable area (inside margins).
+            End Using
+        Else
+            Using g As Graphics = Graphics.FromImage(printBitmap)
+                g.DrawImage(formBitmap, printableArea)    ' Scale to paper printable area (inside margins).
+            End Using
+        End If
+        e.Graphics.DrawImage(printBitmap, e.MarginBounds.Left, e.MarginBounds.Top)     ' Center the image within the page margins
+        formBitmap.Dispose()
+        e.HasMorePages = False
+    End Sub
+
+    Private Function PrintCaptureFormImage(ByVal cropToClientArea As Boolean) As Bitmap
         Dim startX As Integer = Me.Bounds.Width - Me.ClientSize.Width
         Dim startY As Integer = Me.Bounds.Height - Me.ClientSize.Height + FormMenuStrip.Height
         Dim captureWidth As Integer = Me.ClientSize.Width
@@ -362,19 +422,13 @@ Public Class FrmReports
         Dim sourceRectangle As New Rectangle(startX, startY, captureWidth, captureHeight)
         Dim formBitmap As New Bitmap(Me.ClientSize.Width, Me.ClientSize.Height) ' Capture full form
         Me.DrawToBitmap(formBitmap, New Rectangle(0, 0, Me.ClientSize.Width, Me.ClientSize.Height))
+        If Not cropToClientArea Then Return formBitmap
         Dim croppedBitmap As New Bitmap(captureWidth, captureHeight)
         Using g As Graphics = Graphics.FromImage(croppedBitmap)
             g.DrawImage(formBitmap, New Rectangle(0, 0, captureWidth, captureHeight), sourceRectangle, GraphicsUnit.Pixel)  ' Crop to client area
         End Using
-        Dim scaledBitmap As New Bitmap(e.MarginBounds.Width, e.MarginBounds.Height)
-        Using g As Graphics = Graphics.FromImage(scaledBitmap)
-                g.DrawImage(croppedBitmap, New Rectangle(0, 0, e.MarginBounds.Width, e.MarginBounds.Height))    ' Scale to paper printable area (inside margins).
-            End Using
-            e.Graphics.DrawImage(scaledBitmap, e.MarginBounds.Left, e.MarginBounds.Top)     ' Center the image within the page margins
-        formBitmap.Dispose()
-        croppedBitmap.Dispose()
-        e.HasMorePages = False
-    End Sub
+        Return croppedBitmap
+    End Function
 
     Private Sub PrintPreview(sender As Object, e As EventArgs)
         ' Opens the print preview dialog.
@@ -412,7 +466,7 @@ Public Class FrmReports
         Dim result As DialogResult = DialogResult.None
         ReportUpdate() ' Update the current Report and ReportElements. If anything changed, prompt user to save changes.
         If Database.ChangeTracker.HasChanges() Then
-            result = MessageBox.Show("There are unsaved changes. Do you want to save them?", "Unsaved Changes", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
+            result = MessageBox.Show(STR_PROMPT_UNSAVED_CHANGES, STR_TITLE_DEFAULT, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning)
             Select Case result
                 Case DialogResult.Yes
                     Database.SaveChanges()
@@ -464,12 +518,13 @@ Public Class FrmReports
     Private Sub ReportEditorOpen()
         ' Opens the Reports editor form.
         Dim editor As New FrmReportsEditor(Me.ReportsBindingSource, Me.EmployeeBindingSource)
-        editor.ShowDialog()
-        Dim rpt As Report = editor.Current
-        If rpt IsNot Me.Report Then
-            If Me.Report IsNot Nothing Then
-                If ReportClose() = DialogResult.Cancel Then Exit Sub
-                Me.Report = ReportOpen(rpt.ReportName)
+        If editor.ShowDialog() = DialogResult.OK Then
+            Dim rpt As Report = editor.Current
+            If rpt IsNot Me.Report Then
+                If Me.Report IsNot Nothing Then
+                    If ReportClose() = DialogResult.Cancel Then Exit Sub
+                    Me.Report = ReportOpen(rpt.ReportName)
+                End If
             End If
         End If
     End Sub
@@ -496,6 +551,7 @@ Public Class FrmReports
                 Dim reportControl As ReportGenerator.ReportControl = mReportGenerator.ReportControls.FirstOrDefault(Function(ce) ce.Name = reportElement.ElementName)
                 ' The Header and Letterhead controls have additional requirements
                 ' not handled by the ReportGenerator, so we handle them here.
+                If reportControl Is Nothing Then Continue For
                 Select Case reportControl.Name
                     Case "Letterhead"
                         LetterheadControlShow(True)
@@ -510,7 +566,6 @@ Public Class FrmReports
                             visibleItems.ForEach(Sub(hi) hi.MenuItem.Checked = True)
                         End If
                         HeaderControlShow(True)
-                        mReportGenerator.VerticalLimit = Math.Max(Me.Controls("Header").Bounds.Bottom, mReportGenerator.VerticalLimit)
                     Case Else
                 End Select
                 ' Initially set the control's location and size, 
@@ -656,8 +711,7 @@ Public Class FrmReports
         ' We only need to initialize the ReportControls and that's it.
         mReportGenerator = New ReportGenerator() With {
             .ParentForm = Me,
-            .HorizontalLimit = 0,
-            .VerticalLimit = Me.FormMenuStrip.Bounds.Bottom,
+            .Bounds = New Rectangle(1, Me.FormMenuStrip.Height, Me.ClientSize.Width - 1, Me.ClientSize.Height - 1),
             .GridSize = 0,
             .ReportControls = New List(Of ReportGenerator.ReportControl) From {
                 New ReportGenerator.ReportControl(Letterhead, True, False, False, Nothing, Nothing, Nothing),
@@ -739,6 +793,11 @@ Public Class FrmReports
         If mReport.GridSize <> mReportGenerator.GridSize Then mReport.GridSize = mReportGenerator.GridSize
     End Sub
 
+    Private Sub ReportsDropDownOpening()
+        ReportsExportToolStripMenuItem.Enabled = Me.Report IsNot Nothing
+        ReportsSettingsToolStripMenuItem.Enabled = Me.Report IsNot Nothing
+    End Sub
+
     Private Sub ReportToFile(fileName As String)
         ' Writes the current Report and layout data to a csv file.
         Const commentReport As String = "'---Report---"
@@ -759,15 +818,9 @@ Public Class FrmReports
         End Get
         Set(value As Boolean)
             If value Then
-                ' Disable the form maximize box.
-                Me.MaximizeBox = False
+                FormResizeTo(FormPrintDocument)
             Else
-                ' Set form bounds to the screen working area.
-                Me.MaximizedBounds = Screen.FromControl(Me).WorkingArea
-                Me.MaximumSize = Size.Empty
-
-                ' Enable the form maximize box.
-                Me.MaximizeBox = True
+                FormResizeTo(FormLastSize)
             End If
             mResizeToPagePounds = value
         End Set
@@ -869,8 +922,9 @@ Public Class FrmReports
         ReportsToolStripMenuInitialize()
         ElementsToolStripMenuInitialize()
         HeaderInitialize()
+        FormLastSize = Me.Size
+        FormPrintDocument = New PrintDocument()
         ' These set the form size to the default printer paper size. Not strictly necessary.
-        FormResizeTo(New PrintDocument())
         Me.ResizeToPageBounds = True
     End Sub
 
@@ -936,7 +990,7 @@ Public Class FrmReports
         Try
             LetterheadFileSelect()
         Catch ex As Exception
-            MessageBox.Show("Error loading letterhead: " & ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
+            MessageBox.Show(String.Format(STR_ERR_FILE_OPEN, "letterhead", ex.Message), STR_TITLE_APPLICATION_ERROR, MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try
     End Sub
 
@@ -997,6 +1051,10 @@ Public Class FrmReports
         HeaderControlToggle()
     End Sub
 
+    Private Sub JobsOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobsOpenToolStripMenuItem.Click
+        JobSelectorOpen()
+    End Sub
+
     Private Sub JobsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles JobsToolStripMenuItem.DropDownOpening
         JobsDropDownOpening()
     End Sub
@@ -1015,6 +1073,21 @@ Public Class FrmReports
 
     Private Sub ReportsImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsImportToolStripMenuItem.Click
         ReportImport()
+    End Sub
+
+    Private Sub ReportsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles ReportsToolStripMenuItem.DropDownOpening
+        ReportsDropDownOpening()
+    End Sub
+
+    Private Sub ViewAsPrintedToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles ViewAsPrintedToolStripMenuItem.CheckedChanged
+        'Me.ResizeToPageBounds = ViewAsPrintedToolStripMenuItem.Checked
+        Dim newBounds As Rectangle = mReportGenerator.Bounds
+        newBounds.Width -= 20
+        mReportGenerator.Bounds = newBounds
+    End Sub
+
+    Private Sub ViewAsPrintedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ViewAsPrintedToolStripMenuItem.Click
+        ViewAsPrintedToolStripMenuItem.Checked = Not ViewAsPrintedToolStripMenuItem.Checked
     End Sub
 #End Region
 #Region "Context Menu Events"

@@ -35,6 +35,9 @@
               "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj": {
                 "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj"
               },
+              "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj": {
+                "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj"
+              },
               "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj": {
                 "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj"
               }
@@ -242,6 +245,84 @@
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj",
+        "projectName": "LibDisplayControls",
+        "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj",
+        "packagesPath": "C:\\Users\\super\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\super\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0-windows"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0-windows7.0": {
+            "targetAlias": "net8.0-windows",
+            "projectReferences": {
+              "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj": {
+                "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0-windows7.0": {
+          "targetAlias": "net8.0-windows",
+          "dependencies": {
+            "WinForms.DataVisualization": {
+              "target": "Package",
+              "version": "[1.10.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
           "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"

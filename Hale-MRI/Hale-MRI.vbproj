@@ -22,11 +22,11 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <Optimize>True</Optimize>
+    <Optimize>False</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NoEncoders|AnyCPU'">
@@ -38,6 +38,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="ChartAngularPosition.Designer.vb" />
+    <Compile Remove="ChartAngularPosition.vb" />
+    <Compile Remove="ChartBladeHeight.Designer.vb" />
+    <Compile Remove="ChartBladeHeight.vb" />
+    <Compile Remove="DisplayControl.Designer.vb" />
+    <Compile Remove="DisplayControl.vb" />
     <Compile Remove="Form3.Designer.vb" />
     <Compile Remove="Form3.vb" />
     <Compile Remove="Form4.Designer.vb" />
@@ -46,13 +52,23 @@
     <Compile Remove="FrmJobs_old.vb" />
     <Compile Remove="newFrmJobs.Designer.vb" />
     <Compile Remove="newFrmJobs.vb" />
+    <Compile Remove="ReportHeader.Designer.vb" />
+    <Compile Remove="ReportHeader.vb" />
+    <Compile Remove="ReportLetterhead.Designer.vb" />
+    <Compile Remove="ReportLetterhead.vb" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Remove="ChartAngularPosition.resx" />
+    <EmbeddedResource Remove="ChartBladeHeight.resx" />
+    <EmbeddedResource Remove="DisplayControl.resx" />
     <EmbeddedResource Remove="Form3.resx" />
     <EmbeddedResource Remove="Form4.resx" />
     <EmbeddedResource Remove="FrmJobs_old.resx" />
+    <EmbeddedResource Remove="FrmReportsEditor.resx" />
     <EmbeddedResource Remove="newFrmJobs.resx" />
+    <EmbeddedResource Remove="ReportHeader.resx" />
+    <EmbeddedResource Remove="ReportLetterhead.resx" />
   </ItemGroup>
 
   <!--<ItemGroup>
@@ -99,6 +115,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LibDatabase\LibDatabase.vbproj" />
+    <ProjectReference Include="..\LibDisplayControls\LibDisplayControls.vbproj" />
     <ProjectReference Include="..\LibEncoder\LibEncoder.vbproj" />
   </ItemGroup>
 

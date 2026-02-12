@@ -10,11 +10,14 @@ Module Strings
 
     Public Const STR_ERR_ADDNEW As String = "Error adding new {0}: {1}"
     Public Const STR_ERR_CALIBRATION_DEFAULT As String = "Default"
+    Public Const STR_ERR_FILE_OPEN As String = "Error opening the {0} file: {1}"
     Public Const STR_ERR_FORM_OPEN As String = "Error opening the {0} form: {1}"
     Public Const STR_ERR_INVALID_SELECTION As String = "The selected item is not in the list. Please select a valid item."
     Public Const STR_ERR_NAVIGATION As String = "Navigation error: {0}"
     Public Const STR_ERR_NO_DEFAULT_VALUE As String = "Error no default value: {0}"
     Public Const STR_ERR_OBJECT_LOAD As String = "Error loading the {0}: {1}"
+
+    Public Const STR_PROMPT_UNSAVED_CHANGES As String = "There are unsaved changes. Do you want to save them?"
 
     ' String parameters for functions.
     Public Const STR_PARAM_DECIMAL_PLACES As String = "F2"  ' This is a ~Settings parameter in dB.
