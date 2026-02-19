@@ -22,34 +22,34 @@ Partial Class ReportLetterhead
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        Letterhead = New PictureBox()
-        CType(Letterhead, ComponentModel.ISupportInitialize).BeginInit()
+        LetterheadPictureBox = New PictureBox()
+        CType(LetterheadPictureBox, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
-        ' Letterhead
+        ' LetterheadPictureBox
         ' 
-        Letterhead.Dock = DockStyle.Fill
-        Letterhead.Location = New Point(0, 0)
-        Letterhead.MaximumSize = New Size(827, 111)
-        Letterhead.MinimumSize = New Size(16, 16)
-        Letterhead.Name = "Letterhead"
-        Letterhead.Size = New Size(783, 109)
-        Letterhead.SizeMode = PictureBoxSizeMode.StretchImage
-        Letterhead.TabIndex = 28
-        Letterhead.TabStop = False
+        LetterheadPictureBox.Dock = DockStyle.Fill
+        LetterheadPictureBox.Location = New Point(0, 0)
+        LetterheadPictureBox.MaximumSize = New Size(827, 111)
+        LetterheadPictureBox.MinimumSize = New Size(16, 16)
+        LetterheadPictureBox.Name = "LetterheadPictureBox"
+        LetterheadPictureBox.Size = New Size(783, 109)
+        LetterheadPictureBox.SizeMode = PictureBoxSizeMode.StretchImage
+        LetterheadPictureBox.TabIndex = 28
+        LetterheadPictureBox.TabStop = False
         ' 
         ' ReportLetterhead
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BorderStyle = BorderStyle.FixedSingle
-        Controls.Add(Letterhead)
+        Controls.Add(LetterheadPictureBox)
         Name = "ReportLetterhead"
         Size = New Size(783, 109)
-        CType(Letterhead, ComponentModel.ISupportInitialize).EndInit()
+        CType(LetterheadPictureBox, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents Letterhead As PictureBox
+    Friend WithEvents LetterheadPictureBox As PictureBox
 
 End Class

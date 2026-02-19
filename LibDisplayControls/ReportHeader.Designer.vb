@@ -22,6 +22,7 @@ Partial Class ReportHeader
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
+        components = New ComponentModel.Container()
         Header = New TableLayoutPanel()
         TxtWheelPitch = New TextBox()
         TxtMarkedPitch = New TextBox()
@@ -71,7 +72,9 @@ Partial Class ReportHeader
         LabRotation = New Label()
         TxtJobId = New TextBox()
         TxtJobNumber = New TextBox()
+        JobDetailsBindingSource = New BindingSource(components)
         Header.SuspendLayout()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' Header
@@ -131,7 +134,6 @@ Partial Class ReportHeader
         Header.Controls.Add(LabRotation, 4, 3)
         Header.Controls.Add(TxtJobId, 3, 0)
         Header.Controls.Add(TxtJobNumber, 1, 0)
-        Header.Dock = DockStyle.Fill
         Header.ForeColor = SystemColors.InactiveCaption
         Header.Location = New Point(0, 0)
         Header.Margin = New Padding(0)
@@ -262,6 +264,7 @@ Partial Class ReportHeader
         LabFilename.Name = "LabFilename"
         LabFilename.Size = New Size(62, 15)
         LabFilename.TabIndex = 34
+        LabFilename.Tag = "TxtFileName"
         LabFilename.Text = "File Name"
         LabFilename.Visible = False
         ' 
@@ -395,6 +398,7 @@ Partial Class ReportHeader
         ' 
         TxtCustomer.Anchor = AnchorStyles.Left
         TxtCustomer.BorderStyle = BorderStyle.None
+        TxtCustomer.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.Vessel.Customer.CustomerName", True))
         TxtCustomer.Location = New Point(101, 32)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
@@ -408,6 +412,7 @@ Partial Class ReportHeader
         ' 
         TxtVessel.Anchor = AnchorStyles.Left
         TxtVessel.BorderStyle = BorderStyle.None
+        TxtVessel.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.Vessel.VesselName", True))
         TxtVessel.Location = New Point(101, 59)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
@@ -421,6 +426,7 @@ Partial Class ReportHeader
         ' 
         TxtManufacturer.Anchor = AnchorStyles.Left
         TxtManufacturer.BorderStyle = BorderStyle.None
+        TxtManufacturer.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.PropellerManufacturer.ManufacturerName", True))
         TxtManufacturer.Location = New Point(101, 86)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
@@ -506,6 +512,7 @@ Partial Class ReportHeader
         LabRepairStatus.Name = "LabRepairStatus"
         LabRepairStatus.Size = New Size(81, 15)
         LabRepairStatus.TabIndex = 20
+        LabRepairStatus.Tag = "TxtRepairStatus"
         LabRepairStatus.Text = "Repair Status"
         LabRepairStatus.Visible = False
         ' 
@@ -519,6 +526,7 @@ Partial Class ReportHeader
         LabStyle.Name = "LabStyle"
         LabStyle.Size = New Size(35, 15)
         LabStyle.TabIndex = 21
+        LabStyle.Tag = "TxtStyle"
         LabStyle.Text = "Style"
         LabStyle.Visible = False
         ' 
@@ -532,6 +540,7 @@ Partial Class ReportHeader
         LabMaterial.Name = "LabMaterial"
         LabMaterial.Size = New Size(53, 15)
         LabMaterial.TabIndex = 22
+        LabMaterial.Tag = "TxtMaterial"
         LabMaterial.Text = "Material"
         LabMaterial.Visible = False
         ' 
@@ -545,6 +554,7 @@ Partial Class ReportHeader
         LabBore.Name = "LabBore"
         LabBore.Size = New Size(34, 15)
         LabBore.TabIndex = 23
+        LabBore.Tag = "TxtBore"
         LabBore.Text = "Bore"
         LabBore.Visible = False
         ' 
@@ -558,6 +568,7 @@ Partial Class ReportHeader
         LabDAR.Name = "LabDAR"
         LabDAR.Size = New Size(32, 15)
         LabDAR.TabIndex = 24
+        LabDAR.Tag = "TxtDAR"
         LabDAR.Text = "DAR"
         LabDAR.Visible = False
         ' 
@@ -571,6 +582,7 @@ Partial Class ReportHeader
         LabCup.Name = "LabCup"
         LabCup.Size = New Size(28, 15)
         LabCup.TabIndex = 25
+        LabCup.Tag = "TxtCup"
         LabCup.Text = "Cup"
         LabCup.Visible = False
         ' 
@@ -675,6 +687,7 @@ Partial Class ReportHeader
         LabScanDate.Name = "LabScanDate"
         LabScanDate.Size = New Size(63, 15)
         LabScanDate.TabIndex = 35
+        LabScanDate.Tag = "TxtScanDate"
         LabScanDate.Text = "Scan Date"
         LabScanDate.Visible = False
         ' 
@@ -688,6 +701,7 @@ Partial Class ReportHeader
         LabPerformedBy.Name = "LabPerformedBy"
         LabPerformedBy.Size = New Size(85, 15)
         LabPerformedBy.TabIndex = 36
+        LabPerformedBy.Tag = "TxtPerformedBy"
         LabPerformedBy.Text = "Performed By"
         LabPerformedBy.Visible = False
         ' 
@@ -743,6 +757,7 @@ Partial Class ReportHeader
         LabMarkedDiameter.Name = "LabMarkedDiameter"
         LabMarkedDiameter.Size = New Size(71, 15)
         LabMarkedDiameter.TabIndex = 37
+        LabMarkedDiameter.Tag = "TxtMarkedDiameter"
         LabMarkedDiameter.Text = "Marked Dia"
         LabMarkedDiameter.Visible = False
         ' 
@@ -756,6 +771,7 @@ Partial Class ReportHeader
         LabRotation.Name = "LabRotation"
         LabRotation.Size = New Size(55, 15)
         LabRotation.TabIndex = 39
+        LabRotation.Tag = "TxtRotation"
         LabRotation.Text = "Rotation"
         LabRotation.Visible = False
         ' 
@@ -763,6 +779,7 @@ Partial Class ReportHeader
         ' 
         TxtJobId.Anchor = AnchorStyles.Left
         TxtJobId.BorderStyle = BorderStyle.None
+        TxtJobId.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "JobId", True))
         TxtJobId.Location = New Point(371, 5)
         TxtJobId.Name = "TxtJobId"
         TxtJobId.ReadOnly = True
@@ -776,6 +793,7 @@ Partial Class ReportHeader
         ' 
         TxtJobNumber.Anchor = AnchorStyles.Left
         TxtJobNumber.BorderStyle = BorderStyle.None
+        TxtJobNumber.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.JobNumber", True))
         TxtJobNumber.Location = New Point(101, 5)
         TxtJobNumber.Name = "TxtJobNumber"
         TxtJobNumber.ReadOnly = True
@@ -785,6 +803,10 @@ Partial Class ReportHeader
         TxtJobNumber.Tag = "JobNo"
         TxtJobNumber.Visible = False
         ' 
+        ' JobDetailsBindingSource
+        ' 
+        JobDetailsBindingSource.DataSource = GetType(LibDatabase.Models.JobDetail)
+        ' 
         ' ReportHeader
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
@@ -792,9 +814,10 @@ Partial Class ReportHeader
         BorderStyle = BorderStyle.FixedSingle
         Controls.Add(Header)
         Name = "ReportHeader"
-        Size = New Size(815, 222)
+        Size = New Size(815, 397)
         Header.ResumeLayout(False)
         Header.PerformLayout()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
 
@@ -847,5 +870,6 @@ Partial Class ReportHeader
     Friend WithEvents LabRotation As Label
     Friend WithEvents TxtJobId As TextBox
     Friend WithEvents TxtJobNumber As TextBox
+    Friend WithEvents JobDetailsBindingSource As BindingSource
 
 End Class
