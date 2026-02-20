@@ -122,7 +122,6 @@ Partial Class FrmReports
         ToolStripMenuItem3 = New ToolStripMenuItem()
         ToolStripMenuItem4 = New ToolStripMenuItem()
         ToolStripMenuItem5 = New ToolStripMenuItem()
-        Button1 = New Button()
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ReportDataBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -760,22 +759,12 @@ Partial Class FrmReports
         ToolStripMenuItem5.Size = New Size(180, 22)
         ToolStripMenuItem5.Text = "III"
         ' 
-        ' Button1
-        ' 
-        Button1.Location = New Point(1093, 58)
-        Button1.Name = "Button1"
-        Button1.Size = New Size(75, 23)
-        Button1.TabIndex = 4
-        Button1.Text = "Button1"
-        Button1.UseVisualStyleBackColor = True
-        ' 
         ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         AutoScroll = True
         ClientSize = New Size(1180, 580)
-        Controls.Add(Button1)
         Controls.Add(FormMenuStrip)
         KeyPreview = True
         Name = "FrmReports"
@@ -892,5 +881,4 @@ Partial Class FrmReports
     Friend WithEvents ZoomInToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ZoomOutToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ActualSizeToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents Button1 As Button
 End Class

@@ -41,9 +41,10 @@ Partial Class ReportPage
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
+        BorderStyle = BorderStyle.FixedSingle
         Controls.Add(Margins)
         Name = "ReportPage"
-        Size = New Size(238, 234)
+        Size = New Size(236, 232)
         ResumeLayout(False)
     End Sub
 

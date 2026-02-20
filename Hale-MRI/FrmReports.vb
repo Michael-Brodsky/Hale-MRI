@@ -61,6 +61,7 @@ Public Class FrmReports
         End Get
         Set(value As Report)
             If ReportClose() = DialogResult.None Then
+                mReportGenerator.Zoom = 1.0F
                 ReportLoad(value)
                 FormMenusSet(value)
                 ReportNameMenuItemCheck(value, True)
@@ -921,8 +922,8 @@ Public Class FrmReports
         PrintPreview(sender, e)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs) Handles Button1.Click
-        mReportGenerator.PageAddNew(New ReportPage())
+    Private Sub Button1_Click(sender As Object, e As EventArgs)
+        mReportGenerator.PageAddNew(New ReportPage)
     End Sub
 #End Region
 #End Region
