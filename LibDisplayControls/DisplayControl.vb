@@ -165,14 +165,7 @@ Partial Public Class DisplayControl
 
     Public Shared Sub ControlsRemoveFrom(controls As ObservableCollection(Of DisplayControl), ByRef from As ObservableCollection(Of DisplayControl))
         ' Removes an ObservableCollection of DisplayControl from another ObservableCollection.
-        For Each dc As DisplayControl In controls
-            from.Remove(dc)
-        Next
-    End Sub
-
-    Public Shared Sub ControlsRemoveFrom(controls As List(Of DisplayControl), ByRef from As List(Of DisplayControl))
-        ' Removes a List of DisplayControl from another List.
-        from.RemoveAll(Function(item) controls.Contains(item))
+        ControlsRemoveFrom(controls.ToList(), from)
     End Sub
 
     ''' <summary>
