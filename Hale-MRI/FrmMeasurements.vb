@@ -8,6 +8,7 @@ Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
+Imports LibDisplayControls.MRIMath
 
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
@@ -1336,6 +1337,13 @@ Public Class FrmMeasurements
             Return
         End If
         'resetting counts is multiplying by calibrations
+    End Sub
+
+    Private Sub CmdComparisonForm_Click(sender As Object, e As EventArgs) Handles CmdComparisonForm.Click
+        If Current IsNot Nothing Then
+            ShowForm(gFrmComparison, Database, User)
+            gFrmComparison.JobDetails = Current
+        End If
     End Sub
 #End Region
 End Class

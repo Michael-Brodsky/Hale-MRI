@@ -4,6 +4,8 @@ Imports Hale_MRI.RecordNavigationBar
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore
+Imports LibDisplayControls.MRIMath
+Imports LibDisplayControls
 Public Class FrmComparison
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -11,9 +13,9 @@ Public Class FrmComparison
     Private mJob As Job                                         ' The Job the current JobDetail record belongs to.
     Private mMasterSource As BindingSource = Nothing            ' The form's "master" BindingSource.
     Private mNavigator As RecordNavigationBar = Nothing         ' The form's RecordNavigationBar.
-    Private chartStyle As DataVisualization.Charting.SeriesChartType = SeriesChartType.Line
-    Private ProgRadius As RadiusMeasurement = Nothing
-    Private ProgLoaded As Boolean = False
+    Private mProgRadius As RadiusMeasurement = Nothing
+    Private mProgLoaded As Boolean = False
+    Private mCharts As List(Of ChartCompLine) = New List(Of ChartCompLine)
 #End Region
 #Region "Public Interface"
     ''' <summary>
@@ -69,104 +71,142 @@ Public Class FrmComparison
             End If
         End Set
     End Property
+    Public Property CenterRef As Boolean
+        Get
+            Return ChkCenterRef.Checked
+        End Get
+        Set(value As Boolean)
+            ChkCenterRef.Checked = value
+        End Set
+    End Property
+    Public Property GraphEntireScan As Boolean
+        Get
+            Return ChkGraphEntireScan.Checked
+        End Get
+        Set(value As Boolean)
+            ChkGraphEntireScan.Checked = value
+        End Set
+    End Property
+    Public Property ShowTrack As Boolean
+        Get
+            Return ChkShowTrack.Checked
+        End Get
+        Set(value As Boolean)
+            ChkShowTrack.Checked = value
+        End Set
+    End Property
+    Public Property ExamineOneBlade As Boolean
+        Get
+            Return ChkExamineoneBlade.Checked
+        End Get
+        Set(value As Boolean)
+            ChkExamineoneBlade.Checked = value
+        End Set
+    End Property
+    Public Property Spline As Boolean
+        Get
+            Return ChkSpline.Checked
+        End Get
+        Set(value As Boolean)
+            ChkSpline.Checked = value
+        End Set
+    End Property
+    Public Property ComparisonFont As Integer
+        Get
+            Return TrackFont.Value
+        End Get
+        Set(value As Integer)
+            TrackFont.Value = value
+        End Set
+    End Property
+    Public Property KeepForComp As Boolean
+        Get
+            Return ChkKeepforComp.Checked
+        End Get
+        Set(value As Boolean)
+            ChkKeepforComp.Checked = value
+        End Set
+    End Property
+    Public Property Sections As Integer
+        Get
+            Return TrackSegments.Value
+        End Get
+        Set(value As Integer)
+            TrackSegments.Value = value
+        End Set
+    End Property
+
 #End Region
 #Region "Private Interface"
-    Private Sub OrientCharts(chartnum As Integer)
-        Dim x As Integer
-        For x = 0 To chartnum - 1
-            ChartComparison.ChartAreas.ElementAt(x).Position.Auto = False
-            ChartComparison.ChartAreas.ElementAt(x).Position.Height = 100 / chartnum
-            ChartComparison.ChartAreas.ElementAt(x).Position.Width = 100
-            ChartComparison.ChartAreas.ElementAt(x).AxisX.Minimum = -5
-            ChartComparison.ChartAreas.ElementAt(x).AxisX.Maximum = 105
-            ChartComparison.ChartAreas.ElementAt(x).AxisY.Minimum = 1 ' need to add control for managing y Axis Scaling
-            ChartComparison.ChartAreas.ElementAt(x).AxisY.Maximum = 10
-            ChartComparison.ChartAreas.ElementAt(x).Position.Y = x * (100 / chartnum)
-
-        Next
-        ChartComparison.Height = chartnum * 250
-    End Sub
-    Private Sub CreateChartAreas(radorBlade As Boolean)
-        'radorBlade true = all radii False = one rad on all blades
-        If radorBlade Then
-            For Each RM As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = ComboRadiusorBlade.SelectedItem)
-                ChartComparison.ChartAreas.Add("Rad" + Math.Round(RM.Radius.Value).ToString())
-                ChartComparison.ChartAreas("Rad" + Math.Round(RM.Radius.Value).ToString()).AxisY.Title = "Bld " + ComboRadiusorBlade.SelectedItem.ToString() + "Radius " + RM.Radius.Value.ToString()
+    Protected Overrides Property MasterSource As BindingSource
+        Get
+            Return mMasterSource
+        End Get
+        Set(value As BindingSource)
+            mMasterSource = value
+            If Navigator IsNot Nothing Then Navigator.MasterSource = mMasterSource
+        End Set
+    End Property
+    Private Property Navigator As RecordNavigationBar
+        Get
+            Return mNavigator
+        End Get
+        Set(value As RecordNavigationBar)
+            mNavigator = value
+            If mNavigator IsNot Nothing Then mNavigator.Database = Database
+        End Set
+    End Property
+    Private Sub UpdateCharts() ' need to make the hookup between forms so that this form has data to pass to controls and can be displayed
+        If ExamineOneBlade Then
+            For Each rm As RadiusMeasurement In Current.RadiusMeasurements.Where(Function(r) r.BladeId = ComboRadiusorBlade.SelectedIndex + 1)
+                TLayoutCompCharts.Controls.Clear()
+                TLayoutCompCharts.RowCount = Current.RadiusMeasurements.Where(Function(r) r.BladeId = ComboRadiusorBlade.SelectedIndex + 1).Count()
+                TLayoutCompCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 100 / TLayoutCompCharts.RowCount))
+                TLayoutCompCharts.Height = TLayoutCompCharts.RowCount * 250
+                Dim i As Integer = 0
+                Dim graph As New ChartCompLine()
+                graph.CenterRef = CenterRef
+                graph.EntireScan = GraphEntireScan
+                graph.showTrack = ShowTrack
+                graph.spline = Spline
+                graph.Sections = Sections
+                graph.Dock = DockStyle.Fill
+                graph.rm = rm
+                graph.TolClass = GetToleranceTable(Database, JobDetails.ToleranceClass)
+                graph.Progcm = mProgRadius?.CellMeasurements
+                graph.Trackcm = Current.RadiusMeasurements.Where(Function(r) r.BladeId = ComboTrackRefBlade.SelectedIndex + 1 And Math.Round(r.Radius.Value) = Math.Round(rm.Radius.Value)).First()?.CellMeasurements
+                TLayoutCompCharts.Controls.Add(graph)
+                mCharts.Add(graph)
+                TLayoutCompCharts.SetRow(graph, i)
+                i += 1
+                graph.Data = rm
             Next
         Else
-            Dim x As Integer
-            For x = 1 To Job.PropellerBlades
-                ChartComparison.ChartAreas.Add("Blade" + x.ToString())
-                ChartComparison.ChartAreas("Blade" + x.ToString()).AxisY.Title = "Bld " + x.ToString() + " " + ComboRadiusorBlade.SelectedItem.ToString()
+            For Each rm As RadiusMeasurement In Current.RadiusMeasurements.Where(Function(r) Math.Round(r.Radius.Value).ToString = ComboRadiusorBlade.SelectedItem.ToString())
+                TLayoutCompCharts.Controls.Clear()
+                TLayoutCompCharts.RowCount = Job.PropellerBlades
+                TLayoutCompCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 100 / TLayoutCompCharts.RowCount))
+                TLayoutCompCharts.Height = TLayoutCompCharts.RowCount * 250
+                Dim i As Integer = 0
+                Dim graph As New ChartCompLine()
+                graph.CenterRef = CenterRef
+                graph.EntireScan = GraphEntireScan
+                graph.showTrack = ShowTrack
+                graph.spline = Spline
+                graph.Sections = Sections
+                graph.Dock = DockStyle.Fill
+                graph.rm = rm
+                graph.TolClass = GetToleranceTable(Database, JobDetails.ToleranceClass)
+                graph.Progcm = mProgRadius?.CellMeasurements
+                graph.Trackcm = Current.RadiusMeasurements.Where(Function(r) r.BladeId = ComboTrackRefBlade.SelectedIndex + 1 And Math.Round(r.Radius.Value) = Math.Round(rm.Radius.Value)).First()?.CellMeasurements
+                TLayoutCompCharts.Controls.Add(graph)
+                mCharts.Add(graph)
+                TLayoutCompCharts.SetRow(graph, i)
+                i += 1
+                graph.Data = rm
             Next
         End If
     End Sub
-    Private Sub CreateChartSeriesLP(radorBlade As Boolean)
-        'radorBlade true = all radii False = one rad on all blades
-        If radorBlade Then
-            For Each Chart As DataVisualization.Charting.ChartArea In ChartComparison.ChartAreas
-                Dim ns As Series = ChartComparison.Series.Add("LPSeries" + Chart.Name)
-                ns.ChartType = chartStyle
-                ns.ChartArea = Chart.Name
-                'add ifs checking for what to plot here as well as change the Axes titles and scaling
-                'also ask about the other lines, they are tolerances
-                'if Prog is not loaded need a series that makes a flat line at 0
-                'if show track is checked plot based off track pos of selected ref blade
-                If ChkCenterRef.Checked Then
-                    'adjust points by center point amount or first point
-                    'add points to series
-                    'add labels for local pitch and track position
-                    'These are height values
-                    'GetLocalHeight() need to figure out method of getting the correct radiusMeasurement for graph
-                End If
-
-            Next
-        End If
-    End Sub
-    Private Sub CreateChartSeriesTrack(radorBlade As Boolean)
-        If radorBlade Then
-            For Each Chart As DataVisualization.Charting.ChartArea In ChartComparison.ChartAreas
-                Dim ns As Series = ChartComparison.Series.Add("TrackSeries" + Chart.Name)
-                ns.ChartType = SeriesChartType.StepLine
-                ns.ChartArea = Chart.Name
-                'add ifs checking for what to plot here as well as change the Axes titles and scaling
-                'if prog loaded plot exact heights of selected track ref blade, if not plot flat line at 0
-                If ProgLoaded AndAlso ProgRadius IsNot Nothing Then
-                    Dim IncludedAngle As Double = Math.Abs(ProgRadius.CellMeasurements.LastOrDefault().Angle.Value - ProgRadius.CellMeasurements.FirstOrDefault().Angle.Value)
-                    If ChkGraphEntireScan.Checked = False Then
-                        Dim cl As Double = GetChordLength(ProgRadius.CellMeasurements.FirstOrDefault().Angle.Value, ProgRadius.CellMeasurements.LastOrDefault().Angle.Value, ProgRadius.CellMeasurements.FirstOrDefault().Depth.Value, ProgRadius.CellMeasurements.LastOrDefault().Depth.Value, Job.PropellerDiameter, CInt(ProgRadius.Radius.Value))
-                        Dim lezoneangle As Double = IncludedAngle * (Job.LeExclusion / cl)
-                        Dim tezoneangle As Double = IncludedAngle * (Job.TeExclusion / cl)
-                        IncludedAngle = IncludedAngle - lezoneangle - tezoneangle
-                    End If
-                    'plot based off track position of selected ref blade
-                    'GetTrackHeight() need to figure out method of getting the correct radiusMeasurement for graph
-                    Dim x As Integer
-                    For x = 1 To 20
-                        Dim trackheight As Double = GetLocalHeight(ProgRadius.CellMeasurements.ToList(), 20, x, Job.PropellerDiameter, ProgRadius.Radius.Value, 0.0, 0.0)
-                        'need method to get heights relative to track position - find ideal height difference between points
-                        'using height between points we can use a difference * points from ref to get actual height at track position to calculate blade heights
-                        'reverse engineer pitch calculation to get heights
-
-                        ns.Points.AddXY((x - 1) * 5, 5) ' placeholder y, y needs to be height at track position
-                    Next
-                Else
-                    ns.Points.AddXY(0, 0)
-                    ns.Points.AddXY(100, 0)
-                End If
-            Next
-        End If
-    End Sub
-    Private Sub ShowCompChart()
-        ChartComparison.Series.Clear()
-        ChartComparison.ChartAreas.Clear()
-        CreateChartAreas(ChkExamineoneBlade.Checked)
-        OrientCharts(ChartComparison.ChartAreas.Count)
-        CreateChartSeriesLP(ChkExamineoneBlade.Checked)
-        ' going to have to handle all modifications and plotting of charts here fully programmatically
-    End Sub
-#End Region
-#Region "Private Interface"
     Private Sub FormSort(ByRef jobDetails As BindingList(Of JobDetail))
         For Each jd As JobDetail In jobDetails
             For Each rm As RadiusMeasurement In jd?.RadiusMeasurements
@@ -203,10 +243,6 @@ Public Class FrmComparison
         FormSort(data)
         Return data
     End Function
-    Private Sub ChartUpdate()
-        ShowCompChart()
-
-    End Sub
 #End Region
 #Region "Event Handlers"
     Private Sub Navigator_NavigationEvent(sender As Object, e As NavigationEventArgs)
@@ -235,15 +271,20 @@ Public Class FrmComparison
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
         If mJobDetails IsNot Current Then
             mJobDetails = Current
-            'insert form updating function here
+            UpdateCharts()
         End If
     End Sub
     Private Sub FrmComparison_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         ' Load event handler code here
+        Navigator = RecordNavigationBar1
+        Navigator.BoundControls = New List(Of Control) From {DataGridJobDetails}
+        MasterSource = JobDetailsBindingSource
     End Sub
 
     Private Sub ChkCenterRef_CheckedChanged(sender As Object, e As EventArgs) Handles ChkCenterRef.CheckedChanged
-
+        For Each chart In mCharts
+            chart.CenterRef = CenterRef
+        Next
     End Sub
 
     Private Sub ChkKeepforComp_CheckedChanged(sender As Object, e As EventArgs) Handles ChkKeepforComp.CheckedChanged
@@ -251,19 +292,57 @@ Public Class FrmComparison
     End Sub
 
     Private Sub ChkGraphEntireScan_CheckedChanged(sender As Object, e As EventArgs) Handles ChkGraphEntireScan.CheckedChanged
-
+        For Each chart In mCharts
+            chart.EntireScan = GraphEntireScan
+        Next
     End Sub
 
     Private Sub ChkShowTrack_CheckedChanged(sender As Object, e As EventArgs) Handles ChkShowTrack.CheckedChanged
-
+        For Each chart In mCharts
+            chart.showTrack = ShowTrack
+        Next
     End Sub
 
     Private Sub ChkExamineoneBlade_CheckedChanged(sender As Object, e As EventArgs) Handles ChkExamineoneBlade.CheckedChanged
-        ChartUpdate()
+        'need to cahnge the ComboRadius to say blade and have blades instead of Rads
+        If ChkExamineoneBlade.Checked Then
+            ComboRadiusorBlade.Items.Clear()
+            Dim I As Integer
+            For I = 1 To Job.PropellerBlades
+                ComboRadiusorBlade.Items.Add(I.ToString())
+            Next
+            ComboRadiusorBlade.SelectedIndex = 0
+            LabRadiusorBlade.Text = "Blade: " + ComboRadiusorBlade.SelectedItem.ToString()
+        Else
+            ComboRadiusorBlade.Items.Clear()
+            For Each rm As RadiusMeasurement In Current.RadiusMeasurements.Where(Function(r) r.BladeId = 1)
+                ComboRadiusorBlade.Items.Add(Math.Round(rm.Radius.Value).ToString())
+            Next
+            ComboRadiusorBlade.SelectedIndex = 0
+            LabRadiusorBlade.Text = "Radius: " + ComboRadiusorBlade.SelectedItem.ToString()
+        End If
+        UpdateCharts()
     End Sub
 
     Private Sub ChkSpline_CheckedChanged(sender As Object, e As EventArgs) Handles ChkSpline.CheckedChanged
+        For Each chart In mCharts
+            chart.spline = Spline
+        Next
+    End Sub
 
+    Private Sub TrackFont_ValueChanged(sender As Object, e As EventArgs) Handles TrackFont.ValueChanged
+        Dim tfont As New Font(Me.Font.FontFamily, TrackFont.Value)
+        Me.Font = tfont
+
+    End Sub
+
+    Private Sub TrackSegments_ValueChanged(sender As Object, e As EventArgs) Handles TrackSegments.ValueChanged
+        LabSegments.Text = "Segments: " & TrackSegments.Value.ToString()
+        'add a function here to update graphs
+    End Sub
+
+    Private Sub CmdMeasure_Click(sender As Object, e As EventArgs) Handles CmdMeasure.Click
+        ShowForm(gFrmMeasurements, Database, User)
     End Sub
 #End Region
 End Class

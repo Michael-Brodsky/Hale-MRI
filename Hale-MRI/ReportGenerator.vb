@@ -8,6 +8,7 @@ Imports LibDatabase.Models
 Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 Imports Newtonsoft.Json.Linq
 Imports Windows.Win32.UI
+Imports LibDisplayControls.MRIMath
 
 ''' <summary>
 ''' Class that manages report visual elements 

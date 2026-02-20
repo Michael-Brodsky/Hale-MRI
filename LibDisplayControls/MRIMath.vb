@@ -1,7 +1,6 @@
 ﻿Imports System.Diagnostics.Eventing.Reader
 Imports LibDatabase.Models
-
-Module MRIMath
+Public Module MRIMath
     Public Function GetLocalPitch(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
         'Returns the local pitch of a sector based on the first and last cell measurements in that sector
         Dim startangle As Double = cm.FirstOrDefault().Angle
@@ -43,7 +42,6 @@ Module MRIMath
         End If
         Return GetPitch(sectorstartangle, sectorendangle, sectorstartdepth, sectorenddepth) 'sectorenddepth - sectorstartdepth) * (360 / sectorArc)
     End Function
-
     Public Function GetLocalHeight(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
         'Returns the local height of a sector based on the first and last cell measurements in that sector
         Dim startangle As Double = cm.FirstOrDefault().Angle
@@ -61,7 +59,6 @@ Module MRIMath
         Dim sectorendcell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).FirstOrDefault()
         Return Math.Abs(sectorendcell.Depth.Value - sectorstartcell.Depth.Value) ' returns the computed height of the sector
     End Function
-
     Public Function GetLocalHeightStartSector(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
         'Returns the local Height of the start of a sector for use in Line Graphs
         Dim startangle As Double = cm.FirstOrDefault().Angle
@@ -90,7 +87,6 @@ Module MRIMath
         End If
         Return sectorstartdepth
     End Function
-
     Public Function GetLocalHeightEndSector(cm As List(Of CellMeasurement), sectors As Integer, sector As Integer, diameter As Double, radiusPercent As Double, TeExclusion As Double, LeExclusion As Double) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
@@ -118,7 +114,6 @@ Module MRIMath
         End If
         Return sectorenddepth
     End Function
-
     Public Function GetRefHeightsHighTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
         'Returns a list of height values that are already modified based on ref point for use in Line graphs
         Dim Numbers As New List(Of Double)
@@ -147,7 +142,6 @@ Module MRIMath
         End If
         Return Numbers
     End Function
-
     Public Function GetRefHeightsLowTol(center As Boolean, refpitch As Double, Tolclass As Tolerance, blades As Integer, cm As List(Of CellMeasurement)) As List(Of Double)
         'Returns a list of height values that are already modified based on ref point for use in Line graphs
         Dim Numbers As New List(Of Double)
@@ -176,33 +170,30 @@ Module MRIMath
         End If
         Return Numbers
     End Function
-
     Public Function GetRefHeightsStraight(center As Boolean, refpitch As Double, blades As Integer) As List(Of Double)
         'Returns a list of height values for use in line graphs
         Dim numbers As New List(Of Double)
         Dim x As Integer
         Dim angperblade As Double = 360 / blades
-        Dim anglediffbetweenpoints As Double = angperblade / 10
+        Dim anglediffbetweenpoints As Double = angperblade / 20
         Dim heightdiffbetweenpoints As Double = (refpitch * anglediffbetweenpoints) / 360
         If center Then
-            For x = 0 To 10
+            For x = 0 To 20
                 numbers.Add(heightdiffbetweenpoints * Math.Abs(5 - x))
             Next
         Else
-            For x = 0 To 10
+            For x = 0 To 20
                 numbers.Add(heightdiffbetweenpoints * x)
             Next
         End If
         Return numbers
     End Function
-
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
         Dim deltaangle As Double = Math.Abs(startangle - endangle)
         Return startangle + (deltaangle / 2) ' returns the computed midpoint angle
     End Function
-
     Public Function GetChordMidDepth(cm As List(Of CellMeasurement)) As Double
         Dim angle As Double = GetChordMidAngle(cm)
         Dim startDepthcell As CellMeasurement = cm.Where(Function(c) c.Angle >= angle).LastOrDefault()
@@ -212,7 +203,6 @@ Module MRIMath
         Dim interdepth = startDepthcell.Depth.Value + (deltaDepth * Ratio)
         Return interdepth ' returns the computed midpoint angle
     End Function
-
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
         'Pitch = (360 * Change in Depth) / Change in Angle
         ' Can be used to get local pitch between two cellmeasurements,
@@ -220,7 +210,6 @@ Module MRIMath
         Dim deltadepth = seconddepth - firstdepth
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)
     End Function
-
     Public Function GetChordLength(cm As List(Of CellMeasurement), diameter As Double, radperc As Integer) As Double
         'ChordLength = sqrt((Change in Depth)^2 + ((Diameter * Radius Percent) * PI *(Change in Angle / 360))^2)
         'used to get the chord length between two cell measurements in inches
@@ -251,13 +240,11 @@ Module MRIMath
 
         Return chordlength
     End Function
-
     Public Function GetBladeNumber(Angle As Double, Blades As Integer) As Integer
         'CurrentBlade = Blades - Math.Ceiling(Angle/(360/Blades))
         ' Return CInt(Math.Ceiling(Angle / (360 / Blades)))
         Return If(Blades <> 0, CInt(Math.Ceiling(Angle / (360 / Blades))), 1)
     End Function
-
     Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement), TeExclusion As Double, LeExclusion As Double) As Double
         Dim avgPitch As Double = 0.0 ' Changed this due to terms written in the ISO standard of how to measure average pitch of a radial section
         'Dim pitch As New List(Of Double)
@@ -270,7 +257,6 @@ Module MRIMath
         'Dim avgPitch As Double = GetPitch(cellMeasurements.First().Angle, cellMeasurements.Last().Angle, cellMeasurements.First().Depth, cellMeasurements.Last().Depth)
         Return avgPitch
     End Function
-
     Public Function PolarToCartesian(radius As Double, angleDegrees As Double) As (x As Double, y As Double)
         Dim angleRadians As Double = angleDegrees * (Math.PI / 180.0)
         Dim x As Double = radius * Math.Cos(angleRadians)

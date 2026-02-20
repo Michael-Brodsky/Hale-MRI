@@ -23,12 +23,10 @@ Partial Class FrmComparison
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         tLayoutComparison = New TableLayoutPanel()
         PictLogo = New PictureBox()
         DataGridJobDetails = New DataGridView()
         tlayoutComparisonControls = New TableLayoutPanel()
-        ComboSegments = New ComboBox()
         ComboRadiusorBlade = New ComboBox()
         ChkExamineoneBlade = New CheckBox()
         ChkSpline = New CheckBox()
@@ -44,19 +42,41 @@ Partial Class FrmComparison
         ComboTrackRefBlade = New ComboBox()
         CmdSelectProgression = New Button()
         CmdPrintAllGraphs = New Button()
+        LblAxesScaling = New Label()
+        CBoxAxesScaling = New ComboBox()
+        LblFont = New Label()
+        TrackFont = New TrackBar()
+        TrackSegments = New TrackBar()
         PanelChart = New Panel()
-        ChartComparison = New DataVisualization.Charting.Chart()
+        TLayoutCompCharts = New TableLayoutPanel()
         RecordNavigationBar1 = New RecordNavigationBar()
         JobDetailsBindingSource = New BindingSource(components)
-        BindingSource2 = New BindingSource(components)
+        MeasurementTypesBindingSource = New BindingSource(components)
+        EmployeeBindingSource = New BindingSource(components)
+        ToleranceBindingSource = New BindingSource(components)
+        StartDateCol = New DataGridViewTextBoxColumn()
+        MeasurementTypeCol = New DataGridViewComboBoxColumn()
+        ClassCol = New DataGridViewComboBoxColumn()
+        EmployeeCol = New DataGridViewComboBoxColumn()
+        DescriptionCol = New DataGridViewTextBoxColumn()
+        TLayoutNavigation = New TableLayoutPanel()
+        CmdMeasure = New Button()
+        CmdLocalPitch = New Button()
+        CmdGraph = New Button()
+        CmdInspect = New Button()
+        CmdComparison = New Button()
         tLayoutComparison.SuspendLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         tlayoutComparisonControls.SuspendLayout()
+        CType(TrackFont, ComponentModel.ISupportInitialize).BeginInit()
+        CType(TrackSegments, ComponentModel.ISupportInitialize).BeginInit()
         PanelChart.SuspendLayout()
-        CType(ChartComparison, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(BindingSource2, ComponentModel.ISupportInitialize).BeginInit()
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        TLayoutNavigation.SuspendLayout()
         SuspendLayout()
         ' 
         ' tLayoutComparison
@@ -74,6 +94,7 @@ Partial Class FrmComparison
         tLayoutComparison.Controls.Add(tlayoutComparisonControls, 0, 2)
         tLayoutComparison.Controls.Add(PanelChart, 1, 2)
         tLayoutComparison.Controls.Add(RecordNavigationBar1, 4, 0)
+        tLayoutComparison.Controls.Add(TLayoutNavigation, 2, 1)
         tLayoutComparison.Dock = DockStyle.Fill
         tLayoutComparison.Location = New Point(0, 0)
         tLayoutComparison.Name = "tLayoutComparison"
@@ -101,12 +122,18 @@ Partial Class FrmComparison
         ' 
         ' DataGridJobDetails
         ' 
+        DataGridJobDetails.AllowUserToAddRows = False
+        DataGridJobDetails.AllowUserToDeleteRows = False
+        DataGridJobDetails.AutoGenerateColumns = False
         DataGridJobDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDateCol, MeasurementTypeCol, ClassCol, EmployeeCol, DescriptionCol})
         tLayoutComparison.SetColumnSpan(DataGridJobDetails, 3)
+        DataGridJobDetails.DataSource = JobDetailsBindingSource
         DataGridJobDetails.Dock = DockStyle.Fill
         DataGridJobDetails.Location = New Point(603, 36)
         DataGridJobDetails.Name = "DataGridJobDetails"
+        DataGridJobDetails.RowHeadersVisible = False
         DataGridJobDetails.Size = New Size(578, 74)
         DataGridJobDetails.TabIndex = 1
         ' 
@@ -114,7 +141,6 @@ Partial Class FrmComparison
         ' 
         tlayoutComparisonControls.ColumnCount = 1
         tlayoutComparisonControls.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        tlayoutComparisonControls.Controls.Add(ComboSegments, 0, 12)
         tlayoutComparisonControls.Controls.Add(ComboRadiusorBlade, 0, 10)
         tlayoutComparisonControls.Controls.Add(ChkExamineoneBlade, 0, 6)
         tlayoutComparisonControls.Controls.Add(ChkSpline, 0, 15)
@@ -130,11 +156,16 @@ Partial Class FrmComparison
         tlayoutComparisonControls.Controls.Add(ComboTrackRefBlade, 0, 8)
         tlayoutComparisonControls.Controls.Add(CmdSelectProgression, 0, 13)
         tlayoutComparisonControls.Controls.Add(CmdPrintAllGraphs, 0, 14)
+        tlayoutComparisonControls.Controls.Add(LblAxesScaling, 0, 16)
+        tlayoutComparisonControls.Controls.Add(CBoxAxesScaling, 0, 17)
+        tlayoutComparisonControls.Controls.Add(LblFont, 0, 18)
+        tlayoutComparisonControls.Controls.Add(TrackFont, 0, 19)
+        tlayoutComparisonControls.Controls.Add(TrackSegments, 0, 12)
         tlayoutComparisonControls.Dock = DockStyle.Fill
         tlayoutComparisonControls.Location = New Point(1, 113)
         tlayoutComparisonControls.Margin = New Padding(1, 0, 0, 0)
         tlayoutComparisonControls.Name = "tlayoutComparisonControls"
-        tlayoutComparisonControls.RowCount = 18
+        tlayoutComparisonControls.RowCount = 21
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
@@ -152,24 +183,19 @@ Partial Class FrmComparison
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 30F))
+        tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
+        tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Absolute, 35F))
         tlayoutComparisonControls.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
         tlayoutComparisonControls.Size = New Size(201, 523)
         tlayoutComparisonControls.TabIndex = 3
-        ' 
-        ' ComboSegments
-        ' 
-        ComboSegments.Dock = DockStyle.Top
-        ComboSegments.FormattingEnabled = True
-        ComboSegments.Location = New Point(3, 323)
-        ComboSegments.Name = "ComboSegments"
-        ComboSegments.Size = New Size(195, 28)
-        ComboSegments.TabIndex = 19
         ' 
         ' ComboRadiusorBlade
         ' 
         ComboRadiusorBlade.Dock = DockStyle.Top
         ComboRadiusorBlade.FormattingEnabled = True
-        ComboRadiusorBlade.Location = New Point(3, 273)
+        ComboRadiusorBlade.Location = New Point(3, 270)
+        ComboRadiusorBlade.Margin = New Padding(3, 0, 3, 0)
         ComboRadiusorBlade.Name = "ComboRadiusorBlade"
         ComboRadiusorBlade.Size = New Size(195, 28)
         ComboRadiusorBlade.TabIndex = 18
@@ -298,7 +324,8 @@ Partial Class FrmComparison
         ' 
         ComboTrackRefBlade.Dock = DockStyle.Top
         ComboTrackRefBlade.FormattingEnabled = True
-        ComboTrackRefBlade.Location = New Point(3, 223)
+        ComboTrackRefBlade.Location = New Point(3, 220)
+        ComboTrackRefBlade.Margin = New Padding(3, 0, 3, 0)
         ComboTrackRefBlade.Name = "ComboTrackRefBlade"
         ComboTrackRefBlade.Size = New Size(195, 28)
         ComboTrackRefBlade.TabIndex = 17
@@ -325,27 +352,83 @@ Partial Class FrmComparison
         CmdPrintAllGraphs.Text = "Print All Graphs"
         CmdPrintAllGraphs.UseVisualStyleBackColor = True
         ' 
+        ' LblAxesScaling
+        ' 
+        LblAxesScaling.AutoSize = True
+        LblAxesScaling.Dock = DockStyle.Fill
+        LblAxesScaling.Location = New Point(3, 440)
+        LblAxesScaling.Name = "LblAxesScaling"
+        LblAxesScaling.Size = New Size(195, 20)
+        LblAxesScaling.TabIndex = 22
+        LblAxesScaling.Text = "Axes Scaling"
+        ' 
+        ' CBoxAxesScaling
+        ' 
+        CBoxAxesScaling.Dock = DockStyle.Fill
+        CBoxAxesScaling.FormattingEnabled = True
+        CBoxAxesScaling.Location = New Point(3, 460)
+        CBoxAxesScaling.Margin = New Padding(3, 0, 3, 0)
+        CBoxAxesScaling.Name = "CBoxAxesScaling"
+        CBoxAxesScaling.Size = New Size(195, 28)
+        CBoxAxesScaling.TabIndex = 23
+        ' 
+        ' LblFont
+        ' 
+        LblFont.AutoSize = True
+        LblFont.Dock = DockStyle.Bottom
+        LblFont.Location = New Point(3, 490)
+        LblFont.Name = "LblFont"
+        LblFont.Size = New Size(195, 20)
+        LblFont.TabIndex = 24
+        LblFont.Text = "Font"
+        ' 
+        ' TrackFont
+        ' 
+        TrackFont.Dock = DockStyle.Top
+        TrackFont.Location = New Point(0, 510)
+        TrackFont.Margin = New Padding(0)
+        TrackFont.Maximum = 22
+        TrackFont.Minimum = 9
+        TrackFont.Name = "TrackFont"
+        TrackFont.Size = New Size(201, 35)
+        TrackFont.TabIndex = 25
+        TrackFont.Value = 11
+        ' 
+        ' TrackSegments
+        ' 
+        TrackSegments.Dock = DockStyle.Fill
+        TrackSegments.Location = New Point(3, 323)
+        TrackSegments.Minimum = 1
+        TrackSegments.Name = "TrackSegments"
+        TrackSegments.Size = New Size(195, 24)
+        TrackSegments.TabIndex = 26
+        TrackSegments.Value = 1
+        ' 
         ' PanelChart
         ' 
         PanelChart.AutoScroll = True
         tLayoutComparison.SetColumnSpan(PanelChart, 6)
-        PanelChart.Controls.Add(ChartComparison)
+        PanelChart.Controls.Add(TLayoutCompCharts)
         PanelChart.Dock = DockStyle.Fill
-        PanelChart.Location = New Point(205, 116)
+        PanelChart.Location = New Point(202, 113)
+        PanelChart.Margin = New Padding(0)
         PanelChart.Name = "PanelChart"
-        PanelChart.Size = New Size(976, 517)
+        PanelChart.Size = New Size(982, 523)
         PanelChart.TabIndex = 4
         ' 
-        ' ChartComparison
+        ' TLayoutCompCharts
         ' 
-        ChartArea1.AlignmentStyle = DataVisualization.Charting.AreaAlignmentStyles.AxesView
-        ChartArea1.Name = "ChartArea1"
-        ChartComparison.ChartAreas.Add(ChartArea1)
-        ChartComparison.Dock = DockStyle.Top
-        ChartComparison.Location = New Point(0, 0)
-        ChartComparison.Name = "ChartComparison"
-        ChartComparison.Size = New Size(976, 517)
-        ChartComparison.TabIndex = 2
+        TLayoutCompCharts.ColumnCount = 1
+        TLayoutCompCharts.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        TLayoutCompCharts.Dock = DockStyle.Top
+        TLayoutCompCharts.Location = New Point(0, 0)
+        TLayoutCompCharts.Margin = New Padding(0)
+        TLayoutCompCharts.Name = "TLayoutCompCharts"
+        TLayoutCompCharts.RowCount = 2
+        TLayoutCompCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TLayoutCompCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TLayoutCompCharts.Size = New Size(982, 400)
+        TLayoutCompCharts.TabIndex = 0
         ' 
         ' RecordNavigationBar1
         ' 
@@ -368,10 +451,128 @@ Partial Class FrmComparison
         ' JobDetailsBindingSource
         ' 
         ' 
+        ' MeasurementTypesBindingSource
+        ' 
+        MeasurementTypesBindingSource.DataSource = GetType(LibDatabase.Models.MeasurementType)
+        ' 
+        ' EmployeeBindingSource
+        ' 
+        EmployeeBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
+        ' 
+        ' ToleranceBindingSource
+        ' 
+        ToleranceBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
+        ' 
+        ' StartDateCol
+        ' 
+        StartDateCol.HeaderText = "Start Date"
+        StartDateCol.Name = "StartDateCol"
+        StartDateCol.Width = 101
+        ' 
+        ' MeasurementTypeCol
+        ' 
+        MeasurementTypeCol.HeaderText = "Measurement"
+        MeasurementTypeCol.Name = "MeasurementTypeCol"
+        MeasurementTypeCol.Width = 105
+        ' 
+        ' ClassCol
+        ' 
+        ClassCol.DataSource = ToleranceBindingSource
+        ClassCol.DisplayMember = "ToleranceClass"
+        ClassCol.HeaderText = "Class"
+        ClassCol.Name = "ClassCol"
+        ClassCol.ValueMember = "ToleranceClass"
+        ClassCol.Width = 48
+        ' 
+        ' EmployeeCol
+        ' 
+        EmployeeCol.DataSource = EmployeeBindingSource
+        EmployeeCol.HeaderText = "Employee"
+        EmployeeCol.Name = "EmployeeCol"
+        EmployeeCol.Width = 81
+        ' 
+        ' DescriptionCol
+        ' 
+        DescriptionCol.HeaderText = "Description"
+        DescriptionCol.Name = "DescriptionCol"
+        DescriptionCol.Width = 110
+        ' 
+        ' TLayoutNavigation
+        ' 
+        TLayoutNavigation.ColumnCount = 5
+        tLayoutComparison.SetColumnSpan(TLayoutNavigation, 2)
+        TLayoutNavigation.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutNavigation.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutNavigation.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutNavigation.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutNavigation.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
+        TLayoutNavigation.Controls.Add(CmdComparison, 4, 0)
+        TLayoutNavigation.Controls.Add(CmdInspect, 3, 0)
+        TLayoutNavigation.Controls.Add(CmdGraph, 2, 0)
+        TLayoutNavigation.Controls.Add(CmdLocalPitch, 1, 0)
+        TLayoutNavigation.Controls.Add(CmdMeasure, 0, 0)
+        TLayoutNavigation.Dock = DockStyle.Fill
+        TLayoutNavigation.Location = New Point(212, 33)
+        TLayoutNavigation.Margin = New Padding(0)
+        TLayoutNavigation.Name = "TLayoutNavigation"
+        TLayoutNavigation.RowCount = 1
+        TLayoutNavigation.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
+        TLayoutNavigation.Size = New Size(388, 80)
+        TLayoutNavigation.TabIndex = 6
+        ' 
+        ' CmdMeasure
+        ' 
+        CmdMeasure.Dock = DockStyle.Fill
+        CmdMeasure.Location = New Point(3, 3)
+        CmdMeasure.Name = "CmdMeasure"
+        CmdMeasure.Size = New Size(71, 74)
+        CmdMeasure.TabIndex = 0
+        CmdMeasure.Text = "Measure"
+        CmdMeasure.UseVisualStyleBackColor = True
+        ' 
+        ' CmdLocalPitch
+        ' 
+        CmdLocalPitch.Dock = DockStyle.Fill
+        CmdLocalPitch.Location = New Point(80, 3)
+        CmdLocalPitch.Name = "CmdLocalPitch"
+        CmdLocalPitch.Size = New Size(71, 74)
+        CmdLocalPitch.TabIndex = 1
+        CmdLocalPitch.Text = "Local Pitch"
+        CmdLocalPitch.UseVisualStyleBackColor = True
+        ' 
+        ' CmdGraph
+        ' 
+        CmdGraph.Dock = DockStyle.Fill
+        CmdGraph.Location = New Point(157, 3)
+        CmdGraph.Name = "CmdGraph"
+        CmdGraph.Size = New Size(71, 74)
+        CmdGraph.TabIndex = 2
+        CmdGraph.Text = "Graph"
+        CmdGraph.UseVisualStyleBackColor = True
+        ' 
+        ' CmdInspect
+        ' 
+        CmdInspect.Dock = DockStyle.Fill
+        CmdInspect.Location = New Point(234, 3)
+        CmdInspect.Name = "CmdInspect"
+        CmdInspect.Size = New Size(71, 74)
+        CmdInspect.TabIndex = 3
+        CmdInspect.Text = "Inspect"
+        CmdInspect.UseVisualStyleBackColor = True
+        ' 
+        ' CmdComparison
+        ' 
+        CmdComparison.Dock = DockStyle.Fill
+        CmdComparison.Location = New Point(311, 3)
+        CmdComparison.Name = "CmdComparison"
+        CmdComparison.Size = New Size(74, 74)
+        CmdComparison.TabIndex = 4
+        CmdComparison.Text = "Comp."
+        CmdComparison.UseVisualStyleBackColor = True
+        ' 
         ' FrmComparison
         ' 
-        AutoScaleDimensions = New SizeF(8F, 20F)
-        AutoScaleMode = AutoScaleMode.Font
+        AutoScaleMode = AutoScaleMode.None
         ClientSize = New Size(1184, 636)
         Controls.Add(tLayoutComparison)
         Font = New Font("Segoe UI", 11F)
@@ -384,17 +585,20 @@ Partial Class FrmComparison
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         tlayoutComparisonControls.ResumeLayout(False)
         tlayoutComparisonControls.PerformLayout()
+        CType(TrackFont, ComponentModel.ISupportInitialize).EndInit()
+        CType(TrackSegments, ComponentModel.ISupportInitialize).EndInit()
         PanelChart.ResumeLayout(False)
-        CType(ChartComparison, ComponentModel.ISupportInitialize).EndInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(BindingSource2, ComponentModel.ISupportInitialize).EndInit()
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        TLayoutNavigation.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
 
     Friend WithEvents tLayoutComparison As TableLayoutPanel
     Friend WithEvents PictLogo As PictureBox
     Friend WithEvents DataGridJobDetails As DataGridView
-    Friend WithEvents ChartComparison As DataVisualization.Charting.Chart
     Friend WithEvents tlayoutComparisonControls As TableLayoutPanel
     Friend WithEvents ChkExamineoneBlade As CheckBox
     Friend WithEvents ChkSpline As CheckBox
@@ -407,7 +611,6 @@ Partial Class FrmComparison
     Friend WithEvents LabTrackRefBlade As Label
     Friend WithEvents TxtRefPitch As TextBox
     Friend WithEvents ChkCenterRef As CheckBox
-    Friend WithEvents ComboSegments As ComboBox
     Friend WithEvents ComboRadiusorBlade As ComboBox
     Friend WithEvents ComboTrackRefBlade As ComboBox
     Friend WithEvents CmdSelectProgression As Button
@@ -415,5 +618,24 @@ Partial Class FrmComparison
     Friend WithEvents PanelChart As Panel
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
     Friend WithEvents JobDetailsBindingSource As BindingSource
-    Friend WithEvents BindingSource2 As BindingSource
+    Friend WithEvents MeasurementTypesBindingSource As BindingSource
+    Friend WithEvents TLayoutCompCharts As TableLayoutPanel
+    Friend WithEvents LblAxesScaling As Label
+    Friend WithEvents CBoxAxesScaling As ComboBox
+    Friend WithEvents LblFont As Label
+    Friend WithEvents TrackFont As TrackBar
+    Friend WithEvents TrackSegments As TrackBar
+    Friend WithEvents StartDateCol As DataGridViewTextBoxColumn
+    Friend WithEvents MeasurementTypeCol As DataGridViewComboBoxColumn
+    Friend WithEvents ClassCol As DataGridViewComboBoxColumn
+    Friend WithEvents ToleranceBindingSource As BindingSource
+    Friend WithEvents EmployeeCol As DataGridViewComboBoxColumn
+    Friend WithEvents EmployeeBindingSource As BindingSource
+    Friend WithEvents DescriptionCol As DataGridViewTextBoxColumn
+    Friend WithEvents TLayoutNavigation As TableLayoutPanel
+    Friend WithEvents CmdComparison As Button
+    Friend WithEvents CmdInspect As Button
+    Friend WithEvents CmdGraph As Button
+    Friend WithEvents CmdLocalPitch As Button
+    Friend WithEvents CmdMeasure As Button
 End Class

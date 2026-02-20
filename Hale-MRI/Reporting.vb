@@ -1,6 +1,7 @@
 ﻿Imports System.Windows.Forms.DataVisualization.Charting
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
+Imports LibDisplayControls.MRIMath
 
 Module Reporting
     ' ReportDataDelegate type - a delegate method that can be
@@ -223,7 +224,7 @@ Module Reporting
 
     End Sub
 
-    Public Sub ChartLocalPitchBarBladesBySector_Data(ByRef Sender As Object, e As ReportDataArgs)
+    Public Sub ChartLocalPitchBarSectorsByBlade_Data(ByRef Sender As Object, e As ReportDataArgs)
         Dim Graph As Chart = CType(Sender, Chart)
         Dim mJobDetails As JobDetail = CType(e.Args(0), JobDetail)
         Dim TolClass As Tolerance = CType(e.Args(1), Tolerance)
@@ -294,140 +295,198 @@ Module Reporting
 
     End Sub
 
-    'make actual summary graph function
-
-    Public Sub ChartSummary_Data(ByRef Sender As Object, e As ReportDataArgs)
+    Public Sub ChartLocalPitchBarBladesBySector_Data(ByRef Sender As Object, e As ReportDataArgs)
         Dim Graph As Chart = CType(Sender, Chart)
         Dim mJobDetails As JobDetail = CType(e.Args(0), JobDetail)
         Dim TolClass As Tolerance = CType(e.Args(1), Tolerance)
-        Dim Basis As String = CType(e.Args(2), String)
-        Dim APP As Boolean = CType(e.Args(3), Boolean)
+        Dim Radius As Double = CType(e.Args(2), Double)
+        Dim Basis As String = CType(e.Args(3), String)
         Dim BasisPitch As Double
         If Basis = "Marked" Then
             BasisPitch = mJobDetails.Job.MarkedPitch
         ElseIf Basis = "Desired" Then
             BasisPitch = mJobDetails.Job.DesiredPitch
+        ElseIf Basis = "Progressive" Then
+            BasisPitch = mJobDetails.WheelPitch
         ElseIf Basis = "Design" Then
             BasisPitch = 0
         Else
             Basis = "Mean"
             BasisPitch = mJobDetails.WheelPitch
         End If
+
         Graph.Titles.Clear()
         Graph.ChartAreas.Clear()
         Graph.Series.Clear()
         Graph.Legends.Clear()
-        Dim cArea As ChartArea = Graph.ChartAreas.Add("Summary")
-        Dim leg As Legend = Graph.Legends.Add("Legend")
-        leg.Alignment = StringAlignment.Center
-        leg.Docking = Docking.Top
-        leg.Title = mJobDetails.Job.Vessel.Customer.ToString() + " " + mJobDetails.Job.Vessel.VesselName.ToString() + " " + mJobDetails.Job.PropellerRotation.ToString() + " " + mJobDetails.StartDate.ToString() + " Class " + mJobDetails.ToleranceClass.ToString()
-        Graph.Titles.Add("Title").Text = "Hale MRI - Summary Graph"
-        cArea.AxisY.Title = "Pitch"
-        cArea.AxisX.MajorGrid.Enabled = False
-        cArea.AxisX.MinorGrid.Enabled = False
-        cArea.AxisX.MinorTickMark.Enabled = False
-        cArea.AxisY.Minimum = BasisPitch * 0.8
-        cArea.AxisY.Maximum = BasisPitch * 1.2
-        cArea.AxisY.Interval = BasisPitch * 0.1
-        cArea.AxisY.MajorGrid.Enabled = False
-        cArea.AxisY.MinorGrid.Enabled = False
-        cArea.AxisY.MajorTickMark.Enabled = True
-        cArea.AxisY.MinorTickMark.Enabled = True
-        Graph.Annotations.Clear()
-        Graph.Annotations.Add(New TextAnnotation With {
-                              .Text = "Tol Basis - " + Basis + " Pitch = " + BasisPitch.ToString(),
-                              .AnchorX = 0.25,
-                              .AnchorY = 0.25
-        })
-        If APP Then
-            Graph.Annotations.Add(New TextAnnotation With {
-                                  .Text = "Allow Progressive Pitch",
-                                  .AnchorX = 0.25,
-                                  .AnchorY = 0.3
-            })
-        End If ' play with location to put in correct position
+
+        Dim cArea As ChartArea = Graph.ChartAreas.Add("Pitch")
         Dim x As Integer
+        Dim y As Integer
         For x = 1 To mJobDetails.Job.PropellerBlades
             Dim ser As Series = Graph.Series.Add("Blade" + x.ToString())
-            Dim avgpitch As Double = 0
-            Dim pitchcount As Integer = 0
             ser.ChartType = SeriesChartType.Column
             ser.ChartArea = cArea.Name
             ser.Color = GraphColorArray(x)
-            Dim BladeData As List(Of RadiusMeasurement) = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
-            For Each rm As RadiusMeasurement In BladeData
-                Dim pitch = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
-                avgpitch += pitch
-                pitchcount += 1
-                ser.Points.AddXY(Math.Round(CType(rm.Radius, Double)).ToString(), pitch)
-                If x = 1 Then ' set up strip lines on each column based on tolerance class and APP
-                    If APP = False Then
-                        Dim sline As New StripLine With {
-                            .IntervalOffset = BasisPitch - (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Blue,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                            }
-                        cArea.AxisY.StripLines.Add(sline)
-                        sline = New StripLine With {
-                            .IntervalOffset = BasisPitch + (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Red,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                        }
-                        cArea.AxisY.StripLines.Add(sline)
-                        sline = New StripLine With {
-                            .IntervalOffset = BasisPitch,
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Black,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                        }
-                    Else
-                        Dim appPitch As Double = 0
-                        For Each rm2 As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(rad) Math.Round(rad.Radius.Value) = Math.Round(rm.Radius.Value))
-                            appPitch += GetAverageBladePitch(rm2.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
-                        Next
-                        appPitch /= mJobDetails.Job.PropellerBlades
-                        Dim sline As New StripLine With {
-                            .IntervalOffset = appPitch - (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Blue,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                        }
-                        cArea.AxisY.StripLines.Add(sline)
-                        sline = New StripLine With {
-                            .IntervalOffset = appPitch + (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Red,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                        }
-                        cArea.AxisY.StripLines.Add(sline)
-                        sline = New StripLine With {
-                            .IntervalOffset = appPitch,
-                            .BorderWidth = 1,
-                            .BorderDashStyle = ChartDashStyle.Solid,
-                            .BorderColor = Color.Black,
-                            .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
-                        }
-                    End If
-                End If
+            Dim BladeData As RadiusMeasurement = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x And r.Radius = Radius).FirstOrDefault()
+            For y = 1 To TolClass.LocalPitchSectors
+                Dim localpitch As Double = GetLocalPitch(BladeData.CellMeasurements, TolClass.LocalPitchSectors, y, mJobDetails.Job.PropellerDiameter, Radius, mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
+                ser.Points.AddXY("Blade " + x.ToString(), localpitch)
             Next
-            avgpitch /= pitchcount
-            ser.Points.AddXY("Bld Avg", avgpitch)
         Next
-        Dim seri As Series = Graph.Series.Add("Wheel")
-        seri.ChartType = SeriesChartType.Column
-        seri.ChartArea = cArea.Name
-        seri.Color = GraphColorArray(3)
-        seri.Points.AddXY("Wheel Avg", mJobDetails.WheelPitch)
+        cArea.AxisY.Minimum = BasisPitch * 0.8
+        cArea.AxisY.Maximum = BasisPitch * 1.2
+        'need to handle striplines for Progressive pitch - measured against average for that section on that radius 
+        'also need to be able to make strip lines appear on one section of bars
+        Dim leg As Legend = Graph.Legends.Add("Legend")
+        leg.Alignment = StringAlignment.Center
+        leg.Title = Radius.ToString() + "Radius - Compare to " + Basis + " - Minimums Apply"
+
+        Dim title As Title = Graph.Titles.Add("TopTitle")
+        If TolClass.ToleranceClass = "C" Then
+            title.Text = "Local Pitch Custom Class"
+        Else
+            title.Text = "Local Pitch ISO 484 " + TolClass.ToleranceClass
+        End If
+        title = Graph.Titles.Add("YTitle")
+        title.Alignment = ContentAlignment.TopCenter
+        cArea.AxisY.Title = "Segment Pitch"
 
     End Sub
+    'make actual summary graph function
+
+    'Public Sub ChartSummary_Data(ByRef Sender As Object, e As ReportDataArgs)
+    '    Dim Graph As Chart = CType(Sender, Chart)
+    '    Dim mJobDetails As JobDetail = CType(e.Args(0), JobDetail)
+    '    Dim TolClass As Tolerance = CType(e.Args(1), Tolerance)
+    '    Dim Basis As String = CType(e.Args(2), String)
+    '    Dim APP As Boolean = CType(e.Args(3), Boolean)
+    '    Dim BasisPitch As Double
+    '    If Basis = "Marked" Then
+    '        BasisPitch = mJobDetails.Job.MarkedPitch
+    '    ElseIf Basis = "Desired" Then
+    '        BasisPitch = mJobDetails.Job.DesiredPitch
+    '    ElseIf Basis = "Design" Then
+    '        BasisPitch = 0
+    '    Else
+    '        Basis = "Mean"
+    '        BasisPitch = mJobDetails.WheelPitch
+    '    End If
+    '    Graph.Titles.Clear()
+    '    Graph.ChartAreas.Clear()
+    '    Graph.Series.Clear()
+    '    Graph.Legends.Clear()
+    '    Dim cArea As ChartArea = Graph.ChartAreas.Add("Summary")
+    '    Dim leg As Legend = Graph.Legends.Add("Legend")
+    '    leg.Alignment = StringAlignment.Center
+    '    leg.Docking = Docking.Top
+    '    leg.Title = mJobDetails.Job.Vessel.Customer.ToString() + " " + mJobDetails.Job.Vessel.VesselName.ToString() + " " + mJobDetails.Job.PropellerRotation.ToString() + " " + mJobDetails.StartDate.ToString() + " Class " + mJobDetails.ToleranceClass.ToString()
+    '    Graph.Titles.Add("Title").Text = "Hale MRI - Summary Graph"
+    '    cArea.AxisY.Title = "Pitch"
+    '    cArea.AxisX.MajorGrid.Enabled = False
+    '    cArea.AxisX.MinorGrid.Enabled = False
+    '    cArea.AxisX.MinorTickMark.Enabled = False
+    '    cArea.AxisY.Minimum = BasisPitch * 0.8
+    '    cArea.AxisY.Maximum = BasisPitch * 1.2
+    '    cArea.AxisY.Interval = BasisPitch * 0.1
+    '    cArea.AxisY.MajorGrid.Enabled = False
+    '    cArea.AxisY.MinorGrid.Enabled = False
+    '    cArea.AxisY.MajorTickMark.Enabled = True
+    '    cArea.AxisY.MinorTickMark.Enabled = True
+    '    Graph.Annotations.Clear()
+    '    Graph.Annotations.Add(New TextAnnotation With {
+    '                          .Text = "Tol Basis - " + Basis + " Pitch = " + BasisPitch.ToString(),
+    '                          .AnchorX = 0.25,
+    '                          .AnchorY = 0.25
+    '    })
+    '    If APP Then
+    '        Graph.Annotations.Add(New TextAnnotation With {
+    '                              .Text = "Allow Progressive Pitch",
+    '                              .AnchorX = 0.25,
+    '                              .AnchorY = 0.3
+    '        })
+    '    End If ' play with location to put in correct position
+    '    Dim x As Integer
+    '    For x = 1 To mJobDetails.Job.PropellerBlades
+    '        Dim ser As Series = Graph.Series.Add("Blade" + x.ToString())
+    '        Dim avgpitch As Double = 0
+    '        Dim pitchcount As Integer = 0
+    '        ser.ChartType = SeriesChartType.Column
+    '        ser.ChartArea = cArea.Name
+    '        ser.Color = GraphColorArray(x)
+    '        Dim BladeData As List(Of RadiusMeasurement) = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+    '        For Each rm As RadiusMeasurement In BladeData
+    '            Dim pitch = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
+    '            avgpitch += pitch
+    '            pitchcount += 1
+    '            ser.Points.AddXY(Math.Round(CType(rm.Radius, Double)).ToString(), pitch)
+    '            If x = 1 Then ' set up strip lines on each column based on tolerance class and APP
+    '                If APP = False Then
+    '                    Dim sline As New StripLine With {
+    '                        .IntervalOffset = BasisPitch - (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Blue,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                        }
+    '                    cArea.AxisY.StripLines.Add(sline)
+    '                    sline = New StripLine With {
+    '                        .IntervalOffset = BasisPitch + (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Red,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                    }
+    '                    cArea.AxisY.StripLines.Add(sline)
+    '                    sline = New StripLine With {
+    '                        .IntervalOffset = BasisPitch,
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Black,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                    }
+    '                Else
+    '                    Dim appPitch As Double = 0
+    '                    For Each rm2 As RadiusMeasurement In mJobDetails.RadiusMeasurements.Where(Function(rad) Math.Round(rad.Radius.Value) = Math.Round(rm.Radius.Value))
+    '                        appPitch += GetAverageBladePitch(rm2.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
+    '                    Next
+    '                    appPitch /= mJobDetails.Job.PropellerBlades
+    '                    Dim sline As New StripLine With {
+    '                        .IntervalOffset = appPitch - (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Blue,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                    }
+    '                    cArea.AxisY.StripLines.Add(sline)
+    '                    sline = New StripLine With {
+    '                        .IntervalOffset = appPitch + (appPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Red,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                    }
+    '                    cArea.AxisY.StripLines.Add(sline)
+    '                    sline = New StripLine With {
+    '                        .IntervalOffset = appPitch,
+    '                        .BorderWidth = 1,
+    '                        .BorderDashStyle = ChartDashStyle.Solid,
+    '                        .BorderColor = Color.Black,
+    '                        .StripWidth = Math.Round(CType(rm.Radius, Double)).ToString()
+    '                    }
+    '                End If
+    '            End If
+    '        Next
+    '        avgpitch /= pitchcount
+    '        ser.Points.AddXY("Bld Avg", avgpitch)
+    '    Next
+    '    Dim seri As Series = Graph.Series.Add("Wheel")
+    '    seri.ChartType = SeriesChartType.Column
+    '    seri.ChartArea = cArea.Name
+    '    seri.Color = GraphColorArray(3)
+    '    seri.Points.AddXY("Wheel Avg", mJobDetails.WheelPitch)
+
+    'End Sub
 
 #Region "Tables"
     Public Function UpdateRadiiAveragesTable(mJobDetails As JobDetail, Design As Boolean) As DataTable
@@ -923,128 +982,126 @@ Module Reporting
     End Function
 #End Region
 #Region "Graphs"
-    Public Sub UpdateLineGraph(rm As RadiusMeasurement, LineChart As Chart, Database As HaleMRIContext, Optional Progcm As List(Of CellMeasurement) = Nothing, Optional Trackcm As List(Of CellMeasurement) = Nothing)
-        'Might have to change this as it directly pulls the visual, including scaling loaded progression and all other settings, from the comparison form
+    'Public Sub UpdateLineGraph(rm As RadiusMeasurement, LineChart As Chart, Database As HaleMRIContext, Optional Progcm As List(Of CellMeasurement) = Nothing, Optional Trackcm As List(Of CellMeasurement) = Nothing)
+    '    'Might have to change this as it directly pulls the visual, including scaling loaded progression and all other settings, from the comparison form
 
-        'this is a group of variables that will be pulled from the comparison form. They will be given set values for testing purposes
-        Dim centerRef As Boolean = True ' dictates whether the reference heights are calculated from the start or center of the chord
-        Dim RefPitch As Double = 22
-        Dim entireScan As Boolean = False ' handles the exclusion zones, if true no exclusion zones are applied
-        Dim showTrack As Boolean = True ' handles whether or not to use the HeightAtRefPoint from the tracked blade or the current radius measurement
-        Dim HeightAtRefPoint As Double = 0.0 ' this value is only used to modify the actual LPline series the tolerance lines and reference lines are not affected by it
-        Dim spline As Boolean = False ' dictates whether the graph lines are spline or straight lines
-        Dim AxesScaling As Double = 1.0
-        Dim refheights As List(Of Double) = GetRefHeightsStraight(centerRef, RefPitch, rm.JobDetails.Job.PropellerBlades)
+    '    'this is a group of variables that will be pulled from the comparison form. They will be given set values for testing purposes
+    '    Dim centerRef As Boolean = True ' dictates whether the reference heights are calculated from the start or center of the chord
+    '    Dim RefPitch As Double = 22
+    '    Dim entireScan As Boolean = False ' handles the exclusion zones, if true no exclusion zones are applied
+    '    Dim showTrack As Boolean = True ' handles whether or not to use the HeightAtRefPoint from the tracked blade or the current radius measurement
+    '    Dim HeightAtRefPoint As Double = 0.0 ' this value is only used to modify the actual LPline series the tolerance lines and reference lines are not affected by it
+    '    Dim spline As Boolean = False ' dictates whether the graph lines are spline or straight lines
+    '    Dim AxesScaling As Double = 1.0
+    '    Dim refheights As List(Of Double) = GetRefHeightsStraight(centerRef, RefPitch, rm.JobDetails.Job.PropellerBlades)
 
-        Dim LEE As Double = rm.JobDetails.Job.LeExclusion.Value
-        Dim TEE As Double = rm.JobDetails.Job.TeExclusion.Value
-        If entireScan Then
-            LEE = 0
-            TEE = 0
-        End If
+    '    Dim LEE As Double = rm.JobDetails.Job.LeExclusion.Value
+    '    Dim TEE As Double = rm.JobDetails.Job.TeExclusion.Value
+    '    If entireScan Then
+    '        LEE = 0
+    '        TEE = 0
+    '    End If
 
-        LineChart.Series.Clear()
-        LineChart.ChartAreas.Clear()
-        LineChart.Legends.Clear()
-        LineChart.Titles.Clear()
-        LineChart.Annotations.Clear()
+    '    LineChart.Series.Clear()
+    '    LineChart.ChartAreas.Clear()
+    '    LineChart.Legends.Clear()
+    '    LineChart.Titles.Clear()
+    '    LineChart.Annotations.Clear()
 
-        LineChart.PaletteCustomColors = GraphColorArray
-        Dim cArea As ChartArea = LineChart.ChartAreas.Add("LPLineArea")
-        Dim ser As Series = LineChart.Series.Add("LPLineSeries")
-        Dim refser As Series = LineChart.Series.Add("Ref")
-        Dim tolhighser As Series = LineChart.Series.Add("TolHigh")
-        Dim tollowser As Series = LineChart.Series.Add("TolLow")
+    '    LineChart.PaletteCustomColors = GraphColorArray
+    '    Dim cArea As ChartArea = LineChart.ChartAreas.Add("LPLineArea")
+    '    Dim ser As Series = LineChart.Series.Add("LPLineSeries")
+    '    Dim refser As Series = LineChart.Series.Add("Ref")
+    '    Dim tolhighser As Series = LineChart.Series.Add("TolHigh")
+    '    Dim tollowser As Series = LineChart.Series.Add("TolLow")
 
-        Dim x As Integer
-        If Progcm Is Nothing Then 'all creation and management of reference and tolerance lines are handled here
-            For x = 0 To 10
-                refser.Points.Add(x * 10, 0)
-            Next
-            If showTrack = True Then
-                If centerRef Then
-                    HeightAtRefPoint = GetLocalHeightEndSector(Trackcm, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) 'need to be able to pull ref points from tracked blade
-                Else
-                    HeightAtRefPoint = GetLocalHeightStartSector(Trackcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                End If
-            Else
-                If centerRef Then
-                    HeightAtRefPoint = GetLocalHeightEndSector(rm.CellMeasurements, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                Else
-                    HeightAtRefPoint = GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                End If
-            End If
-        Else
-            Dim tollisthigh As List(Of Double) = GetRefHeightsHighTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
-            Dim tollistlow As List(Of Double) = GetRefHeightsLowTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
-            For x = 0 To 10
-                Dim height As Double
-                If x = 0 Then
-                    height = GetLocalHeightStartSector(Progcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                Else
-                    height = GetLocalHeightEndSector(Progcm, 10, x, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                End If
-                height -= refheights(x)  'need to add a change in here that changes height based on center ref point and the ref height at that point
-                refser.Points.Add(x * 10, height)
-                tolhighser.Points.Add(x * 10, tollisthigh(x))
-                tollowser.Points.Add(x * 10, tollistlow(x))
-                If showTrack = True Then
-                    If centerRef Then
-                        HeightAtRefPoint = GetLocalHeightEndSector(Progcm, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                    Else
-                        HeightAtRefPoint = GetLocalHeightStartSector(Progcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                    End If
-                Else
-                    If centerRef Then
-                        HeightAtRefPoint = GetLocalHeightEndSector(rm.CellMeasurements, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                    Else
-                        HeightAtRefPoint = GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
-                    End If
-                End If
-            Next
-        End If
-        Dim newheights As New List(Of Double)
-        If showTrack = False Then 'need to populate newheights based on height at ref point
-            For x = 0 To 10
-                newheights.Add(refheights(x) + HeightAtRefPoint)
-            Next
-        End If
+    '    Dim x As Integer
+    '    If Progcm Is Nothing Then 'all creation and management of reference and tolerance lines are handled here
+    '        For x = 0 To 10
+    '            refser.Points.Add(x * 10, 0)
+    '        Next
+    '        If showTrack = True Then
+    '            If centerRef Then
+    '                HeightAtRefPoint = GetLocalHeightEndSector(Trackcm, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) 'need to be able to pull ref points from tracked blade
+    '            Else
+    '                HeightAtRefPoint = GetLocalHeightStartSector(Trackcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '            End If
+    '        Else
+    '            If centerRef Then
+    '                HeightAtRefPoint = GetLocalHeightEndSector(rm.CellMeasurements, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '            Else
+    '                HeightAtRefPoint = GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '            End If
+    '        End If
+    '    Else
+    '        Dim tollisthigh As List(Of Double) = GetRefHeightsHighTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
+    '        Dim tollistlow As List(Of Double) = GetRefHeightsLowTol(centerRef, RefPitch, GetToleranceTable(Database, rm.JobDetails.ToleranceClass), rm.JobDetails.Job.PropellerBlades, rm.CellMeasurements)
+    '        For x = 0 To 10
+    '            Dim height As Double
+    '            If x = 0 Then
+    '                height = GetLocalHeightStartSector(Progcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '            Else
+    '                height = GetLocalHeightEndSector(Progcm, 10, x, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '            End If
+    '            height -= refheights(x)  'need to add a change in here that changes height based on center ref point and the ref height at that point
+    '            refser.Points.Add(x * 10, height)
+    '            tolhighser.Points.Add(x * 10, tollisthigh(x))
+    '            tollowser.Points.Add(x * 10, tollistlow(x))
+    '            If showTrack = True Then
+    '                If centerRef Then
+    '                    HeightAtRefPoint = GetLocalHeightEndSector(Progcm, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '                Else
+    '                    HeightAtRefPoint = GetLocalHeightStartSector(Progcm, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '                End If
+    '            Else
+    '                If centerRef Then
+    '                    HeightAtRefPoint = GetLocalHeightEndSector(rm.CellMeasurements, 10, 5, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '                Else
+    '                    HeightAtRefPoint = GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE)
+    '                End If
+    '            End If
+    '        Next
+    '    End If
+    '    Dim newheights As New List(Of Double)
+    '    For x = 0 To 10
+    '            newheights.Add(refheights(x) + HeightAtRefPoint)
+    '        Next
 
-        Dim lpline As New List(Of Double)
-        For x = 0 To 10
-            If x = 0 Then
-                lpline.Add(GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) - newheights(x))
-            Else
-                lpline.Add(GetLocalHeightEndSector(rm.CellMeasurements, 10, x, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) - newheights(x))
-            End If
-            ser.Points.Add(x * 10, lpline(x))
-        Next
+    '        Dim lpline As New List(Of Double)
+    '    For x = 0 To 10
+    '        If x = 0 Then
+    '            lpline.Add(GetLocalHeightStartSector(rm.CellMeasurements, 10, 1, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) - newheights(x))
+    '        Else
+    '            lpline.Add(GetLocalHeightEndSector(rm.CellMeasurements, 10, x, rm.JobDetails.Job.PropellerDiameter, rm.Radius, TEE, LEE) - newheights(x))
+    '        End If
+    '        ser.Points.Add(x * 10, lpline(x))
+    '    Next
 
-        'need a for loop that edits the lpline heights based on the reference height at that point
-        If spline = False Then
-            ser.ChartType = SeriesChartType.Line
-            refser.ChartType = SeriesChartType.Line
-            tollowser.ChartType = SeriesChartType.Line
-            tolhighser.ChartType = SeriesChartType.Line
-        Else
-            ser.ChartType = SeriesChartType.Spline
-            refser.ChartType = SeriesChartType.Spline
-            tollowser.ChartType = SeriesChartType.Spline
-            tolhighser.ChartType = SeriesChartType.Spline
-        End If
+    '    'need a for loop that edits the lpline heights based on the reference height at that point
+    '    If spline = False Then
+    '        ser.ChartType = SeriesChartType.Line
+    '        refser.ChartType = SeriesChartType.Line
+    '        tollowser.ChartType = SeriesChartType.Line
+    '        tolhighser.ChartType = SeriesChartType.Line
+    '    Else
+    '        ser.ChartType = SeriesChartType.Spline
+    '        refser.ChartType = SeriesChartType.Spline
+    '        tollowser.ChartType = SeriesChartType.Spline
+    '        tolhighser.ChartType = SeriesChartType.Spline
+    '    End If
 
-        refser.ChartArea = cArea.Name
-        tolhighser.ChartArea = cArea.Name
-        tollowser.ChartArea = cArea.Name
-        ser.ChartArea = cArea.Name
-        LineChart.ChartAreas(0).Position.Auto = False
-        LineChart.ChartAreas(0).Position.Height = 100
-        LineChart.ChartAreas(0).Position.Width = 100
-        LineChart.ChartAreas(0).AxisX.Minimum = -5
-        LineChart.ChartAreas(0).AxisX.Maximum = 105
-        LineChart.ChartAreas(0).AxisY.Minimum = -AxesScaling ' need to add control for managing y Axis Scaling
-        LineChart.ChartAreas(0).AxisY.Maximum = AxesScaling
-    End Sub
+    '    refser.ChartArea = cArea.Name
+    '    tolhighser.ChartArea = cArea.Name
+    '    tollowser.ChartArea = cArea.Name
+    '    ser.ChartArea = cArea.Name
+    '    LineChart.ChartAreas(0).Position.Auto = False
+    '    LineChart.ChartAreas(0).Position.Height = 100
+    '    LineChart.ChartAreas(0).Position.Width = 100
+    '    LineChart.ChartAreas(0).AxisX.Minimum = -5
+    '    LineChart.ChartAreas(0).AxisX.Maximum = 105
+    '    LineChart.ChartAreas(0).AxisY.Minimum = -AxesScaling ' need to add control for managing y Axis Scaling
+    '    LineChart.ChartAreas(0).AxisY.Maximum = AxesScaling
+    'End Sub
 
 
 
