@@ -15,6 +15,7 @@ Public Class ReportHeader
         MyBase.New()
         InitializeComponent()
     End Sub
+
     ''' <summary>
     ''' Creates a new ReportHeader object with the given properties.
     ''' </summary>
@@ -86,7 +87,7 @@ Public Class ReportHeader
         End If
     End Sub
 
-    Public ReadOnly Property VisibleItems As List(Of Control)
+    Public ReadOnly Property VisibleControls As List(Of Control)
         Get
             Return mVisibleItems.ToList()
         End Get
@@ -139,7 +140,9 @@ Public Class ReportHeader
     End Sub
 
     Private Sub ReportHeader_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
+        If Me.Data IsNot Nothing Then
+            Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
+        End If
     End Sub
 #End Region
 End Class

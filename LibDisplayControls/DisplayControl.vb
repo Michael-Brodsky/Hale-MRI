@@ -157,33 +157,22 @@ Partial Public Class DisplayControl
     End Sub
 
     Public Shared Sub ControlsRemoveFrom(controls As List(Of DisplayControl), ByRef from As ObservableCollection(Of DisplayControl))
-        ' Removes a list of DisplayControl from an ObservableCollection
+        ' Removes a List of DisplayControl from an ObservableCollection.
         For Each dc As DisplayControl In controls
-            Dim items As List(Of DisplayControl) = from.Where(Function(c) c.Name = dc.Name).ToList()
-            For Each item As DisplayControl In items
-                from.Remove(item)
-            Next
+            from.Remove(dc)
         Next
     End Sub
 
-    Public Shared Sub ControlsRemoveFrom(controls As ObservableCollection(Of DisplayControl), ByRef other As ObservableCollection(Of DisplayControl))
-        ' Removes an ObservableCollection of DisplayControl from another ObservableCollection
+    Public Shared Sub ControlsRemoveFrom(controls As ObservableCollection(Of DisplayControl), ByRef from As ObservableCollection(Of DisplayControl))
+        ' Removes an ObservableCollection of DisplayControl from another ObservableCollection.
         For Each dc As DisplayControl In controls
-            Dim items As ObservableCollection(Of DisplayControl) = other.Where(Function(c) c.Name = dc.Name)
-            For Each item As DisplayControl In items
-                other.Remove(item)
-            Next
+            from.Remove(dc)
         Next
     End Sub
 
     Public Shared Sub ControlsRemoveFrom(controls As List(Of DisplayControl), ByRef from As List(Of DisplayControl))
-        ' Removes a List of DisplayControl from an ObservableCollection
-        For Each dc As DisplayControl In controls
-            Dim items As List(Of DisplayControl) = from.Where(Function(c) c.Name = dc.Name).ToList()
-            For Each item As DisplayControl In items
-                from.Remove(item)
-            Next
-        Next
+        ' Removes a List of DisplayControl from another List.
+        from.RemoveAll(Function(item) controls.Contains(item))
     End Sub
 
     ''' <summary>

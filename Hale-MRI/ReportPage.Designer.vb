@@ -22,38 +22,16 @@ Partial Class ReportPage
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        PageSeparator = New Panel()
-        PrintableArea = New Panel()
         Margins = New CustomPanel()
-        PrintableArea.SuspendLayout()
         SuspendLayout()
-        ' 
-        ' PageSeparator
-        ' 
-        PageSeparator.Dock = DockStyle.Bottom
-        PageSeparator.Location = New Point(0, 214)
-        PageSeparator.Name = "PageSeparator"
-        PageSeparator.Size = New Size(238, 20)
-        PageSeparator.TabIndex = 1
-        ' 
-        ' PrintableArea
-        ' 
-        PrintableArea.BorderStyle = BorderStyle.FixedSingle
-        PrintableArea.Controls.Add(Margins)
-        PrintableArea.Dock = DockStyle.Fill
-        PrintableArea.Location = New Point(0, 0)
-        PrintableArea.Name = "PrintableArea"
-        PrintableArea.Size = New Size(238, 234)
-        PrintableArea.TabIndex = 2
         ' 
         ' Margins
         ' 
-        Margins.BackColor = SystemColors.Control
-        Margins.BorderColor = Color.Silver
+        Margins.BorderColor = Color.Black
         Margins.BorderWidth = 1
         Margins.DashBorderStyle = Drawing2D.DashStyle.Dash
         Margins.DashPatternStyle = New Single() {3F, 1F}
-        Margins.Location = New Point(15, 51)
+        Margins.Location = New Point(16, 72)
         Margins.Name = "Margins"
         Margins.Size = New Size(200, 100)
         Margins.TabIndex = 0
@@ -63,15 +41,12 @@ Partial Class ReportPage
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         AutoSize = True
-        Controls.Add(PageSeparator)
-        Controls.Add(PrintableArea)
+        Controls.Add(Margins)
         Name = "ReportPage"
         Size = New Size(238, 234)
-        PrintableArea.ResumeLayout(False)
         ResumeLayout(False)
     End Sub
-    Friend WithEvents PageSeparator As Panel
-    Friend WithEvents PrintableArea As Panel
+
     Friend WithEvents Margins As CustomPanel
 
 End Class

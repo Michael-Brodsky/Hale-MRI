@@ -166,7 +166,7 @@ Public Class ChartAngularPosition
         Next
     End Sub
 #End Region
-    #Region "EventHandlers"
+#Region "EventHandlers"
 
 #End Region
 End Class

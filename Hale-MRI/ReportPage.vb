@@ -22,7 +22,7 @@ Public Class ReportPage
         Me.Name = other.Name
         For Each ctrl As DisplayControl In other.DisplayControls
             Dim newCtrl As DisplayControl = CType(ctrl.Clone(), DisplayControl)
-            Me.PrintableArea.Controls.Add(newCtrl)
+            Me.Controls.Add(newCtrl)
         Next
     End Sub
 
@@ -73,7 +73,7 @@ Public Class ReportPage
 
     Private Sub DocumentSet(doc As DocumentSettings)
         ' Pages cannot resize once they're set.
-        Me.Size = New Size(doc.PaperWidth, doc.PaperHeight + PageSeparator.Height)
+        Me.Size = New Size(doc.PaperWidth, doc.PaperHeight)
         Me.MaximumSize = Me.Size
         Me.MinimumSize = Me.MaximumSize
         Me.Margins.Bounds = New Rectangle(
@@ -94,11 +94,11 @@ Public Class ReportPage
         Next
     End Sub
 #Region "Event Handlers"
-    Private Sub Margins_MouseDown(sender As Object, e As MouseEventArgs) Handles Margins.MouseDown
+    Private Sub Margins_MouseDown(sender As Object, e As MouseEventArgs)
         RaiseEvent MouseDownEvent(Me, e)
     End Sub
 
-    Private Sub PrintableArea_MouseDown(sender As Object, e As MouseEventArgs) Handles PrintableArea.MouseDown
+    Private Sub PrintableArea_MouseDown(sender As Object, e As MouseEventArgs)
         RaiseEvent MouseDownEvent(Me, e)
     End Sub
 

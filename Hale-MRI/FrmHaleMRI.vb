@@ -96,9 +96,7 @@ Public Class FrmHaleMRI
 
     Private Sub CmdReports_Click(sender As Object, e As EventArgs) Handles CmdReports.Click
         Try
-            Dim cp As New CustomPanel With {.Bounds = New Rectangle(100, 100, 100, 100), .Visible = True, .Parent = Me}
-            cp.BringToFront()
-            'ShowForm(gFrmReports)
+            ShowForm(gFrmReports, mDatabase, mUser)
         Catch ex As Exception
             MessageBox.Show("Error opening reports form: " & ex.Message, "Application Error", MessageBoxButtons.OK, MessageBoxIcon.Error)
         End Try

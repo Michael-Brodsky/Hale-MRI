@@ -3,6 +3,8 @@ Imports System.Collections.Specialized
 Imports System.Drawing.Printing
 Imports LibDisplayControls
 Imports LibDisplayControls.DisplayControl
+Imports Microsoft.EntityFrameworkCore.Migrations.Operations
+Imports Newtonsoft.Json.Linq
 
 ''' <summary>
 ''' Type that aggregates printer paper and margin settings.
@@ -66,6 +68,13 @@ End Class
 Public Class ReportGenerator
 #Region "Types and Constants"
     ''' <summary>
+    ''' Zoom event handler signature
+    ''' </summary>
+    ''' <param name="zoomFactor"></param>
+    Public Delegate Sub ZoomEventHandler(zoomFactor As Single)
+    Public Event ZoomEvent As ZoomEventHandler
+
+    ''' <summary>
     ''' Enumerates valid edit permissions values.
     ''' </summary>
     Public Enum Edits
@@ -91,6 +100,8 @@ Public Class ReportGenerator
     End Enum
 
     Private Const kPageSeparatorHeightDefault As UInteger = 20
+    Private Const kPageCountMax As Integer = 32
+    Private Const kZoomFactorDefault As Single = 1.0F
     Private Const kZoomFactorMin As Single = 0.1F
     Private Const kZoomFactorMax As Single = 2.0F
     Private Const kUndoMax As Integer = 32                      ' Maximum size of the undo stack in elements.
@@ -112,7 +123,7 @@ Public Class ReportGenerator
     Private mUndoStack As New Stack(Of List(Of DisplayControl))
     Private mUndoStack2 As New Stack(Of List(Of ReportPage))
     Private mVerticalLimit As UInteger = 0
-    Private mZoomFactor As Single = 1.0F
+    Private mZoomFactor As Single = kZoomFactorDefault
     Private WithEvents mManagedControls As New ObservableCollection(Of DisplayControl)  ' The collection of all controls currently managed by the ReportGenerator.
     Private WithEvents mPages As New ObservableCollection(Of ReportPage)                ' The collection of current report pages.
     Private WithEvents mSelectedControls As New ObservableCollection(Of DisplayControl) ' The collection of currently selected controls
@@ -189,11 +200,11 @@ Public Class ReportGenerator
     ''' Gets/sets the current collection of DisplayControls that are managed by the ReportGenerator.
     ''' </summary>
     ''' <returns>List(Of DisplayControl)</returns>
-    Public Property ManagedControls As List(Of DisplayControl)
+    Public Property ManagedControls As ObservableCollection(Of DisplayControl)
         Get
-            Return mManagedControls.ToList()
+            Return mManagedControls
         End Get
-        Set(value As List(Of DisplayControl))
+        Set(value As ObservableCollection(Of DisplayControl))
             ' In order to fire the CollectionChanged event properly, we need to remove the old
             ' items and add the new items individually.
             ControlsRemoveFrom(ManagedControls, mManagedControls)
@@ -215,11 +226,11 @@ Public Class ReportGenerator
     ''' Gets/sets the current collection of ReportPages.
     ''' </summary>
     ''' <returns>List(Of ReportPage)</returns>
-    Public Property Pages As List(Of ReportPage)
+    Public Property Pages As ObservableCollection(Of ReportPage)
         Get
-            Return mPages.ToList()
+            Return mPages
         End Get
-        Set(value As List(Of ReportPage))
+        Set(value As ObservableCollection(Of ReportPage))
             Dim list As New List(Of ReportPage)(Me.Pages)
             For Each pg As ReportPage In list
                 mPages.Remove(pg)
@@ -229,20 +240,6 @@ Public Class ReportGenerator
                     mPages.Add(pg)
                 Next
             End If
-        End Set
-    End Property
-
-    ''' <summary>
-    ''' Gets/sets the current height of page separators.
-    ''' </summary>
-    ''' <returns>UInteger</returns>
-    Public Property PageSeparatorHeight As UInteger
-        Get
-            Return mPageSeparatorHeight
-        End Get
-        Set(value As UInteger)
-            PageSeparatorHeightSet(value)
-            mPageSeparatorHeight = value
         End Set
     End Property
 
@@ -264,11 +261,11 @@ Public Class ReportGenerator
     ''' Get/sets the list of currently selected controls.
     ''' </summary>
     ''' <returns>List(Of DisplayControl)</returns>
-    Public Property SelectedControls As List(Of DisplayControl)
+    Public Property SelectedControls As ObservableCollection(Of DisplayControl)
         Get
-            Return mSelectedControls.ToList()
+            Return mSelectedControls
         End Get
-        Set(value As List(Of DisplayControl))
+        Set(value As ObservableCollection(Of DisplayControl))
             ' In order to fire the CollectionChanged event properly, we need to remove the old
             ' items and add the new items individually.
             ControlsRemoveFrom(SelectedControls, mSelectedControls)
@@ -280,14 +277,14 @@ Public Class ReportGenerator
     ''' Get/sets the list of currently visible controls.
     ''' </summary>
     ''' <returns>List(Of DisplayControl)</returns>
-    Public Property VisibleControls As List(Of DisplayControl)
+    Public Property VisibleControls As ObservableCollection(Of DisplayControl)
         Get
-            Return mVisibleControls.ToList()
+            Return mVisibleControls
         End Get
-        Set(value As List(Of DisplayControl))
+        Set(value As ObservableCollection(Of DisplayControl))
             ' In order to fire the CollectionChanged event properly, we need to remove the old
             ' items and add the new items individually.
-            ControlsRemoveFrom(VisibleControls, mVisibleControls)
+            ControlsRemoveFrom(VisibleControls.ToList(), mVisibleControls)
             If value IsNot Nothing Then ControlsAddInTo(value, mVisibleControls)
             LayoutSave(VisibleControls)
         End Set
@@ -316,7 +313,6 @@ Public Class ReportGenerator
             Return mZoomFactor
         End Get
         Set(value As Single)
-            value = Math.Min(Math.Max(value, kZoomFactorMin), kZoomFactorMax)
             DocumentZoom(value)
             mZoomFactor = value
         End Set
@@ -326,9 +322,9 @@ Public Class ReportGenerator
     Private Function ControlCheckBounds(ByVal dc As DisplayControl, ByVal parentPage As ReportPage, offset As Point) As BoundsChecks
         Dim result As BoundsChecks = BoundsChecks.None
 
-        If dc.Left + offset.X <= parentPage.PrintableArea.Left OrElse dc.Right + offset.X >= parentPage.PrintableArea.Right Then
+        If dc.Left + offset.X <= parentPage.Left OrElse dc.Right + offset.X >= parentPage.Right Then
             result = BoundsChecks.Horizontal
-        ElseIf dc.Top + offset.Y <= parentPage.PrintableArea.Top OrElse dc.Bottom + offset.Y >= parentPage.PrintableArea.Bottom Then
+        ElseIf dc.Top + offset.Y <= parentPage.Top OrElse dc.Bottom + offset.Y >= parentPage.Bottom Then
             result = BoundsChecks.Vertical
         End If
 
@@ -343,10 +339,10 @@ Public Class ReportGenerator
         Dim hSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
         Dim vLocation As New Point(If(loc <> Point.Empty, loc, dc.Location))
         Dim vSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
-        If hLocation.X <= parentPage.PrintableArea.Left OrElse
-            (hLocation.X + hSize.Width) >= parentPage.PrintableArea.Width OrElse
-            vLocation.Y <= parentPage.PrintableArea.Top OrElse
-            (vLocation.Y + vSize.Height) >= parentPage.PrintableArea.Height Then
+        If hLocation.X <= parentPage.Left OrElse
+            (hLocation.X + hSize.Width) >= parentPage.Width OrElse
+            vLocation.Y <= parentPage.Top OrElse
+            (vLocation.Y + vSize.Height) >= parentPage.Height Then
             result = BoundsChecks.Either
         End If
 
@@ -377,7 +373,7 @@ Public Class ReportGenerator
     Private Sub ControlsCut(controls As List(Of DisplayControl))
         ' Cuts the currently selected ReportControls from the report.
         UndoSave()
-        CutControls = SelectedControls
+        CutControls = SelectedControls.ToList()
         ControlsRemoveFrom(SelectedControls, mVisibleControls)
         EditPermissionsSet()
     End Sub
@@ -486,12 +482,12 @@ Public Class ReportGenerator
         Dim ctrl As DisplayControl = dc
         Dim pg As ReportPage = mPages.FirstOrDefault(Function(p) p.Bottom >= ctrl.Location.Y)
         ' Continue adding new pages until we find a page that the control fits on.
-        Do While pg Is Nothing
-            PageAddNew(New ReportPage())
+        Do While pg Is Nothing AndAlso mPages.Count < kPageCountMax
+            mPages.Add(New ReportPage())
             pg = mPages.FirstOrDefault(Function(p) p.Bottom >= ctrl.Location.Y)
         Loop
         dc.EdgeSize = Me.GridSize
-        pg.Controls.Add(dc)
+        pg?.Controls?.Add(dc)
     End Sub
 
     Private Sub DisplayControlRemove(ByRef dc As DisplayControl)
@@ -511,15 +507,13 @@ Public Class ReportGenerator
     End Sub
 
     Private Sub DocumentZoom(zoomFactor As Single)
+        zoomFactor = Math.Min(Math.Max(zoomFactor, kZoomFactorMin), kZoomFactorMax)
+        zoomFactor = zoomFactor / mZoomFactor
         If mPages IsNot Nothing Then
             For Each pg As ReportPage In mPages
-                Dim scaleX As Single = mDocument.PaperWidth * zoomFactor / mDocument.PaperWidth / mZoomFactor
-                Dim scaleY As Single = mDocument.PaperHeight * zoomFactor / mDocument.PaperHeight / mZoomFactor
-                Dim index As Integer = mPages.IndexOf(pg)
-                Dim previousPage As ReportPage = If(index > 0, mPages(index - 1), Nothing)
                 PageScale(pg, zoomFactor)
-                PageLocate(pg, previousPage, Me.ParentForm)
             Next
+            RaiseEvent ZoomEvent(zoomFactor)
         End If
     End Sub
 
@@ -563,7 +557,7 @@ Public Class ReportGenerator
                             If mPages.IndexOf(pg) < mPages.IndexOf(adjacentPage) Then
                                 Y = 1
                             Else
-                                Y = adjacentPage.PrintableArea.Bottom - dc.Height - 1
+                                Y = adjacentPage.Bottom - dc.Height - 1
                             End If
                             movements.Add((dc, New Point(dc.Left, Y), adjacentPage))
                         Else                        ' If there's no adjacent page, return. 
@@ -639,7 +633,7 @@ Done:
         EditPermissionsSet()
     End Sub
 
-    Private Sub LayoutSave(controls As List(Of DisplayControl), Optional ByVal lof As Boolean = False)
+    Private Sub LayoutSave(controls As ObservableCollection(Of DisplayControl), Optional ByVal lof As Boolean = False)
         ' Sets the DisplayControl' LastPosition and LastSize
         ' to their current Location and Size.
         For Each dc As DisplayControl In controls
@@ -672,13 +666,12 @@ Done:
 
     Private Sub PageAdd(ByRef pg As ReportPage)
         Dim index As Integer = mPages.IndexOf(pg)
-        Dim previousPage As ReportPage = If(index > 0, mPages(index - 1), Nothing)
+        'Dim previousPage As ReportPage = If(index > 0, mPages(index - 1), Nothing)
         pg.Name = $"Page{index}"
         pg.Document = Me.Document
-        pg.PageSeparator.Height = mPageSeparatorHeight
         pg.GridSize = Me.GridSize
         PageScale(pg, Me.Zoom)
-        PageLocate(pg, previousPage, Me.ParentForm)
+        'PageLocate(pg, previousPage, Me.ParentForm)
         RemoveHandler pg.MouseDownEvent, AddressOf Me.Report_MouseDown
         AddHandler pg.MouseDownEvent, AddressOf Me.Report_MouseDown
         If Me.ParentForm IsNot Nothing Then mParentForm.Controls.Add(pg)
@@ -703,14 +696,6 @@ Done:
 
     Private Sub PageScale(ByVal pg As ReportPage, ByVal zoomFactor As Single)
         pg.Scale(New SizeF(zoomFactor, zoomFactor))
-    End Sub
-
-    Private Sub PageSeparatorHeightSet(ByVal height As UInteger)
-        If mPages IsNot Nothing Then
-            For Each pg As ReportPage In mPages
-                pg.PageSeparator.Height = height
-            Next
-        End If
     End Sub
 
     Private Sub ParentFormSet(frm As Form)
@@ -817,13 +802,13 @@ Done:
     Private Sub UndoSave()
         ' Pushes a snapshot of the current report layout onto the undo stack.
         If mUndoStack.Count < kUndoMax Then
-            Dim undo As New List(Of DisplayControl)
+            Dim undo As New ObservableCollection(Of DisplayControl)
             ControlsAddInTo(VisibleControls, undo, True)
             'For Each dc As DisplayControl In undo
             '    dc.LastPosition = dc.Location
             '    dc.LastSize = dc.Size
             'Next
-            mUndoStack.Push(undo)
+            mUndoStack.Push(undo.ToList())
         End If
     End Sub
 
@@ -893,15 +878,15 @@ Done:
         If e.Control Then
             Select Case e.KeyCode
                 Case Keys.A
-                    ControlsSelectAll(VisibleControls)
+                    ControlsSelectAll(VisibleControls.ToList())
                 Case Keys.B
-                    ControlsSendToBack(SelectedControls)
+                    ControlsSendToBack(SelectedControls.ToList())
                 Case Keys.F
-                    ControlsBringToFront(SelectedControls)
+                    ControlsBringToFront(SelectedControls.ToList())
                 Case Keys.V
                     ControlsPaste(CutControls)
                 Case Keys.X
-                    ControlsCut(SelectedControls)
+                    ControlsCut(SelectedControls.ToList())
                 Case Keys.Z
                     ControlsUndo()
                 Case Keys.ControlKey
@@ -909,7 +894,7 @@ Done:
                 Case Else
             End Select
         ElseIf e.KeyCode = Keys.Delete Then
-            ControlsDelete(SelectedControls)
+            ControlsDelete(SelectedControls.ToList())
         End If
         e.Handled = True
     End Sub
