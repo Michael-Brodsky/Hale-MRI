@@ -108,10 +108,11 @@ Public Class ReportHeader
     End Property
 #End Region
 #Region "Private Interface"
-    Private Sub ControlVisible(ctrl As Control, visible As Boolean)
+    Private Sub ControlVisible(ctrl As Control, ByVal visible As Boolean)
         If ctrl IsNot Nothing Then
+            Debug.WriteLine($"ControlVisible: {ctrl.Name} {visible}")
             ctrl.Visible = visible
-            Dim lab As Label = Me.ItemLabels.FirstOrDefault(Function(hi) hi.Tag = ctrl.Name)
+            Dim lab As Label = Me.ItemLabels.FirstOrDefault(Function(hi) hi.Tag.ToString() = ctrl.Name)
             If lab IsNot Nothing Then lab.Visible = visible
         End If
     End Sub
@@ -135,10 +136,6 @@ Public Class ReportHeader
         If Me.Data IsNot Nothing Then
             Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
         End If
-    End Sub
-
-    Private Sub Header_Paint(sender As Object, e As PaintEventArgs) Handles Header.Paint
-
     End Sub
 #End Region
 End Class

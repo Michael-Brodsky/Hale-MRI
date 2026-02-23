@@ -8,6 +8,7 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDisplayControls
 Imports Microsoft.EntityFrameworkCore
+Imports Microsoft.EntityFrameworkCore.ChangeTracking
 Imports Newtonsoft.Json.Linq
 
 Public Class FrmReports
@@ -711,6 +712,21 @@ Public Class FrmReports
         ' Update report metadata if anything changed.
         If Database.ChangeTracker.HasChanges() Then
             ReportMetadataUpdate(mReport)
+
+            ''' Debug - trying find out why changetracker has changes when nothing changed.
+            Dim pendingChanges = Database.ChangeTracker.Entries().
+            Where(Function(e) e.State <> EntityState.Detached And e.State <> EntityState.Unchanged).
+            ToList()
+            For Each entry As EntityEntry In pendingChanges
+                Debug.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}")
+                If entry.State = EntityState.Modified Then
+                    Dim modifiedProperties As List(Of PropertyEntry) = entry.Properties.Where(Function(p) p.IsModified).ToList()
+                    For Each prop In modifiedProperties
+                        Console.WriteLine($"  - Property: {prop.Metadata.Name}, Original: {prop.OriginalValue}, Current: {prop.CurrentValue}")
+                    Next
+                End If
+            Next
+            '''
         End If
     End Sub
 

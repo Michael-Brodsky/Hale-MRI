@@ -84,12 +84,6 @@ Public Class ReportPage
         Me.MinimumSize = Me.Size
         Me.Margins.Location = New Point(doc.MarginLeft, doc.MarginTop)
         Me.Margins.Size = New Size(Me.Width - (doc.MarginRight + doc.MarginLeft), Me.Height - (doc.MarginBottom + doc.MarginTop))
-        'Me.Margins.Bounds = New Rectangle(
-        '    doc.MarginLeft,
-        '    doc.MarginTop,
-        '    Me.Width - (doc.MarginRight + doc.MarginLeft),
-        '    Me.Height - (doc.MarginBottom + doc.MarginTop)
-        ')
         Me.Refresh()
     End Sub
 
