@@ -3,10 +3,14 @@ Imports LibDatabase.Models
 
 Public Class ReportHeader
     Inherits DisplayControl
-
-    Private mItems As String
+#Region "Types and Constants"
+    Private kLetterheadHeight As Integer = 120
+    Private kHeaderHeight As Integer = 162
+#End Region
+#Region "Private Members"
     Private WithEvents mVisibleItems As New ObservableCollection(Of Control)
     Private mBindingSource As New BindingSource()
+#End Region
 #Region "Constructors"
     ''' <summary>
     ''' Creates a new ReportHeader object.
@@ -34,94 +38,82 @@ Public Class ReportHeader
     End Sub
 #End Region
 #Region "Public Interface"
-    Public ReadOnly Property LabeledItems As List(Of Label)
+    Public ReadOnly Property ItemLabels As List(Of Label)
         Get
-            Return Header.Controls.Cast(Of Control)().OfType(Of Label)().Where(Function(l) l.Tag IsNot Nothing).ToList()
+            Return Header.Controls.Cast(Of Control)().
+                OfType(Of Label)().
+                Where(Function(l) l.Tag IsNot Nothing).
+                ToList()
         End Get
     End Property
 
-    Public ReadOnly Property TaggedItems As List(Of Control)
+    Public ReadOnly Property ItemControls As List(Of Control)
         Get
-            Return Header.Controls.Cast(Of Control)().Where(Function(c) c.Tag IsNot Nothing).ToList()
+            Return Header.Controls.Cast(Of Control)().
+                Where(Function(ctrl) TypeOf ctrl IsNot Label).
+                ToList()
         End Get
     End Property
 
-    Public Function LabelByText(text As String) As Label
+    Private Function LabelByText(text As String) As Label
         Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Text = text)
     End Function
 
-    Public Function ControlByTag(tag As String) As Control
-        Return Header.Controls.Cast(Of Control)().FirstOrDefault(Function(c) c.Tag?.ToString() = tag)
+    Public Function ControlToLabel(ctrl As Control) As Label
+        Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag.ToString = ctrl.Name)
     End Function
 
-    Public Function LabelToTag(lab As Label) As Control
-        Dim ctrlLabel As Label = Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l Is lab)
-        Return Header.Controls.Cast(Of Control)().FirstOrDefault(Function(c) c.Name = ctrlLabel.Tag)
-    End Function
+    Public Sub ItemHide(ByVal itemName As String)
+        mVisibleItems.Remove(LabelByText(itemName))
+    End Sub
 
-    Public Function TagToLabel(tag As Control) As Label
-        Dim ctrl As Control = Header.Controls.Cast(Of Control)().FirstOrDefault(Function(c) c Is tag)
-        Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag?.ToString() = ctrl?.Name)
-    End Function
-
-    Public Sub VisibleByLabel(label As String, visible As Boolean)
-        Dim ctrlLabel As Label = Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag?.ToString() = label)
-        Dim ctrl As Control = Header.Controls.Cast(Of Control)().FirstOrDefault(Function(c) c.Name = ctrlLabel.Tag)
-        If ctrl IsNot Nothing Then
-            If visible AndAlso Not mVisibleItems.Contains(ctrl) Then
-                mVisibleItems.Add(ctrl)
-            ElseIf Not visible AndAlso mVisibleItems.Contains(ctrl) Then
-                mVisibleItems.Remove(ctrl)
-            End If
+    Public Sub ItemShow(ByVal itemTag As String)
+        Dim ctrl As Control = Me.ItemControls.FirstOrDefault(Function(hi) hi.Tag.ToString() = itemTag)
+        If Not mVisibleItems.Contains(ctrl) Then
+            mVisibleItems.Add(ctrl)
         End If
     End Sub
 
-    Public Sub VisibleByTag(tag As String, visible As Boolean)
-        Dim ctrl As Control = Header.Controls.Cast(Of Control)().FirstOrDefault(Function(c) c.Tag?.ToString() = tag)
-        If ctrl IsNot Nothing Then
-            If visible AndAlso Not mVisibleItems.Contains(ctrl) Then
-                mVisibleItems.Add(ctrl)
-            ElseIf Not visible AndAlso mVisibleItems.Contains(ctrl) Then
-                mVisibleItems.Remove(ctrl)
-            End If
+    Public Sub ItemVisible(ByVal itemName As String, ByVal visible As Boolean)
+        If visible Then
+            ItemShow(itemName)
+        Else
+            ItemHide(itemName)
         End If
     End Sub
 
-    Public ReadOnly Property VisibleControls As List(Of Control)
+    Public ReadOnly Property VisibleTags As List(Of String)
         Get
-            Return mVisibleItems.ToList()
+            Return ItemControls.Where(Function(hi) hi.Visible = True).Select(Function(hi) hi.Name).ToList()
         End Get
     End Property
 
-    Public ReadOnly Property VisibleLabels As List(Of Label)
+    Public Property VisibleItems As List(Of String)
         Get
-            Return LabeledItems.Where(Function(l) l.Visible).ToList()
+            Return mVisibleItems.Select(Function(hi) hi.Tag.ToString()).ToList()
+        End Get
+        Set(value As List(Of String))
+            For Each item As Control In mVisibleItems.ToList()
+                mVisibleItems.Remove(item)
+            Next
+            For Each item As String In value
+                ItemShow(item)
+            Next
+        End Set
+    End Property
+    Public ReadOnly Property ManagedItems As List(Of String)
+        Get
+            Return Me.ItemLabels.Select(Function(hi) hi.Text)
         End Get
     End Property
-
 #End Region
 #Region "Private Interface"
-    Private Sub ItemsSet(listItems As String)
-        If Not String.IsNullOrWhiteSpace(listItems) Then
-            ' Split on ';', remove empty entries and trim each item.
-            Dim items As String() = listItems.Split(New Char() {";"c}, StringSplitOptions.RemoveEmptyEntries)
-            For Each ctrl As Control In Header.Controls
-                If ctrl.Tag IsNot Nothing Then
-                    If items.Contains(ctrl.Tag.ToString()) Then
-                        mVisibleItems.Add(ctrl)
-                    Else
-                        mVisibleItems.Remove(ctrl)
-                    End If
-                End If
-            Next
+    Private Sub ControlVisible(ctrl As Control, visible As Boolean)
+        If ctrl IsNot Nothing Then
+            ctrl.Visible = visible
+            Dim lab As Label = Me.ItemLabels.FirstOrDefault(Function(hi) hi.Tag = ctrl.Name)
+            If lab IsNot Nothing Then lab.Visible = visible
         End If
-
-    End Sub
-
-    Private Sub ItemVisible(ctrl As Control, visible As Boolean)
-        ctrl.Visible = visible
-        Dim ctrlLabel As Label = Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag?.ToString() = ctrl.Name)
-        If ctrlLabel IsNot Nothing Then ctrlLabel.Visible = visible
     End Sub
 #End Region
 #Region "Event Handlers"
@@ -129,12 +121,12 @@ Public Class ReportHeader
         ' Update visibility of controls based on the current collection of visible items.
         If e.NewItems IsNot Nothing Then
             For Each newItem As Control In e.NewItems
-                ItemVisible(newItem, True)
+                ControlVisible(newItem, True)
             Next
         End If
         If e.OldItems IsNot Nothing Then
             For Each oldItem As Control In e.OldItems
-                ItemVisible(oldItem, False)
+                ControlVisible(oldItem, False)
             Next
         End If
     End Sub
@@ -143,6 +135,10 @@ Public Class ReportHeader
         If Me.Data IsNot Nothing Then
             Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
         End If
+    End Sub
+
+    Private Sub Header_Paint(sender As Object, e As PaintEventArgs) Handles Header.Paint
+
     End Sub
 #End Region
 End Class

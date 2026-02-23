@@ -528,11 +528,16 @@ Namespace Contexts
                         HasDefaultValue(0S).
                         HasColumnName("Grid Size")
                     entity.Property(Function(e) e.LastModifed).HasColumnName("Last Modifed")
+                    entity.Property(Function(e) e.MarginsVisible).
+                        HasDefaultValueSql("Yes").
+                        HasColumnType("bit").
+                        HasColumnName("Margins Visible")
                     entity.Property(Function(e) e.ModifiedBy).HasColumnName("Modified By")
                     entity.Property(Function(e) e.ReportName).
                         IsRequired().
                         HasMaxLength(255).
                         HasColumnName("Report Name")
+                    entity.Property(Function(e) e.Zoom).HasDefaultValue(1F)
                 End Sub)
 
             modelBuilder.Entity(Of ReportElement)(

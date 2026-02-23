@@ -2,13 +2,15 @@
 
 Public Class ReportPage
     Implements ICloneable
-
-    Private mDocument As DocumentSettings = Nothing
-    Private mGridSize As Integer = 0
-
-    Public Delegate Sub MouseEventHandler(sender As ReportPage, e As MouseEventArgs)
+#Region "Types and Constants"
+    Public Delegate Sub MouseEventHandler(sender As Control, e As MouseEventArgs)
     Public Event MouseDownEvent As MouseEventHandler
     Public Event MouseMoveEvent As MouseEventHandler
+#End Region
+#Region "Private Members"
+    Private mDocument As DocumentSettings = Nothing
+    Private mGridSize As Integer = 0
+#End Region
 #Region "Constructors"
     Public Sub New()
         InitializeComponent()
@@ -71,17 +73,24 @@ Public Class ReportPage
         End Set
     End Property
 
+    Public Property VerticalLimit As Integer = 0
+
     Private Sub DocumentSet(doc As DocumentSettings)
         ' Pages cannot resize once they're set.
+        Me.MaximumSize = Size.Empty
+        Me.MinimumSize = Size.Empty
         Me.Size = New Size(doc.PaperWidth, doc.PaperHeight)
         Me.MaximumSize = Me.Size
-        Me.MinimumSize = Me.MaximumSize
-        Me.Margins.Bounds = New Rectangle(
-            doc.MarginLeft,
-            doc.MarginTop,
-            Me.Width - (doc.MarginRight + doc.MarginLeft),
-            Me.Height - (doc.MarginBottom + doc.MarginTop)
-        )
+        Me.MinimumSize = Me.Size
+        Me.Margins.Location = New Point(doc.MarginLeft, doc.MarginTop)
+        Me.Margins.Size = New Size(Me.Width - (doc.MarginRight + doc.MarginLeft), Me.Height - (doc.MarginBottom + doc.MarginTop))
+        'Me.Margins.Bounds = New Rectangle(
+        '    doc.MarginLeft,
+        '    doc.MarginTop,
+        '    Me.Width - (doc.MarginRight + doc.MarginLeft),
+        '    Me.Height - (doc.MarginBottom + doc.MarginTop)
+        ')
+        Me.Refresh()
     End Sub
 
     Private Sub DocumentZoom(zoomFactor As Single)
@@ -94,8 +103,9 @@ Public Class ReportPage
         Next
     End Sub
 #Region "Event Handlers"
-    Private Sub Margins_MouseDown(sender As Object, e As MouseEventArgs)
-        RaiseEvent MouseDownEvent(Me, e)
+
+    Private Sub Margins_MouseDown(sender As Object, e As MouseEventArgs) Handles Margins.MouseDown
+        RaiseEvent MouseDownEvent(Me.Margins, e)
     End Sub
 
     Private Sub PrintableArea_MouseDown(sender As Object, e As MouseEventArgs)
@@ -108,6 +118,10 @@ Public Class ReportPage
             dc.BringToFront()
             dc.Visible = True
         End If
+    End Sub
+
+    Private Sub ReportPage_MouseDown(sender As Object, e As MouseEventArgs) Handles MyBase.MouseDown
+        RaiseEvent MouseDownEvent(Me, e)
     End Sub
 #End Region
 End Class

@@ -1,8 +1,9 @@
-﻿Imports System.ComponentModel
-Imports System.Collections.ObjectModel
+﻿Imports System.Collections.ObjectModel
 Imports System.Collections.Specialized
+Imports System.ComponentModel
 Imports System.Drawing.Printing
 Imports System.IO
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDisplayControls
@@ -16,6 +17,7 @@ Public Class FrmReports
     Private Const kPageSeparatorHeight As UInteger = 20
 #End Region
 #Region "Private Members"
+    Private mClickedPage As ReportPage = Nothing
     Private mJobDetails As JobDetail = Nothing              ' The current JobDetail record.
     Private WithEvents mPageSetupDoc As New PrintDocument() ' The print page setup document used to retrieve printer settings.
     Private WithEvents mReportGenerator As ReportGenerator  ' Manages report visual elements and operations.
@@ -60,7 +62,7 @@ Public Class FrmReports
             Return mReport
         End Get
         Set(value As Report)
-            If ReportClose() = DialogResult.None Then
+            If ReportClose() <> DialogResult.Cancel Then
                 mReportGenerator.Zoom = 1.0F
                 ReportLoad(value)
                 FormMenusSet(value)
@@ -77,20 +79,19 @@ Public Class FrmReports
 
     Private Sub ControlContextMenuOpening()
         ' Enable context menu items according the current report and edit state.
-        If mReport Is Nothing Then
-            For Each item As ToolStripItem In ControlContextMenuStrip.Items
-                item.Enabled = False
-            Next
-        Else
-            AddNewContextMenuItem.Enabled = True
-            BringToFrontContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.ZOrder)
-            CutContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Cut)
-            DeleteContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Delete)
-            PasteContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Paste)
-            SelectAllContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.SelectAll)
-            SendToBackContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.ZOrder)
-            UndoContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Undo)
-        End If
+        'If mReport Is Nothing Then
+        '    For Each item As ToolStripItem In ControlContextMenuStrip.Items
+        '        item.Enabled = False
+        '    Next
+        'Else
+        BringToFrontContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.ZOrder)
+        CutContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Cut)
+        DeleteContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Delete)
+        PasteContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Paste)
+        SelectAllContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.SelectAll)
+        SendToBackContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.ZOrder)
+        UndoContextMenuItem.Enabled = (mReportGenerator.Edit And ReportGenerator.Edits.Undo)
+        'End If
     End Sub
 
     Private Sub ControlContextMenuStripShow(sender As Object, e As MouseEventArgs)
@@ -185,9 +186,12 @@ Public Class FrmReports
 
     Private Sub ElementsMenuInitialize()
         ' Populate the Elements menu with all available ReportControls.
+        LetterheadToolStripMenuItem.CheckOnClick = True
+        HeaderToolStripMenuItem.CheckOnClick = True
         For Each dc As DisplayControl In mReportGenerator.ManagedControls.ToList()
             If Not (dc.Name = "ReportHeader" Or dc.Name = "ReportLetterhead") Then
                 Dim elementMenuItem As ToolStripMenuItem = Me.ElementsToolStripMenuItem.DropDownItems.Add(dc.Name)
+                elementMenuItem.CheckOnClick = True
                 AddHandler elementMenuItem.Click, AddressOf Me.ReportsElementsToolStripMenuItem_Click
                 AddHandler dc.MouseDown, AddressOf Me.Control_MouseDown
             End If
@@ -215,8 +219,48 @@ Public Class FrmReports
         ReportsExportToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
     End Sub
 
+    Private Sub GridSizeSet(ByVal value As String)
+        Dim gs As Integer = 0
+        Integer.TryParse(value, gs)
+        If gs <> mReportGenerator.GridSize Then mReportGenerator.GridSize = gs
+    End Sub
+
+    Private Sub HeaderDropDownOpening()
+        ' Checks/unchecks Header dropdown items according to 
+        ' their current visibility.
+        Dim header As ReportHeader = mReportGenerator.ManagedControls.FirstOrDefault(Function(dc) dc.Name = "ReportHeader")
+        Dim visibleItems As List(Of String) =
+            header.VisibleItems
+        For Each item As ToolStripMenuItem In HeaderToolStripMenuItem.DropDownItems
+            item.Checked = visibleItems.Any(Function(hi) hi = item.Text)
+        Next
+    End Sub
+
+    Private Sub HeaderItemToggle(item As ToolStripMenuItem)
+        Dim headerControl As ReportHeader = DirectCast(mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = "ReportHeader"), ReportHeader)
+        headerControl.ItemVisible(item.Tag.ToString(), item.Checked)
+    End Sub
+
+    Private Sub HeaderMenuInitialize()
+        ' Initialize the Header menu with a list of all available header items.
+        Dim headerMenu As ToolStripMenuItem = HeaderToolStripMenuItem
+        Dim headerControl As ReportHeader = DirectCast(mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = "ReportHeader"), ReportHeader)
+        Dim headerItems As List(Of Control) = headerControl.ItemControls
+        For Each item As Control In headerItems
+            Dim lab As Label = headerControl.ControlToLabel(item)
+            Dim menuItem As New ToolStripMenuItem() With {
+                .Tag = item.Tag,
+                .Text = lab.Text,
+                .CheckOnClick = True
+            }
+            headerMenu.DropDownItems.Add(menuItem)
+            AddHandler menuItem.CheckedChanged, AddressOf HeaderItemToolStripMenuItem_CheckedChanged
+        Next
+    End Sub
+
     Private Sub HeaderToggle()
-        HeaderToolStripMenuItem.Checked = Not HeaderToolStripMenuItem.Checked
+        'HeaderToolStripMenuItem.Checked = Not HeaderToolStripMenuItem.Checked
+        HeaderToolStripMenuItem.DropDown.Enabled = HeaderToolStripMenuItem.Checked
         Dim header As DisplayControl = mReportGenerator.ManagedControls.First(Function(dc) dc.Name = "ReportHeader")
         If Not HeaderToolStripMenuItem.Checked Then
             mReportGenerator.VisibleControls.Remove(header)
@@ -225,45 +269,6 @@ Public Class FrmReports
                 mReportGenerator.VisibleControls.Add(header)
             End If
         End If
-    End Sub
-
-    Private Sub HeaderDropDownOpening()
-        ' Checks/unchecks Header dropdown items according to 
-        ' their current visibility.
-        Dim header As ReportHeader = mReportGenerator.ManagedControls.FirstOrDefault(Function(dc) dc.Name = "ReportHeader")
-        Dim visibleItems As List(Of Label) =
-            header.LabeledItems.Where(Function(hi) hi.Visible).ToList()
-        For Each item As ToolStripMenuItem In HeaderToolStripMenuItem.DropDownItems
-            item.Checked = visibleItems.Any(Function(hi) hi.Text = item.Text)
-        Next
-    End Sub
-
-    Private Sub HeaderItemsSet(header As ReportHeader, items As String)
-        Dim itemTags As String() = items.Split(New Char() {";"c}, StringSplitOptions.RemoveEmptyEntries)
-        For Each menuItem As ToolStripMenuItem In HeaderToolStripMenuItem.DropDownItems
-            menuItem.Checked = itemTags.Contains(menuItem.Tag)
-        Next
-    End Sub
-
-    Private Sub HeaderItemToggle(item As ToolStripMenuItem)
-        Dim headerControl As ReportHeader = DirectCast(mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = "ReportHeader"), ReportHeader)
-        headerControl.VisibleByTag(item.Tag.ToString(), item.Checked)
-    End Sub
-
-    Private Sub HeaderMenuInitialize()
-        ' Initialize the Header menu with a list of all available header items.
-        Dim headerMenu As ToolStripMenuItem = HeaderToolStripMenuItem
-        Dim headerControl As ReportHeader = DirectCast(mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = "ReportHeader"), ReportHeader)
-        Dim labeledItems As List(Of Label) = headerControl.LabeledItems
-        For Each labeledItem As Label In labeledItems
-            Dim menuItem As New ToolStripMenuItem() With {
-                .Tag = headerControl.LabelToTag(labeledItem).Tag,
-                .Text = labeledItem.Text,
-                .CheckOnClick = True
-            }
-            headerMenu.DropDownItems.Add(menuItem)
-            AddHandler menuItem.CheckedChanged, AddressOf HeaderItemToolStripMenuItem_CheckedChanged
-        Next
     End Sub
 
     Private Function JobDataLoad(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
@@ -333,8 +338,14 @@ Public Class FrmReports
         End If
     End Sub
 
+    Private Sub LetterheadPosition(ByRef letterhead As ReportLetterhead)
+        letterhead.Location = New Point(Me.Document.MarginLeft, Me.Document.MarginTop)
+        letterhead.Size = New Size(Me.Document.PrintableArea.Width - Me.Document.MarginLeft - Me.Document.MarginRight, 222)
+    End Sub
+
     Private Sub LetterheadToggle()
-        LetterheadToolStripMenuItem.Checked = Not LetterheadToolStripMenuItem.Checked
+        'LetterheadToolStripMenuItem.Checked = Not LetterheadToolStripMenuItem.Checked
+        LetterheadToolStripMenuItem.DropDown.Enabled = LetterheadToolStripMenuItem.Checked
         Dim letterHead As DisplayControl = mReportGenerator.ManagedControls.First(Function(dc) dc.Name = "ReportLetterhead")
         If Not LetterheadToolStripMenuItem.Checked Then
             mReportGenerator.VisibleControls.Remove(letterHead)
@@ -346,6 +357,10 @@ Public Class FrmReports
     End Sub
 
     Protected Overrides Property MasterSource As BindingSource
+
+    Private Sub PageContextMenuStripShow(sender As ReportPage, e As MouseEventArgs)
+
+    End Sub
 
     Private Sub PagePositionHorizontal(pg As ReportPage)
         If pg.ClientRectangle.Width < Me.ClientRectangle.Width - 2 * kPageHorizontalMarginMin Then
@@ -390,7 +405,7 @@ Public Class FrmReports
     Private Sub PrintPageSetup(sender As Object, e As EventArgs)
         ' Opens the page setup dialog.
         PageSetupDialog.Document = mPageSetupDoc
-        If PageSetupDialog.ShowDialog() = DialogResult.None Then
+        If PageSetupDialog.ShowDialog() = DialogResult.OK Then
             mPageSetupDoc.PrinterSettings = PageSetupDialog.PrinterSettings
             mPageSetupDoc.OriginAtMargins = True
             mPageSetupDoc.Print()
@@ -492,24 +507,27 @@ Public Class FrmReports
     End Sub
 
     Private Sub ReportHeaderUpdate(ByRef elements As List(Of ReportElement), ByRef re As ReportElement, ByVal rh As ReportHeader)
-        Dim visibleHeaderItems As List(Of String) = rh?.VisibleControls.Select(Function(hi) hi.Tag.ToString()).ToList()
-        Dim visibleElementItems As List(Of String) = re?.Data.Split(";"c).ToList()
+        Dim headerData As String = String.Join(";"c, rh?.VisibleItems)
+        Dim elementData As String = re?.Data
         If re Is Nothing Then
-            ReportElementAddNew(elements, rh, String.Join(";", visibleHeaderItems))
+            ReportElementAddNew(elements, rh, headerData)
         ElseIf rh IsNot Nothing Then
-            If Not visibleHeaderItems.SequenceEqual(visibleElementItems) Then re.Data = String.Join(";", visibleHeaderItems)
+            If headerData <> elementData Then re.Data = headerData
         Else
             elements.Remove(re)
         End If
     End Sub
 
-    Private Sub ReportMetadataUpdate(ByRef report As Report)
-        report.LastModifed = Now
-        report.ModifiedBy = Me.User.Id
-    End Sub
-
-    Private Sub ReportPropertiesUpdate(ByRef report As Report)
-        If report.GridSize <> mReportGenerator.GridSize Then report.GridSize = mReportGenerator.GridSize
+    Private Sub ReportEditorOpen()
+        ' Opens the Reports editor form.
+        Dim editor As New FrmReportsEditor(Me.ReportsBindingSource, Me.EmployeeBindingSource)
+        If editor.ShowDialog() = DialogResult.OK Then
+            Dim rpt As Report = editor.Current
+            If rpt IsNot Me.Report Then
+                If ReportClose() = DialogResult.Cancel Then Return
+                ReportOpen(rpt.ReportName)
+            End If
+        End If
     End Sub
 
     Private Sub ReportExport()
@@ -527,7 +545,6 @@ Public Class FrmReports
     Private Sub ReportGeneratorInitialize()
         mReportGenerator = New ReportGenerator() With {
             .Document = New DocumentSettings(New PrintDocument()),
-            .GridSize = 10,
             .ParentForm = Me,
             .VerticalLimit = Me.FormMenuStrip.Height,
             .Zoom = 1.0F,
@@ -538,6 +555,9 @@ Public Class FrmReports
                 New ReportLetterhead("ReportLetterhead", True)
             }
         }
+        For Each dc As DisplayControl In mReportGenerator.ManagedControls
+            AddHandler dc.MouseDownEvent, AddressOf Me.Control_MouseDown
+        Next
     End Sub
 
     Private Sub ReportImport()
@@ -546,18 +566,22 @@ Public Class FrmReports
 
     Private Sub ReportLoad(ByVal report As Report)
         If report IsNot Nothing Then
+            ReportPropertiesSet(report)
             mReportGenerator.Pages.Add(New ReportPage())
             For Each re As ReportElement In report?.ReportElements
                 Dim dc As DisplayControl = mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = re.ElementName)
                 If dc IsNot Nothing Then
                     Select Case True
                         Case TypeOf dc Is ReportHeader
-                            Dim hdr = DirectCast(dc, ReportHeader)
-                            hdr.Data = Me.JobDetails
-                            HeaderItemsSet(hdr, re.Data)
-                        Case TypeOf dc Is ReportLetterhead
+                            Dim header = DirectCast(dc, ReportHeader)
+                            header.Data = Me.JobDetails
                             If re.Data IsNot Nothing Then
-                                LetterheadLoad(report, DirectCast(dc, ReportLetterhead), re.Data)
+                                header.VisibleItems = re.Data.Split(New Char() {";"c}, StringSplitOptions.RemoveEmptyEntries).ToList()
+                            End If
+                        Case TypeOf dc Is ReportLetterhead
+                            Dim letterhead = DirectCast(dc, ReportLetterhead)
+                            If re.Data IsNot Nothing Then
+                                LetterheadLoad(report, letterhead, re.Data)
                             End If
                         Case Else
                     End Select
@@ -570,16 +594,22 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Sub ReportEditorOpen()
-        ' Opens the Reports editor form.
-        Dim editor As New FrmReportsEditor(Me.ReportsBindingSource, Me.EmployeeBindingSource)
-        If editor.ShowDialog() = DialogResult.OK Then
-            Dim rpt As Report = editor.Current
-            If rpt IsNot Me.Report Then
-                If ReportClose() = DialogResult.Cancel Then Return
-                ReportOpen(rpt.ReportName)
-            End If
-        End If
+    Private Sub ReportMetadataUpdate(ByRef report As Report)
+        report.LastModifed = Now
+        report.ModifiedBy = Me.User.Id
+    End Sub
+
+    Private Sub ReportPropertiesSet(ByVal report As Report)
+        mReportGenerator.GridSize = report.GridSize
+        GridSizeToolStripTextBox.Text = report.GridSize
+        PageMarginsToolStripMenuItem.Checked = report.MarginsVisible
+        mReportGenerator.Zoom = report.Zoom
+    End Sub
+
+    Private Sub ReportPropertiesUpdate(ByRef report As Report)
+        If report.GridSize <> mReportGenerator.GridSize Then report.GridSize = mReportGenerator.GridSize
+        If report.MarginsVisible <> mReportGenerator.MarginsVisible Then report.MarginsVisible = mReportGenerator.MarginsVisible
+        If report.Zoom <> mReportGenerator.Zoom Then report.Zoom = mReportGenerator.Zoom
     End Sub
 
     Private Sub ReportsMenuItemAdd(item As ToolStripMenuItem, Optional ByVal index As Integer = 0)
@@ -696,17 +726,24 @@ Public Class FrmReports
         Next
         Return menuItem
     End Function
+    Private Sub ViewMenuInitialize()
+        PageMarginsToolStripMenuItem.CheckOnClick = True
+    End Sub
 #End Region
 #Region "Event Handlers"
 #Region "Form Events"
     Private Sub Control_MouseDown(sender As Object, e As MouseEventArgs)
-        ControlContextMenuStripShow(sender, e)
+        If e.Button = MouseButtons.Right Then ControlContextMenuStrip.Show(CType(sender, Control), e.Location)
+        'ControlContextMenuStripShow(sender, e)
     End Sub
+
     Private Sub FrmReports2_ControlAdded(sender As Object, e As ControlEventArgs) Handles MyBase.ControlAdded
         If TypeOf e.Control Is ReportPage Then
             Dim pg As ReportPage = DirectCast(e.Control, ReportPage)
             PagePositionVertical(pg)
             PagePositionHorizontal(pg)
+            RemoveHandler pg.MouseDownEvent, AddressOf Me.Page_MouseDown
+            AddHandler pg.MouseDownEvent, AddressOf Me.Page_MouseDown
         End If
     End Sub
 
@@ -721,6 +758,7 @@ Public Class FrmReports
         ReportsMenuInitialize()
         HeaderMenuInitialize()
         ElementsMenuInitialize()
+        ViewMenuInitialize()
         FormMenusSet(mReport)
     End Sub
 
@@ -740,6 +778,18 @@ Public Class FrmReports
         For Each pg As ReportPage In Me.Controls.OfType(Of ReportPage)()
             PagePositionHorizontal(pg)
         Next
+    End Sub
+
+    Private Sub Page_MouseDown(sender As Object, e As MouseEventArgs)
+        If e.Button = MouseButtons.Right Then
+            If TypeOf sender Is ReportPage Then
+                mClickedPage = DirectCast(sender, ReportPage)
+            Else
+                mClickedPage = DirectCast(DirectCast(sender, Control).Parent, ReportPage)
+            End If
+            PageContextMenuStrip.Show(DirectCast(sender, Control), e.Location)
+        End If
+        'PageContextMenuStripShow(DirectCast(sender, ReportPage), e)
     End Sub
 #End Region
 #Region "Form Menu Events"
@@ -763,9 +813,9 @@ Public Class FrmReports
         SendKeys.Send("^V")
     End Sub
 
-    Private Sub ElementsLetterheadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadToolStripMenuItem.Click
-        LetterheadToggle()
-    End Sub
+    'Private Sub ElementsLetterheadToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadToolStripMenuItem.Click
+    '    LetterheadToggle()
+    'End Sub
 
     Private Sub ElementsToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles ElementsToolStripMenuItem.DropDownOpening
         ElementsDropdownOpening()
@@ -798,7 +848,16 @@ Public Class FrmReports
     Private Sub FileToolStripMenuItem_DropDownOpening(sender As Object, e As EventArgs) Handles FileToolStripMenuItem.DropDownOpening
         FileDropDownOpening()
     End Sub
+
+    Private Sub GridSizeToolStripMenuItem_DropDownClosed(sender As Object, e As EventArgs) Handles GridSizeToolStripMenuItem.DropDownClosed
+        GridSizeSet(GridSizeToolStripTextBox.Text)
+    End Sub
+
     Private Sub HeaderItemToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs)
+        HeaderItemToggle(CType(sender, ToolStripMenuItem))
+    End Sub
+
+    Private Sub HeaderItemToolStripMenuItem_Click(sender As Object, e As EventArgs)
         HeaderItemToggle(CType(sender, ToolStripMenuItem))
     End Sub
 
@@ -806,12 +865,12 @@ Public Class FrmReports
         HeaderDropDownOpening()
     End Sub
 
-    Private Sub HeaderItemToolStripMenuItem_Click(sender As Object, e As EventArgs)
-        HeaderItemToggle(CType(sender, ToolStripMenuItem))
+    Private Sub HeaderToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles HeaderToolStripMenuItem.CheckedChanged
+        HeaderToggle()
     End Sub
 
-    Private Sub HeaderToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles HeaderToolStripMenuItem.Click
-        HeaderToggle()
+    Private Sub ImageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ImageToolStripMenuItem.Click
+        LetterheadFileSelect()
     End Sub
 
     Private Sub JobsOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobsOpenToolStripMenuItem.Click
@@ -822,8 +881,8 @@ Public Class FrmReports
         JobsDropDownOpening()
     End Sub
 
-    Private Sub LetterheadImageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles LetterheadImageToolStripMenuItem.Click
-        LetterheadFileSelect()
+    Private Sub LetterheadToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles LetterheadToolStripMenuItem.CheckedChanged
+        LetterheadToggle()
     End Sub
 
     Private Sub PageSetupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PageSetupToolStripMenuItem.Click
@@ -881,8 +940,8 @@ Public Class FrmReports
         mReportGenerator.Zoom -= 0.1F
     End Sub
 #End Region
-#Region "Context Menu Events"
-    Private Sub AddNewPageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles AddNewPageToolStripMenuItem.Click
+#Region "Control Context Menu Events"
+    Private Sub BringToFrontContextMenuItem_Click(sender As Object, e As EventArgs) Handles BringToFrontContextMenuItem.Click
 
     End Sub
 
@@ -890,8 +949,37 @@ Public Class FrmReports
         ControlContextMenuOpening()
     End Sub
 
-    Private Sub DeletePageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeletePageToolStripMenuItem.Click
+    Private Sub CutContextMenuItem_Click(sender As Object, e As EventArgs) Handles CutContextMenuItem.Click
 
+    End Sub
+
+    Private Sub DeleteContextMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteContextMenuItem.Click
+
+    End Sub
+
+    Private Sub PasteContextMenuItem_Click(sender As Object, e As EventArgs) Handles PasteContextMenuItem.Click
+
+    End Sub
+
+    Private Sub SendToBackContextMenuItem_Click(sender As Object, e As EventArgs) Handles SendToBackContextMenuItem.Click
+
+    End Sub
+
+    Private Sub SelectAllContextMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAllContextMenuItem.Click
+
+    End Sub
+
+    Private Sub UndoContextMenuItem_Click(sender As Object, e As EventArgs) Handles UndoContextMenuItem.Click
+
+    End Sub
+#End Region
+#Region "Page Context Menu Events"
+    Private Sub InsertNewPageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InsertNewPageToolStripMenuItem.Click
+        mReportGenerator.PageInsertNew(New ReportPage(), mClickedPage)
+    End Sub
+
+    Private Sub DeletePageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeletePageToolStripMenuItem.Click
+        mReportGenerator.PageDelete(mClickedPage)
     End Sub
 
     Private Sub PageContextMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PageContextMenuStrip.Opening
@@ -922,8 +1010,8 @@ Public Class FrmReports
         PrintPreview(sender, e)
     End Sub
 
-    Private Sub Button1_Click(sender As Object, e As EventArgs)
-        mReportGenerator.PageAddNew(New ReportPage)
+    Private Sub PageMarginsToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs) Handles PageMarginsToolStripMenuItem.CheckedChanged
+        mReportGenerator.MarginsVisible = PageMarginsToolStripMenuItem.Checked
     End Sub
 #End Region
 #End Region

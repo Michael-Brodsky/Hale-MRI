@@ -1,6 +1,7 @@
 ﻿Imports System.Collections.ObjectModel
 Imports System.Collections.Specialized
 Imports System.Drawing.Printing
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports LibDisplayControls
 Imports LibDisplayControls.DisplayControl
 Imports Microsoft.EntityFrameworkCore.Migrations.Operations
@@ -67,6 +68,10 @@ End Class
 ''' </summary>
 Public Class ReportGenerator
 #Region "Types and Constants"
+    Private kLetterheadHeight As Integer = 120
+    Private kHeaderHeight As Integer = 162
+    Private Const kHeaderSpacing As Integer = 20
+
     ''' <summary>
     ''' Zoom event handler signature
     ''' </summary>
@@ -115,6 +120,7 @@ Public Class ReportGenerator
     Private mIsDragging As Boolean = False                      ' Indicates whether a drag operation is in progress.
     Private mIsMultiSelect As Boolean = False                   ' Indicates whether multiple selection is active.
     Private mIsResizing As Boolean = False                      ' Indicates whether a resize operation is in progress.
+    Private mMarginsVisible As Boolean = False
     Private mPageBounds As Rectangle
     Private mPageSeparatorHeight As UInteger = kPageSeparatorHeightDefault
     Private mParentForm As Form = Nothing
@@ -139,6 +145,23 @@ Public Class ReportGenerator
         Me.Pages = Nothing
     End Sub
 
+
+    Public Sub ControlHide(ByRef dc As DisplayControl)
+        mVisibleControls.Remove(dc)
+    End Sub '
+    Public Sub ControlShow(ByRef dc As DisplayControl)
+        If Not mVisibleControls.Contains(dc) Then
+            mVisibleControls.Add(dc)
+        End If
+    End Sub
+
+    Public Sub ControlVisible(ByRef dc As DisplayControl, ByVal visible As Boolean)
+        If visible Then
+            ControlShow(dc)
+        Else
+            ControlHide(dc)
+        End If
+    End Sub
     ''' <summary>
     ''' Gets/sets the current document settings. 
     ''' </summary>
@@ -184,16 +207,58 @@ Public Class ReportGenerator
     ''' </summary>
     Public Sub Initialize()
         Me.Clear()
-        PageAddNew(New ReportPage())
+        PageInsertNew(New ReportPage())
+    End Sub
+
+    Public Property MarginsVisible As Boolean
+        Get
+            Return mMarginsVisible
+        End Get
+        Set(value As Boolean)
+            MarginsVisibleSet(value)
+            mMarginsVisible = value
+        End Set
+    End Property
+
+    ''' <summary>
+    ''' Deletes the given page and all of its DisplayControls from the current collection.
+    ''' </summary>
+    ''' <param name="pg"></param>
+    Public Sub PageDelete(ByRef pg As ReportPage)
+        For Each dc As DisplayControl In pg.DisplayControls
+            mVisibleControls.Remove(dc)
+        Next
+        mPages?.Remove(pg)
     End Sub
 
     ''' <summary>
     ''' Adds a new page to the report with default settings or the given ReportPage object, if any. 
-    ''' The new page is added to the end of the current collection of pages and located accordingly on the ParentForm.
+    ''' The new page is added after the page at index 'after' or to the end of the current collection 
+    ''' of pages, if not specified, and located accordingly on the ParentForm.
     ''' </summary>
     ''' <param name="pg"></param>
-    Public Sub PageAddNew(ByRef pg As ReportPage)
-        mPages.Add(pg)
+    ''' <param name="at"></param>
+    Public Sub PageInsertNew(ByRef pg As ReportPage, Optional ByVal after As Integer = -1)
+        If after > -1 Then
+            mPages.Insert(after + 1, pg)
+        Else
+            mPages.Add(pg)
+        End If
+    End Sub
+
+    ''' <summary>
+    ''' Adds a new page to the report with default settings or the given ReportPage object, if any. 
+    ''' The new page is added after the specified 'after' page or to the end of the current collection 
+    ''' of pages, if not specified, and located accordingly on the ParentForm.
+    ''' </summary>
+    ''' <param name="pg"></param>
+    ''' <param name="after"></param>
+    Public Sub PageInsertNew(ByRef pg As ReportPage, ByVal after As ReportPage)
+        If after IsNot Nothing Then
+            mPages.Insert(mPages.IndexOf(after) + 1, pg)
+        Else
+            mPages.Add(pg)
+        End If
     End Sub
 
     ''' <summary>
@@ -319,12 +384,19 @@ Public Class ReportGenerator
     End Property
 #End Region
 #Region "Private Interface"
+    Private Function ControlBounds(dc As DisplayControl, parentPage As ReportPage) As Rectangle
+        Return New Rectangle(parentPage.PointToClient(dc.PointToScreen(Point.Empty)), dc.Size)
+    End Function
+
     Private Function ControlCheckBounds(ByVal dc As DisplayControl, ByVal parentPage As ReportPage, offset As Point) As BoundsChecks
         Dim result As BoundsChecks = BoundsChecks.None
+        'Dim screenPos As Point = dc.PointToScreen(Point.Empty)
+        Dim pageBounds As Rectangle = parentPage.ClientRectangle
+        Dim dcBounds As Rectangle = ControlBounds(dc, parentPage)
 
-        If dc.Left + offset.X <= parentPage.Left OrElse dc.Right + offset.X >= parentPage.Right Then
+        If dcBounds.Left + offset.X <= pageBounds.Left OrElse dcBounds.Right + offset.X >= pageBounds.Right Then
             result = BoundsChecks.Horizontal
-        ElseIf dc.Top + offset.Y <= parentPage.Top OrElse dc.Bottom + offset.Y >= parentPage.Bottom Then
+        ElseIf dcBounds.Top + offset.Y <= pageBounds.Top + parentPage.VerticalLimit OrElse dcBounds.Bottom + offset.Y >= pageBounds.Bottom Then
             result = BoundsChecks.Vertical
         End If
 
@@ -335,14 +407,16 @@ Public Class ReportGenerator
         ' Check whether a resize operation is outside the control's page bounds.
         Dim result As BoundsChecks = BoundsChecks.None
 
-        Dim hLocation As New Point(If(loc <> Point.Empty, loc, dc.Location))
+        Dim dcBounds As Rectangle = ControlBounds(dc, parentPage)
+        Dim pageBounds = parentPage.ClientRectangle
+        Dim hLocation As New Point(If(loc <> Point.Empty, loc, dcBounds.Location))
         Dim hSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
-        Dim vLocation As New Point(If(loc <> Point.Empty, loc, dc.Location))
+        Dim vLocation As New Point(If(loc <> Point.Empty, loc, dcBounds.Location))
         Dim vSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
-        If hLocation.X <= parentPage.Left OrElse
-            (hLocation.X + hSize.Width) >= parentPage.Width OrElse
-            vLocation.Y <= parentPage.Top OrElse
-            (vLocation.Y + vSize.Height) >= parentPage.Height Then
+        If hLocation.X <= pageBounds.Left OrElse
+            (hLocation.X + hSize.Width) >= pageBounds.Width OrElse
+            vLocation.Y <= pageBounds.Top OrElse
+            (vLocation.Y + vSize.Height) >= pageBounds.Height Then
             result = BoundsChecks.Either
         End If
 
@@ -377,7 +451,6 @@ Public Class ReportGenerator
         ControlsRemoveFrom(SelectedControls, mVisibleControls)
         EditPermissionsSet()
     End Sub
-
 
     Private Sub ControlsDelete(controls As List(Of DisplayControl))
         ' Deletes the currently selected ReportControls from the report.
@@ -414,6 +487,53 @@ Public Class ReportGenerator
             Next
             controls = Nothing   'Controls can only be pasted into the report once.
             EditPermissionsSet()
+        End If
+    End Sub
+
+    Private Sub ControlPosition(dc As DisplayControl)
+        Dim pg As ReportPage = mPages.FirstOrDefault(Function(p) p.Bottom >= dc.Location.Y)
+        ' Continue adding new pages until we find a page that the control fits on.
+        Do While pg Is Nothing AndAlso mPages.Count < kPageCountMax
+            mPages.Add(New ReportPage())
+            pg = mPages.FirstOrDefault(Function(p) p.Bottom >= dc.Location.Y)
+        Loop
+        dc.EdgeSize = Me.GridSize
+        pg?.Controls?.Add(dc)
+    End Sub
+
+    Private Sub ControlsRelocate(pg As ReportPage)
+        For Each dc As DisplayControl In pg.DisplayControls
+            If TypeOf dc Is ReportHeader Then
+                HeaderPosition(dc)
+            ElseIf TypeOf dc Is ReportLetterhead Then
+                LetterheadPosition(dc)
+            Else
+                Dim dcBounds As Rectangle = ControlBounds(dc, pg)
+                Dim pageBounds As Rectangle = pg.ClientRectangle
+                If dc.Width > pageBounds.Width - 2 Then
+                    dc.Width = pageBounds.Width - 2
+                End If
+                If dcBounds.Left < pageBounds.Left Then
+                    dc.Left = pageBounds.Left + 1
+                ElseIf dcBounds.Right > pageBounds.Right Then
+                    dc.Left = pageBounds.Right - dc.Width - 1
+                End If
+            End If
+        Next
+    End Sub
+    Private Sub ControlsReposition(pg As ReportPage)
+        For Each dc As DisplayControl In pg.DisplayControls
+            If TypeOf dc IsNot ReportHeader AndAlso
+                TypeOf dc IsNot ReportLetterhead AndAlso
+                dc.Top < pg.VerticalLimit Then
+                dc.Top = pg.VerticalLimit + 1
+            End If
+        Next
+    End Sub
+
+    Private Sub ControlRemove(dc As DisplayControl, pg As ReportPage)
+        If pg IsNot Nothing Then
+            pg.Controls.Remove(dc)
         End If
     End Sub
 
@@ -479,29 +599,33 @@ Public Class ReportGenerator
 
     Private Sub DisplayControlAdd(ByRef dc As DisplayControl)
         ' Adds a DisplayControl to a ReportPage at its current location.
-        Dim ctrl As DisplayControl = dc
-        Dim pg As ReportPage = mPages.FirstOrDefault(Function(p) p.Bottom >= ctrl.Location.Y)
-        ' Continue adding new pages until we find a page that the control fits on.
-        Do While pg Is Nothing AndAlso mPages.Count < kPageCountMax
-            mPages.Add(New ReportPage())
-            pg = mPages.FirstOrDefault(Function(p) p.Bottom >= ctrl.Location.Y)
-        Loop
-        dc.EdgeSize = Me.GridSize
-        pg?.Controls?.Add(dc)
+        If TypeOf dc Is ReportHeader Then
+            HeaderPosition(dc)
+        ElseIf TypeOf dc Is ReportLetterhead Then
+            LetterheadPosition(dc)
+        Else
+            ControlPosition(dc)
+        End If
     End Sub
 
     Private Sub DisplayControlRemove(ByRef dc As DisplayControl)
         Dim ctrl As DisplayControl = dc
         Dim pg As ReportPage = mPages.FirstOrDefault(Function(p) p.Controls.Contains(ctrl))
-        If pg IsNot Nothing Then
-            pg.Controls.Remove(dc)
+        If TypeOf dc Is ReportHeader Then
+            HeaderRemove(dc, pg)
+        ElseIf TypeOf dc Is ReportLetterhead Then
+            LetterheadRemove(dc, pg)
+        Else
         End If
+        ControlRemove(dc, pg)
+
     End Sub
 
     Private Sub DocumentSet(ByVal settings As DocumentSettings)
         If mPages IsNot Nothing Then
             For Each pg As ReportPage In mPages
                 pg.Document = settings
+                ControlsRelocate(pg)
             Next
         End If
     End Sub
@@ -551,15 +675,18 @@ Public Class ReportGenerator
                     Case BoundsChecks.Horizontal    ' Controls cannot be dragged off page horizontally, so just return.
                         Return
                     Case BoundsChecks.Vertical      ' If there's an adjacent page, move the control there.
-                        Dim adjacentPage As ReportPage = If(deltaY < 0, mPages(mPages.IndexOf(pg) - 1), mPages(mPages.IndexOf(pg) + 1))
+                        Dim pageIndex As Integer = mPages.IndexOf(pg)
+                        Dim previousPage As ReportPage = If(pageIndex > 0, mPages(mPages.IndexOf(pg) - 1), Nothing)
+                        Dim nextPage As ReportPage = If(pageIndex < mPages.Count - 1, mPages(mPages.IndexOf(pg) + 1), Nothing)
+                        Dim adjacentPage As ReportPage = If(deltaY < 0, previousPage, nextPage)
                         If adjacentPage IsNot Nothing Then
                             Dim Y As Integer = 0
-                            If mPages.IndexOf(pg) < mPages.IndexOf(adjacentPage) Then
+                            If adjacentPage Is nextPage Then
                                 Y = 1
                             Else
-                                Y = adjacentPage.Bottom - dc.Height - 1
+                                Y = adjacentPage.ClientRectangle.Bottom - dc.Height - 1
                             End If
-                            movements.Add((dc, New Point(dc.Left, Y), adjacentPage))
+                            movements.Add((dc, New Point(ControlBounds(dc, pg).Left, Y), adjacentPage))
                         Else                        ' If there's no adjacent page, return. 
                             Return
                         End If
@@ -617,6 +744,34 @@ Public Class ReportGenerator
         End If
     End Sub
 
+    Private Sub HeaderPosition(header As ReportHeader)
+        If header IsNot Nothing Then
+            Dim letterhead As ReportLetterhead = DirectCast(mVisibleControls.Where(Function(dc) dc.Name = "ReportLetterhead").FirstOrDefault(), ReportLetterhead)
+            Dim parentPage As ReportPage = mPages(0)
+            Dim margins As Control = parentPage.Controls("Margins")
+            If letterhead IsNot Nothing Then
+                header.Location = New Point(letterhead.Left, letterhead.Bottom + kHeaderSpacing)
+                header.Size = New Size(letterhead.Width, kHeaderHeight)
+            Else
+                header.Location = New Point(Me.Document.MarginLeft, Me.Document.MarginTop)
+                header.Size = New Size(margins.Width, kHeaderHeight)
+            End If
+            header.Parent = parentPage
+            parentPage.VerticalLimit = header.Bottom + 1
+            ControlsReposition(parentPage)
+        End If
+    End Sub
+
+    Private Sub HeaderRemove(header As ReportHeader, parentPage As ReportPage)
+        Dim letterhead As ReportLetterhead = DirectCast(mVisibleControls.Where(Function(dc) dc.Name = "ReportLetterhead").FirstOrDefault(), ReportLetterhead)
+        If letterhead IsNot Nothing Then
+            parentPage.VerticalLimit = letterhead.Bottom + 1
+        Else
+            parentPage.VerticalLimit = 1
+        End If
+
+    End Sub
+
     Private Sub LayoutCheck()
         ' Checks the current to the previous layout and pop's 
         ' the last element from the UndoStack if they're the same.
@@ -642,6 +797,34 @@ Done:
         Next
     End Sub
 
+    Private Sub LetterheadPosition(letterhead As ReportLetterhead)
+        If letterhead IsNot Nothing Then
+            Dim header As ReportHeader = CType(mVisibleControls.Where(Function(dc) dc.Name = "ReportHeader").FirstOrDefault(), ReportHeader)
+            Dim parentPage As ReportPage = mPages(0)
+            Dim margins As Control = parentPage.Controls("Margins")
+            letterhead.Location = New Point(Me.Document.MarginLeft, Me.Document.MarginTop)
+            letterhead.Size = New Size(margins.Width, kLetterheadHeight)
+            If header IsNot Nothing Then
+                header.Location = New Point(letterhead.Left, letterhead.Bottom + kHeaderSpacing)
+                parentPage.VerticalLimit = header.Bottom + 1
+            Else
+                parentPage.VerticalLimit = letterhead.Bottom + 1
+            End If
+            letterhead.Parent = parentPage
+            ControlsReposition(parentPage)
+        End If
+    End Sub
+
+    Private Sub LetterheadRemove(letterhead As ReportLetterhead, parentPage As ReportPage)
+        Dim header As ReportHeader = DirectCast(mVisibleControls.Where(Function(dc) dc.Name = "ReportHeader").FirstOrDefault(), ReportHeader)
+        If header IsNot Nothing Then
+            header.Location = New Point(letterhead.Location)
+            parentPage.VerticalLimit = header.Bottom + 1
+        Else
+            parentPage.VerticalLimit = 1
+        End If
+    End Sub
+
     Private Sub ManagedControlAdd(ByRef dc As DisplayControl)
         ' Attach appropriate event handlers.
         If dc.IsSelectable Then
@@ -662,6 +845,12 @@ Done:
         If dc.IsMovable Or dc.IsSizeable Then
             RemoveHandler dc.MouseMoveEvent, AddressOf Me.Control_MouseMove
         End If
+    End Sub
+
+    Private Sub MarginsVisibleSet(ByVal visible As Boolean)
+        For Each pg As ReportPage In mPages
+            pg.Margins.Visible = visible
+        Next
     End Sub
 
     Private Sub PageAdd(ByRef pg As ReportPage)

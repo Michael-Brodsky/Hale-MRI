@@ -18,7 +18,6 @@ Module FormInstances
     Public gFrmManufacturers As FrmManufacturers
     Public gFrmMeasurements As FrmMeasurements
     Public gFrmPropellers As FrmPropellers
-    'Public gFrmReports As FrmReports
     Public gFrmReports As FrmReports
     Public gFrmSettings As FrmSettings
     Public gFrmVessels As FrmVessels
