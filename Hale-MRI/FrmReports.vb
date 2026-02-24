@@ -16,6 +16,9 @@ Public Class FrmReports
 #Region "Types and Constants"
     Private Const kPageHorizontalMarginMin As Integer = 20
     Private Const kPageSeparatorHeight As UInteger = 20
+    Private Const kZoomFactorDefault As Single = 1.0F
+    Private Const kZoomFactorMax As Single = 2.0F
+    Private Const kZoomFactorMin As Single = 0.5F
 #End Region
 #Region "Private Members"
     Private mClickedPage As ReportPage = Nothing
@@ -23,6 +26,7 @@ Public Class FrmReports
     Private WithEvents mPageSetupDoc As New PrintDocument() ' The print page setup document used to retrieve printer settings.
     Private WithEvents mReportGenerator As ReportGenerator  ' Manages report visual elements and operations.
     Private mReport As Report                               ' The currently open report, if any.
+    Private mZoomFactor = kZoomFactorDefault
 #End Region
 #Region "Public Interface"
     ' <summary>
@@ -64,7 +68,7 @@ Public Class FrmReports
         End Get
         Set(value As Report)
             If ReportClose() <> DialogResult.Cancel Then
-                mReportGenerator.Zoom = 1.0F
+                'mReportGenerator.Zoom = 1.0F
                 ReportLoad(value)
                 FormMenusSet(value)
                 ReportNameMenuItemCheck(value, True)
@@ -110,7 +114,7 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Sub ControlsLoadData(controls As ObservableCollection(Of DisplayControl))
+    Private Sub ControlsLoadData(controls As List(Of DisplayControl))
         For Each dc As DisplayControl In controls
             dc.Data = Me.JobDetails
         Next
@@ -122,13 +126,18 @@ Public Class FrmReports
         ' state accordingly.
         Dim item As ToolStripMenuItem = menuItem
         Dim dc As DisplayControl = mReportGenerator.ManagedControls.First(Function(c) c.Name = item.Text)
-        menuItem.Checked = Not menuItem.Checked
         If menuItem.Checked Then
-            If Not mReportGenerator.VisibleControls.ToList().Contains(dc) Then
-                mReportGenerator.VisibleControls.Add(dc)
+            dc.Scale(New SizeF(mZoomFactor, mZoomFactor))
+            If dc.Location = Point.Empty Then
+                For Each pg As ReportPage In mReportGenerator.Pages
+                    If IsReportPageVisibleInView(pg) Then
+                        dc.Location = New Point((pg.ClientRectangle.Width - dc.Width) / 2, pg.VerticalLimit + (pg.ClientRectangle.Bottom - pg.VerticalLimit - dc.Height) / 2)
+                    End If
+                Next
             End If
+            mReportGenerator.ControlShow(dc)
         Else
-            mReportGenerator.VisibleControls.Remove(dc)
+            mReportGenerator.ControlHide(dc)
         End If
     End Sub
 
@@ -272,6 +281,20 @@ Public Class FrmReports
         End If
     End Sub
 
+    Public Function IsReportPageVisibleInView(ByVal pg As ReportPage) As Boolean
+
+        ' Get the viewable client rectangle of the parent container
+        Dim containerRect As Rectangle = pg.Parent.ClientRectangle
+
+        ' Get the child control's bounds relative to the screen
+        Dim childRectInScreen As Rectangle = pg.Parent.RectangleToScreen(pg.Bounds)
+        ' Convert the container's client rectangle to screen coordinates for comparison
+        Dim containerRectInScreen As Rectangle = pg.Parent.RectangleToScreen(containerRect)
+
+        ' Check if the child's screen bounds intersect with the container's viewable screen bounds
+        Return containerRectInScreen.IntersectsWith(childRectInScreen)
+    End Function
+
     Private Function JobDataLoad(ByVal jobDetails As JobDetail) As BindingList(Of JobDetail)
         ' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements sorted.
         Dim data = New BindingList(Of JobDetail)(
@@ -359,8 +382,24 @@ Public Class FrmReports
 
     Protected Overrides Property MasterSource As BindingSource
 
+    Private Sub PageRemove(ByRef pg As ReportPage)
+        Dim pageIndex As Integer = mReportGenerator.PageDelete(mClickedPage)
+        Dim previousPage As ReportPage = If(pageIndex > 0, mReportGenerator.Pages(pageIndex - 1), Nothing)
+        For i As Integer = pageIndex To mReportGenerator.Pages.Count - 1
+            PagePosition(mReportGenerator.Pages(i), previousPage)
+            previousPage = mReportGenerator.Pages(i)
+        Next
+    End Sub
+
     Private Sub PageContextMenuStripShow(sender As ReportPage, e As MouseEventArgs)
 
+    End Sub
+
+    Private Sub PagePosition(pg As ReportPage, ByVal previousPage As ReportPage, Optional ByVal zoomFactor As Single = 0)
+        If zoomFactor <> 0 Then pg.Scale(New SizeF(zoomFactor, zoomFactor))
+        PagePositionVertical(pg, previousPage)
+        PagePositionHorizontal(pg)
+        Debug.WriteLine($"{pg.Name} {pg.Bounds}")
     End Sub
 
     Private Sub PagePositionHorizontal(pg As ReportPage)
@@ -371,14 +410,10 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Sub PagePositionVertical(pg As ReportPage)
+    Private Sub PagePositionVertical(pg As ReportPage, ByVal previousPage As ReportPage)
         Dim top As Integer = Me.FormMenuStrip.Bottom
-        Dim previousPage As ReportPage = mReportGenerator?.Pages.
-            Where(Function(p) p IsNot pg).
-            OrderByDescending(Function(p) p.Bottom).
-            FirstOrDefault()
         If previousPage IsNot Nothing Then top = previousPage.Bottom
-        pg.Top = top + kPageSeparatorHeight
+        pg.Top = top + kPageSeparatorHeight * mZoomFactor
     End Sub
 
     Private Function PrintCapturePageImage(ByVal pg As ReportPage) As Bitmap
@@ -548,7 +583,6 @@ Public Class FrmReports
             .Document = New DocumentSettings(New PrintDocument()),
             .ParentForm = Me,
             .VerticalLimit = Me.FormMenuStrip.Height,
-            .Zoom = 1.0F,
             .ManagedControls = New ObservableCollection(Of DisplayControl) From {
                 New ChartAngularPosition("ChartAngularPosition", True, True, True),
                 New ChartBladeHeight("ChartBladeHeight", True, True, True),
@@ -568,7 +602,7 @@ Public Class FrmReports
     Private Sub ReportLoad(ByVal report As Report)
         If report IsNot Nothing Then
             ReportPropertiesSet(report)
-            mReportGenerator.Pages.Add(New ReportPage())
+            mReportGenerator.PageInsert(New ReportPage())
             For Each re As ReportElement In report?.ReportElements
                 Dim dc As DisplayControl = mReportGenerator.ManagedControls.FirstOrDefault(Function(c) c.Name = re.ElementName)
                 If dc IsNot Nothing Then
@@ -577,7 +611,7 @@ Public Class FrmReports
                             Dim header = DirectCast(dc, ReportHeader)
                             header.Data = Me.JobDetails
                             If re.Data IsNot Nothing Then
-                                header.VisibleItems = re.Data.Split(New Char() {";"c}, StringSplitOptions.RemoveEmptyEntries).ToList()
+                                header.VisibleItems = re.Data.Split(separator, StringSplitOptions.RemoveEmptyEntries).ToList()
                             End If
                         Case TypeOf dc Is ReportLetterhead
                             Dim letterhead = DirectCast(dc, ReportLetterhead)
@@ -589,7 +623,7 @@ Public Class FrmReports
                     dc.Location = New Point(re.PositionX, re.PositionY)
                     dc.Size = New Size(re.SizeWidth, re.SizeHeight)
                     dc.Data = Me.JobDetails
-                    mReportGenerator.VisibleControls.Add(dc)
+                    mReportGenerator.ControlShow(dc)
                 End If
             Next
         End If
@@ -604,13 +638,12 @@ Public Class FrmReports
         mReportGenerator.GridSize = report.GridSize
         GridSizeToolStripTextBox.Text = report.GridSize
         PageMarginsToolStripMenuItem.Checked = report.MarginsVisible
-        mReportGenerator.Zoom = report.Zoom
+        'mReportGenerator.Zoom = report.Zoom
     End Sub
 
     Private Sub ReportPropertiesUpdate(ByRef report As Report)
         If report.GridSize <> mReportGenerator.GridSize Then report.GridSize = mReportGenerator.GridSize
         If report.MarginsVisible <> mReportGenerator.MarginsVisible Then report.MarginsVisible = mReportGenerator.MarginsVisible
-        If report.Zoom <> mReportGenerator.Zoom Then report.Zoom = mReportGenerator.Zoom
     End Sub
 
     Private Sub ReportsMenuItemAdd(item As ToolStripMenuItem, Optional ByVal index As Integer = 0)
@@ -721,8 +754,8 @@ Public Class FrmReports
                 Debug.WriteLine($"Entity: {entry.Entity.GetType().Name}, State: {entry.State}")
                 If entry.State = EntityState.Modified Then
                     Dim modifiedProperties As List(Of PropertyEntry) = entry.Properties.Where(Function(p) p.IsModified).ToList()
-                    For Each prop In modifiedProperties
-                        Console.WriteLine($"  - Property: {prop.Metadata.Name}, Original: {prop.OriginalValue}, Current: {prop.CurrentValue}")
+                    For Each prop As PropertyEntry In modifiedProperties
+                        Debug.WriteLine($"  - Property: {prop.Metadata.Name}, Original: {prop.OriginalValue}, Current: {prop.CurrentValue}")
                     Next
                 End If
             Next
@@ -745,6 +778,20 @@ Public Class FrmReports
     Private Sub ViewMenuInitialize()
         PageMarginsToolStripMenuItem.CheckOnClick = True
     End Sub
+
+    Private Sub ZoomAdjust(ByVal factor As Single)
+        Dim newZoomFactor As Single = Math.Round(mZoomFactor + factor, 2)
+        newZoomFactor = Math.Min(Math.Max(newZoomFactor, kZoomFactorMin), kZoomFactorMax)
+        Dim zoomAdjust As Single = newZoomFactor / mZoomFactor
+        mZoomFactor = newZoomFactor
+        Me.SuspendLayout()
+        Dim previousPage As ReportPage = Nothing
+        For Each pg As ReportPage In mReportGenerator.Pages
+            PagePosition(pg, previousPage, zoomAdjust)
+            previousPage = pg
+        Next
+        Me.ResumeLayout()
+    End Sub
 #End Region
 #Region "Event Handlers"
 #Region "Form Events"
@@ -756,10 +803,26 @@ Public Class FrmReports
     Private Sub FrmReports2_ControlAdded(sender As Object, e As ControlEventArgs) Handles MyBase.ControlAdded
         If TypeOf e.Control Is ReportPage Then
             Dim pg As ReportPage = DirectCast(e.Control, ReportPage)
-            PagePositionVertical(pg)
-            PagePositionHorizontal(pg)
+            Dim previousPage As ReportPage = mReportGenerator?.Pages.
+                Where(Function(p) p IsNot pg).
+                OrderByDescending(Function(p) p.Bottom).
+                FirstOrDefault()
+            Me.SuspendLayout()
+            PagePosition(pg, previousPage, mZoomFactor)
+            Me.ResumeLayout()
+            'RemoveHandler pg.LocationChanged, AddressOf Me.Page_LocationChanged
+            'AddHandler pg.LocationChanged, AddressOf Me.Page_LocationChanged
             RemoveHandler pg.MouseDownEvent, AddressOf Me.Page_MouseDown
             AddHandler pg.MouseDownEvent, AddressOf Me.Page_MouseDown
+            'RemoveHandler pg.SizeChanged, AddressOf Me.Page_SizeChanged
+            'AddHandler pg.SizeChanged, AddressOf Me.Page_SizeChanged
+        End If
+    End Sub
+
+    Private Sub FrmReports2_ControlRemoved(sender As Object, e As ControlEventArgs) Handles MyBase.ControlRemoved
+        If TypeOf e.Control Is ReportPage Then
+            Dim pg As ReportPage = DirectCast(e.Control, ReportPage)
+            Dim index = mReportGenerator.Pages.IndexOf(pg)
         End If
     End Sub
 
@@ -945,15 +1008,15 @@ Public Class FrmReports
     End Sub
 
     Private Sub ZoomActualSizeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ActualSizeToolStripMenuItem.Click
-        mReportGenerator.Zoom = 1.0F
+        ZoomAdjust(1.0F - mZoomFactor)
     End Sub
 
     Private Sub ZoomInToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZoomInToolStripMenuItem.Click
-        mReportGenerator.Zoom += 0.1F
+        ZoomAdjust(0.1F)
     End Sub
 
     Private Sub ZoomOutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZoomOutToolStripMenuItem.Click
-        mReportGenerator.Zoom -= 0.1F
+        ZoomAdjust(-0.1F)
     End Sub
 #End Region
 #Region "Control Context Menu Events"
@@ -991,11 +1054,13 @@ Public Class FrmReports
 #End Region
 #Region "Page Context Menu Events"
     Private Sub InsertNewPageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles InsertNewPageToolStripMenuItem.Click
-        mReportGenerator.PageInsertNew(New ReportPage(), mClickedPage)
+        mReportGenerator.PageInsert(New ReportPage(), mClickedPage)
     End Sub
 
+    Private Shared ReadOnly separator As Char() = New Char() {";"c}
+
     Private Sub DeletePageToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeletePageToolStripMenuItem.Click
-        mReportGenerator.PageDelete(mClickedPage)
+        PageRemove(mClickedPage)
     End Sub
 
     Private Sub PageContextMenuStrip_Opening(sender As Object, e As CancelEventArgs) Handles PageContextMenuStrip.Opening

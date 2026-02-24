@@ -80,12 +80,12 @@ Partial Class ReportHeader
         ' Header
         ' 
         Header.ColumnCount = 6
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.21212F))
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.21212F))
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 12.121212F))
-        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 21.21212F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 15.0014009F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 18.3319321F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 15.0014009F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 18.3319321F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 15.0014009F))
+        Header.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 18.3319321F))
         Header.Controls.Add(TxtWheelPitch, 5, 7)
         Header.Controls.Add(TxtMarkedPitch, 5, 6)
         Header.Controls.Add(TxtMeasuredDiameter, 5, 5)
@@ -134,30 +134,31 @@ Partial Class ReportHeader
         Header.Controls.Add(LabRotation, 4, 3)
         Header.Controls.Add(TxtJobId, 3, 0)
         Header.Controls.Add(TxtJobNumber, 1, 0)
+        Header.Dock = DockStyle.Fill
         Header.ForeColor = SystemColors.InactiveCaption
         Header.Location = New Point(0, 0)
         Header.Margin = New Padding(0)
         Header.Name = "Header"
         Header.RowCount = 8
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        Header.Size = New Size(815, 162)
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
+        Header.Size = New Size(815, 165)
         Header.TabIndex = 29
         ' 
         ' TxtWheelPitch
         ' 
-        TxtWheelPitch.Anchor = AnchorStyles.Left
         TxtWheelPitch.BorderStyle = BorderStyle.None
-        TxtWheelPitch.Location = New Point(641, 143)
+        TxtWheelPitch.Dock = DockStyle.Fill
+        TxtWheelPitch.Location = New Point(667, 143)
         TxtWheelPitch.Name = "TxtWheelPitch"
         TxtWheelPitch.ReadOnly = True
-        TxtWheelPitch.Size = New Size(168, 16)
+        TxtWheelPitch.Size = New Size(145, 16)
         TxtWheelPitch.TabIndex = 49
         TxtWheelPitch.TabStop = False
         TxtWheelPitch.Tag = "WhlPit"
@@ -165,12 +166,12 @@ Partial Class ReportHeader
         ' 
         ' TxtMarkedPitch
         ' 
-        TxtMarkedPitch.Anchor = AnchorStyles.Left
         TxtMarkedPitch.BorderStyle = BorderStyle.None
-        TxtMarkedPitch.Location = New Point(641, 123)
+        TxtMarkedPitch.Dock = DockStyle.Fill
+        TxtMarkedPitch.Location = New Point(667, 123)
         TxtMarkedPitch.Name = "TxtMarkedPitch"
         TxtMarkedPitch.ReadOnly = True
-        TxtMarkedPitch.Size = New Size(168, 16)
+        TxtMarkedPitch.Size = New Size(145, 16)
         TxtMarkedPitch.TabIndex = 48
         TxtMarkedPitch.TabStop = False
         TxtMarkedPitch.Tag = "MrkPit"
@@ -178,12 +179,12 @@ Partial Class ReportHeader
         ' 
         ' TxtMeasuredDiameter
         ' 
-        TxtMeasuredDiameter.Anchor = AnchorStyles.Left
         TxtMeasuredDiameter.BorderStyle = BorderStyle.None
-        TxtMeasuredDiameter.Location = New Point(641, 103)
+        TxtMeasuredDiameter.Dock = DockStyle.Fill
+        TxtMeasuredDiameter.Location = New Point(667, 103)
         TxtMeasuredDiameter.Name = "TxtMeasuredDiameter"
         TxtMeasuredDiameter.ReadOnly = True
-        TxtMeasuredDiameter.Size = New Size(168, 16)
+        TxtMeasuredDiameter.Size = New Size(145, 16)
         TxtMeasuredDiameter.TabIndex = 47
         TxtMeasuredDiameter.TabStop = False
         TxtMeasuredDiameter.Tag = "MeasDia"
@@ -191,12 +192,12 @@ Partial Class ReportHeader
         ' 
         ' TxtMarkedDiameter
         ' 
-        TxtMarkedDiameter.Anchor = AnchorStyles.Left
         TxtMarkedDiameter.BorderStyle = BorderStyle.None
-        TxtMarkedDiameter.Location = New Point(641, 83)
+        TxtMarkedDiameter.Dock = DockStyle.Fill
+        TxtMarkedDiameter.Location = New Point(667, 83)
         TxtMarkedDiameter.Name = "TxtMarkedDiameter"
         TxtMarkedDiameter.ReadOnly = True
-        TxtMarkedDiameter.Size = New Size(168, 16)
+        TxtMarkedDiameter.Size = New Size(145, 16)
         TxtMarkedDiameter.TabIndex = 46
         TxtMarkedDiameter.TabStop = False
         TxtMarkedDiameter.Tag = "MrkDia"
@@ -204,12 +205,12 @@ Partial Class ReportHeader
         ' 
         ' TxtRotation
         ' 
-        TxtRotation.Anchor = AnchorStyles.Left
         TxtRotation.BorderStyle = BorderStyle.None
-        TxtRotation.Location = New Point(641, 63)
+        TxtRotation.Dock = DockStyle.Fill
+        TxtRotation.Location = New Point(667, 63)
         TxtRotation.Name = "TxtRotation"
         TxtRotation.ReadOnly = True
-        TxtRotation.Size = New Size(168, 16)
+        TxtRotation.Size = New Size(145, 16)
         TxtRotation.TabIndex = 45
         TxtRotation.TabStop = False
         TxtRotation.Tag = "Rotn"
@@ -217,12 +218,12 @@ Partial Class ReportHeader
         ' 
         ' TxtPerformedBy
         ' 
-        TxtPerformedBy.Anchor = AnchorStyles.Left
         TxtPerformedBy.BorderStyle = BorderStyle.None
-        TxtPerformedBy.Location = New Point(641, 43)
+        TxtPerformedBy.Dock = DockStyle.Fill
+        TxtPerformedBy.Location = New Point(667, 43)
         TxtPerformedBy.Name = "TxtPerformedBy"
         TxtPerformedBy.ReadOnly = True
-        TxtPerformedBy.Size = New Size(168, 16)
+        TxtPerformedBy.Size = New Size(145, 16)
         TxtPerformedBy.TabIndex = 44
         TxtPerformedBy.TabStop = False
         TxtPerformedBy.Tag = "PerfBy"
@@ -230,12 +231,12 @@ Partial Class ReportHeader
         ' 
         ' TxtScanDate
         ' 
-        TxtScanDate.Anchor = AnchorStyles.Left
         TxtScanDate.BorderStyle = BorderStyle.None
-        TxtScanDate.Location = New Point(641, 23)
+        TxtScanDate.Dock = DockStyle.Fill
+        TxtScanDate.Location = New Point(667, 23)
         TxtScanDate.Name = "TxtScanDate"
         TxtScanDate.ReadOnly = True
-        TxtScanDate.Size = New Size(168, 16)
+        TxtScanDate.Size = New Size(145, 16)
         TxtScanDate.TabIndex = 43
         TxtScanDate.TabStop = False
         TxtScanDate.Tag = "Scan"
@@ -243,12 +244,12 @@ Partial Class ReportHeader
         ' 
         ' TxtFileName
         ' 
-        TxtFileName.Anchor = AnchorStyles.Left
         TxtFileName.BorderStyle = BorderStyle.None
-        TxtFileName.Location = New Point(641, 3)
+        TxtFileName.Dock = DockStyle.Fill
+        TxtFileName.Location = New Point(667, 3)
         TxtFileName.Name = "TxtFileName"
         TxtFileName.ReadOnly = True
-        TxtFileName.Size = New Size(168, 16)
+        TxtFileName.Size = New Size(145, 16)
         TxtFileName.TabIndex = 42
         TxtFileName.TabStop = False
         TxtFileName.Tag = "File"
@@ -256,13 +257,13 @@ Partial Class ReportHeader
         ' 
         ' LabFilename
         ' 
-        LabFilename.Anchor = AnchorStyles.Left
-        LabFilename.AutoSize = True
+        LabFilename.Dock = DockStyle.Fill
         LabFilename.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabFilename.ForeColor = SystemColors.ControlText
-        LabFilename.Location = New Point(543, 2)
+        LabFilename.Location = New Point(545, 3)
+        LabFilename.Margin = New Padding(3, 3, 3, 0)
         LabFilename.Name = "LabFilename"
-        LabFilename.Size = New Size(62, 15)
+        LabFilename.Size = New Size(116, 17)
         LabFilename.TabIndex = 34
         LabFilename.Tag = "TxtFileName"
         LabFilename.Text = "File Name"
@@ -270,13 +271,13 @@ Partial Class ReportHeader
         ' 
         ' LabJobId
         ' 
-        LabJobId.Anchor = AnchorStyles.Left
-        LabJobId.AutoSize = True
+        LabJobId.Dock = DockStyle.Fill
         LabJobId.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabJobId.ForeColor = SystemColors.ControlText
-        LabJobId.Location = New Point(273, 2)
+        LabJobId.Location = New Point(274, 3)
+        LabJobId.Margin = New Padding(3, 3, 3, 0)
         LabJobId.Name = "LabJobId"
-        LabJobId.Size = New Size(40, 15)
+        LabJobId.Size = New Size(116, 17)
         LabJobId.TabIndex = 18
         LabJobId.Tag = "TxtJobId"
         LabJobId.Text = "Job Id"
@@ -284,13 +285,13 @@ Partial Class ReportHeader
         ' 
         ' LabJobNumber
         ' 
-        LabJobNumber.Anchor = AnchorStyles.Left
-        LabJobNumber.AutoSize = True
+        LabJobNumber.Dock = DockStyle.Fill
         LabJobNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabJobNumber.ForeColor = SystemColors.ControlText
-        LabJobNumber.Location = New Point(3, 2)
+        LabJobNumber.Location = New Point(3, 3)
+        LabJobNumber.Margin = New Padding(3, 3, 3, 0)
         LabJobNumber.Name = "LabJobNumber"
-        LabJobNumber.Size = New Size(48, 15)
+        LabJobNumber.Size = New Size(116, 17)
         LabJobNumber.TabIndex = 0
         LabJobNumber.Tag = "TxtJobNumber"
         LabJobNumber.Text = "Job No."
@@ -298,13 +299,13 @@ Partial Class ReportHeader
         ' 
         ' LabCustomer
         ' 
-        LabCustomer.Anchor = AnchorStyles.Left
-        LabCustomer.AutoSize = True
+        LabCustomer.Dock = DockStyle.Fill
         LabCustomer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabCustomer.ForeColor = SystemColors.ControlText
-        LabCustomer.Location = New Point(3, 22)
+        LabCustomer.Location = New Point(3, 23)
+        LabCustomer.Margin = New Padding(3, 3, 3, 0)
         LabCustomer.Name = "LabCustomer"
-        LabCustomer.Size = New Size(61, 15)
+        LabCustomer.Size = New Size(116, 17)
         LabCustomer.TabIndex = 3
         LabCustomer.Tag = "TxtCustomer"
         LabCustomer.Text = "Customer"
@@ -312,13 +313,13 @@ Partial Class ReportHeader
         ' 
         ' LabVessel
         ' 
-        LabVessel.Anchor = AnchorStyles.Left
-        LabVessel.AutoSize = True
+        LabVessel.Dock = DockStyle.Fill
         LabVessel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabVessel.ForeColor = SystemColors.ControlText
-        LabVessel.Location = New Point(3, 42)
+        LabVessel.Location = New Point(3, 43)
+        LabVessel.Margin = New Padding(3, 3, 3, 0)
         LabVessel.Name = "LabVessel"
-        LabVessel.Size = New Size(41, 15)
+        LabVessel.Size = New Size(116, 17)
         LabVessel.TabIndex = 4
         LabVessel.Tag = "TxtVessel"
         LabVessel.Text = "Vessel"
@@ -326,13 +327,13 @@ Partial Class ReportHeader
         ' 
         ' LabManufacturer
         ' 
-        LabManufacturer.Anchor = AnchorStyles.Left
-        LabManufacturer.AutoSize = True
+        LabManufacturer.Dock = DockStyle.Fill
         LabManufacturer.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabManufacturer.ForeColor = SystemColors.ControlText
-        LabManufacturer.Location = New Point(3, 62)
+        LabManufacturer.Location = New Point(3, 63)
+        LabManufacturer.Margin = New Padding(3, 3, 3, 0)
         LabManufacturer.Name = "LabManufacturer"
-        LabManufacturer.Size = New Size(84, 15)
+        LabManufacturer.Size = New Size(116, 17)
         LabManufacturer.TabIndex = 5
         LabManufacturer.Tag = "TxtManufacturer"
         LabManufacturer.Text = "Manufacturer"
@@ -340,13 +341,13 @@ Partial Class ReportHeader
         ' 
         ' LabPartNumber
         ' 
-        LabPartNumber.Anchor = AnchorStyles.Left
-        LabPartNumber.AutoSize = True
+        LabPartNumber.Dock = DockStyle.Fill
         LabPartNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabPartNumber.ForeColor = SystemColors.ControlText
-        LabPartNumber.Location = New Point(3, 82)
+        LabPartNumber.Location = New Point(3, 83)
+        LabPartNumber.Margin = New Padding(3, 3, 3, 0)
         LabPartNumber.Name = "LabPartNumber"
-        LabPartNumber.Size = New Size(52, 15)
+        LabPartNumber.Size = New Size(116, 17)
         LabPartNumber.TabIndex = 6
         LabPartNumber.Tag = "TxtPartNumber"
         LabPartNumber.Text = "Part No."
@@ -354,13 +355,13 @@ Partial Class ReportHeader
         ' 
         ' LabSerialNumber
         ' 
-        LabSerialNumber.Anchor = AnchorStyles.Left
-        LabSerialNumber.AutoSize = True
+        LabSerialNumber.Dock = DockStyle.Fill
         LabSerialNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabSerialNumber.ForeColor = SystemColors.ControlText
-        LabSerialNumber.Location = New Point(3, 102)
+        LabSerialNumber.Location = New Point(3, 103)
+        LabSerialNumber.Margin = New Padding(3, 3, 3, 0)
         LabSerialNumber.Name = "LabSerialNumber"
-        LabSerialNumber.Size = New Size(28, 15)
+        LabSerialNumber.Size = New Size(116, 17)
         LabSerialNumber.TabIndex = 7
         LabSerialNumber.Tag = "TxtSerialNumber"
         LabSerialNumber.Text = "S/N"
@@ -368,13 +369,13 @@ Partial Class ReportHeader
         ' 
         ' LabStampNumber
         ' 
-        LabStampNumber.Anchor = AnchorStyles.Left
-        LabStampNumber.AutoSize = True
+        LabStampNumber.Dock = DockStyle.Fill
         LabStampNumber.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabStampNumber.ForeColor = SystemColors.ControlText
-        LabStampNumber.Location = New Point(3, 122)
+        LabStampNumber.Location = New Point(3, 123)
+        LabStampNumber.Margin = New Padding(3, 3, 3, 0)
         LabStampNumber.Name = "LabStampNumber"
-        LabStampNumber.Size = New Size(65, 15)
+        LabStampNumber.Size = New Size(116, 17)
         LabStampNumber.TabIndex = 8
         LabStampNumber.Tag = "TxtStampNumber"
         LabStampNumber.Text = "Stamp No."
@@ -382,13 +383,13 @@ Partial Class ReportHeader
         ' 
         ' LabInspectedBy
         ' 
-        LabInspectedBy.Anchor = AnchorStyles.Left
-        LabInspectedBy.AutoSize = True
+        LabInspectedBy.Dock = DockStyle.Fill
         LabInspectedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabInspectedBy.ForeColor = SystemColors.ControlText
         LabInspectedBy.Location = New Point(3, 143)
+        LabInspectedBy.Margin = New Padding(3, 3, 3, 0)
         LabInspectedBy.Name = "LabInspectedBy"
-        LabInspectedBy.Size = New Size(79, 15)
+        LabInspectedBy.Size = New Size(116, 22)
         LabInspectedBy.TabIndex = 9
         LabInspectedBy.Tag = "TxtInspectedBy"
         LabInspectedBy.Text = "Inspected By"
@@ -396,13 +397,14 @@ Partial Class ReportHeader
         ' 
         ' TxtCustomer
         ' 
-        TxtCustomer.Anchor = AnchorStyles.Left
         TxtCustomer.BorderStyle = BorderStyle.None
         TxtCustomer.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.Vessel.Customer.CustomerName", True))
-        TxtCustomer.Location = New Point(101, 23)
+        TxtCustomer.Dock = DockStyle.Fill
+        TxtCustomer.Location = New Point(125, 23)
+        TxtCustomer.Margin = New Padding(3, 3, 3, 0)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
-        TxtCustomer.Size = New Size(165, 16)
+        TxtCustomer.Size = New Size(143, 16)
         TxtCustomer.TabIndex = 11
         TxtCustomer.TabStop = False
         TxtCustomer.Tag = "Cust"
@@ -414,13 +416,14 @@ Partial Class ReportHeader
         ' 
         ' TxtVessel
         ' 
-        TxtVessel.Anchor = AnchorStyles.Left
         TxtVessel.BorderStyle = BorderStyle.None
         TxtVessel.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.Vessel.VesselName", True))
-        TxtVessel.Location = New Point(101, 43)
+        TxtVessel.Dock = DockStyle.Fill
+        TxtVessel.Location = New Point(125, 43)
+        TxtVessel.Margin = New Padding(3, 3, 3, 0)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
-        TxtVessel.Size = New Size(165, 16)
+        TxtVessel.Size = New Size(143, 16)
         TxtVessel.TabIndex = 12
         TxtVessel.TabStop = False
         TxtVessel.Tag = "Vess"
@@ -428,13 +431,14 @@ Partial Class ReportHeader
         ' 
         ' TxtManufacturer
         ' 
-        TxtManufacturer.Anchor = AnchorStyles.Left
         TxtManufacturer.BorderStyle = BorderStyle.None
         TxtManufacturer.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.PropellerManufacturer.ManufacturerName", True))
-        TxtManufacturer.Location = New Point(101, 63)
+        TxtManufacturer.Dock = DockStyle.Fill
+        TxtManufacturer.Location = New Point(125, 63)
+        TxtManufacturer.Margin = New Padding(3, 3, 3, 0)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
-        TxtManufacturer.Size = New Size(165, 16)
+        TxtManufacturer.Size = New Size(143, 16)
         TxtManufacturer.TabIndex = 13
         TxtManufacturer.TabStop = False
         TxtManufacturer.Tag = "Mfg"
@@ -442,12 +446,13 @@ Partial Class ReportHeader
         ' 
         ' TxtPartNumber
         ' 
-        TxtPartNumber.Anchor = AnchorStyles.Left
         TxtPartNumber.BorderStyle = BorderStyle.None
-        TxtPartNumber.Location = New Point(101, 83)
+        TxtPartNumber.Dock = DockStyle.Fill
+        TxtPartNumber.Location = New Point(125, 83)
+        TxtPartNumber.Margin = New Padding(3, 3, 3, 0)
         TxtPartNumber.Name = "TxtPartNumber"
         TxtPartNumber.ReadOnly = True
-        TxtPartNumber.Size = New Size(165, 16)
+        TxtPartNumber.Size = New Size(143, 16)
         TxtPartNumber.TabIndex = 14
         TxtPartNumber.TabStop = False
         TxtPartNumber.Tag = "P/N"
@@ -455,12 +460,13 @@ Partial Class ReportHeader
         ' 
         ' TxtSerialNumber
         ' 
-        TxtSerialNumber.Anchor = AnchorStyles.Left
         TxtSerialNumber.BorderStyle = BorderStyle.None
-        TxtSerialNumber.Location = New Point(101, 103)
+        TxtSerialNumber.Dock = DockStyle.Fill
+        TxtSerialNumber.Location = New Point(125, 103)
+        TxtSerialNumber.Margin = New Padding(3, 3, 3, 0)
         TxtSerialNumber.Name = "TxtSerialNumber"
         TxtSerialNumber.ReadOnly = True
-        TxtSerialNumber.Size = New Size(165, 16)
+        TxtSerialNumber.Size = New Size(143, 16)
         TxtSerialNumber.TabIndex = 15
         TxtSerialNumber.TabStop = False
         TxtSerialNumber.Tag = "S/N"
@@ -468,12 +474,13 @@ Partial Class ReportHeader
         ' 
         ' TxtStampNumber
         ' 
-        TxtStampNumber.Anchor = AnchorStyles.Left
         TxtStampNumber.BorderStyle = BorderStyle.None
-        TxtStampNumber.Location = New Point(101, 123)
+        TxtStampNumber.Dock = DockStyle.Fill
+        TxtStampNumber.Location = New Point(125, 123)
+        TxtStampNumber.Margin = New Padding(3, 3, 3, 0)
         TxtStampNumber.Name = "TxtStampNumber"
         TxtStampNumber.ReadOnly = True
-        TxtStampNumber.Size = New Size(165, 16)
+        TxtStampNumber.Size = New Size(143, 16)
         TxtStampNumber.TabIndex = 16
         TxtStampNumber.TabStop = False
         TxtStampNumber.Tag = "Stamp"
@@ -481,12 +488,13 @@ Partial Class ReportHeader
         ' 
         ' TxtInspectedBy
         ' 
-        TxtInspectedBy.Anchor = AnchorStyles.Left
         TxtInspectedBy.BorderStyle = BorderStyle.None
-        TxtInspectedBy.Location = New Point(101, 143)
+        TxtInspectedBy.Dock = DockStyle.Fill
+        TxtInspectedBy.Location = New Point(125, 143)
+        TxtInspectedBy.Margin = New Padding(3, 3, 3, 0)
         TxtInspectedBy.Name = "TxtInspectedBy"
         TxtInspectedBy.ReadOnly = True
-        TxtInspectedBy.Size = New Size(165, 16)
+        TxtInspectedBy.Size = New Size(143, 16)
         TxtInspectedBy.TabIndex = 17
         TxtInspectedBy.TabStop = False
         TxtInspectedBy.Tag = "InspBy"
@@ -494,13 +502,13 @@ Partial Class ReportHeader
         ' 
         ' LabClass
         ' 
-        LabClass.Anchor = AnchorStyles.Left
-        LabClass.AutoSize = True
+        LabClass.Dock = DockStyle.Fill
         LabClass.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabClass.ForeColor = SystemColors.ControlText
-        LabClass.Location = New Point(273, 22)
+        LabClass.Location = New Point(274, 23)
+        LabClass.Margin = New Padding(3, 3, 3, 0)
         LabClass.Name = "LabClass"
-        LabClass.Size = New Size(33, 15)
+        LabClass.Size = New Size(116, 17)
         LabClass.TabIndex = 19
         LabClass.Tag = "TxtClass"
         LabClass.Text = "Class"
@@ -508,13 +516,13 @@ Partial Class ReportHeader
         ' 
         ' LabRepairStatus
         ' 
-        LabRepairStatus.Anchor = AnchorStyles.Left
-        LabRepairStatus.AutoSize = True
+        LabRepairStatus.Dock = DockStyle.Fill
         LabRepairStatus.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabRepairStatus.ForeColor = SystemColors.ControlText
-        LabRepairStatus.Location = New Point(273, 42)
+        LabRepairStatus.Location = New Point(274, 43)
+        LabRepairStatus.Margin = New Padding(3, 3, 3, 0)
         LabRepairStatus.Name = "LabRepairStatus"
-        LabRepairStatus.Size = New Size(81, 15)
+        LabRepairStatus.Size = New Size(116, 17)
         LabRepairStatus.TabIndex = 20
         LabRepairStatus.Tag = "TxtRepairStatus"
         LabRepairStatus.Text = "Repair Status"
@@ -522,13 +530,13 @@ Partial Class ReportHeader
         ' 
         ' LabStyle
         ' 
-        LabStyle.Anchor = AnchorStyles.Left
-        LabStyle.AutoSize = True
+        LabStyle.Dock = DockStyle.Fill
         LabStyle.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabStyle.ForeColor = SystemColors.ControlText
-        LabStyle.Location = New Point(273, 62)
+        LabStyle.Location = New Point(274, 63)
+        LabStyle.Margin = New Padding(3, 3, 3, 0)
         LabStyle.Name = "LabStyle"
-        LabStyle.Size = New Size(35, 15)
+        LabStyle.Size = New Size(116, 17)
         LabStyle.TabIndex = 21
         LabStyle.Tag = "TxtStyle"
         LabStyle.Text = "Style"
@@ -536,13 +544,13 @@ Partial Class ReportHeader
         ' 
         ' LabMaterial
         ' 
-        LabMaterial.Anchor = AnchorStyles.Left
-        LabMaterial.AutoSize = True
+        LabMaterial.Dock = DockStyle.Fill
         LabMaterial.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMaterial.ForeColor = SystemColors.ControlText
-        LabMaterial.Location = New Point(273, 82)
+        LabMaterial.Location = New Point(274, 83)
+        LabMaterial.Margin = New Padding(3, 3, 3, 0)
         LabMaterial.Name = "LabMaterial"
-        LabMaterial.Size = New Size(53, 15)
+        LabMaterial.Size = New Size(116, 17)
         LabMaterial.TabIndex = 22
         LabMaterial.Tag = "TxtMaterial"
         LabMaterial.Text = "Material"
@@ -550,13 +558,13 @@ Partial Class ReportHeader
         ' 
         ' LabBore
         ' 
-        LabBore.Anchor = AnchorStyles.Left
-        LabBore.AutoSize = True
+        LabBore.Dock = DockStyle.Fill
         LabBore.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabBore.ForeColor = SystemColors.ControlText
-        LabBore.Location = New Point(273, 102)
+        LabBore.Location = New Point(274, 103)
+        LabBore.Margin = New Padding(3, 3, 3, 0)
         LabBore.Name = "LabBore"
-        LabBore.Size = New Size(34, 15)
+        LabBore.Size = New Size(116, 17)
         LabBore.TabIndex = 23
         LabBore.Tag = "TxtBore"
         LabBore.Text = "Bore"
@@ -564,13 +572,13 @@ Partial Class ReportHeader
         ' 
         ' LabDAR
         ' 
-        LabDAR.Anchor = AnchorStyles.Left
-        LabDAR.AutoSize = True
+        LabDAR.Dock = DockStyle.Fill
         LabDAR.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabDAR.ForeColor = SystemColors.ControlText
-        LabDAR.Location = New Point(273, 122)
+        LabDAR.Location = New Point(274, 123)
+        LabDAR.Margin = New Padding(3, 3, 3, 0)
         LabDAR.Name = "LabDAR"
-        LabDAR.Size = New Size(32, 15)
+        LabDAR.Size = New Size(116, 17)
         LabDAR.TabIndex = 24
         LabDAR.Tag = "TxtDAR"
         LabDAR.Text = "DAR"
@@ -578,13 +586,13 @@ Partial Class ReportHeader
         ' 
         ' LabCup
         ' 
-        LabCup.Anchor = AnchorStyles.Left
-        LabCup.AutoSize = True
+        LabCup.Dock = DockStyle.Fill
         LabCup.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabCup.ForeColor = SystemColors.ControlText
-        LabCup.Location = New Point(273, 143)
+        LabCup.Location = New Point(274, 143)
+        LabCup.Margin = New Padding(3, 3, 3, 0)
         LabCup.Name = "LabCup"
-        LabCup.Size = New Size(28, 15)
+        LabCup.Size = New Size(116, 22)
         LabCup.TabIndex = 25
         LabCup.Tag = "TxtCup"
         LabCup.Text = "Cup"
@@ -592,12 +600,12 @@ Partial Class ReportHeader
         ' 
         ' TxtClass
         ' 
-        TxtClass.Anchor = AnchorStyles.Left
         TxtClass.BorderStyle = BorderStyle.None
-        TxtClass.Location = New Point(371, 23)
+        TxtClass.Dock = DockStyle.Fill
+        TxtClass.Location = New Point(396, 23)
         TxtClass.Name = "TxtClass"
         TxtClass.ReadOnly = True
-        TxtClass.Size = New Size(165, 16)
+        TxtClass.Size = New Size(143, 16)
         TxtClass.TabIndex = 27
         TxtClass.TabStop = False
         TxtClass.Tag = "Cls"
@@ -605,12 +613,12 @@ Partial Class ReportHeader
         ' 
         ' TxtRepairStatus
         ' 
-        TxtRepairStatus.Anchor = AnchorStyles.Left
         TxtRepairStatus.BorderStyle = BorderStyle.None
-        TxtRepairStatus.Location = New Point(371, 43)
+        TxtRepairStatus.Dock = DockStyle.Fill
+        TxtRepairStatus.Location = New Point(396, 43)
         TxtRepairStatus.Name = "TxtRepairStatus"
         TxtRepairStatus.ReadOnly = True
-        TxtRepairStatus.Size = New Size(165, 16)
+        TxtRepairStatus.Size = New Size(143, 16)
         TxtRepairStatus.TabIndex = 28
         TxtRepairStatus.TabStop = False
         TxtRepairStatus.Tag = "RStat"
@@ -618,12 +626,12 @@ Partial Class ReportHeader
         ' 
         ' TxtStyle
         ' 
-        TxtStyle.Anchor = AnchorStyles.Left
         TxtStyle.BorderStyle = BorderStyle.None
-        TxtStyle.Location = New Point(371, 63)
+        TxtStyle.Dock = DockStyle.Fill
+        TxtStyle.Location = New Point(396, 63)
         TxtStyle.Name = "TxtStyle"
         TxtStyle.ReadOnly = True
-        TxtStyle.Size = New Size(165, 16)
+        TxtStyle.Size = New Size(143, 16)
         TxtStyle.TabIndex = 29
         TxtStyle.TabStop = False
         TxtStyle.Tag = "Style"
@@ -631,12 +639,12 @@ Partial Class ReportHeader
         ' 
         ' TxtMaterial
         ' 
-        TxtMaterial.Anchor = AnchorStyles.Left
         TxtMaterial.BorderStyle = BorderStyle.None
-        TxtMaterial.Location = New Point(371, 83)
+        TxtMaterial.Dock = DockStyle.Fill
+        TxtMaterial.Location = New Point(396, 83)
         TxtMaterial.Name = "TxtMaterial"
         TxtMaterial.ReadOnly = True
-        TxtMaterial.Size = New Size(165, 16)
+        TxtMaterial.Size = New Size(143, 16)
         TxtMaterial.TabIndex = 30
         TxtMaterial.TabStop = False
         TxtMaterial.Tag = "Matl"
@@ -644,12 +652,12 @@ Partial Class ReportHeader
         ' 
         ' TxtBore
         ' 
-        TxtBore.Anchor = AnchorStyles.Left
         TxtBore.BorderStyle = BorderStyle.None
-        TxtBore.Location = New Point(371, 103)
+        TxtBore.Dock = DockStyle.Fill
+        TxtBore.Location = New Point(396, 103)
         TxtBore.Name = "TxtBore"
         TxtBore.ReadOnly = True
-        TxtBore.Size = New Size(165, 16)
+        TxtBore.Size = New Size(143, 16)
         TxtBore.TabIndex = 31
         TxtBore.TabStop = False
         TxtBore.Tag = "Bore"
@@ -657,12 +665,12 @@ Partial Class ReportHeader
         ' 
         ' TxtDAR
         ' 
-        TxtDAR.Anchor = AnchorStyles.Left
         TxtDAR.BorderStyle = BorderStyle.None
-        TxtDAR.Location = New Point(371, 123)
+        TxtDAR.Dock = DockStyle.Fill
+        TxtDAR.Location = New Point(396, 123)
         TxtDAR.Name = "TxtDAR"
         TxtDAR.ReadOnly = True
-        TxtDAR.Size = New Size(165, 16)
+        TxtDAR.Size = New Size(143, 16)
         TxtDAR.TabIndex = 32
         TxtDAR.TabStop = False
         TxtDAR.Tag = "DAR"
@@ -670,12 +678,12 @@ Partial Class ReportHeader
         ' 
         ' TxtCup
         ' 
-        TxtCup.Anchor = AnchorStyles.Left
         TxtCup.BorderStyle = BorderStyle.None
-        TxtCup.Location = New Point(371, 143)
+        TxtCup.Dock = DockStyle.Fill
+        TxtCup.Location = New Point(396, 143)
         TxtCup.Name = "TxtCup"
         TxtCup.ReadOnly = True
-        TxtCup.Size = New Size(165, 16)
+        TxtCup.Size = New Size(143, 16)
         TxtCup.TabIndex = 33
         TxtCup.TabStop = False
         TxtCup.Tag = "Cup"
@@ -683,13 +691,13 @@ Partial Class ReportHeader
         ' 
         ' LabScanDate
         ' 
-        LabScanDate.Anchor = AnchorStyles.Left
-        LabScanDate.AutoSize = True
+        LabScanDate.Dock = DockStyle.Fill
         LabScanDate.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabScanDate.ForeColor = SystemColors.ControlText
-        LabScanDate.Location = New Point(543, 22)
+        LabScanDate.Location = New Point(545, 23)
+        LabScanDate.Margin = New Padding(3, 3, 3, 0)
         LabScanDate.Name = "LabScanDate"
-        LabScanDate.Size = New Size(63, 15)
+        LabScanDate.Size = New Size(116, 17)
         LabScanDate.TabIndex = 35
         LabScanDate.Tag = "TxtScanDate"
         LabScanDate.Text = "Scan Date"
@@ -697,13 +705,13 @@ Partial Class ReportHeader
         ' 
         ' LabPerformedBy
         ' 
-        LabPerformedBy.Anchor = AnchorStyles.Left
-        LabPerformedBy.AutoSize = True
+        LabPerformedBy.Dock = DockStyle.Fill
         LabPerformedBy.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabPerformedBy.ForeColor = SystemColors.ControlText
-        LabPerformedBy.Location = New Point(543, 42)
+        LabPerformedBy.Location = New Point(545, 43)
+        LabPerformedBy.Margin = New Padding(3, 3, 3, 0)
         LabPerformedBy.Name = "LabPerformedBy"
-        LabPerformedBy.Size = New Size(85, 15)
+        LabPerformedBy.Size = New Size(116, 17)
         LabPerformedBy.TabIndex = 36
         LabPerformedBy.Tag = "TxtPerformedBy"
         LabPerformedBy.Text = "Performed By"
@@ -711,13 +719,13 @@ Partial Class ReportHeader
         ' 
         ' LabMarkedPitch
         ' 
-        LabMarkedPitch.Anchor = AnchorStyles.Left
-        LabMarkedPitch.AutoSize = True
+        LabMarkedPitch.Dock = DockStyle.Fill
         LabMarkedPitch.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMarkedPitch.ForeColor = SystemColors.ControlText
-        LabMarkedPitch.Location = New Point(543, 122)
+        LabMarkedPitch.Location = New Point(545, 123)
+        LabMarkedPitch.Margin = New Padding(3, 3, 3, 0)
         LabMarkedPitch.Name = "LabMarkedPitch"
-        LabMarkedPitch.Size = New Size(81, 15)
+        LabMarkedPitch.Size = New Size(116, 17)
         LabMarkedPitch.TabIndex = 40
         LabMarkedPitch.Tag = "TxtMarkedPitch"
         LabMarkedPitch.Text = "Marked Pitch"
@@ -725,13 +733,13 @@ Partial Class ReportHeader
         ' 
         ' LabWheelPitch
         ' 
-        LabWheelPitch.Anchor = AnchorStyles.Left
-        LabWheelPitch.AutoSize = True
+        LabWheelPitch.Dock = DockStyle.Fill
         LabWheelPitch.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabWheelPitch.ForeColor = SystemColors.ControlText
-        LabWheelPitch.Location = New Point(543, 143)
+        LabWheelPitch.Location = New Point(545, 143)
+        LabWheelPitch.Margin = New Padding(3, 3, 3, 0)
         LabWheelPitch.Name = "LabWheelPitch"
-        LabWheelPitch.Size = New Size(74, 15)
+        LabWheelPitch.Size = New Size(116, 22)
         LabWheelPitch.TabIndex = 41
         LabWheelPitch.Tag = "TxtWheelPitch"
         LabWheelPitch.Text = "Wheel Pitch"
@@ -739,13 +747,13 @@ Partial Class ReportHeader
         ' 
         ' LabMeasuredDiameter
         ' 
-        LabMeasuredDiameter.Anchor = AnchorStyles.Left
-        LabMeasuredDiameter.AutoSize = True
+        LabMeasuredDiameter.Dock = DockStyle.Fill
         LabMeasuredDiameter.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMeasuredDiameter.ForeColor = SystemColors.ControlText
-        LabMeasuredDiameter.Location = New Point(543, 102)
+        LabMeasuredDiameter.Location = New Point(545, 103)
+        LabMeasuredDiameter.Margin = New Padding(3, 3, 3, 0)
         LabMeasuredDiameter.Name = "LabMeasuredDiameter"
-        LabMeasuredDiameter.Size = New Size(83, 15)
+        LabMeasuredDiameter.Size = New Size(116, 17)
         LabMeasuredDiameter.TabIndex = 38
         LabMeasuredDiameter.Tag = "TxtMeasuredDiameter"
         LabMeasuredDiameter.Text = "Measured Dia"
@@ -753,13 +761,13 @@ Partial Class ReportHeader
         ' 
         ' LabMarkedDiameter
         ' 
-        LabMarkedDiameter.Anchor = AnchorStyles.Left
-        LabMarkedDiameter.AutoSize = True
+        LabMarkedDiameter.Dock = DockStyle.Fill
         LabMarkedDiameter.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabMarkedDiameter.ForeColor = SystemColors.ControlText
-        LabMarkedDiameter.Location = New Point(543, 82)
+        LabMarkedDiameter.Location = New Point(545, 83)
+        LabMarkedDiameter.Margin = New Padding(3, 3, 3, 0)
         LabMarkedDiameter.Name = "LabMarkedDiameter"
-        LabMarkedDiameter.Size = New Size(71, 15)
+        LabMarkedDiameter.Size = New Size(116, 17)
         LabMarkedDiameter.TabIndex = 37
         LabMarkedDiameter.Tag = "TxtMarkedDiameter"
         LabMarkedDiameter.Text = "Marked Dia"
@@ -767,13 +775,13 @@ Partial Class ReportHeader
         ' 
         ' LabRotation
         ' 
-        LabRotation.Anchor = AnchorStyles.Left
-        LabRotation.AutoSize = True
+        LabRotation.Dock = DockStyle.Fill
         LabRotation.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
         LabRotation.ForeColor = SystemColors.ControlText
-        LabRotation.Location = New Point(543, 62)
+        LabRotation.Location = New Point(545, 63)
+        LabRotation.Margin = New Padding(3, 3, 3, 0)
         LabRotation.Name = "LabRotation"
-        LabRotation.Size = New Size(55, 15)
+        LabRotation.Size = New Size(116, 17)
         LabRotation.TabIndex = 39
         LabRotation.Tag = "TxtRotation"
         LabRotation.Text = "Rotation"
@@ -781,13 +789,13 @@ Partial Class ReportHeader
         ' 
         ' TxtJobId
         ' 
-        TxtJobId.Anchor = AnchorStyles.Left
         TxtJobId.BorderStyle = BorderStyle.None
         TxtJobId.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "JobId", True))
-        TxtJobId.Location = New Point(371, 3)
+        TxtJobId.Dock = DockStyle.Fill
+        TxtJobId.Location = New Point(396, 3)
         TxtJobId.Name = "TxtJobId"
         TxtJobId.ReadOnly = True
-        TxtJobId.Size = New Size(165, 16)
+        TxtJobId.Size = New Size(143, 16)
         TxtJobId.TabIndex = 26
         TxtJobId.TabStop = False
         TxtJobId.Tag = "JobId"
@@ -795,13 +803,14 @@ Partial Class ReportHeader
         ' 
         ' TxtJobNumber
         ' 
-        TxtJobNumber.Anchor = AnchorStyles.Left
         TxtJobNumber.BorderStyle = BorderStyle.None
         TxtJobNumber.DataBindings.Add(New Binding("Text", JobDetailsBindingSource, "Job.JobNumber", True))
-        TxtJobNumber.Location = New Point(101, 3)
+        TxtJobNumber.Dock = DockStyle.Fill
+        TxtJobNumber.Location = New Point(125, 3)
+        TxtJobNumber.Margin = New Padding(3, 3, 3, 0)
         TxtJobNumber.Name = "TxtJobNumber"
         TxtJobNumber.ReadOnly = True
-        TxtJobNumber.Size = New Size(165, 16)
+        TxtJobNumber.Size = New Size(143, 16)
         TxtJobNumber.TabIndex = 10
         TxtJobNumber.TabStop = False
         TxtJobNumber.Tag = "JobNo"
@@ -815,7 +824,7 @@ Partial Class ReportHeader
         Controls.Add(Header)
         Margin = New Padding(0)
         Name = "ReportHeader"
-        Size = New Size(815, 162)
+        Size = New Size(815, 165)
         Header.ResumeLayout(False)
         Header.PerformLayout()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()

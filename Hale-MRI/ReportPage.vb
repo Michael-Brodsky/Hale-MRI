@@ -87,10 +87,6 @@ Public Class ReportPage
         Me.Refresh()
     End Sub
 
-    Private Sub DocumentZoom(zoomFactor As Single)
-        Me.Invalidate()
-    End Sub
-
     Private Sub GridSizeSet(gridSize As Integer)
         For Each ctrl As DisplayControl In Me.DisplayControls
             ctrl.EdgeSize = gridSize

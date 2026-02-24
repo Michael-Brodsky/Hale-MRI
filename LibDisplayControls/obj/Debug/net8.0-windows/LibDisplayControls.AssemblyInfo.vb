@@ -16,7 +16,7 @@ Imports System.Reflection
 <Assembly: System.Reflection.AssemblyCompanyAttribute("LibDisplayControls"),  _
  Assembly: System.Reflection.AssemblyConfigurationAttribute("Debug"),  _
  Assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0"),  _
- Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2e27fd361dc289702f5ea964e5cce63ffb04ee16"),  _
+ Assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+33da8c331b165ef07ac0428f4990b556e52e60f1"),  _
  Assembly: System.Reflection.AssemblyProductAttribute("LibDisplayControls"),  _
  Assembly: System.Reflection.AssemblyTitleAttribute("LibDisplayControls"),  _
  Assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0"),  _
