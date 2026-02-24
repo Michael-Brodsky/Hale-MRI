@@ -1,6 +1,24 @@
 ﻿Public Class ReportLetterhead
     Inherits DisplayControl
 
+    Public ReadOnly Property ErrorImage As Image
+        Get
+            Return LetterheadPictureBox.ErrorImage
+        End Get
+    End Property
+
+    Public Property Image As Image
+        Get
+            Return LetterheadPictureBox.Image
+        End Get
+        Set(value As Image)
+            Try
+                LetterheadPictureBox.Image = value
+            Catch ex As Exception
+                LetterheadPictureBox.Image = LetterheadPictureBox.ErrorImage
+            End Try
+        End Set
+    End Property
 #Region "Constructors"
     ''' <summary>
     ''' Creates a new ReportLetterhead object.

@@ -4,6 +4,9 @@
     <_LastSelectedProfileId>C:\Users\82002\source\repos\Hale-MRI\Hale-MRI\Hale-MRI\My Project\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="CustomPanel.vb">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Update="EncoderStatusStrip.vb">
       <SubType>UserControl</SubType>
     </Compile>
@@ -55,7 +58,13 @@
     <Compile Update="FrmJobs.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="Old Stuff\FrmReports.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="RecordNavigationBar.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="ReportPage.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="WorkstationStatusStrip.vb">

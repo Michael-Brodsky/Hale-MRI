@@ -1,6 +1,6 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class ReportLetterhead
-    Inherits DisplayControl
+Partial Class ReportPage
+    Inherits System.Windows.Forms.UserControl
 
     'UserControl overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()> _
@@ -22,34 +22,32 @@ Partial Class ReportLetterhead
     'Do not modify it using the code editor.
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
-        LetterheadPictureBox = New PictureBox()
-        CType(LetterheadPictureBox, ComponentModel.ISupportInitialize).BeginInit()
+        Margins = New CustomPanel()
         SuspendLayout()
         ' 
-        ' LetterheadPictureBox
+        ' Margins
         ' 
-        LetterheadPictureBox.Dock = DockStyle.Fill
-        LetterheadPictureBox.Location = New Point(0, 0)
-        LetterheadPictureBox.MaximumSize = New Size(827, 111)
-        LetterheadPictureBox.MinimumSize = New Size(16, 16)
-        LetterheadPictureBox.Name = "LetterheadPictureBox"
-        LetterheadPictureBox.Size = New Size(783, 109)
-        LetterheadPictureBox.SizeMode = PictureBoxSizeMode.StretchImage
-        LetterheadPictureBox.TabIndex = 28
-        LetterheadPictureBox.TabStop = False
+        Margins.BorderColor = Color.Black
+        Margins.BorderWidth = 1
+        Margins.DashBorderStyle = Drawing2D.DashStyle.Dash
+        Margins.DashPatternStyle = New Single() {3F, 1F}
+        Margins.Location = New Point(16, 72)
+        Margins.Name = "Margins"
+        Margins.Size = New Size(200, 100)
+        Margins.TabIndex = 0
         ' 
-        ' ReportLetterhead
+        ' ReportPage
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
+        AutoSize = True
         BorderStyle = BorderStyle.FixedSingle
-        Controls.Add(LetterheadPictureBox)
-        Name = "ReportLetterhead"
-        Size = New Size(783, 109)
-        CType(LetterheadPictureBox, ComponentModel.ISupportInitialize).EndInit()
+        Controls.Add(Margins)
+        Name = "ReportPage"
+        Size = New Size(236, 232)
         ResumeLayout(False)
     End Sub
 
-    Friend WithEvents LetterheadPictureBox As PictureBox
+    Friend WithEvents Margins As CustomPanel
 
 End Class

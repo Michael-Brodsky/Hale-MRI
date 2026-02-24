@@ -9,16 +9,18 @@
     <MyType>WindowsForms</MyType>
     <Platforms>AnyCPU;x64</Platforms>
     <Configurations>Debug;Release;NoEncoders</Configurations>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DefineTrace>False</DefineTrace>
-    <Optimize>False</Optimize>
+    <Optimize>True</Optimize>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <DefineTrace>False</DefineTrace>
-    <Optimize>False</Optimize>
+    <Optimize>True</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -27,6 +29,7 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Optimize>False</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NoEncoders|AnyCPU'">
@@ -35,7 +38,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='NoEncoders|x64'">
     <DefineConstants>$(DefineConstants)NO_ENCODERS,DEBUG</DefineConstants>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Old Stuff\**" />
+    <EmbeddedResource Remove="Old Stuff\**" />
+    <None Remove="Old Stuff\**" />
+  </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="ChartAngularPosition.Designer.vb" />
