@@ -195,6 +195,8 @@ Public Class FrmReports
     Private Sub FormMenusSet(ByVal report As Report)
         Me.Text = $"Reports {If(report IsNot Nothing, $"- {report.ReportName}", "")}"
         ElementsToolStripMenuItem.Enabled = report IsNot Nothing
+        CloseToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
+        FilePrintToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
         SettingsToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
         ViewToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
         ReportsExportToolStripMenuItem.Enabled = ElementsToolStripMenuItem.Enabled
@@ -866,7 +868,7 @@ Public Class FrmReports
         JobsDropDownOpening()
     End Sub
 
-    Private Sub PageSetupToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub PageSetupToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PageSetupToolStripMenuItem.Click
         PrintPageSetup(sender, e)
     End Sub
 
@@ -977,15 +979,16 @@ Public Class FrmReports
             e.MarginBounds
         )
     End Sub
+
     Private Sub PrintDocument_PrintPage(sender As Object, e As PrintPageEventArgs) Handles PrintDocument.PrintPage
         PrintPage(sender, e)
     End Sub
 
-    Private Sub PrintToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub PrintToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrintToolStripMenuItem.Click
         PrintDocument.Print()
     End Sub
 
-    Private Sub PrintPreviewToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub PrintPreviewToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PrintPreviewToolStripMenuItem.Click
         PrintPreview(sender, e)
     End Sub
 
