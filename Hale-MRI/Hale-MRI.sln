@@ -9,8 +9,6 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LibDatabase", "..\LibDataba
 EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LibEncoder", "..\LibEncoder\LibEncoder.vbproj", "{329EBD6C-6F5E-C327-4C04-0B1C3D97539C}"
 EndProject
-Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "Hale-MRI Setup", "..\Setup\Setup.vdproj", "{4D1AC582-8087-5490-FCC2-03CEC5D22547}"
-EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "LibDisplayControls", "..\LibDisplayControls\LibDisplayControls.vbproj", "{58F1FE59-1F0F-45D6-8FDF-EFA98E37E5BE}"
 EndProject
 Global
@@ -59,15 +57,6 @@ Global
 		{329EBD6C-6F5E-C327-4C04-0B1C3D97539C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{329EBD6C-6F5E-C327-4C04-0B1C3D97539C}.Release|x64.ActiveCfg = Release|x64
 		{329EBD6C-6F5E-C327-4C04-0B1C3D97539C}.Release|x64.Build.0 = Release|x64
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Debug|Any CPU.ActiveCfg = Debug
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Debug|x64.ActiveCfg = Debug
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.NoEncoders|Any CPU.ActiveCfg = Release
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.NoEncoders|x64.ActiveCfg = NoEncoders
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.NoEncoders|x64.Build.0 = NoEncoders
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Release|Any CPU.ActiveCfg = Release
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Release|Any CPU.Build.0 = Release
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Release|x64.ActiveCfg = Release
-		{4D1AC582-8087-5490-FCC2-03CEC5D22547}.Release|x64.Build.0 = Release
 		{58F1FE59-1F0F-45D6-8FDF-EFA98E37E5BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{58F1FE59-1F0F-45D6-8FDF-EFA98E37E5BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{58F1FE59-1F0F-45D6-8FDF-EFA98E37E5BE}.Debug|x64.ActiveCfg = Debug|Any CPU

@@ -9,7 +9,6 @@ Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDatabase.StoredProcedures
 Imports LibEncoder
-'Imports LibEncoder.IEncoderHardware
 Imports Microsoft.EntityFrameworkCore
 Public Class FrmLocalPitch
     Inherits FrmDatabaseForm

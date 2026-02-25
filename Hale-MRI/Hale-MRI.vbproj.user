@@ -13,6 +13,9 @@
     <Compile Update="FrmComparison.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Update="FrmContent.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Update="FrmInputBox.vb">
       <SubType>Form</SubType>
     </Compile>

@@ -20,3 +20,29 @@ C:\Users\super\source\repos\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windo
 C:\Users\super\source\repos\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\refint\LibDisplayControls.dll
 C:\Users\super\source\repos\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.pdb
 C:\Users\super\source\repos\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\ref\LibDisplayControls.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.vbproj.AssemblyReference.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartAngularPosition.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartBladeAverage.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartBladeHeight.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartBladesbySector.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartCompLine.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ChartSummary.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.DisplayControl.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ReportHeader.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.ReportLetterhead.resources
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.vbproj.GenerateResource.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.AssemblyInfoInputs.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.AssemblyInfo.vb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.vbproj.CoreCompileInputs.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.sourcelink.json
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\refint\LibDisplayControls.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDisplayControls.pdb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\bin\Release\net8.0-windows\LibDisplayControls.deps.json
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\bin\Release\net8.0-windows\LibDisplayControls.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\bin\Release\net8.0-windows\LibDisplayControls.pdb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\bin\Release\net8.0-windows\LibDatabase.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\bin\Release\net8.0-windows\LibDatabase.pdb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\LibDispl.63DF3191.Up2Date
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDisplayControls\obj\Release\net8.0-windows\ref\LibDisplayControls.dll

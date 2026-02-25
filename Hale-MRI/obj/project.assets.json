@@ -3170,23 +3170,23 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\super\\.nuget\\packages\\": {},
+    "C:\\Users\\82002\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Hale-MRI.vbproj",
+      "projectUniqueName": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\Hale-MRI\\Hale-MRI.vbproj",
       "projectName": "Hale-MRI",
-      "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\Hale-MRI.vbproj",
-      "packagesPath": "C:\\Users\\super\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\Hale-MRI\\obj\\",
+      "projectPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\Hale-MRI\\Hale-MRI.vbproj",
+      "packagesPath": "C:\\Users\\82002\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\Hale-MRI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\super\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\82002\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3195,20 +3195,21 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net8.0-windows7.0": {
           "targetAlias": "net8.0-windows",
           "projectReferences": {
-            "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj": {
-              "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj"
+            "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj": {
+              "projectPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDatabase\\LibDatabase.vbproj"
             },
-            "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj": {
-              "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj"
+            "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj": {
+              "projectPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj"
             },
-            "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj": {
-              "projectPath": "C:\\Users\\super\\source\\repos\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj"
+            "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj": {
+              "projectPath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj"
             }
           }
         }

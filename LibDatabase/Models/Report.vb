@@ -14,8 +14,6 @@ Namespace Models
 
         Public Property ModifiedBy As Integer?
 
-        Public Property GridSize As Short?
-
         Public Overridable Property ReportElements As ICollection(Of ReportElement) = New List(Of ReportElement)()
     End Class
 End Namespace
