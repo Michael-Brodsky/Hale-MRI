@@ -25,9 +25,9 @@ Public Class ReportHeader
     ''' <summary>
     ''' Creates a new ReportHeader object with the given properties.
     ''' </summary>
-    Public Sub New(name As String, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
+    Public Sub New(name As String, Optional displayName As String = Nothing, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                    Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As Object = Nothing)
-        MyBase.New(name, selectable, sizeable, movable, maxSize, minSize, data)
+        MyBase.New(name, displayName, selectable, sizeable, movable, maxSize, minSize, data)
         InitializeComponent()
     End Sub
 
@@ -57,16 +57,13 @@ Public Class ReportHeader
         End Get
     End Property
 
-    Private Function LabelByText(text As String) As Label
-        Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Text = text)
-    End Function
-
     Public Function ControlToLabel(ctrl As Control) As Label
         Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag.ToString = ctrl.Name)
     End Function
 
-    Public Sub ItemHide(ByVal itemName As String)
-        mVisibleItems.Remove(LabelByText(itemName))
+    Public Sub ItemHide(ByVal itemTag As String)
+        Dim ctrl As Control = Me.ItemControls.FirstOrDefault(Function(hi) hi.Tag.ToString() = itemTag)
+        mVisibleItems.Remove(ctrl)
     End Sub
 
     Public Sub ItemShow(ByVal itemTag As String)
@@ -84,12 +81,6 @@ Public Class ReportHeader
         End If
     End Sub
 
-    Public ReadOnly Property VisibleTags As List(Of String)
-        Get
-            Return ItemControls.Where(Function(hi) hi.Visible = True).Select(Function(hi) hi.Name).ToList()
-        End Get
-    End Property
-
     Public Property VisibleItems As List(Of String)
         Get
             Return mVisibleItems.Select(Function(hi) hi.Tag.ToString()).ToList()
@@ -103,6 +94,7 @@ Public Class ReportHeader
             Next
         End Set
     End Property
+
     Public ReadOnly Property ManagedItems As List(Of String)
         Get
             Return Me.ItemLabels.Select(Function(hi) hi.Text)
@@ -159,18 +151,8 @@ Public Class ReportHeader
                 Debug.WriteLine($"VisibleItems_CollectionChanged: {e.Action.ToString()}")
         End Select
     End Sub
-    Private Sub ForceAmbientFont(parent As Control)
-        For Each child As Control In parent.Controls
-            child.Font = Nothing
-            If child.HasChildren Then
-                ForceAmbientFont(child)
-            End If
-        Next
-    End Sub
 
     Private Sub ReportHeader_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        'ForceAmbientFont(Me)
-
         If Me.Data IsNot Nothing Then
             Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
         End If

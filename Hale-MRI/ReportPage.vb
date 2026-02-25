@@ -1,4 +1,5 @@
 ﻿Imports LibDisplayControls
+Imports Microsoft.EntityFrameworkCore.Migrations.Operations
 
 Public Class ReportPage
     Implements ICloneable
@@ -46,6 +47,12 @@ Public Class ReportPage
         Me.GridSize = other.GridSize
         Return Me
     End Function
+
+    Public ReadOnly Property IsEqualTo(other As ReportPage) As Boolean
+        Get
+            Return Me.Bounds = other.Bounds AndAlso Me.DisplayControls.SequenceEqual(other.DisplayControls)
+        End Get
+    End Property
 #End Region
     Public ReadOnly Property DisplayControls As List(Of DisplayControl)
         Get

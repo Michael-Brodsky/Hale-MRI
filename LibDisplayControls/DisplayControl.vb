@@ -36,7 +36,8 @@ Partial Public Class DisplayControl
 #End Region
 #Region "Private Members"
     Private mData As Object = Nothing                                           ' The control's data source.
-    Private mDragOffset As Point
+    Private mDisplayName As String = Nothing                                    ' The human-readable control name.
+    Private mDragOffset As Point                                                ' Mouse position offset from the top left corner of the control.
     Private mEdgeSize As Integer = kControlEdgeSizeMin                          ' Control's selection border size in pixels.
     Private mSelected As Boolean = False                                        ' Indicates whether the control is selected.
 #End Region
@@ -62,11 +63,12 @@ Partial Public Class DisplayControl
     ''' <param name="maxSize"></param>
     ''' <param name="minSize"></param>
     ''' <param name="data"></param>
-    Public Sub New(name As String, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
+    Public Sub New(name As String, Optional displayName As String = Nothing, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                    Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As Object = Nothing)
         InitializeComponent()
 
         Me.Data = data
+        Me.DisplayName = displayName
         Me.IsSelectable = selectable
         Me.IsSizeable = sizeable
         Me.IsMovable = movable
@@ -84,6 +86,7 @@ Partial Public Class DisplayControl
         InitializeComponent()
 
         Me.Data = other.Data
+        Me.DisplayName = other.DisplayName
         Me.EdgeSize = other.EdgeSize
         Me.IsMovable = other.IsMovable
         Me.IsSelectable = other.IsSelectable
@@ -100,6 +103,7 @@ Partial Public Class DisplayControl
     End Function
 
     Public Function Copy(other As DisplayControl) As DisplayControl
+        Me.Data = other.Data
         Me.Data = other.Data
         Me.EdgeSize = other.EdgeSize
         Me.IsMovable = other.IsMovable
@@ -125,6 +129,12 @@ Partial Public Class DisplayControl
     End Property
 #End Region
 #Region "Public Interface"
+    Public ReadOnly Property ControlBounds As Rectangle
+        Get
+            Return New Rectangle(Me.Parent.PointToClient(Me.PointToScreen(Point.Empty)), Me.Size)
+        End Get
+    End Property
+
     Public Shared Sub ControlsAddInTo(controls As ObservableCollection(Of DisplayControl), ByRef into As ObservableCollection(Of DisplayControl), Optional ByVal clone As Boolean = False)
         ' Adds an ObservableCollection of DisplayControl to another ObservableCollection, optionally adding their clones.
         For Each dc As DisplayControl In controls
@@ -223,6 +233,20 @@ Partial Public Class DisplayControl
         End Set
     End Property
 
+    Public Property DisplayName As String
+        Get
+            Return If(Not String.IsNullOrEmpty(mDisplayName), mDisplayName, Me.Name)
+        End Get
+        Set(value As String)
+            mDisplayName = value
+        End Set
+    End Property
+
+    Public ReadOnly Property IsEqualTo(other As DisplayControl) As Boolean
+        Get
+            Return Me.GetType() Is other.GetType() AndAlso Me.Bounds = other.Bounds
+        End Get
+    End Property
 
     Public Property IsSelectable As Boolean
 
