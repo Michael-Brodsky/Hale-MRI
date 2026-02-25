@@ -1,4 +1,6 @@
 ﻿Imports System.Collections.ObjectModel
+Imports System.Collections.Specialized
+Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports LibDatabase.Models
 
 Public Class ReportHeader
@@ -23,9 +25,9 @@ Public Class ReportHeader
     ''' <summary>
     ''' Creates a new ReportHeader object with the given properties.
     ''' </summary>
-    Public Sub New(name As String, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
+    Public Sub New(name As String, Optional displayName As String = Nothing, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                    Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As Object = Nothing)
-        MyBase.New(name, selectable, sizeable, movable, maxSize, minSize, data)
+        MyBase.New(name, displayName, selectable, sizeable, movable, maxSize, minSize, data)
         InitializeComponent()
     End Sub
 
@@ -55,16 +57,13 @@ Public Class ReportHeader
         End Get
     End Property
 
-    Private Function LabelByText(text As String) As Label
-        Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Text = text)
-    End Function
-
     Public Function ControlToLabel(ctrl As Control) As Label
         Return Header.Controls.OfType(Of Label)().FirstOrDefault(Function(l) l.Tag.ToString = ctrl.Name)
     End Function
 
-    Public Sub ItemHide(ByVal itemName As String)
-        mVisibleItems.Remove(LabelByText(itemName))
+    Public Sub ItemHide(ByVal itemTag As String)
+        Dim ctrl As Control = Me.ItemControls.FirstOrDefault(Function(hi) hi.Tag.ToString() = itemTag)
+        mVisibleItems.Remove(ctrl)
     End Sub
 
     Public Sub ItemShow(ByVal itemTag As String)
@@ -82,12 +81,6 @@ Public Class ReportHeader
         End If
     End Sub
 
-    Public ReadOnly Property VisibleTags As List(Of String)
-        Get
-            Return ItemControls.Where(Function(hi) hi.Visible = True).Select(Function(hi) hi.Name).ToList()
-        End Get
-    End Property
-
     Public Property VisibleItems As List(Of String)
         Get
             Return mVisibleItems.Select(Function(hi) hi.Tag.ToString()).ToList()
@@ -101,6 +94,7 @@ Public Class ReportHeader
             Next
         End Set
     End Property
+
     Public ReadOnly Property ManagedItems As List(Of String)
         Get
             Return Me.ItemLabels.Select(Function(hi) hi.Text)
@@ -116,26 +110,83 @@ Public Class ReportHeader
             If lab IsNot Nothing Then lab.Visible = visible
         End If
     End Sub
+
+    Protected Overrides Sub ScaleControl(factor As SizeF, specified As BoundsSpecified)
+        Static insub As Boolean = False
+        If insub Then Return
+        insub = True
+        MyBase.ScaleControl(factor, specified)
+        Me.Font = New Font(Me.Font.FontFamily, Me.Font.Size * factor.Width) ' This triggers endless recursion so we need the insub flag.
+        insub = False
+    End Sub
 #End Region
 #Region "Event Handlers"
-    Private Sub VisibleItems_CollectionChanged(sender As Object, e As System.Collections.Specialized.NotifyCollectionChangedEventArgs) Handles mVisibleItems.CollectionChanged
+    Private Sub VisibleItems_CollectionChanged(sender As Object, e As NotifyCollectionChangedEventArgs) Handles mVisibleItems.CollectionChanged
         ' Update visibility of controls based on the current collection of visible items.
-        If e.NewItems IsNot Nothing Then
-            For Each newItem As Control In e.NewItems
-                ControlVisible(newItem, True)
-            Next
-        End If
-        If e.OldItems IsNot Nothing Then
-            For Each oldItem As Control In e.OldItems
-                ControlVisible(oldItem, False)
-            Next
-        End If
+        Select Case e.Action
+            Case NotifyCollectionChangedAction.Add
+                If e.NewItems IsNot Nothing Then
+                    For Each newItem As Control In e.NewItems
+                        ControlVisible(newItem, True)
+                    Next
+                End If
+            Case NotifyCollectionChangedAction.Remove
+                If e.OldItems IsNot Nothing Then
+                    For Each oldItem As Control In e.OldItems
+                        ControlVisible(oldItem, False)
+                    Next
+                End If
+            Case NotifyCollectionChangedAction.Replace, NotifyCollectionChangedAction.Reset
+                If e.OldItems IsNot Nothing Then
+                    For Each oldItem As Control In e.OldItems
+                        ControlVisible(oldItem, False)
+                    Next
+                End If
+                If e.NewItems IsNot Nothing Then
+                    For Each newItem As Control In e.NewItems
+                        ControlVisible(newItem, True)
+                    Next
+                End If
+            Case Else
+                Debug.WriteLine($"VisibleItems_CollectionChanged: {e.Action.ToString()}")
+        End Select
     End Sub
 
     Private Sub ReportHeader_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         If Me.Data IsNot Nothing Then
             Me.JobDetailsBindingSource.DataSource = TryCast(Me.Data, JobDetail)
         End If
+    End Sub
+
+    Private Sub Label_FontChanged(sender As Object, e As EventArgs) Handles LabJobNumber.FontChanged, LabCustomer.FontChanged, LabVessel.FontChanged, LabManufacturer.FontChanged, LabPartNumber.FontChanged, LabSerialNumber.FontChanged, LabStampNumber.FontChanged, LabInspectedBy.FontChanged, LabJobId.FontChanged, LabClass.FontChanged, LabRepairStatus.FontChanged, LabStyle.FontChanged, LabMaterial.FontChanged, LabBore.FontChanged, LabDAR.FontChanged, LabCup.FontChanged, LabFilename.FontChanged, LabScanDate.FontChanged, LabPerformedBy.FontChanged, LabRotation.FontChanged, LabMarkedDiameter.FontChanged, LabMeasuredDiameter.FontChanged, LabMarkedPitch.FontChanged, LabWheelPitch.FontChanged
+        Dim lab = DirectCast(sender, Label)
+        If lab.Font IsNot Nothing Then
+            lab.Font = New Font(lab.Font, FontStyle.Bold)
+        End If
+    End Sub
+
+    Private Sub Control_FontChanged(sender As Object, e As EventArgs) Handles TxtJobNumber.FontChanged, TxtCustomer.FontChanged, TxtVessel.FontChanged, TxtManufacturer.FontChanged, TxtPartNumber.FontChanged, TxtSerialNumber.FontChanged, TxtStampNumber.FontChanged, TxtInspectedBy.FontChanged, TxtJobId.FontChanged, TxtClass.FontChanged, TxtRepairStatus.FontChanged, TxtStyle.FontChanged, TxtMaterial.FontChanged, TxtBore.FontChanged, TxtDAR.FontChanged, TxtCup.FontChanged, TxtFileName.FontChanged, TxtScanDate.FontChanged, TxtPerformedBy.FontChanged, TxtRotation.FontChanged, TxtMarkedDiameter.FontChanged, TxtMeasuredDiameter.FontChanged, TxtMarkedPitch.FontChanged, TxtWheelPitch.FontChanged
+        Dim ctrl = DirectCast(sender, Control)
+        If ctrl.Font IsNot Nothing Then
+            ctrl.Font = New Font(ctrl.Font, FontStyle.Regular)
+        End If
+    End Sub
+
+    Private Sub ReportHeader_FontChanged(sender As Object, e As EventArgs) Handles MyBase.FontChanged
+        If Me.Header.Font IsNot Me.Font Then
+            Me.Header.Font = New Font(Me.Font, Me.Font.Style)
+        Else
+            Header_FontChanged(Me.Header, e)
+        End If
+    End Sub
+
+    Private Sub Header_FontChanged(sender As Object, e As EventArgs) Handles Header.FontChanged
+        For Each lab As Label In Me.ItemLabels
+            lab.Font = Me.Font
+        Next
+        For Each ctrl As Control In Me.ItemControls
+            ctrl.Font = Me.Font
+        Next
     End Sub
 #End Region
 End Class

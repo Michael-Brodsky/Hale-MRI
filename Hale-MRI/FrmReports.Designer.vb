@@ -1,7 +1,7 @@
 ﻿Imports LibDisplayControls
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
 Partial Class FrmReports
-    Inherits FrmDatabaseForm
+    Inherits FrmContent
 
     'Form overrides dispose to clean up the component list.
     <System.Diagnostics.DebuggerNonUserCode()>
@@ -32,6 +32,31 @@ Partial Class FrmReports
         VesselBindingSource = New BindingSource(components)
         CustomerBindingSource = New BindingSource(components)
         ManufacturerBindingSource = New BindingSource(components)
+        ControlContextMenuStrip = New ContextMenuStrip(components)
+        UndoContextMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator6 = New ToolStripSeparator()
+        CutContextMenuItem = New ToolStripMenuItem()
+        PasteContextMenuItem = New ToolStripMenuItem()
+        DeleteContextMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator5 = New ToolStripSeparator()
+        BringToFrontContextMenuItem = New ToolStripMenuItem()
+        SendToBackContextMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator10 = New ToolStripSeparator()
+        SelectAllContextMenuItem = New ToolStripMenuItem()
+        ToolStripSeparator7 = New ToolStripSeparator()
+        PrintDocument = New Printing.PrintDocument()
+        PrintPreviewDialog = New PrintPreviewDialog()
+        PageSetupDialog = New PageSetupDialog()
+        PageContextMenuStrip = New ContextMenuStrip(components)
+        InsertNewPageToolStripMenuItem = New ToolStripMenuItem()
+        DeletePageToolStripMenuItem = New ToolStripMenuItem()
+        BasisMeanToolStripMenuItem = New ToolStripMenuItem()
+        BasisMarkedToolStripMenuItem = New ToolStripMenuItem()
+        BasisDesiredToolStripMenuItem = New ToolStripMenuItem()
+        ToolStripMenuItem2 = New ToolStripMenuItem()
+        ToolStripMenuItem3 = New ToolStripMenuItem()
+        ToolStripMenuItem4 = New ToolStripMenuItem()
+        ToolStripMenuItem5 = New ToolStripMenuItem()
         FormMenuStrip = New MenuStrip()
         FileToolStripMenuItem = New ToolStripMenuItem()
         FileNewToolStripMenuItem = New ToolStripMenuItem()
@@ -75,9 +100,9 @@ Partial Class FrmReports
         Class3ToolStripMenuItem = New ToolStripMenuItem()
         ClassSToolStripMenuItem = New ToolStripMenuItem()
         ElementsToolStripMenuItem = New ToolStripMenuItem()
-        LetterheadToolStripMenuItem = New ToolStripMenuItem()
+        ReportLetterhead = New ToolStripMenuItem()
         ImageToolStripMenuItem = New ToolStripMenuItem()
-        HeaderToolStripMenuItem = New ToolStripMenuItem()
+        ReportHeader = New ToolStripMenuItem()
         ToolStripSeparator16 = New ToolStripSeparator()
         SettingsToolStripMenuItem = New ToolStripMenuItem()
         ClassToolStripMenuItem = New ToolStripMenuItem()
@@ -101,31 +126,7 @@ Partial Class FrmReports
         GridSizeToolStripTextBox = New ToolStripTextBox()
         ToolStripSeparator15 = New ToolStripSeparator()
         PageMarginsToolStripMenuItem = New ToolStripMenuItem()
-        ControlContextMenuStrip = New ContextMenuStrip(components)
-        UndoContextMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator6 = New ToolStripSeparator()
-        CutContextMenuItem = New ToolStripMenuItem()
-        PasteContextMenuItem = New ToolStripMenuItem()
-        DeleteContextMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator5 = New ToolStripSeparator()
-        BringToFrontContextMenuItem = New ToolStripMenuItem()
-        SendToBackContextMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator10 = New ToolStripSeparator()
-        SelectAllContextMenuItem = New ToolStripMenuItem()
-        ToolStripSeparator7 = New ToolStripSeparator()
-        PrintDocument = New Printing.PrintDocument()
-        PrintPreviewDialog = New PrintPreviewDialog()
-        PageSetupDialog = New PageSetupDialog()
-        PageContextMenuStrip = New ContextMenuStrip(components)
-        InsertNewPageToolStripMenuItem = New ToolStripMenuItem()
-        DeletePageToolStripMenuItem = New ToolStripMenuItem()
-        BasisMeanToolStripMenuItem = New ToolStripMenuItem()
-        BasisMarkedToolStripMenuItem = New ToolStripMenuItem()
-        BasisDesiredToolStripMenuItem = New ToolStripMenuItem()
-        ToolStripMenuItem2 = New ToolStripMenuItem()
-        ToolStripMenuItem3 = New ToolStripMenuItem()
-        ToolStripMenuItem4 = New ToolStripMenuItem()
-        ToolStripMenuItem5 = New ToolStripMenuItem()
+        ToolStripContainer2 = New ToolStripContainer()
         CType(ReportsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ReportDataBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -133,9 +134,11 @@ Partial Class FrmReports
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        FormMenuStrip.SuspendLayout()
         ControlContextMenuStrip.SuspendLayout()
         PageContextMenuStrip.SuspendLayout()
+        FormMenuStrip.SuspendLayout()
+        ToolStripContainer2.ContentPanel.SuspendLayout()
+        ToolStripContainer2.SuspendLayout()
         SuspendLayout()
         ' 
         ' ReportsBindingSource
@@ -174,470 +177,6 @@ Partial Class FrmReports
         ' 
         ManufacturerBindingSource.DataMember = "PropellerManufacturer"
         ManufacturerBindingSource.DataSource = JobBindingSource
-        ' 
-        ' FormMenuStrip
-        ' 
-        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem, ViewToolStripMenuItem})
-        FormMenuStrip.Location = New Point(0, 0)
-        FormMenuStrip.Name = "FormMenuStrip"
-        FormMenuStrip.Size = New Size(1036, 24)
-        FormMenuStrip.TabIndex = 3
-        FormMenuStrip.Text = "MenuStrip1"
-        ' 
-        ' FileToolStripMenuItem
-        ' 
-        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {FileNewToolStripMenuItem, ToolStripSeparator11, OpenToolStripMenuItem, FileRecentToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
-        FileToolStripMenuItem.Name = "FileToolStripMenuItem"
-        FileToolStripMenuItem.Size = New Size(37, 20)
-        FileToolStripMenuItem.Text = "File"
-        ' 
-        ' FileNewToolStripMenuItem
-        ' 
-        FileNewToolStripMenuItem.Name = "FileNewToolStripMenuItem"
-        FileNewToolStripMenuItem.Size = New Size(186, 22)
-        FileNewToolStripMenuItem.Text = "New"
-        ' 
-        ' ToolStripSeparator11
-        ' 
-        ToolStripSeparator11.Name = "ToolStripSeparator11"
-        ToolStripSeparator11.Size = New Size(183, 6)
-        ' 
-        ' OpenToolStripMenuItem
-        ' 
-        OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
-        OpenToolStripMenuItem.Size = New Size(186, 22)
-        OpenToolStripMenuItem.Text = "Open"
-        ' 
-        ' FileRecentToolStripMenuItem
-        ' 
-        FileRecentToolStripMenuItem.Name = "FileRecentToolStripMenuItem"
-        FileRecentToolStripMenuItem.Size = New Size(186, 22)
-        FileRecentToolStripMenuItem.Text = "Recent"
-        ' 
-        ' ToolStripSeparator1
-        ' 
-        ToolStripSeparator1.Name = "ToolStripSeparator1"
-        ToolStripSeparator1.Size = New Size(183, 6)
-        ' 
-        ' CloseToolStripMenuItem
-        ' 
-        CloseToolStripMenuItem.Enabled = False
-        CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
-        CloseToolStripMenuItem.Size = New Size(186, 22)
-        CloseToolStripMenuItem.Text = "Close"
-        ' 
-        ' ToolStripSeparator3
-        ' 
-        ToolStripSeparator3.Name = "ToolStripSeparator3"
-        ToolStripSeparator3.Size = New Size(183, 6)
-        ' 
-        ' SaveToolStripMenuItem
-        ' 
-        SaveToolStripMenuItem.Enabled = False
-        SaveToolStripMenuItem.Image = My.Resources.Resources.Save
-        SaveToolStripMenuItem.Name = "SaveToolStripMenuItem"
-        SaveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+S"
-        SaveToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.S
-        SaveToolStripMenuItem.Size = New Size(186, 22)
-        SaveToolStripMenuItem.Text = "Save"
-        ' 
-        ' SaveAsToolStripMenuItem
-        ' 
-        SaveAsToolStripMenuItem.Enabled = False
-        SaveAsToolStripMenuItem.Image = CType(resources.GetObject("SaveAsToolStripMenuItem.Image"), Image)
-        SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem"
-        SaveAsToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+S"
-        SaveAsToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Shift Or Keys.S
-        SaveAsToolStripMenuItem.Size = New Size(186, 22)
-        SaveAsToolStripMenuItem.Text = "Save As"
-        ' 
-        ' ToolStripSeparator4
-        ' 
-        ToolStripSeparator4.Name = "ToolStripSeparator4"
-        ToolStripSeparator4.Size = New Size(183, 6)
-        ' 
-        ' FilePrintToolStripMenuItem
-        ' 
-        FilePrintToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {PrintToolStripMenuItem, PrintPreviewToolStripMenuItem, PageSetupToolStripMenuItem})
-        FilePrintToolStripMenuItem.Enabled = False
-        FilePrintToolStripMenuItem.Name = "FilePrintToolStripMenuItem"
-        FilePrintToolStripMenuItem.Size = New Size(186, 22)
-        FilePrintToolStripMenuItem.Text = "Print"
-        ' 
-        ' PrintToolStripMenuItem
-        ' 
-        PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
-        PrintToolStripMenuItem.Size = New Size(143, 22)
-        PrintToolStripMenuItem.Text = "Print"
-        ' 
-        ' PrintPreviewToolStripMenuItem
-        ' 
-        PrintPreviewToolStripMenuItem.Name = "PrintPreviewToolStripMenuItem"
-        PrintPreviewToolStripMenuItem.Size = New Size(143, 22)
-        PrintPreviewToolStripMenuItem.Text = "Print Preview"
-        ' 
-        ' PageSetupToolStripMenuItem
-        ' 
-        PageSetupToolStripMenuItem.Name = "PageSetupToolStripMenuItem"
-        PageSetupToolStripMenuItem.Size = New Size(143, 22)
-        PageSetupToolStripMenuItem.Text = "Page Setup"
-        ' 
-        ' ToolStripSeparator2
-        ' 
-        ToolStripSeparator2.Name = "ToolStripSeparator2"
-        ToolStripSeparator2.Size = New Size(183, 6)
-        ' 
-        ' ExitToolStripMenuItem
-        ' 
-        ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
-        ExitToolStripMenuItem.Size = New Size(186, 22)
-        ExitToolStripMenuItem.Text = "Exit"
-        ' 
-        ' EditToolStripMenuItem
-        ' 
-        EditToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {CutToolStripMenuItem, CopyToolStripMenuItem, PasteToolStripMenuItem, DeleteToolStripMenuItem, ToolStripSeparator9, SelectAllToolStripMenuItem})
-        EditToolStripMenuItem.Name = "EditToolStripMenuItem"
-        EditToolStripMenuItem.Size = New Size(39, 20)
-        EditToolStripMenuItem.Text = "Edit"
-        ' 
-        ' CutToolStripMenuItem
-        ' 
-        CutToolStripMenuItem.Enabled = False
-        CutToolStripMenuItem.Image = CType(resources.GetObject("CutToolStripMenuItem.Image"), Image)
-        CutToolStripMenuItem.Name = "CutToolStripMenuItem"
-        CutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
-        CutToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.X
-        CutToolStripMenuItem.Size = New Size(180, 22)
-        CutToolStripMenuItem.Text = "Cut"
-        ' 
-        ' CopyToolStripMenuItem
-        ' 
-        CopyToolStripMenuItem.Enabled = False
-        CopyToolStripMenuItem.Image = CType(resources.GetObject("CopyToolStripMenuItem.Image"), Image)
-        CopyToolStripMenuItem.Name = "CopyToolStripMenuItem"
-        CopyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
-        CopyToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.C
-        CopyToolStripMenuItem.Size = New Size(180, 22)
-        CopyToolStripMenuItem.Text = "Copy"
-        ' 
-        ' PasteToolStripMenuItem
-        ' 
-        PasteToolStripMenuItem.Enabled = False
-        PasteToolStripMenuItem.Image = CType(resources.GetObject("PasteToolStripMenuItem.Image"), Image)
-        PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
-        PasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
-        PasteToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.V
-        PasteToolStripMenuItem.Size = New Size(180, 22)
-        PasteToolStripMenuItem.Text = "Paste"
-        ' 
-        ' DeleteToolStripMenuItem
-        ' 
-        DeleteToolStripMenuItem.Enabled = False
-        DeleteToolStripMenuItem.Image = My.Resources.Resources.Cancel
-        DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
-        DeleteToolStripMenuItem.ShortcutKeyDisplayString = "Del"
-        DeleteToolStripMenuItem.ShortcutKeys = Keys.Delete
-        DeleteToolStripMenuItem.Size = New Size(180, 22)
-        DeleteToolStripMenuItem.Text = "Delete"
-        ' 
-        ' ToolStripSeparator9
-        ' 
-        ToolStripSeparator9.Name = "ToolStripSeparator9"
-        ToolStripSeparator9.Size = New Size(177, 6)
-        ' 
-        ' SelectAllToolStripMenuItem
-        ' 
-        SelectAllToolStripMenuItem.Enabled = False
-        SelectAllToolStripMenuItem.Image = CType(resources.GetObject("SelectAllToolStripMenuItem.Image"), Image)
-        SelectAllToolStripMenuItem.Name = "SelectAllToolStripMenuItem"
-        SelectAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A"
-        SelectAllToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.A
-        SelectAllToolStripMenuItem.Size = New Size(180, 22)
-        SelectAllToolStripMenuItem.Text = "Select All"
-        ' 
-        ' JobsToolStripMenuItem
-        ' 
-        JobsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {JobsOpenToolStripMenuItem, JobsRecentToolStripMenuItem, ToolStripSeparator13, JobsCloseToolStripMenuItem})
-        JobsToolStripMenuItem.Name = "JobsToolStripMenuItem"
-        JobsToolStripMenuItem.Size = New Size(42, 20)
-        JobsToolStripMenuItem.Text = "Jobs"
-        ' 
-        ' JobsOpenToolStripMenuItem
-        ' 
-        JobsOpenToolStripMenuItem.Name = "JobsOpenToolStripMenuItem"
-        JobsOpenToolStripMenuItem.Size = New Size(180, 22)
-        JobsOpenToolStripMenuItem.Text = "Open"
-        ' 
-        ' JobsRecentToolStripMenuItem
-        ' 
-        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
-        JobsRecentToolStripMenuItem.Size = New Size(180, 22)
-        JobsRecentToolStripMenuItem.Text = "Recent"
-        ' 
-        ' ToolStripSeparator13
-        ' 
-        ToolStripSeparator13.Name = "ToolStripSeparator13"
-        ToolStripSeparator13.Size = New Size(177, 6)
-        ' 
-        ' JobsCloseToolStripMenuItem
-        ' 
-        JobsCloseToolStripMenuItem.Enabled = False
-        JobsCloseToolStripMenuItem.Name = "JobsCloseToolStripMenuItem"
-        JobsCloseToolStripMenuItem.Size = New Size(180, 22)
-        JobsCloseToolStripMenuItem.Text = "Close"
-        ' 
-        ' ReportsToolStripMenuItem
-        ' 
-        ReportsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ReportsToolStripSeparator1, ReportsEditToolStripMenuItem, ReportsImportToolStripMenuItem, ReportsExportToolStripMenuItem, ToolStripSeparator12, ReportsSettingsToolStripMenuItem})
-        ReportsToolStripMenuItem.Name = "ReportsToolStripMenuItem"
-        ReportsToolStripMenuItem.Size = New Size(59, 20)
-        ReportsToolStripMenuItem.Text = "Reports"
-        ' 
-        ' ReportsToolStripSeparator1
-        ' 
-        ReportsToolStripSeparator1.Name = "ReportsToolStripSeparator1"
-        ReportsToolStripSeparator1.Size = New Size(177, 6)
-        ' 
-        ' ReportsEditToolStripMenuItem
-        ' 
-        ReportsEditToolStripMenuItem.Name = "ReportsEditToolStripMenuItem"
-        ReportsEditToolStripMenuItem.Size = New Size(180, 22)
-        ReportsEditToolStripMenuItem.Text = "Edit"
-        ' 
-        ' ReportsImportToolStripMenuItem
-        ' 
-        ReportsImportToolStripMenuItem.Name = "ReportsImportToolStripMenuItem"
-        ReportsImportToolStripMenuItem.Size = New Size(180, 22)
-        ReportsImportToolStripMenuItem.Text = "Import"
-        ' 
-        ' ReportsExportToolStripMenuItem
-        ' 
-        ReportsExportToolStripMenuItem.Enabled = False
-        ReportsExportToolStripMenuItem.Name = "ReportsExportToolStripMenuItem"
-        ReportsExportToolStripMenuItem.Size = New Size(180, 22)
-        ReportsExportToolStripMenuItem.Text = "Export"
-        ' 
-        ' ToolStripSeparator12
-        ' 
-        ToolStripSeparator12.Name = "ToolStripSeparator12"
-        ToolStripSeparator12.Size = New Size(177, 6)
-        ' 
-        ' ReportsSettingsToolStripMenuItem
-        ' 
-        ReportsSettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {SettingsClassToolStripMenuItem})
-        ReportsSettingsToolStripMenuItem.Enabled = False
-        ReportsSettingsToolStripMenuItem.Name = "ReportsSettingsToolStripMenuItem"
-        ReportsSettingsToolStripMenuItem.Size = New Size(180, 22)
-        ReportsSettingsToolStripMenuItem.Text = "Settings"
-        ' 
-        ' SettingsClassToolStripMenuItem
-        ' 
-        SettingsClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {Class1ToolStripMenuItem, Class2ToolStripMenuItem, Class3ToolStripMenuItem, ClassSToolStripMenuItem})
-        SettingsClassToolStripMenuItem.Name = "SettingsClassToolStripMenuItem"
-        SettingsClassToolStripMenuItem.Size = New Size(180, 22)
-        SettingsClassToolStripMenuItem.Text = "Class"
-        ' 
-        ' Class1ToolStripMenuItem
-        ' 
-        Class1ToolStripMenuItem.Name = "Class1ToolStripMenuItem"
-        Class1ToolStripMenuItem.Size = New Size(83, 22)
-        Class1ToolStripMenuItem.Text = "I"
-        ' 
-        ' Class2ToolStripMenuItem
-        ' 
-        Class2ToolStripMenuItem.Name = "Class2ToolStripMenuItem"
-        Class2ToolStripMenuItem.Size = New Size(83, 22)
-        Class2ToolStripMenuItem.Text = "II"
-        ' 
-        ' Class3ToolStripMenuItem
-        ' 
-        Class3ToolStripMenuItem.Name = "Class3ToolStripMenuItem"
-        Class3ToolStripMenuItem.Size = New Size(83, 22)
-        Class3ToolStripMenuItem.Text = "III"
-        ' 
-        ' ClassSToolStripMenuItem
-        ' 
-        ClassSToolStripMenuItem.Name = "ClassSToolStripMenuItem"
-        ClassSToolStripMenuItem.Size = New Size(83, 22)
-        ClassSToolStripMenuItem.Text = "S"
-        ' 
-        ' ElementsToolStripMenuItem
-        ' 
-        ElementsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {LetterheadToolStripMenuItem, HeaderToolStripMenuItem, ToolStripSeparator16})
-        ElementsToolStripMenuItem.Enabled = False
-        ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
-        ElementsToolStripMenuItem.Size = New Size(67, 20)
-        ElementsToolStripMenuItem.Text = "Elements"
-        ' 
-        ' LetterheadToolStripMenuItem
-        ' 
-        LetterheadToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ImageToolStripMenuItem})
-        LetterheadToolStripMenuItem.Name = "LetterheadToolStripMenuItem"
-        LetterheadToolStripMenuItem.Size = New Size(130, 22)
-        LetterheadToolStripMenuItem.Text = "Letterhead"
-        ' 
-        ' ImageToolStripMenuItem
-        ' 
-        ImageToolStripMenuItem.Name = "ImageToolStripMenuItem"
-        ImageToolStripMenuItem.Size = New Size(107, 22)
-        ImageToolStripMenuItem.Text = "Image"
-        ' 
-        ' HeaderToolStripMenuItem
-        ' 
-        HeaderToolStripMenuItem.Name = "HeaderToolStripMenuItem"
-        HeaderToolStripMenuItem.Size = New Size(130, 22)
-        HeaderToolStripMenuItem.Text = "Header"
-        ' 
-        ' ToolStripSeparator16
-        ' 
-        ToolStripSeparator16.Name = "ToolStripSeparator16"
-        ToolStripSeparator16.Size = New Size(127, 6)
-        ' 
-        ' SettingsToolStripMenuItem
-        ' 
-        SettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassToolStripMenuItem, BasisToolStripMenuItem, PrecisionToolStripMenuItem})
-        SettingsToolStripMenuItem.Enabled = False
-        SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
-        SettingsToolStripMenuItem.Size = New Size(61, 20)
-        SettingsToolStripMenuItem.Text = "Settings"
-        ' 
-        ' ClassToolStripMenuItem
-        ' 
-        ClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassSpecialToolStripMenuItem, ClassIToolStripMenuItem, ClasasIIToolStripMenuItem, ClassIIIToolStripMenuItem})
-        ClassToolStripMenuItem.Name = "ClassToolStripMenuItem"
-        ClassToolStripMenuItem.Size = New Size(122, 22)
-        ClassToolStripMenuItem.Text = "Class"
-        ' 
-        ' ClassSpecialToolStripMenuItem
-        ' 
-        ClassSpecialToolStripMenuItem.CheckOnClick = True
-        ClassSpecialToolStripMenuItem.Name = "ClassSpecialToolStripMenuItem"
-        ClassSpecialToolStripMenuItem.Size = New Size(83, 22)
-        ClassSpecialToolStripMenuItem.Text = "S"
-        ' 
-        ' ClassIToolStripMenuItem
-        ' 
-        ClassIToolStripMenuItem.CheckOnClick = True
-        ClassIToolStripMenuItem.Name = "ClassIToolStripMenuItem"
-        ClassIToolStripMenuItem.Size = New Size(83, 22)
-        ClassIToolStripMenuItem.Text = "I"
-        ' 
-        ' ClasasIIToolStripMenuItem
-        ' 
-        ClasasIIToolStripMenuItem.CheckOnClick = True
-        ClasasIIToolStripMenuItem.Name = "ClasasIIToolStripMenuItem"
-        ClasasIIToolStripMenuItem.Size = New Size(83, 22)
-        ClasasIIToolStripMenuItem.Text = "II"
-        ' 
-        ' ClassIIIToolStripMenuItem
-        ' 
-        ClassIIIToolStripMenuItem.CheckOnClick = True
-        ClassIIIToolStripMenuItem.Name = "ClassIIIToolStripMenuItem"
-        ClassIIIToolStripMenuItem.Size = New Size(83, 22)
-        ClassIIIToolStripMenuItem.Text = "III"
-        ' 
-        ' BasisToolStripMenuItem
-        ' 
-        BasisToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {MeanToolStripMenuItem, MarkedToolStripMenuItem, DesiredToolStripMenuItem})
-        BasisToolStripMenuItem.Name = "BasisToolStripMenuItem"
-        BasisToolStripMenuItem.Size = New Size(122, 22)
-        BasisToolStripMenuItem.Text = "Basis"
-        ' 
-        ' MeanToolStripMenuItem
-        ' 
-        MeanToolStripMenuItem.Name = "MeanToolStripMenuItem"
-        MeanToolStripMenuItem.Size = New Size(114, 22)
-        MeanToolStripMenuItem.Text = "Mean"
-        ' 
-        ' MarkedToolStripMenuItem
-        ' 
-        MarkedToolStripMenuItem.Name = "MarkedToolStripMenuItem"
-        MarkedToolStripMenuItem.Size = New Size(114, 22)
-        MarkedToolStripMenuItem.Text = "Marked"
-        ' 
-        ' DesiredToolStripMenuItem
-        ' 
-        DesiredToolStripMenuItem.Name = "DesiredToolStripMenuItem"
-        DesiredToolStripMenuItem.Size = New Size(114, 22)
-        DesiredToolStripMenuItem.Text = "Desired"
-        ' 
-        ' PrecisionToolStripMenuItem
-        ' 
-        PrecisionToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {And00ToolStripMenuItem, And000ToolStripMenuItem})
-        PrecisionToolStripMenuItem.Name = "PrecisionToolStripMenuItem"
-        PrecisionToolStripMenuItem.Size = New Size(122, 22)
-        PrecisionToolStripMenuItem.Text = "Precision"
-        ' 
-        ' And00ToolStripMenuItem
-        ' 
-        And00ToolStripMenuItem.Name = "And00ToolStripMenuItem"
-        And00ToolStripMenuItem.Size = New Size(136, 22)
-        And00ToolStripMenuItem.Text = ".0 and .00"
-        ' 
-        ' And000ToolStripMenuItem
-        ' 
-        And000ToolStripMenuItem.Name = "And000ToolStripMenuItem"
-        And000ToolStripMenuItem.Size = New Size(136, 22)
-        And000ToolStripMenuItem.Text = ".00 and .000"
-        ' 
-        ' ViewToolStripMenuItem
-        ' 
-        ViewToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ZoomInToolStripMenuItem, ZoomOutToolStripMenuItem, ActualSizeToolStripMenuItem, ToolStripSeparator14, GridSizeToolStripMenuItem, ToolStripSeparator15, PageMarginsToolStripMenuItem})
-        ViewToolStripMenuItem.Enabled = False
-        ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
-        ViewToolStripMenuItem.Size = New Size(44, 20)
-        ViewToolStripMenuItem.Text = "View"
-        ' 
-        ' ZoomInToolStripMenuItem
-        ' 
-        ZoomInToolStripMenuItem.Name = "ZoomInToolStripMenuItem"
-        ZoomInToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl++"
-        ZoomInToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Oemplus
-        ZoomInToolStripMenuItem.Size = New Size(180, 22)
-        ZoomInToolStripMenuItem.Text = "Zoom In"
-        ' 
-        ' ZoomOutToolStripMenuItem
-        ' 
-        ZoomOutToolStripMenuItem.Name = "ZoomOutToolStripMenuItem"
-        ZoomOutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+-"
-        ZoomOutToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.OemMinus
-        ZoomOutToolStripMenuItem.Size = New Size(180, 22)
-        ZoomOutToolStripMenuItem.Text = "Zoom Out"
-        ' 
-        ' ActualSizeToolStripMenuItem
-        ' 
-        ActualSizeToolStripMenuItem.Name = "ActualSizeToolStripMenuItem"
-        ActualSizeToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.D0
-        ActualSizeToolStripMenuItem.Size = New Size(180, 22)
-        ActualSizeToolStripMenuItem.Text = "Actual Size"
-        ' 
-        ' ToolStripSeparator14
-        ' 
-        ToolStripSeparator14.Name = "ToolStripSeparator14"
-        ToolStripSeparator14.Size = New Size(177, 6)
-        ' 
-        ' GridSizeToolStripMenuItem
-        ' 
-        GridSizeToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {GridSizeToolStripTextBox})
-        GridSizeToolStripMenuItem.Name = "GridSizeToolStripMenuItem"
-        GridSizeToolStripMenuItem.Size = New Size(180, 22)
-        GridSizeToolStripMenuItem.Text = "Grid Size"
-        ' 
-        ' GridSizeToolStripTextBox
-        ' 
-        GridSizeToolStripTextBox.Name = "GridSizeToolStripTextBox"
-        GridSizeToolStripTextBox.Size = New Size(100, 23)
-        ' 
-        ' ToolStripSeparator15
-        ' 
-        ToolStripSeparator15.Name = "ToolStripSeparator15"
-        ToolStripSeparator15.Size = New Size(177, 6)
-        ' 
-        ' PageMarginsToolStripMenuItem
-        ' 
-        PageMarginsToolStripMenuItem.Name = "PageMarginsToolStripMenuItem"
-        PageMarginsToolStripMenuItem.Size = New Size(180, 22)
-        PageMarginsToolStripMenuItem.Text = "Page Margins"
         ' 
         ' ControlContextMenuStrip
         ' 
@@ -787,13 +326,494 @@ Partial Class FrmReports
         ToolStripMenuItem5.Size = New Size(180, 22)
         ToolStripMenuItem5.Text = "III"
         ' 
+        ' FormMenuStrip
+        ' 
+        FormMenuStrip.Dock = DockStyle.None
+        FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem, ViewToolStripMenuItem})
+        FormMenuStrip.Location = New Point(1, 1)
+        FormMenuStrip.Name = "FormMenuStrip"
+        FormMenuStrip.Size = New Size(477, 24)
+        FormMenuStrip.TabIndex = 4
+        FormMenuStrip.Text = "MenuStrip1"
+        ' 
+        ' FileToolStripMenuItem
+        ' 
+        FileToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {FileNewToolStripMenuItem, ToolStripSeparator11, OpenToolStripMenuItem, FileRecentToolStripMenuItem, ToolStripSeparator1, CloseToolStripMenuItem, ToolStripSeparator3, SaveToolStripMenuItem, SaveAsToolStripMenuItem, ToolStripSeparator4, FilePrintToolStripMenuItem, ToolStripSeparator2, ExitToolStripMenuItem})
+        FileToolStripMenuItem.Name = "FileToolStripMenuItem"
+        FileToolStripMenuItem.Size = New Size(37, 20)
+        FileToolStripMenuItem.Text = "File"
+        ' 
+        ' FileNewToolStripMenuItem
+        ' 
+        FileNewToolStripMenuItem.Name = "FileNewToolStripMenuItem"
+        FileNewToolStripMenuItem.Size = New Size(186, 22)
+        FileNewToolStripMenuItem.Text = "New"
+        ' 
+        ' ToolStripSeparator11
+        ' 
+        ToolStripSeparator11.Name = "ToolStripSeparator11"
+        ToolStripSeparator11.Size = New Size(183, 6)
+        ' 
+        ' OpenToolStripMenuItem
+        ' 
+        OpenToolStripMenuItem.Name = "OpenToolStripMenuItem"
+        OpenToolStripMenuItem.Size = New Size(186, 22)
+        OpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' FileRecentToolStripMenuItem
+        ' 
+        FileRecentToolStripMenuItem.Name = "FileRecentToolStripMenuItem"
+        FileRecentToolStripMenuItem.Size = New Size(186, 22)
+        FileRecentToolStripMenuItem.Text = "Recent"
+        ' 
+        ' ToolStripSeparator1
+        ' 
+        ToolStripSeparator1.Name = "ToolStripSeparator1"
+        ToolStripSeparator1.Size = New Size(183, 6)
+        ' 
+        ' CloseToolStripMenuItem
+        ' 
+        CloseToolStripMenuItem.Enabled = False
+        CloseToolStripMenuItem.Name = "CloseToolStripMenuItem"
+        CloseToolStripMenuItem.Size = New Size(186, 22)
+        CloseToolStripMenuItem.Text = "Close"
+        ' 
+        ' ToolStripSeparator3
+        ' 
+        ToolStripSeparator3.Name = "ToolStripSeparator3"
+        ToolStripSeparator3.Size = New Size(183, 6)
+        ' 
+        ' SaveToolStripMenuItem
+        ' 
+        SaveToolStripMenuItem.Enabled = False
+        SaveToolStripMenuItem.Image = My.Resources.Resources.Save
+        SaveToolStripMenuItem.Name = "SaveToolStripMenuItem"
+        SaveToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+S"
+        SaveToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.S
+        SaveToolStripMenuItem.Size = New Size(186, 22)
+        SaveToolStripMenuItem.Text = "Save"
+        ' 
+        ' SaveAsToolStripMenuItem
+        ' 
+        SaveAsToolStripMenuItem.Enabled = False
+        SaveAsToolStripMenuItem.Image = CType(resources.GetObject("SaveAsToolStripMenuItem.Image"), Image)
+        SaveAsToolStripMenuItem.Name = "SaveAsToolStripMenuItem"
+        SaveAsToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+Shift+S"
+        SaveAsToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Shift Or Keys.S
+        SaveAsToolStripMenuItem.Size = New Size(186, 22)
+        SaveAsToolStripMenuItem.Text = "Save As"
+        ' 
+        ' ToolStripSeparator4
+        ' 
+        ToolStripSeparator4.Name = "ToolStripSeparator4"
+        ToolStripSeparator4.Size = New Size(183, 6)
+        ' 
+        ' FilePrintToolStripMenuItem
+        ' 
+        FilePrintToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {PrintToolStripMenuItem, PrintPreviewToolStripMenuItem, PageSetupToolStripMenuItem})
+        FilePrintToolStripMenuItem.Enabled = False
+        FilePrintToolStripMenuItem.Name = "FilePrintToolStripMenuItem"
+        FilePrintToolStripMenuItem.Size = New Size(186, 22)
+        FilePrintToolStripMenuItem.Text = "Print"
+        ' 
+        ' PrintToolStripMenuItem
+        ' 
+        PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
+        PrintToolStripMenuItem.Size = New Size(143, 22)
+        PrintToolStripMenuItem.Text = "Print"
+        ' 
+        ' PrintPreviewToolStripMenuItem
+        ' 
+        PrintPreviewToolStripMenuItem.Name = "PrintPreviewToolStripMenuItem"
+        PrintPreviewToolStripMenuItem.Size = New Size(143, 22)
+        PrintPreviewToolStripMenuItem.Text = "Print Preview"
+        ' 
+        ' PageSetupToolStripMenuItem
+        ' 
+        PageSetupToolStripMenuItem.Name = "PageSetupToolStripMenuItem"
+        PageSetupToolStripMenuItem.Size = New Size(143, 22)
+        PageSetupToolStripMenuItem.Text = "Page Setup"
+        ' 
+        ' ToolStripSeparator2
+        ' 
+        ToolStripSeparator2.Name = "ToolStripSeparator2"
+        ToolStripSeparator2.Size = New Size(183, 6)
+        ' 
+        ' ExitToolStripMenuItem
+        ' 
+        ExitToolStripMenuItem.Name = "ExitToolStripMenuItem"
+        ExitToolStripMenuItem.Size = New Size(186, 22)
+        ExitToolStripMenuItem.Text = "Exit"
+        ' 
+        ' EditToolStripMenuItem
+        ' 
+        EditToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {CutToolStripMenuItem, CopyToolStripMenuItem, PasteToolStripMenuItem, DeleteToolStripMenuItem, ToolStripSeparator9, SelectAllToolStripMenuItem})
+        EditToolStripMenuItem.Name = "EditToolStripMenuItem"
+        EditToolStripMenuItem.Size = New Size(39, 20)
+        EditToolStripMenuItem.Text = "Edit"
+        ' 
+        ' CutToolStripMenuItem
+        ' 
+        CutToolStripMenuItem.Enabled = False
+        CutToolStripMenuItem.Image = CType(resources.GetObject("CutToolStripMenuItem.Image"), Image)
+        CutToolStripMenuItem.Name = "CutToolStripMenuItem"
+        CutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+X"
+        CutToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.X
+        CutToolStripMenuItem.Size = New Size(164, 22)
+        CutToolStripMenuItem.Text = "Cut"
+        ' 
+        ' CopyToolStripMenuItem
+        ' 
+        CopyToolStripMenuItem.Enabled = False
+        CopyToolStripMenuItem.Image = CType(resources.GetObject("CopyToolStripMenuItem.Image"), Image)
+        CopyToolStripMenuItem.Name = "CopyToolStripMenuItem"
+        CopyToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+C"
+        CopyToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.C
+        CopyToolStripMenuItem.Size = New Size(164, 22)
+        CopyToolStripMenuItem.Text = "Copy"
+        ' 
+        ' PasteToolStripMenuItem
+        ' 
+        PasteToolStripMenuItem.Enabled = False
+        PasteToolStripMenuItem.Image = CType(resources.GetObject("PasteToolStripMenuItem.Image"), Image)
+        PasteToolStripMenuItem.Name = "PasteToolStripMenuItem"
+        PasteToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+V"
+        PasteToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.V
+        PasteToolStripMenuItem.Size = New Size(164, 22)
+        PasteToolStripMenuItem.Text = "Paste"
+        ' 
+        ' DeleteToolStripMenuItem
+        ' 
+        DeleteToolStripMenuItem.Enabled = False
+        DeleteToolStripMenuItem.Image = My.Resources.Resources.Cancel
+        DeleteToolStripMenuItem.Name = "DeleteToolStripMenuItem"
+        DeleteToolStripMenuItem.ShortcutKeyDisplayString = "Del"
+        DeleteToolStripMenuItem.ShortcutKeys = Keys.Delete
+        DeleteToolStripMenuItem.Size = New Size(164, 22)
+        DeleteToolStripMenuItem.Text = "Delete"
+        ' 
+        ' ToolStripSeparator9
+        ' 
+        ToolStripSeparator9.Name = "ToolStripSeparator9"
+        ToolStripSeparator9.Size = New Size(161, 6)
+        ' 
+        ' SelectAllToolStripMenuItem
+        ' 
+        SelectAllToolStripMenuItem.Enabled = False
+        SelectAllToolStripMenuItem.Image = CType(resources.GetObject("SelectAllToolStripMenuItem.Image"), Image)
+        SelectAllToolStripMenuItem.Name = "SelectAllToolStripMenuItem"
+        SelectAllToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+A"
+        SelectAllToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.A
+        SelectAllToolStripMenuItem.Size = New Size(164, 22)
+        SelectAllToolStripMenuItem.Text = "Select All"
+        ' 
+        ' JobsToolStripMenuItem
+        ' 
+        JobsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {JobsOpenToolStripMenuItem, JobsRecentToolStripMenuItem, ToolStripSeparator13, JobsCloseToolStripMenuItem})
+        JobsToolStripMenuItem.Name = "JobsToolStripMenuItem"
+        JobsToolStripMenuItem.Size = New Size(42, 20)
+        JobsToolStripMenuItem.Text = "Jobs"
+        ' 
+        ' JobsOpenToolStripMenuItem
+        ' 
+        JobsOpenToolStripMenuItem.Name = "JobsOpenToolStripMenuItem"
+        JobsOpenToolStripMenuItem.Size = New Size(110, 22)
+        JobsOpenToolStripMenuItem.Text = "Open"
+        ' 
+        ' JobsRecentToolStripMenuItem
+        ' 
+        JobsRecentToolStripMenuItem.Name = "JobsRecentToolStripMenuItem"
+        JobsRecentToolStripMenuItem.Size = New Size(110, 22)
+        JobsRecentToolStripMenuItem.Text = "Recent"
+        ' 
+        ' ToolStripSeparator13
+        ' 
+        ToolStripSeparator13.Name = "ToolStripSeparator13"
+        ToolStripSeparator13.Size = New Size(107, 6)
+        ' 
+        ' JobsCloseToolStripMenuItem
+        ' 
+        JobsCloseToolStripMenuItem.Enabled = False
+        JobsCloseToolStripMenuItem.Name = "JobsCloseToolStripMenuItem"
+        JobsCloseToolStripMenuItem.Size = New Size(110, 22)
+        JobsCloseToolStripMenuItem.Text = "Close"
+        ' 
+        ' ReportsToolStripMenuItem
+        ' 
+        ReportsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ReportsToolStripSeparator1, ReportsEditToolStripMenuItem, ReportsImportToolStripMenuItem, ReportsExportToolStripMenuItem, ToolStripSeparator12, ReportsSettingsToolStripMenuItem})
+        ReportsToolStripMenuItem.Name = "ReportsToolStripMenuItem"
+        ReportsToolStripMenuItem.Size = New Size(59, 20)
+        ReportsToolStripMenuItem.Text = "Reports"
+        ' 
+        ' ReportsToolStripSeparator1
+        ' 
+        ReportsToolStripSeparator1.Name = "ReportsToolStripSeparator1"
+        ReportsToolStripSeparator1.Size = New Size(113, 6)
+        ' 
+        ' ReportsEditToolStripMenuItem
+        ' 
+        ReportsEditToolStripMenuItem.Name = "ReportsEditToolStripMenuItem"
+        ReportsEditToolStripMenuItem.Size = New Size(116, 22)
+        ReportsEditToolStripMenuItem.Text = "Edit"
+        ' 
+        ' ReportsImportToolStripMenuItem
+        ' 
+        ReportsImportToolStripMenuItem.Name = "ReportsImportToolStripMenuItem"
+        ReportsImportToolStripMenuItem.Size = New Size(116, 22)
+        ReportsImportToolStripMenuItem.Text = "Import"
+        ' 
+        ' ReportsExportToolStripMenuItem
+        ' 
+        ReportsExportToolStripMenuItem.Enabled = False
+        ReportsExportToolStripMenuItem.Name = "ReportsExportToolStripMenuItem"
+        ReportsExportToolStripMenuItem.Size = New Size(116, 22)
+        ReportsExportToolStripMenuItem.Text = "Export"
+        ' 
+        ' ToolStripSeparator12
+        ' 
+        ToolStripSeparator12.Name = "ToolStripSeparator12"
+        ToolStripSeparator12.Size = New Size(113, 6)
+        ' 
+        ' ReportsSettingsToolStripMenuItem
+        ' 
+        ReportsSettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {SettingsClassToolStripMenuItem})
+        ReportsSettingsToolStripMenuItem.Enabled = False
+        ReportsSettingsToolStripMenuItem.Name = "ReportsSettingsToolStripMenuItem"
+        ReportsSettingsToolStripMenuItem.Size = New Size(116, 22)
+        ReportsSettingsToolStripMenuItem.Text = "Settings"
+        ' 
+        ' SettingsClassToolStripMenuItem
+        ' 
+        SettingsClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {Class1ToolStripMenuItem, Class2ToolStripMenuItem, Class3ToolStripMenuItem, ClassSToolStripMenuItem})
+        SettingsClassToolStripMenuItem.Name = "SettingsClassToolStripMenuItem"
+        SettingsClassToolStripMenuItem.Size = New Size(101, 22)
+        SettingsClassToolStripMenuItem.Text = "Class"
+        ' 
+        ' Class1ToolStripMenuItem
+        ' 
+        Class1ToolStripMenuItem.Name = "Class1ToolStripMenuItem"
+        Class1ToolStripMenuItem.Size = New Size(83, 22)
+        Class1ToolStripMenuItem.Text = "I"
+        ' 
+        ' Class2ToolStripMenuItem
+        ' 
+        Class2ToolStripMenuItem.Name = "Class2ToolStripMenuItem"
+        Class2ToolStripMenuItem.Size = New Size(83, 22)
+        Class2ToolStripMenuItem.Text = "II"
+        ' 
+        ' Class3ToolStripMenuItem
+        ' 
+        Class3ToolStripMenuItem.Name = "Class3ToolStripMenuItem"
+        Class3ToolStripMenuItem.Size = New Size(83, 22)
+        Class3ToolStripMenuItem.Text = "III"
+        ' 
+        ' ClassSToolStripMenuItem
+        ' 
+        ClassSToolStripMenuItem.Name = "ClassSToolStripMenuItem"
+        ClassSToolStripMenuItem.Size = New Size(83, 22)
+        ClassSToolStripMenuItem.Text = "S"
+        ' 
+        ' ElementsToolStripMenuItem
+        ' 
+        ElementsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ReportLetterhead, ReportHeader, ToolStripSeparator16})
+        ElementsToolStripMenuItem.Enabled = False
+        ElementsToolStripMenuItem.Name = "ElementsToolStripMenuItem"
+        ElementsToolStripMenuItem.Size = New Size(67, 20)
+        ElementsToolStripMenuItem.Text = "Elements"
+        ' 
+        ' ReportLetterhead
+        ' 
+        ReportLetterhead.CheckOnClick = True
+        ReportLetterhead.DropDownItems.AddRange(New ToolStripItem() {ImageToolStripMenuItem})
+        ReportLetterhead.Name = "ReportLetterhead"
+        ReportLetterhead.Size = New Size(180, 22)
+        ReportLetterhead.Text = "Letterhead"
+        ' 
+        ' ImageToolStripMenuItem
+        ' 
+        ImageToolStripMenuItem.Name = "ImageToolStripMenuItem"
+        ImageToolStripMenuItem.Size = New Size(180, 22)
+        ImageToolStripMenuItem.Text = "Image"
+        ' 
+        ' ReportHeader
+        ' 
+        ReportHeader.CheckOnClick = True
+        ReportHeader.Name = "ReportHeader"
+        ReportHeader.Size = New Size(180, 22)
+        ReportHeader.Text = "Header"
+        ' 
+        ' ToolStripSeparator16
+        ' 
+        ToolStripSeparator16.Name = "ToolStripSeparator16"
+        ToolStripSeparator16.Size = New Size(177, 6)
+        ' 
+        ' SettingsToolStripMenuItem
+        ' 
+        SettingsToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassToolStripMenuItem, BasisToolStripMenuItem, PrecisionToolStripMenuItem})
+        SettingsToolStripMenuItem.Enabled = False
+        SettingsToolStripMenuItem.Name = "SettingsToolStripMenuItem"
+        SettingsToolStripMenuItem.Size = New Size(61, 20)
+        SettingsToolStripMenuItem.Text = "Settings"
+        ' 
+        ' ClassToolStripMenuItem
+        ' 
+        ClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassSpecialToolStripMenuItem, ClassIToolStripMenuItem, ClasasIIToolStripMenuItem, ClassIIIToolStripMenuItem})
+        ClassToolStripMenuItem.Name = "ClassToolStripMenuItem"
+        ClassToolStripMenuItem.Size = New Size(122, 22)
+        ClassToolStripMenuItem.Text = "Class"
+        ' 
+        ' ClassSpecialToolStripMenuItem
+        ' 
+        ClassSpecialToolStripMenuItem.CheckOnClick = True
+        ClassSpecialToolStripMenuItem.Name = "ClassSpecialToolStripMenuItem"
+        ClassSpecialToolStripMenuItem.Size = New Size(83, 22)
+        ClassSpecialToolStripMenuItem.Text = "S"
+        ' 
+        ' ClassIToolStripMenuItem
+        ' 
+        ClassIToolStripMenuItem.CheckOnClick = True
+        ClassIToolStripMenuItem.Name = "ClassIToolStripMenuItem"
+        ClassIToolStripMenuItem.Size = New Size(83, 22)
+        ClassIToolStripMenuItem.Text = "I"
+        ' 
+        ' ClasasIIToolStripMenuItem
+        ' 
+        ClasasIIToolStripMenuItem.CheckOnClick = True
+        ClasasIIToolStripMenuItem.Name = "ClasasIIToolStripMenuItem"
+        ClasasIIToolStripMenuItem.Size = New Size(83, 22)
+        ClasasIIToolStripMenuItem.Text = "II"
+        ' 
+        ' ClassIIIToolStripMenuItem
+        ' 
+        ClassIIIToolStripMenuItem.CheckOnClick = True
+        ClassIIIToolStripMenuItem.Name = "ClassIIIToolStripMenuItem"
+        ClassIIIToolStripMenuItem.Size = New Size(83, 22)
+        ClassIIIToolStripMenuItem.Text = "III"
+        ' 
+        ' BasisToolStripMenuItem
+        ' 
+        BasisToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {MeanToolStripMenuItem, MarkedToolStripMenuItem, DesiredToolStripMenuItem})
+        BasisToolStripMenuItem.Name = "BasisToolStripMenuItem"
+        BasisToolStripMenuItem.Size = New Size(122, 22)
+        BasisToolStripMenuItem.Text = "Basis"
+        ' 
+        ' MeanToolStripMenuItem
+        ' 
+        MeanToolStripMenuItem.Name = "MeanToolStripMenuItem"
+        MeanToolStripMenuItem.Size = New Size(114, 22)
+        MeanToolStripMenuItem.Text = "Mean"
+        ' 
+        ' MarkedToolStripMenuItem
+        ' 
+        MarkedToolStripMenuItem.Name = "MarkedToolStripMenuItem"
+        MarkedToolStripMenuItem.Size = New Size(114, 22)
+        MarkedToolStripMenuItem.Text = "Marked"
+        ' 
+        ' DesiredToolStripMenuItem
+        ' 
+        DesiredToolStripMenuItem.Name = "DesiredToolStripMenuItem"
+        DesiredToolStripMenuItem.Size = New Size(114, 22)
+        DesiredToolStripMenuItem.Text = "Desired"
+        ' 
+        ' PrecisionToolStripMenuItem
+        ' 
+        PrecisionToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {And00ToolStripMenuItem, And000ToolStripMenuItem})
+        PrecisionToolStripMenuItem.Name = "PrecisionToolStripMenuItem"
+        PrecisionToolStripMenuItem.Size = New Size(122, 22)
+        PrecisionToolStripMenuItem.Text = "Precision"
+        ' 
+        ' And00ToolStripMenuItem
+        ' 
+        And00ToolStripMenuItem.Name = "And00ToolStripMenuItem"
+        And00ToolStripMenuItem.Size = New Size(136, 22)
+        And00ToolStripMenuItem.Text = ".0 and .00"
+        ' 
+        ' And000ToolStripMenuItem
+        ' 
+        And000ToolStripMenuItem.Name = "And000ToolStripMenuItem"
+        And000ToolStripMenuItem.Size = New Size(136, 22)
+        And000ToolStripMenuItem.Text = ".00 and .000"
+        ' 
+        ' ViewToolStripMenuItem
+        ' 
+        ViewToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ZoomInToolStripMenuItem, ZoomOutToolStripMenuItem, ActualSizeToolStripMenuItem, ToolStripSeparator14, GridSizeToolStripMenuItem, ToolStripSeparator15, PageMarginsToolStripMenuItem})
+        ViewToolStripMenuItem.Enabled = False
+        ViewToolStripMenuItem.Name = "ViewToolStripMenuItem"
+        ViewToolStripMenuItem.Size = New Size(44, 20)
+        ViewToolStripMenuItem.Text = "View"
+        ' 
+        ' ZoomInToolStripMenuItem
+        ' 
+        ZoomInToolStripMenuItem.Name = "ZoomInToolStripMenuItem"
+        ZoomInToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl++"
+        ZoomInToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Oemplus
+        ZoomInToolStripMenuItem.Size = New Size(171, 22)
+        ZoomInToolStripMenuItem.Text = "Zoom In"
+        ' 
+        ' ZoomOutToolStripMenuItem
+        ' 
+        ZoomOutToolStripMenuItem.Name = "ZoomOutToolStripMenuItem"
+        ZoomOutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+-"
+        ZoomOutToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.OemMinus
+        ZoomOutToolStripMenuItem.Size = New Size(171, 22)
+        ZoomOutToolStripMenuItem.Text = "Zoom Out"
+        ' 
+        ' ActualSizeToolStripMenuItem
+        ' 
+        ActualSizeToolStripMenuItem.Name = "ActualSizeToolStripMenuItem"
+        ActualSizeToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.D0
+        ActualSizeToolStripMenuItem.Size = New Size(171, 22)
+        ActualSizeToolStripMenuItem.Text = "Actual Size"
+        ' 
+        ' ToolStripSeparator14
+        ' 
+        ToolStripSeparator14.Name = "ToolStripSeparator14"
+        ToolStripSeparator14.Size = New Size(168, 6)
+        ' 
+        ' GridSizeToolStripMenuItem
+        ' 
+        GridSizeToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {GridSizeToolStripTextBox})
+        GridSizeToolStripMenuItem.Name = "GridSizeToolStripMenuItem"
+        GridSizeToolStripMenuItem.Size = New Size(171, 22)
+        GridSizeToolStripMenuItem.Text = "Grid Size"
+        ' 
+        ' GridSizeToolStripTextBox
+        ' 
+        GridSizeToolStripTextBox.Name = "GridSizeToolStripTextBox"
+        GridSizeToolStripTextBox.Size = New Size(100, 23)
+        ' 
+        ' ToolStripSeparator15
+        ' 
+        ToolStripSeparator15.Name = "ToolStripSeparator15"
+        ToolStripSeparator15.Size = New Size(168, 6)
+        ' 
+        ' PageMarginsToolStripMenuItem
+        ' 
+        PageMarginsToolStripMenuItem.Name = "PageMarginsToolStripMenuItem"
+        PageMarginsToolStripMenuItem.Size = New Size(171, 22)
+        PageMarginsToolStripMenuItem.Text = "Page Margins"
+        ' 
+        ' ToolStripContainer2
+        ' 
+        ' 
+        ' ToolStripContainer2.ContentPanel
+        ' 
+        ToolStripContainer2.ContentPanel.Controls.Add(FormMenuStrip)
+        ToolStripContainer2.ContentPanel.Size = New Size(1036, 660)
+        ToolStripContainer2.Dock = DockStyle.Fill
+        ToolStripContainer2.Location = New Point(0, 0)
+        ToolStripContainer2.Name = "ToolStripContainer2"
+        ToolStripContainer2.Size = New Size(1036, 685)
+        ToolStripContainer2.TabIndex = 5
+        ToolStripContainer2.Text = "ToolStripContainer2"
+        ' 
         ' FrmReports
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
         AutoScroll = True
         ClientSize = New Size(1036, 685)
-        Controls.Add(FormMenuStrip)
+        Controls.Add(ToolStripContainer2)
         KeyPreview = True
         Margin = New Padding(4, 2, 4, 2)
         Name = "FrmReports"
@@ -805,12 +825,15 @@ Partial Class FrmReports
         CType(VesselBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(CustomerBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(ManufacturerBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        FormMenuStrip.ResumeLayout(False)
-        FormMenuStrip.PerformLayout()
         ControlContextMenuStrip.ResumeLayout(False)
         PageContextMenuStrip.ResumeLayout(False)
+        FormMenuStrip.ResumeLayout(False)
+        FormMenuStrip.PerformLayout()
+        ToolStripContainer2.ContentPanel.ResumeLayout(False)
+        ToolStripContainer2.ContentPanel.PerformLayout()
+        ToolStripContainer2.ResumeLayout(False)
+        ToolStripContainer2.PerformLayout()
         ResumeLayout(False)
-        PerformLayout()
     End Sub
 
     Friend WithEvents ReportsBindingSource As BindingSource
@@ -820,6 +843,33 @@ Partial Class FrmReports
     Friend WithEvents VesselBindingSource As BindingSource
     Friend WithEvents CustomerBindingSource As BindingSource
     Friend WithEvents ManufacturerBindingSource As BindingSource
+    Friend WithEvents LetterheadImageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents ControlContextMenuStrip As ContextMenuStrip
+    Friend WithEvents UndoContextMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
+    Friend WithEvents CutContextMenuItem As ToolStripMenuItem
+    Friend WithEvents PasteContextMenuItem As ToolStripMenuItem
+    Friend WithEvents DeleteContextMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Friend WithEvents BringToFrontContextMenuItem As ToolStripMenuItem
+    Friend WithEvents SendToBackContextMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
+    Friend WithEvents SelectAllContextMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
+    Friend WithEvents PrintDocument As Printing.PrintDocument
+    Friend WithEvents PrintPreviewDialog As PrintPreviewDialog
+    Friend WithEvents PageSetupDialog As PageSetupDialog
+    Friend WithEvents PageContextMenuStrip As ContextMenuStrip
+    Friend WithEvents InsertNewPageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents DeletePageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BasisMeanToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BasisMarkedToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents BasisDesiredToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem3 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
+    Friend WithEvents ToolStripMenuItem5 As ToolStripMenuItem
     Friend WithEvents FormMenuStrip As MenuStrip
     Friend WithEvents FileToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents FileNewToolStripMenuItem As ToolStripMenuItem
@@ -863,37 +913,10 @@ Partial Class FrmReports
     Friend WithEvents Class3ToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassSToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ElementsToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents LetterheadToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReportLetterhead As ToolStripMenuItem
     Friend WithEvents ImageToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReportHeader As ToolStripMenuItem
     Friend WithEvents ToolStripSeparator16 As ToolStripSeparator
-    Friend WithEvents LetterheadImageToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents HeaderToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
-    Friend WithEvents ControlContextMenuStrip As ContextMenuStrip
-    Friend WithEvents UndoContextMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
-    Friend WithEvents CutContextMenuItem As ToolStripMenuItem
-    Friend WithEvents PasteContextMenuItem As ToolStripMenuItem
-    Friend WithEvents DeleteContextMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
-    Friend WithEvents BringToFrontContextMenuItem As ToolStripMenuItem
-    Friend WithEvents SendToBackContextMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator10 As ToolStripSeparator
-    Friend WithEvents SelectAllContextMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
-    Friend WithEvents PrintDocument As Printing.PrintDocument
-    Friend WithEvents PrintPreviewDialog As PrintPreviewDialog
-    Friend WithEvents PageSetupDialog As PageSetupDialog
-    Friend WithEvents PageContextMenuStrip As ContextMenuStrip
-    Friend WithEvents InsertNewPageToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents DeletePageToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents BasisMeanToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents BasisMarkedToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents BasisDesiredToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem2 As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem3 As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem4 As ToolStripMenuItem
-    Friend WithEvents ToolStripMenuItem5 As ToolStripMenuItem
     Friend WithEvents SettingsToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassSpecialToolStripMenuItem As ToolStripMenuItem
@@ -916,4 +939,5 @@ Partial Class FrmReports
     Friend WithEvents GridSizeToolStripTextBox As ToolStripTextBox
     Friend WithEvents ToolStripSeparator15 As ToolStripSeparator
     Friend WithEvents PageMarginsToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ToolStripContainer2 As ToolStripContainer
 End Class

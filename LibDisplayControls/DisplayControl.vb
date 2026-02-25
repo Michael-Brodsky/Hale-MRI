@@ -36,7 +36,8 @@ Partial Public Class DisplayControl
 #End Region
 #Region "Private Members"
     Private mData As Object = Nothing                                           ' The control's data source.
-    Private mDragOffset As Point
+    Private mDisplayName As String = Nothing                                    ' The human-readable control name.
+    Private mDragOffset As Point                                                ' Mouse position offset from the top left corner of the control.
     Private mEdgeSize As Integer = kControlEdgeSizeMin                          ' Control's selection border size in pixels.
     Private mSelected As Boolean = False                                        ' Indicates whether the control is selected.
 #End Region
@@ -62,13 +63,12 @@ Partial Public Class DisplayControl
     ''' <param name="maxSize"></param>
     ''' <param name="minSize"></param>
     ''' <param name="data"></param>
-    Public Sub New(name As String, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
+    Public Sub New(name As String, Optional displayName As String = Nothing, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                    Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As Object = Nothing)
-
-        ' This call is required by the designer.
         InitializeComponent()
 
         Me.Data = data
+        Me.DisplayName = displayName
         Me.IsSelectable = selectable
         Me.IsSizeable = sizeable
         Me.IsMovable = movable
@@ -86,6 +86,7 @@ Partial Public Class DisplayControl
         InitializeComponent()
 
         Me.Data = other.Data
+        Me.DisplayName = other.DisplayName
         Me.EdgeSize = other.EdgeSize
         Me.IsMovable = other.IsMovable
         Me.IsSelectable = other.IsSelectable
@@ -103,6 +104,7 @@ Partial Public Class DisplayControl
 
     Public Function Copy(other As DisplayControl) As DisplayControl
         Me.Data = other.Data
+        Me.Data = other.Data
         Me.EdgeSize = other.EdgeSize
         Me.IsMovable = other.IsMovable
         Me.IsSelectable = other.IsSelectable
@@ -116,6 +118,10 @@ Partial Public Class DisplayControl
         Return Me
     End Function
 
+    ''' <summary>
+    ''' The mouse position relative to the top left corner of the DisplayControl.
+    ''' </summary>
+    ''' <returns>Point</returns>
     Public ReadOnly Property DragOffset As Point
         Get
             Return mDragOffset
@@ -123,6 +129,12 @@ Partial Public Class DisplayControl
     End Property
 #End Region
 #Region "Public Interface"
+    Public ReadOnly Property ControlBounds As Rectangle
+        Get
+            Return New Rectangle(Me.Parent.PointToClient(Me.PointToScreen(Point.Empty)), Me.Size)
+        End Get
+    End Property
+
     Public Shared Sub ControlsAddInTo(controls As ObservableCollection(Of DisplayControl), ByRef into As ObservableCollection(Of DisplayControl), Optional ByVal clone As Boolean = False)
         ' Adds an ObservableCollection of DisplayControl to another ObservableCollection, optionally adding their clones.
         For Each dc As DisplayControl In controls
@@ -181,12 +193,11 @@ Partial Public Class DisplayControl
         Return Nothing
     End Function
 
-    'Public ReadOnly Property DragOffset As Point
-    '    Get
-    '        Return mDragOffset
-    '    End Get
-    'End Property
-
+    ''' <summary>
+    ''' The top-most control that contains this DisplayControl.
+    ''' </summary>
+    ''' <param name="dc"></param>
+    ''' <returns>Control</returns>
     Public Function FindTopMostParent(ByVal dc As DisplayControl) As Control
         ' Start with the control itself
         Dim ctrl As Control = dc
@@ -222,6 +233,20 @@ Partial Public Class DisplayControl
         End Set
     End Property
 
+    Public Property DisplayName As String
+        Get
+            Return If(Not String.IsNullOrEmpty(mDisplayName), mDisplayName, Me.Name)
+        End Get
+        Set(value As String)
+            mDisplayName = value
+        End Set
+    End Property
+
+    Public ReadOnly Property IsEqualTo(other As DisplayControl) As Boolean
+        Get
+            Return Me.GetType() Is other.GetType() AndAlso Me.Bounds = other.Bounds
+        End Get
+    End Property
 
     Public Property IsSelectable As Boolean
 
@@ -280,7 +305,6 @@ Partial Public Class DisplayControl
             AddHandler e.Control.Paint, AddressOf Me.DisplayControl_Paint
         End If
         If Me.IsMovable Or Me.IsSizeable Then
-            AddHandler e.Control.LocationChanged, AddressOf Me.DisplayControl_LocationChanged
             AddHandler e.Control.MouseMove, AddressOf Me.DisplayControl_MouseMove
         End If
     End Sub
@@ -293,7 +317,6 @@ Partial Public Class DisplayControl
                 RemoveHandler e.Control.Paint, AddressOf Me.DisplayControl_Paint
             End If
             If Me.IsMovable Or Me.IsSizeable Then
-                RemoveHandler e.Control.LocationChanged, AddressOf Me.DisplayControl_LocationChanged
                 RemoveHandler e.Control.MouseMove, AddressOf Me.DisplayControl_MouseMove
             End If
         Next
@@ -356,37 +379,6 @@ Partial Public Class DisplayControl
         End If
     End Sub
 
-    Private Sub DisplayControl_LocationChanged(sender As Object, e As EventArgs) Handles Me.LocationChanged
-        'Debug.WriteLine($"LocationChanged: {Me.Name} moved from {mDebugLocation} to {Me.Location}")
-        'mDebugLocation = Me.Location
-        'Dim ctrl As DisplayControl = DirectCast(sender, DisplayControl)
-        'If ctrl.Parent Is Nothing Then Return
-        'Dim pBounds As Rectangle = ctrl.Parent.ClientRectangle
-        'Dim newLocation As Point = ctrl.Location
-        'If newLocation.X < 0 Then newLocation.X = 0
-        'If newLocation.Y < 0 Then newLocation.Y = 0
-
-        '' Ensure Bottom/Right is within bounds.
-        'If newLocation.X + ctrl.Width > pBounds.Width Then
-        '    newLocation.X = pBounds.Width - ctrl.Width
-        'End If
-        'If newLocation.Y + ctrl.Height > pBounds.Height Then
-        '    newLocation.Y = pBounds.Height - ctrl.Height
-        'End If
-
-        '' Apply corrected location, removing handler to prevent recursive loop.
-        'If newLocation = ctrl.Location Then
-        '    If Me.IsOutOfParentBounds Then
-        '        Me.IsOutOfParentBounds = False
-        '    End If
-        '    Return
-        'End If
-        'RemoveHandler ctrl.LocationChanged, AddressOf DisplayControl_LocationChanged
-        'ctrl.Location = newLocation
-        'Me.IsOutOfParentBounds = True
-        'AddHandler ctrl.LocationChanged, AddressOf DisplayControl_LocationChanged
-    End Sub
-
     Private Sub DisplayControl_ControlsAdded(sender As Object, e As ControlEventArgs) Handles Me.ControlAdded
         ControlAdd(e)
     End Sub
@@ -399,9 +391,6 @@ Partial Public Class DisplayControl
         Dim args As New MouseEventArgs(e.Button, e.Clicks, Me.PointToClient(System.Windows.Forms.Cursor.Position).X, Me.PointToClient(System.Windows.Forms.Cursor.Position).Y, e.Delta)
         RaiseEvent MouseDownEvent(Me, args)
         mDragOffset = e.Location
-        'If Me.Selected AndAlso Me.IsMovable AndAlso Me.Cursor Is Cursors.Default Then
-        '    Me.DoDragDrop(New DataObject("DisplayControl", Me), DragDropEffects.Move)
-        'End If
     End Sub
 
     Private Sub DisplayControl_MouseMove(sender As Object, e As MouseEventArgs) Handles Me.MouseMove
@@ -419,27 +408,6 @@ Partial Public Class DisplayControl
 
     Private Sub DisplayControl_Paint(sender As Object, e As PaintEventArgs) Handles Me.Paint
         DrawBorder(e.Graphics)
-    End Sub
-
-    Private Sub DisplayControl_Resize(sender As Object, e As EventArgs) Handles Me.Resize
-        'Debug.WriteLine($"Resize: {Me.Name} resized from {mDebugSize} to {Me.Size}")
-        'mDebugSize = Me.Size
-        'Dim ctrl = DirectCast(sender, DisplayControl)
-        'If ctrl.Parent Is Nothing Then Return
-
-        '' Calculate the max possible dimensions based on current position
-        'Dim pBounds As Rectangle = ctrl.Parent.ClientRectangle
-        'Dim maxWidth As Integer = ctrl.Parent.ClientSize.Width - ctrl.Left
-        'Dim maxHeight As Integer = ctrl.Parent.ClientSize.Height - ctrl.Top
-
-        '' Clamp the size (ensuring it's at least 1x1 to avoid errors)
-        'Dim newWidth As Integer = Math.Clamp(ctrl.Width, 1, Math.Max(1, maxWidth))
-        'Dim newHeight As Integer = Math.Clamp(ctrl.Height, 1, Math.Max(1, maxHeight))
-
-        '' Apply only if values changed to prevent event recursion
-        'If ctrl.Width <> newWidth OrElse ctrl.Height <> newHeight Then
-        '    ctrl.Size = New Size(newWidth, newHeight)
-        'End If
     End Sub
 #End Region
 End Class

@@ -31,9 +31,9 @@
     ''' <summary>
     ''' Creates a new ReportLetterhead object with the given properties.
     ''' </summary>
-    Public Sub New(name As String, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
+    Public Sub New(name As String, Optional displayName As String = Nothing, Optional selectable As Boolean = False, Optional sizeable As Boolean = False,
                    Optional movable As Boolean = False, Optional maxSize As Size = Nothing, Optional minSize As Size = Nothing, Optional data As Object = Nothing)
-        MyBase.New(name, selectable, sizeable, movable, maxSize, minSize, data)
+        MyBase.New(name, displayName, selectable, sizeable, movable, maxSize, minSize, data)
         InitializeComponent()
     End Sub
 
