@@ -997,6 +997,7 @@ Partial Class FrmMeasurements
         ChartBladeHeight1.BladeCount = Nothing
         ChartBladeHeight1.Data = Nothing
         ChartBladeHeight1.Dock = DockStyle.Fill
+        ChartBladeHeight1.EdgeSize = 3
         ChartBladeHeight1.IsMovable = False
         ChartBladeHeight1.IsSelectable = False
         ChartBladeHeight1.IsSizeable = False
@@ -1010,6 +1011,7 @@ Partial Class FrmMeasurements
         ChartBladeHeight1.ReferenceBlade = Nothing
         ChartBladeHeight1.ReferencePoint = Nothing
         ChartBladeHeight1.ReferenceRadius = Nothing
+        ChartBladeHeight1.ResizePoint = LibDisplayControls.DisplayControl.ResizePoints.None
         tLayoutTrack.SetRowSpan(ChartBladeHeight1, 8)
         ChartBladeHeight1.Selected = False
         ChartBladeHeight1.Size = New Size(306, 132)
@@ -1020,6 +1022,7 @@ Partial Class FrmMeasurements
         ChartAngularPosition1.BladeCount = Nothing
         ChartAngularPosition1.Data = Nothing
         ChartAngularPosition1.Dock = DockStyle.Fill
+        ChartAngularPosition1.EdgeSize = 3
         ChartAngularPosition1.IsMovable = False
         ChartAngularPosition1.IsSelectable = False
         ChartAngularPosition1.IsSizeable = False
@@ -1033,6 +1036,7 @@ Partial Class FrmMeasurements
         ChartAngularPosition1.ReferenceBlade = Nothing
         ChartAngularPosition1.ReferencePoint = Nothing
         ChartAngularPosition1.ReferenceRadius = Nothing
+        ChartAngularPosition1.ResizePoint = LibDisplayControls.DisplayControl.ResizePoints.None
         tLayoutTrack.SetRowSpan(ChartAngularPosition1, 8)
         ChartAngularPosition1.Selected = False
         ChartAngularPosition1.Size = New Size(306, 132)

@@ -26,6 +26,14 @@ Partial Class FrmComparison
         tLayoutComparison = New TableLayoutPanel()
         PictLogo = New PictureBox()
         DataGridJobDetails = New DataGridView()
+        StartDateCol = New DataGridViewTextBoxColumn()
+        MeasurementTypeCol = New DataGridViewComboBoxColumn()
+        ClassCol = New DataGridViewComboBoxColumn()
+        ToleranceBindingSource = New BindingSource(components)
+        EmployeeCol = New DataGridViewComboBoxColumn()
+        EmployeeBindingSource = New BindingSource(components)
+        DescriptionCol = New DataGridViewTextBoxColumn()
+        JobDetailsBindingSource = New BindingSource(components)
         tlayoutComparisonControls = New TableLayoutPanel()
         ComboRadiusorBlade = New ComboBox()
         ChkExamineoneBlade = New CheckBox()
@@ -50,33 +58,25 @@ Partial Class FrmComparison
         PanelChart = New Panel()
         TLayoutCompCharts = New TableLayoutPanel()
         RecordNavigationBar1 = New RecordNavigationBar()
-        JobDetailsBindingSource = New BindingSource(components)
-        MeasurementTypesBindingSource = New BindingSource(components)
-        EmployeeBindingSource = New BindingSource(components)
-        ToleranceBindingSource = New BindingSource(components)
-        StartDateCol = New DataGridViewTextBoxColumn()
-        MeasurementTypeCol = New DataGridViewComboBoxColumn()
-        ClassCol = New DataGridViewComboBoxColumn()
-        EmployeeCol = New DataGridViewComboBoxColumn()
-        DescriptionCol = New DataGridViewTextBoxColumn()
         TLayoutNavigation = New TableLayoutPanel()
-        CmdMeasure = New Button()
-        CmdLocalPitch = New Button()
-        CmdGraph = New Button()
-        CmdInspect = New Button()
         CmdComparison = New Button()
+        CmdInspect = New Button()
+        CmdGraph = New Button()
+        CmdLocalPitch = New Button()
+        CmdMeasure = New Button()
+        MeasurementTypesBindingSource = New BindingSource(components)
         tLayoutComparison.SuspendLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).BeginInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
+        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         tlayoutComparisonControls.SuspendLayout()
         CType(TrackFont, ComponentModel.ISupportInitialize).BeginInit()
         CType(TrackSegments, ComponentModel.ISupportInitialize).BeginInit()
         PanelChart.SuspendLayout()
-        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).BeginInit()
-        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         TLayoutNavigation.SuspendLayout()
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
         ' tLayoutComparison
@@ -136,6 +136,51 @@ Partial Class FrmComparison
         DataGridJobDetails.RowHeadersVisible = False
         DataGridJobDetails.Size = New Size(578, 74)
         DataGridJobDetails.TabIndex = 1
+        ' 
+        ' StartDateCol
+        ' 
+        StartDateCol.HeaderText = "Start Date"
+        StartDateCol.Name = "StartDateCol"
+        StartDateCol.Width = 101
+        ' 
+        ' MeasurementTypeCol
+        ' 
+        MeasurementTypeCol.HeaderText = "Measurement"
+        MeasurementTypeCol.Name = "MeasurementTypeCol"
+        MeasurementTypeCol.Width = 105
+        ' 
+        ' ClassCol
+        ' 
+        ClassCol.DataSource = ToleranceBindingSource
+        ClassCol.DisplayMember = "ToleranceClass"
+        ClassCol.HeaderText = "Class"
+        ClassCol.Name = "ClassCol"
+        ClassCol.ValueMember = "ToleranceClass"
+        ClassCol.Width = 48
+        ' 
+        ' ToleranceBindingSource
+        ' 
+        ToleranceBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
+        ' 
+        ' EmployeeCol
+        ' 
+        EmployeeCol.DataSource = EmployeeBindingSource
+        EmployeeCol.HeaderText = "Employee"
+        EmployeeCol.Name = "EmployeeCol"
+        EmployeeCol.Width = 81
+        ' 
+        ' EmployeeBindingSource
+        ' 
+        EmployeeBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
+        ' 
+        ' DescriptionCol
+        ' 
+        DescriptionCol.HeaderText = "Description"
+        DescriptionCol.Name = "DescriptionCol"
+        DescriptionCol.Width = 110
+        ' 
+        ' JobDetailsBindingSource
+        ' 
         ' 
         ' tlayoutComparisonControls
         ' 
@@ -448,55 +493,6 @@ Partial Class FrmComparison
         RecordNavigationBar1.Size = New Size(569, 33)
         RecordNavigationBar1.TabIndex = 5
         ' 
-        ' JobDetailsBindingSource
-        ' 
-        ' 
-        ' MeasurementTypesBindingSource
-        ' 
-        MeasurementTypesBindingSource.DataSource = GetType(LibDatabase.Models.MeasurementType)
-        ' 
-        ' EmployeeBindingSource
-        ' 
-        EmployeeBindingSource.DataSource = GetType(LibDatabase.Models.Employee)
-        ' 
-        ' ToleranceBindingSource
-        ' 
-        ToleranceBindingSource.DataSource = GetType(LibDatabase.Models.Tolerance)
-        ' 
-        ' StartDateCol
-        ' 
-        StartDateCol.HeaderText = "Start Date"
-        StartDateCol.Name = "StartDateCol"
-        StartDateCol.Width = 101
-        ' 
-        ' MeasurementTypeCol
-        ' 
-        MeasurementTypeCol.HeaderText = "Measurement"
-        MeasurementTypeCol.Name = "MeasurementTypeCol"
-        MeasurementTypeCol.Width = 105
-        ' 
-        ' ClassCol
-        ' 
-        ClassCol.DataSource = ToleranceBindingSource
-        ClassCol.DisplayMember = "ToleranceClass"
-        ClassCol.HeaderText = "Class"
-        ClassCol.Name = "ClassCol"
-        ClassCol.ValueMember = "ToleranceClass"
-        ClassCol.Width = 48
-        ' 
-        ' EmployeeCol
-        ' 
-        EmployeeCol.DataSource = EmployeeBindingSource
-        EmployeeCol.HeaderText = "Employee"
-        EmployeeCol.Name = "EmployeeCol"
-        EmployeeCol.Width = 81
-        ' 
-        ' DescriptionCol
-        ' 
-        DescriptionCol.HeaderText = "Description"
-        DescriptionCol.Name = "DescriptionCol"
-        DescriptionCol.Width = 110
-        ' 
         ' TLayoutNavigation
         ' 
         TLayoutNavigation.ColumnCount = 5
@@ -520,35 +516,15 @@ Partial Class FrmComparison
         TLayoutNavigation.Size = New Size(388, 80)
         TLayoutNavigation.TabIndex = 6
         ' 
-        ' CmdMeasure
+        ' CmdComparison
         ' 
-        CmdMeasure.Dock = DockStyle.Fill
-        CmdMeasure.Location = New Point(3, 3)
-        CmdMeasure.Name = "CmdMeasure"
-        CmdMeasure.Size = New Size(71, 74)
-        CmdMeasure.TabIndex = 0
-        CmdMeasure.Text = "Measure"
-        CmdMeasure.UseVisualStyleBackColor = True
-        ' 
-        ' CmdLocalPitch
-        ' 
-        CmdLocalPitch.Dock = DockStyle.Fill
-        CmdLocalPitch.Location = New Point(80, 3)
-        CmdLocalPitch.Name = "CmdLocalPitch"
-        CmdLocalPitch.Size = New Size(71, 74)
-        CmdLocalPitch.TabIndex = 1
-        CmdLocalPitch.Text = "Local Pitch"
-        CmdLocalPitch.UseVisualStyleBackColor = True
-        ' 
-        ' CmdGraph
-        ' 
-        CmdGraph.Dock = DockStyle.Fill
-        CmdGraph.Location = New Point(157, 3)
-        CmdGraph.Name = "CmdGraph"
-        CmdGraph.Size = New Size(71, 74)
-        CmdGraph.TabIndex = 2
-        CmdGraph.Text = "Graph"
-        CmdGraph.UseVisualStyleBackColor = True
+        CmdComparison.Dock = DockStyle.Fill
+        CmdComparison.Location = New Point(311, 3)
+        CmdComparison.Name = "CmdComparison"
+        CmdComparison.Size = New Size(74, 74)
+        CmdComparison.TabIndex = 4
+        CmdComparison.Text = "Comp."
+        CmdComparison.UseVisualStyleBackColor = True
         ' 
         ' CmdInspect
         ' 
@@ -560,15 +536,39 @@ Partial Class FrmComparison
         CmdInspect.Text = "Inspect"
         CmdInspect.UseVisualStyleBackColor = True
         ' 
-        ' CmdComparison
+        ' CmdGraph
         ' 
-        CmdComparison.Dock = DockStyle.Fill
-        CmdComparison.Location = New Point(311, 3)
-        CmdComparison.Name = "CmdComparison"
-        CmdComparison.Size = New Size(74, 74)
-        CmdComparison.TabIndex = 4
-        CmdComparison.Text = "Comp."
-        CmdComparison.UseVisualStyleBackColor = True
+        CmdGraph.Dock = DockStyle.Fill
+        CmdGraph.Location = New Point(157, 3)
+        CmdGraph.Name = "CmdGraph"
+        CmdGraph.Size = New Size(71, 74)
+        CmdGraph.TabIndex = 2
+        CmdGraph.Text = "Graph"
+        CmdGraph.UseVisualStyleBackColor = True
+        ' 
+        ' CmdLocalPitch
+        ' 
+        CmdLocalPitch.Dock = DockStyle.Fill
+        CmdLocalPitch.Location = New Point(80, 3)
+        CmdLocalPitch.Name = "CmdLocalPitch"
+        CmdLocalPitch.Size = New Size(71, 74)
+        CmdLocalPitch.TabIndex = 1
+        CmdLocalPitch.Text = "Local Pitch"
+        CmdLocalPitch.UseVisualStyleBackColor = True
+        ' 
+        ' CmdMeasure
+        ' 
+        CmdMeasure.Dock = DockStyle.Fill
+        CmdMeasure.Location = New Point(3, 3)
+        CmdMeasure.Name = "CmdMeasure"
+        CmdMeasure.Size = New Size(71, 74)
+        CmdMeasure.TabIndex = 0
+        CmdMeasure.Text = "Measure"
+        CmdMeasure.UseVisualStyleBackColor = True
+        ' 
+        ' MeasurementTypesBindingSource
+        ' 
+        MeasurementTypesBindingSource.DataSource = GetType(LibDatabase.Models.MeasurementType)
         ' 
         ' FrmComparison
         ' 
@@ -583,16 +583,16 @@ Partial Class FrmComparison
         tLayoutComparison.PerformLayout()
         CType(PictLogo, ComponentModel.ISupportInitialize).EndInit()
         CType(DataGridJobDetails, ComponentModel.ISupportInitialize).EndInit()
+        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).EndInit()
+        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         tlayoutComparisonControls.ResumeLayout(False)
         tlayoutComparisonControls.PerformLayout()
         CType(TrackFont, ComponentModel.ISupportInitialize).EndInit()
         CType(TrackSegments, ComponentModel.ISupportInitialize).EndInit()
         PanelChart.ResumeLayout(False)
-        CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(EmployeeBindingSource, ComponentModel.ISupportInitialize).EndInit()
-        CType(ToleranceBindingSource, ComponentModel.ISupportInitialize).EndInit()
         TLayoutNavigation.ResumeLayout(False)
+        CType(MeasurementTypesBindingSource, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
     End Sub
 

@@ -23,13 +23,6 @@ Partial Class FrmLocalPitch
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
-        Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim ChartArea2 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim ChartArea3 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
-        Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Series2 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Series3 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
-        Dim Title1 As System.Windows.Forms.DataVisualization.Charting.Title = New DataVisualization.Charting.Title()
         tLayoutLocalPitch = New TableLayoutPanel()
         tLayoutNavigationButtons = New TableLayoutPanel()
         CmdComparisonForm = New Button()
@@ -53,7 +46,6 @@ Partial Class FrmLocalPitch
         ChkIncludeTrack = New CheckBox()
         CmdPrint = New Button()
         pBoxLogo = New PictureBox()
-        ChartLocalPitch = New DataVisualization.Charting.Chart()
         GridJobDetails = New DataGridView()
         StartDate = New DataGridViewTextBoxColumn()
         MeasurementType = New DataGridViewComboBoxColumn()
@@ -66,10 +58,11 @@ Partial Class FrmLocalPitch
         BindingSource2 = New BindingSource(components)
         ClassBindingSource = New BindingSource(components)
         MeasurementTypesBindingSource = New BindingSource(components)
+        TLayoutCharts = New TableLayoutPanel()
+        RecordNavigationBar1 = New RecordNavigationBar()
         tLayoutLocalPitch.SuspendLayout()
         tLayoutNavigationButtons.SuspendLayout()
         CType(pBoxLogo, ComponentModel.ISupportInitialize).BeginInit()
-        CType(ChartLocalPitch, ComponentModel.ISupportInitialize).BeginInit()
         CType(GridJobDetails, ComponentModel.ISupportInitialize).BeginInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).BeginInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).BeginInit()
@@ -103,9 +96,10 @@ Partial Class FrmLocalPitch
         tLayoutLocalPitch.Controls.Add(ChkIncludeTrack, 0, 14)
         tLayoutLocalPitch.Controls.Add(CmdPrint, 0, 16)
         tLayoutLocalPitch.Controls.Add(pBoxLogo, 0, 0)
-        tLayoutLocalPitch.Controls.Add(ChartLocalPitch, 1, 2)
         tLayoutLocalPitch.Controls.Add(GridJobDetails, 3, 1)
         tLayoutLocalPitch.Controls.Add(LabJobNumber, 2, 0)
+        tLayoutLocalPitch.Controls.Add(TLayoutCharts, 1, 2)
+        tLayoutLocalPitch.Controls.Add(RecordNavigationBar1, 3, 0)
         tLayoutLocalPitch.Dock = DockStyle.Fill
         tLayoutLocalPitch.Location = New Point(0, 0)
         tLayoutLocalPitch.Margin = New Padding(3, 5, 3, 4)
@@ -375,57 +369,6 @@ Partial Class FrmLocalPitch
         pBoxLogo.TabIndex = 15
         pBoxLogo.TabStop = False
         ' 
-        ' ChartLocalPitch
-        ' 
-        ChartArea1.Name = "SummaryArea"
-        ChartArea1.Position.Auto = False
-        ChartArea1.Position.Height = 65F
-        ChartArea1.Position.Width = 94F
-        ChartArea1.Position.X = 3F
-        ChartArea1.Position.Y = 3F
-        ChartArea2.AlignWithChartArea = "SummaryArea"
-        ChartArea2.Name = "BladePitchArea"
-        ChartArea2.Position.Auto = False
-        ChartArea2.Position.Height = 25F
-        ChartArea2.Position.Width = 94F
-        ChartArea2.Position.X = 3F
-        ChartArea2.Position.Y = 47F
-        ChartArea2.Visible = False
-        ChartArea3.AlignWithChartArea = "SummaryArea"
-        ChartArea3.Name = "LocalPitchArea"
-        ChartArea3.Position.Auto = False
-        ChartArea3.Position.Height = 30F
-        ChartArea3.Position.Width = 94F
-        ChartArea3.Position.X = 3F
-        ChartArea3.Position.Y = 70F
-        ChartLocalPitch.ChartAreas.Add(ChartArea1)
-        ChartLocalPitch.ChartAreas.Add(ChartArea2)
-        ChartLocalPitch.ChartAreas.Add(ChartArea3)
-        tLayoutLocalPitch.SetColumnSpan(ChartLocalPitch, 4)
-        ChartLocalPitch.Dock = DockStyle.Fill
-        ChartLocalPitch.Location = New Point(133, 116)
-        ChartLocalPitch.Name = "ChartLocalPitch"
-        tLayoutLocalPitch.SetRowSpan(ChartLocalPitch, 16)
-        Series1.ChartArea = "SummaryArea"
-        Series1.Name = "Series1"
-        Series2.ChartArea = "BladePitchArea"
-        Series2.Name = "Series2"
-        Series3.ChartArea = "LocalPitchArea"
-        Series3.ChartType = DataVisualization.Charting.SeriesChartType.Line
-        Series3.Name = "Series3"
-        ChartLocalPitch.Series.Add(Series1)
-        ChartLocalPitch.Series.Add(Series2)
-        ChartLocalPitch.Series.Add(Series3)
-        ChartLocalPitch.Size = New Size(1048, 517)
-        ChartLocalPitch.TabIndex = 16
-        Title1.Alignment = ContentAlignment.TopCenter
-        Title1.DockedToChartArea = "SummaryArea"
-        Title1.DockingOffset = -5
-        Title1.Name = "SummaryTitle"
-        Title1.Text = "Where is this"
-        Title1.TextOrientation = DataVisualization.Charting.TextOrientation.Horizontal
-        ChartLocalPitch.Titles.Add(Title1)
-        ' 
         ' GridJobDetails
         ' 
         GridJobDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
@@ -499,7 +442,42 @@ Partial Class FrmLocalPitch
         ' JobDetailsBindingSource
         ' 
         ' 
-        ' FormLocalPitch
+        ' TLayoutCharts
+        ' 
+        TLayoutCharts.ColumnCount = 1
+        tLayoutLocalPitch.SetColumnSpan(TLayoutCharts, 4)
+        TLayoutCharts.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TLayoutCharts.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 50F))
+        TLayoutCharts.Dock = DockStyle.Fill
+        TLayoutCharts.Location = New Point(130, 113)
+        TLayoutCharts.Margin = New Padding(0)
+        TLayoutCharts.Name = "TLayoutCharts"
+        TLayoutCharts.RowCount = 1
+        tLayoutLocalPitch.SetRowSpan(TLayoutCharts, 16)
+        TLayoutCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TLayoutCharts.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
+        TLayoutCharts.Size = New Size(1054, 523)
+        TLayoutCharts.TabIndex = 28
+        ' 
+        ' RecordNavigationBar1
+        ' 
+        RecordNavigationBar1.AutoSize = True
+        RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        RecordNavigationBar1.BoundControls = Nothing
+        tLayoutLocalPitch.SetColumnSpan(RecordNavigationBar1, 2)
+        RecordNavigationBar1.Database = Nothing
+        RecordNavigationBar1.Dock = DockStyle.Top
+        RecordNavigationBar1.Filter = Nothing
+        RecordNavigationBar1.FilterOn = False
+        RecordNavigationBar1.Location = New Point(535, 0)
+        RecordNavigationBar1.Margin = New Padding(0)
+        RecordNavigationBar1.MasterSource = Nothing
+        RecordNavigationBar1.Name = "RecordNavigationBar1"
+        RecordNavigationBar1.NoUpdates = False
+        RecordNavigationBar1.Size = New Size(649, 27)
+        RecordNavigationBar1.TabIndex = 29
+        ' 
+        ' FrmLocalPitch
         ' 
         AutoScaleDimensions = New SizeF(8F, 20F)
         AutoScaleMode = AutoScaleMode.Font
@@ -507,13 +485,12 @@ Partial Class FrmLocalPitch
         Controls.Add(tLayoutLocalPitch)
         Font = New Font("Segoe UI", 11F)
         Margin = New Padding(3, 4, 3, 4)
-        Name = "FormLocalPitch"
+        Name = "FrmLocalPitch"
         Text = "Local Pitch"
         tLayoutLocalPitch.ResumeLayout(False)
         tLayoutLocalPitch.PerformLayout()
         tLayoutNavigationButtons.ResumeLayout(False)
         CType(pBoxLogo, ComponentModel.ISupportInitialize).EndInit()
-        CType(ChartLocalPitch, ComponentModel.ISupportInitialize).EndInit()
         CType(GridJobDetails, ComponentModel.ISupportInitialize).EndInit()
         CType(JobDetailsBindingSource, ComponentModel.ISupportInitialize).EndInit()
         CType(EmployeesBindingSource, ComponentModel.ISupportInitialize).EndInit()
@@ -540,7 +517,6 @@ Partial Class FrmLocalPitch
     Friend WithEvents ChkShowReference As CheckBox
     Friend WithEvents CmdPrint As Button
     Friend WithEvents pBoxLogo As PictureBox
-    Friend WithEvents ChartLocalPitch As DataVisualization.Charting.Chart
     Friend WithEvents RecordNavigationBar1 As RecordNavigationBar
     Friend WithEvents GridJobDetails As DataGridView
     Friend WithEvents JobDetailsBindingSource As BindingSource
@@ -560,4 +536,5 @@ Partial Class FrmLocalPitch
     Friend WithEvents CmdGraphForm As Button
     Friend WithEvents CmdLocalPitchForm As Button
     Friend WithEvents CmdMeasureForm As Button
+    Friend WithEvents TLayoutCharts As TableLayoutPanel
 End Class
