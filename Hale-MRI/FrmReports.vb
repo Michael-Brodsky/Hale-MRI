@@ -1,17 +1,11 @@
 ﻿Imports System.Collections.ObjectModel
-Imports System.Collections.Specialized
 Imports System.ComponentModel
 Imports System.Drawing.Printing
 Imports System.IO
-Imports System.Net.Http
-Imports System.Windows.Forms.Design
-Imports System.Windows.Forms.VisualStyles.VisualStyleElement
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDisplayControls
 Imports Microsoft.EntityFrameworkCore
-Imports Microsoft.EntityFrameworkCore.ChangeTracking
-Imports Newtonsoft.Json.Linq
 
 Public Class FrmReports
     Inherits FrmContent
@@ -644,7 +638,6 @@ Public Class FrmReports
 
     Private Sub ReportsDropDownOpening()
         ReportsExportToolStripMenuItem.Enabled = Me.Report IsNot Nothing
-        ReportsSettingsToolStripMenuItem.Enabled = Me.Report IsNot Nothing
     End Sub
 
     Private Sub ReportToFile(fileName As String)
@@ -860,7 +853,7 @@ Public Class FrmReports
         LetterheadFileSelect()
     End Sub
 
-    Private Sub JobsOpenToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub JobsOpenToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobsOpenToolStripMenuItem.Click
         JobSelectorOpen()
     End Sub
 
@@ -891,15 +884,15 @@ Public Class FrmReports
         ReportOpen(CType(sender, ToolStripMenuItem).Text)
     End Sub
 
-    Private Sub ReportsEditToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ReportsEditToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsEditToolStripMenuItem.Click
         ReportEditorOpen()
     End Sub
 
-    Private Sub ReportsExportToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ReportsExportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsExportToolStripMenuItem.Click
         ReportExport()
     End Sub
 
-    Private Sub ReportsImportToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ReportsImportToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReportsImportToolStripMenuItem.Click
         ReportImport()
     End Sub
 
@@ -911,11 +904,11 @@ Public Class FrmReports
         ZoomAdjust(1.0F - mZoomFactor)
     End Sub
 
-    Private Sub ZoomInToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ZoomInToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZoomInToolStripMenuItem.Click
         ZoomAdjust(0.1F)
     End Sub
 
-    Private Sub ZoomOutToolStripMenuItem_Click(sender As Object, e As EventArgs)
+    Private Sub ZoomOutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ZoomOutToolStripMenuItem.Click
         ZoomAdjust(-0.1F)
     End Sub
 #End Region
@@ -994,6 +987,78 @@ Public Class FrmReports
 
     Private Sub PageMarginsToolStripMenuItem_CheckedChanged(sender As Object, e As EventArgs)
         mReportGenerator.MarginsVisible = PageMarginsToolStripMenuItem.Checked
+    End Sub
+
+    Private Sub CutToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CutToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub CopyToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CopyToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub PasteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles PasteToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub DeleteToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DeleteToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub SelectAllToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles SelectAllToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub JobsRecentToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles JobsRecentToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ClassSpecialToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassSpecialToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ClassIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassIToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ClasasIIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClasasIIToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ClassIIIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassIIIToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub MeanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MeanToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub MarkedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MarkedToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub DesiredToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesiredToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub And00ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles And00ToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub And000ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles And000ToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub ActualSizeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ActualSizeToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub GridSizeToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles GridSizeToolStripMenuItem.Click
+
+    End Sub
+
+    Private Sub PageMarginsToolStripMenuItem_CheckStateChanged(sender As Object, e As EventArgs) Handles PageMarginsToolStripMenuItem.CheckStateChanged
+
     End Sub
 #End Region
 #End Region

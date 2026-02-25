@@ -646,7 +646,6 @@ Public Class ReportGenerator
         Else
         End If
         ControlRemove(dc, pg)
-
     End Sub
 
     Private Sub DocumentSet(ByVal settings As DocumentSettings)
