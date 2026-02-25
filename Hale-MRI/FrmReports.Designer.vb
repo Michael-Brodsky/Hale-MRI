@@ -332,7 +332,7 @@ Partial Class FrmReports
         FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem, ViewToolStripMenuItem})
         FormMenuStrip.Location = New Point(1, 1)
         FormMenuStrip.Name = "FormMenuStrip"
-        FormMenuStrip.Size = New Size(477, 24)
+        FormMenuStrip.Size = New Size(357, 24)
         FormMenuStrip.TabIndex = 4
         FormMenuStrip.Text = "MenuStrip1"
         ' 
@@ -419,19 +419,19 @@ Partial Class FrmReports
         ' PrintToolStripMenuItem
         ' 
         PrintToolStripMenuItem.Name = "PrintToolStripMenuItem"
-        PrintToolStripMenuItem.Size = New Size(143, 22)
+        PrintToolStripMenuItem.Size = New Size(180, 22)
         PrintToolStripMenuItem.Text = "Print"
         ' 
         ' PrintPreviewToolStripMenuItem
         ' 
         PrintPreviewToolStripMenuItem.Name = "PrintPreviewToolStripMenuItem"
-        PrintPreviewToolStripMenuItem.Size = New Size(143, 22)
+        PrintPreviewToolStripMenuItem.Size = New Size(180, 22)
         PrintPreviewToolStripMenuItem.Text = "Print Preview"
         ' 
         ' PageSetupToolStripMenuItem
         ' 
         PageSetupToolStripMenuItem.Name = "PageSetupToolStripMenuItem"
-        PageSetupToolStripMenuItem.Size = New Size(143, 22)
+        PageSetupToolStripMenuItem.Size = New Size(180, 22)
         PageSetupToolStripMenuItem.Text = "Page Setup"
         ' 
         ' ToolStripSeparator2
@@ -626,26 +626,26 @@ Partial Class FrmReports
         ReportLetterhead.CheckOnClick = True
         ReportLetterhead.DropDownItems.AddRange(New ToolStripItem() {ImageToolStripMenuItem})
         ReportLetterhead.Name = "ReportLetterhead"
-        ReportLetterhead.Size = New Size(180, 22)
+        ReportLetterhead.Size = New Size(130, 22)
         ReportLetterhead.Text = "Letterhead"
         ' 
         ' ImageToolStripMenuItem
         ' 
         ImageToolStripMenuItem.Name = "ImageToolStripMenuItem"
-        ImageToolStripMenuItem.Size = New Size(180, 22)
+        ImageToolStripMenuItem.Size = New Size(107, 22)
         ImageToolStripMenuItem.Text = "Image"
         ' 
         ' ReportHeader
         ' 
         ReportHeader.CheckOnClick = True
         ReportHeader.Name = "ReportHeader"
-        ReportHeader.Size = New Size(180, 22)
+        ReportHeader.Size = New Size(130, 22)
         ReportHeader.Text = "Header"
         ' 
         ' ToolStripSeparator16
         ' 
         ToolStripSeparator16.Name = "ToolStripSeparator16"
-        ToolStripSeparator16.Size = New Size(177, 6)
+        ToolStripSeparator16.Size = New Size(127, 6)
         ' 
         ' SettingsToolStripMenuItem
         ' 
