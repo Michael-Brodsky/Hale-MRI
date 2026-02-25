@@ -131,7 +131,7 @@ Partial Class FrmReports
         ControlContextMenuStrip.SuspendLayout()
         PageContextMenuStrip.SuspendLayout()
         FormMenuStrip.SuspendLayout()
-        ToolStripContainer2.ContentPanel.SuspendLayout()
+        ToolStripContainer2.TopToolStripPanel.SuspendLayout()
         ToolStripContainer2.SuspendLayout()
         SuspendLayout()
         ' 
@@ -324,9 +324,9 @@ Partial Class FrmReports
         ' 
         FormMenuStrip.Dock = DockStyle.None
         FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem, ViewToolStripMenuItem})
-        FormMenuStrip.Location = New Point(1, 1)
+        FormMenuStrip.Location = New Point(0, 0)
         FormMenuStrip.Name = "FormMenuStrip"
-        FormMenuStrip.Size = New Size(477, 24)
+        FormMenuStrip.Size = New Size(1036, 24)
         FormMenuStrip.TabIndex = 4
         FormMenuStrip.Text = "MenuStrip1"
         ' 
@@ -702,7 +702,7 @@ Partial Class FrmReports
         ZoomInToolStripMenuItem.Name = "ZoomInToolStripMenuItem"
         ZoomInToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl++"
         ZoomInToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.Oemplus
-        ZoomInToolStripMenuItem.Size = New Size(180, 22)
+        ZoomInToolStripMenuItem.Size = New Size(171, 22)
         ZoomInToolStripMenuItem.Text = "Zoom In"
         ' 
         ' ZoomOutToolStripMenuItem
@@ -710,26 +710,26 @@ Partial Class FrmReports
         ZoomOutToolStripMenuItem.Name = "ZoomOutToolStripMenuItem"
         ZoomOutToolStripMenuItem.ShortcutKeyDisplayString = "Ctrl+-"
         ZoomOutToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.OemMinus
-        ZoomOutToolStripMenuItem.Size = New Size(180, 22)
+        ZoomOutToolStripMenuItem.Size = New Size(171, 22)
         ZoomOutToolStripMenuItem.Text = "Zoom Out"
         ' 
         ' ActualSizeToolStripMenuItem
         ' 
         ActualSizeToolStripMenuItem.Name = "ActualSizeToolStripMenuItem"
         ActualSizeToolStripMenuItem.ShortcutKeys = Keys.Control Or Keys.D0
-        ActualSizeToolStripMenuItem.Size = New Size(180, 22)
+        ActualSizeToolStripMenuItem.Size = New Size(171, 22)
         ActualSizeToolStripMenuItem.Text = "Actual Size"
         ' 
         ' ToolStripSeparator14
         ' 
         ToolStripSeparator14.Name = "ToolStripSeparator14"
-        ToolStripSeparator14.Size = New Size(177, 6)
+        ToolStripSeparator14.Size = New Size(168, 6)
         ' 
         ' GridSizeToolStripMenuItem
         ' 
         GridSizeToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {GridSizeToolStripTextBox})
         GridSizeToolStripMenuItem.Name = "GridSizeToolStripMenuItem"
-        GridSizeToolStripMenuItem.Size = New Size(180, 22)
+        GridSizeToolStripMenuItem.Size = New Size(171, 22)
         GridSizeToolStripMenuItem.Text = "Grid Size"
         ' 
         ' GridSizeToolStripTextBox
@@ -740,12 +740,12 @@ Partial Class FrmReports
         ' ToolStripSeparator15
         ' 
         ToolStripSeparator15.Name = "ToolStripSeparator15"
-        ToolStripSeparator15.Size = New Size(177, 6)
+        ToolStripSeparator15.Size = New Size(168, 6)
         ' 
         ' PageMarginsToolStripMenuItem
         ' 
         PageMarginsToolStripMenuItem.Name = "PageMarginsToolStripMenuItem"
-        PageMarginsToolStripMenuItem.Size = New Size(180, 22)
+        PageMarginsToolStripMenuItem.Size = New Size(171, 22)
         PageMarginsToolStripMenuItem.Text = "Page Margins"
         ' 
         ' ToolStripContainer2
@@ -753,20 +753,22 @@ Partial Class FrmReports
         ' 
         ' ToolStripContainer2.ContentPanel
         ' 
-        ToolStripContainer2.ContentPanel.Controls.Add(FormMenuStrip)
-        ToolStripContainer2.ContentPanel.Size = New Size(1036, 660)
-        ToolStripContainer2.Dock = DockStyle.Fill
+        ToolStripContainer2.ContentPanel.Size = New Size(1036, 661)
+        ToolStripContainer2.Dock = DockStyle.Top
         ToolStripContainer2.Location = New Point(0, 0)
         ToolStripContainer2.Name = "ToolStripContainer2"
         ToolStripContainer2.Size = New Size(1036, 685)
         ToolStripContainer2.TabIndex = 5
         ToolStripContainer2.Text = "ToolStripContainer2"
         ' 
+        ' ToolStripContainer2.TopToolStripPanel
+        ' 
+        ToolStripContainer2.TopToolStripPanel.Controls.Add(FormMenuStrip)
+        ' 
         ' FrmReports
         ' 
         AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
-        AutoScroll = True
         ClientSize = New Size(1036, 685)
         Controls.Add(ToolStripContainer2)
         KeyPreview = True
@@ -784,8 +786,8 @@ Partial Class FrmReports
         PageContextMenuStrip.ResumeLayout(False)
         FormMenuStrip.ResumeLayout(False)
         FormMenuStrip.PerformLayout()
-        ToolStripContainer2.ContentPanel.ResumeLayout(False)
-        ToolStripContainer2.ContentPanel.PerformLayout()
+        ToolStripContainer2.TopToolStripPanel.ResumeLayout(False)
+        ToolStripContainer2.TopToolStripPanel.PerformLayout()
         ToolStripContainer2.ResumeLayout(False)
         ToolStripContainer2.PerformLayout()
         ResumeLayout(False)

@@ -77,7 +77,9 @@ Public Class ReportGenerator
     ''' </summary>
     ''' <param name="zoomFactor"></param>
     Public Delegate Sub ZoomEventHandler(zoomFactor As Single)
+    Public Delegate Sub DCParentEventHandler(sender As Control, e As EventArgs)
     Public Event ZoomEvent As ZoomEventHandler
+    Public Event DCParentEvent As DCParentEventHandler
 
     ''' <summary>
     ''' Enumerates valid edit permissions values.
@@ -112,8 +114,6 @@ Public Class ReportGenerator
 #End Region
 #Region "Private Members"
     Private mDocument As DocumentSettings = Nothing
-    Private mClickedControl As DisplayControl = Nothing
-    Private mClickOffsetPos As Point
     Private mDragStartPos As Point                              ' The starting mouse position of the drag operation.
     Private mEdit As Edits = Edits.None                         ' Bitmask indicating which edit operations are currently permissible.
     Private mGridSize As Integer = 0                            ' The report grid size, in pixels.
@@ -377,7 +377,7 @@ Public Class ReportGenerator
     End Function
 
     'Private Function ControlBoundsCheck(ByVal dc As DisplayControl, ByVal parentPage As ReportPage, offset As Point) As BoundsChecks
-    Private Function ControlBoundsCheck(ByVal dc As DisplayControl, offset As Point) As BoundsChecks
+    Private Function ControlBoundsCheck(ByVal dc As DisplayControl, newBounds As Rectangle) As BoundsChecks
         Dim result As BoundsChecks = BoundsChecks.None
         Dim parentPage As ReportPage = DirectCast(dc.Parent, ReportPage)
         Dim pageBounds = New Rectangle(
@@ -386,68 +386,28 @@ Public Class ReportGenerator
             parentPage.ClientRectangle.Width,
             parentPage.ClientRectangle.Height - parentPage.VerticalLimit
         )
-        If dc.Left + offset.X <= pageBounds.Left OrElse dc.Right + offset.X >= pageBounds.Right Then
+        If newBounds.Left <= pageBounds.Left OrElse newBounds.Right >= pageBounds.Right Then
             result = BoundsChecks.Horizontal
-        ElseIf dc.Top + offset.Y <= pageBounds.Top OrElse dc.Bottom + offset.Y >= pageBounds.Bottom Then
+        ElseIf newBounds.Top <= pageBounds.Top OrElse newBounds.Bottom >= pageBounds.Bottom Then
             result = BoundsChecks.Vertical
         End If
-        Debug.WriteLine($"ControlBoundsCheck: {dc.Name} {dc.Bounds} {pageBounds} {offset} {result}")
-        Return result
-    End Function
-    Private Function ControlBoundsCheck2(ByVal dc As DisplayControl, offset As Point) As BoundsChecks
-        Dim result As BoundsChecks = BoundsChecks.None
-        Dim parentPage As ReportPage = DirectCast(dc.Parent, ReportPage)
-        Dim dcBounds As Rectangle = dc.ControlBounds 'ControlBounds(dc, parentPage)
-        Dim pageBounds = New Rectangle(
-            parentPage.ClientRectangle.Left,
-            parentPage.VerticalLimit,
-            parentPage.ClientRectangle.Width,
-            parentPage.ClientRectangle.Height - parentPage.VerticalLimit
-        )
-        If dcBounds.Left + offset.X <= pageBounds.Left OrElse dcBounds.Right + offset.X >= pageBounds.Right Then
-            result = BoundsChecks.Horizontal
-        ElseIf dcBounds.Top + offset.Y <= pageBounds.Top OrElse dcBounds.Bottom + offset.Y >= pageBounds.Bottom Then
-            result = BoundsChecks.Vertical
-        End If
-        Debug.WriteLine($"ControlBoundsCheck: {dc.Name} {dcBounds} {pageBounds} {offset} {result}")
-        Return result
-    End Function
-    Private Function ControlResizeCheck(ByVal dc As DisplayControl, loc As Point, sz As Size) As BoundsChecks
-        ' Check whether a resize operation is outside the control's page bounds.
-        Dim result As BoundsChecks = BoundsChecks.None
-        Dim parentPage As ReportPage = DirectCast(dc.Parent, ReportPage)
-        Dim dcBounds As Rectangle = dc.ControlBounds
-        Dim hLocation As New Point(If(loc <> Point.Empty, loc, dcBounds.Location))
-        Dim hSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
-        Dim vLocation As New Point(If(loc <> Point.Empty, loc, dcBounds.Location))
-        Dim vSize As New Size(If(sz <> Size.Empty, sz, dc.Size))
-        Dim pageBounds = New Rectangle(
-            parentPage.ClientRectangle.Left,
-            parentPage.VerticalLimit,
-            parentPage.ClientRectangle.Width,
-            parentPage.ClientRectangle.Height
-        )
-
-        If hLocation.X <= PageBounds.Left OrElse
-            (hLocation.X + hSize.Width) >= PageBounds.Width OrElse
-            vLocation.Y <= PageBounds.Top OrElse
-            (vLocation.Y + vSize.Height) >= PageBounds.Height Then
-            result = BoundsChecks.Either
-        End If
 
         Return result
     End Function
 
-    Private Sub ControlDrag(ByRef dc As DisplayControl, ByVal location As Point, ByVal pg As ReportPage)
+    Private Sub ControlDrag(ByRef dc As DisplayControl, ByVal sender As DisplayControl, ByVal location As Point, ByVal pg As ReportPage, ByVal e As EventArgs)
         ' Move the control to location and, if set, to the given page.
         dc.Location = location
         If pg IsNot Nothing Then
             dc.Parent = pg
             ' If the control changed pages and is the one the mouse is over, move the cursor along with it
-            If dc Is mClickedControl Then
-                Dim dcPos As Point = dc.PointToScreen(Point.Empty)
-                Dim curPos As Point = New Point(dcPos.X + dc.DragOffset.X, dcPos.Y + dc.DragOffset.Y)
-                Cursor.Position = curPos
+            If dc Is sender Then
+                Dim dcScreenPos As Point = dc.PointToScreen(Point.Empty)
+                Dim scrollPosition As Point = mParentForm.Content.PointToClient(dcScreenPos)
+                Dim curPos As Point = New Point(scrollPosition.X - dc.DragOffset.X, scrollPosition.Y - dc.DragOffset.Y)
+                mParentForm.Content.AutoScrollPosition = curPos
+                'Cursor.Position = curPos
+                '    RaiseEvent DCParentEvent(sender, e)
             End If
         End If
     End Sub
@@ -473,19 +433,6 @@ Public Class ReportGenerator
         ControlsRemoveFrom(SelectedControls, mVisibleControls)
         EditPermissionsSet()
     End Sub
-
-    Private Function ControlParentPage(dc As DisplayControl) As ReportPage
-        ' Returns the control's parent page. This function is used because the
-        ' control actually belongs to a page's PrintableArea which in turn
-        ' belongs to the page.
-        Dim ctrl As Control = dc.Parent
-
-        While ctrl IsNot Nothing AndAlso TypeOf ctrl IsNot ReportPage
-            ctrl = ctrl.Parent
-        End While
-
-        Return DirectCast(ctrl, ReportPage)
-    End Function
 
     Private Sub ControlsPaste(ByRef controls As List(Of DisplayControl))
         ' Pastes any given controls back into the report.
@@ -666,7 +613,7 @@ Public Class ReportGenerator
     End Sub
 
     Private Sub DragMove(sender As DisplayControl, e As MouseEventArgs)
-        ' Drag selected controls to a new location.
+        ' Drag selected controls to a new location. Sender is the grabbed control.
         '
         ' Get the mouse position offset from the drag start location.
         Dim deltaX As Integer = e.Location.X - mDragStartPos.X
@@ -684,21 +631,22 @@ Public Class ReportGenerator
         For Each dc In SelectedControls
             If dc.IsMovable Then
                 ' Enforce page bounds.
-                Dim pg As ReportPage = DirectCast(dc.Parent, ReportPage) 'ControlParentPage(dc)
-                Select Case ControlBoundsCheck(dc, New Point(deltaX, deltaY))
+                Dim newBounds As New Rectangle(New Point(dc.Left + deltaX, dc.Top + deltaY), dc.Size)
+                Select Case ControlBoundsCheck(dc, newBounds)
                     Case BoundsChecks.None          ' Relocate control to new position according to the mouse offset.
                         movements.Add((dc, New Point(dc.Left + deltaX, dc.Top + deltaY), Nothing))
                     Case BoundsChecks.Horizontal    ' Controls cannot be dragged off page horizontally, so just return.
                         Return
                     Case BoundsChecks.Vertical      ' If there's an adjacent page, move the control there.
-                        Dim pageIndex As Integer = mPages.IndexOf(pg)
-                        Dim previousPage As ReportPage = If(pageIndex > 0, mPages(mPages.IndexOf(pg) - 1), Nothing)
-                        Dim nextPage As ReportPage = If(pageIndex < mPages.Count - 1, mPages(mPages.IndexOf(pg) + 1), Nothing)
+                        Dim currentPage As ReportPage = DirectCast(dc.Parent, ReportPage) 'ControlParentPage(dc)
+                        Dim currentIndex As Integer = mPages.IndexOf(currentPage)
+                        Dim previousPage As ReportPage = If(currentIndex > 0, mPages(mPages.IndexOf(currentPage) - 1), Nothing)
+                        Dim nextPage As ReportPage = If(currentIndex < mPages.Count - 1, mPages(mPages.IndexOf(currentPage) + 1), Nothing)
                         Dim adjacentPage As ReportPage = If(deltaY < 0, previousPage, nextPage)
                         If adjacentPage IsNot Nothing Then
                             Dim Y As Integer = 0
                             If adjacentPage Is nextPage Then
-                                Y = 1
+                                Y = adjacentPage.VerticalLimit + 1
                             Else
                                 Y = adjacentPage.ClientRectangle.Bottom - dc.Height - 1
                             End If
@@ -711,10 +659,10 @@ Public Class ReportGenerator
             End If
         Next
 
-        ' Now move the controls.
+        ' Now move the controls all at once.
         For Each movement As ValueTuple(Of DisplayControl, Point, ReportPage) In movements
             Try
-                ControlDrag(movement.Item1, movement.Item2, movement.Item3)
+                ControlDrag(movement.Item1, sender, movement.Item2, movement.Item3, e)
             Catch ex As Exception
                 ' Swallow any errors and keep going.
             End Try
@@ -929,76 +877,57 @@ Done:
         mIsResizing = False
     End Sub
 
-    Private Sub ResizeMove(dc As DisplayControl, e As MouseEventArgs)
-        ' Resize the selected controls.
+    Private Sub ResizeMove(sender As DisplayControl, e As MouseEventArgs)
+        ' Resize the selected controls. Sender is the grabbed control.
 
         ' Get the mouse position offset from the drag start location.
-        'Dim cursorPos As Point = Cursor.Position
-        Dim dcBounds As Rectangle = dc.ControlBounds
-        'Dim deltaX As Integer = cursorPos.X - mDragStartPos.X
-        'Dim deltaY As Integer = cursorPos.Y - mDragStartPos.Y
-        Dim deltaX As Integer = e.Location.X - mDragStartPos.X
-        Dim deltaY As Integer = e.Location.Y - mDragStartPos.Y
-        Dim offset As New Point(dc.Parent.PointToClient(MousePosition).X)
-        Debug.WriteLine($"{dc.Parent.PointToClient(MousePosition)} {dc.Bounds} {DirectCast(dc.Parent, ReportPage).ClientRectangle}")
+        Dim deltaX As Integer = Cursor.Position.X - mDragStartPos.X
+        Dim deltaY As Integer = Cursor.Position.Y - mDragStartPos.Y
         ' Apply grid snapping if GridSize is set
         If GridSize > 0 Then
             deltaX = Math.Round(deltaX / GridSize) * GridSize
             deltaY = Math.Round(deltaY / GridSize) * GridSize
         End If
-        If deltaX = 0 And deltaY = 0 Then Exit Sub
+        If deltaX = 0 And deltaY = 0 Then Return
 
-        ' Check all sizeable controls. If any control can't
-        ' be sized, then none will be sized.
-        Dim resizes As New List(Of ValueTuple(Of Point, Size, DisplayControl))
+        ' Check all sizeable controls.
+        Dim resizes As New List(Of ValueTuple(Of Rectangle, DisplayControl))
+        Dim newBounds As Rectangle
         For Each dc In mSelectedControls
             If dc.IsSizeable Then
-                Dim pg As ReportPage = ControlParentPage(dc)
-                If ControlBoundsCheck(dc, New Point(deltaX, deltaY)) <> BoundsChecks.None Then Return
-
                 ' Stretch the control according to the edge grabbed and the mouse move direction.
-                Dim newSize As Size
-                Dim newLocation As Point
                 Select Case mResizePoint
                     Case ResizePoints.RightEdge
-                        newSize = New Size(dc.LastSize.Width + deltaX, dc.Height)
+                        newBounds = New Rectangle(dc.Location, New Size(dc.LastSize.Width + deltaX, dc.Height))
                     Case ResizePoints.LeftEdge
-                        newLocation = New Point(dc.LastPosition.X + deltaX, dc.Top)
-                        newSize = New Size(dc.LastSize.Width - deltaX, dc.Height)
+                        newBounds = New Rectangle(New Point(dc.LastPosition.X + deltaX, dc.Top), New Size(dc.LastSize.Width - deltaX, dc.Height))
                     Case ResizePoints.TopEdge
-                        newLocation = New Point(dc.Left, dc.LastPosition.Y + deltaY)
-                        newSize = New Size(dc.Width, dc.LastSize.Height - deltaY)
+                        newBounds = New Rectangle(New Point(dc.Left, dc.LastPosition.Y + deltaY), New Size(dc.Width, dc.LastSize.Height - deltaY))
                     Case ResizePoints.BottomEdge
-                        newSize = New Size(dc.Width, dc.LastSize.Height + deltaY)
+                        newBounds = New Rectangle(dc.Location, New Size(dc.Width, dc.LastSize.Height + deltaY))
                     Case ResizePoints.TopRightCorner
-                        newLocation = New Point(dc.Left, dc.LastPosition.Y + deltaY)
-                        newSize = New Size(dc.LastSize.Width + deltaX, dc.LastSize.Height - deltaY)
+                        newBounds = New Rectangle(New Point(dc.Left, dc.LastPosition.Y + deltaY), New Size(dc.LastSize.Width + deltaX, dc.LastSize.Height - deltaY))
                     Case ResizePoints.BottomRightCorner
-                        newSize = New Size(dc.LastSize.Width + deltaX, dc.LastSize.Height + deltaY)
+                        newBounds = New Rectangle(dc.Location, New Size(dc.LastSize.Width + deltaX, dc.LastSize.Height + deltaY))
                     Case ResizePoints.TopLeftCorner
-                        newLocation = New Point(dc.LastPosition.X + deltaX, dc.LastPosition.Y + deltaY)
-                        newSize = New Size(dc.LastSize.Width - deltaX, dc.LastSize.Height - deltaY)
+                        newBounds = New Rectangle(New Point(dc.LastPosition.X + deltaX, dc.LastPosition.Y + deltaY), New Size(dc.LastSize.Width - deltaX, dc.LastSize.Height - deltaY))
                     Case ResizePoints.BottomLeftCorner
-                        newSize = New Size(dc.LastSize.Width - deltaX, dc.LastSize.Height + deltaY)
-                        newLocation = New Point(dc.LastPosition.X + deltaX, dc.Top)
+                        newBounds = New Rectangle(New Point(dc.LastPosition.X + deltaX, dc.Top), New Size(dc.LastSize.Width - deltaX, dc.LastSize.Height + deltaY))
                     Case Else
                         Return
                 End Select
                 ' Enforce page bounds.
-                'If ControlResizeCheck(dc, newLocation, newSize, pg) <> BoundsChecks.None Then Return
-                'If ControlResizeCheck(dc, newLocation, newSize) <> BoundsChecks.None Then Return
-                'resizes.Add((newLocation, newSize, dc))
+                If ControlBoundsCheck(dc, newBounds) <> BoundsChecks.None Then Return
+                resizes.Add((newBounds, dc))
             End If
         Next
 
-        ' Now size the controls.
-        For Each resize As ValueTuple(Of Point, Size, DisplayControl) In resizes
-            If resize.Item1 <> Point.Empty Then
-                resize.Item3.Location = resize.Item1
-            End If
-            If resize.Item2 <> Size.Empty Then
-                resize.Item3.Size = resize.Item2
-            End If
+        ' Now resize the controls all at once.
+        For Each resize As ValueTuple(Of Rectangle, DisplayControl) In resizes
+            Try
+                resize.Item2.Bounds = resize.Item1
+            Catch ex As Exception
+            End Try
         Next
     End Sub
 
@@ -1052,7 +981,6 @@ Done:
         Select Case e.Button
             Case MouseButtons.Right
             Case MouseButtons.Left
-                mClickedControl = sender
                 ControlToggleSelect(sender, e)
         End Select
     End Sub
@@ -1071,7 +999,6 @@ Done:
         ElseIf mIsResizing Then
             ResizeEnd(e)
         End If
-        mClickedControl = Nothing
     End Sub
 
     Private Sub ManagedControls_CollectionChanged(sender As Object, e As NotifyCollectionChangedEventArgs) Handles mManagedControls.CollectionChanged
