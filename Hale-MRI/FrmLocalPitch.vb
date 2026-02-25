@@ -135,20 +135,6 @@ Public Class FrmLocalPitch
     Private Sub GridJobDetails_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles GridJobDetails.CellContentClick
 
     End Sub
-    Private Sub ShowSummaryArea()
-        If mJobDetails Is Nothing Then Exit Sub
-        For Each se As Series In ChartLocalPitch.Series
-            If se.ChartArea = "SummaryArea" Then
-                ChartLocalPitch.Series.Remove(se)
-            End If
-        Next
-        Dim x As Integer
-        For x = 1 To Job.PropellerBlades
-            Dim se As Series = ChartLocalPitch.Series.Add("Blade " And x.ToString)
-            se.ChartArea = "SummaryArea"
-            se.ChartType = SeriesChartType.Column
-        Next
-    End Sub
 
 #End Region
 #Region "Event Handlers"
@@ -209,19 +195,6 @@ Public Class FrmLocalPitch
         Navigator = RecordNavigationBar1
         Navigator.BoundControls = New List(Of Control) From {GridJobDetails}
         MasterSource = JobDetailsBindingSource
-    End Sub
-
-    Private Sub ChkShowTable_CheckedChanged(sender As Object, e As EventArgs) Handles ChkShowTable.CheckedChanged
-        ' make the blade pitch area chart visible or invisible - and update the placement of chart areas
-        If ChkShowTable.Checked Then
-            ChartLocalPitch.ChartAreas("BladePitchArea").Visible = True
-            ChartLocalPitch.ChartAreas("SummaryArea").Position.Height = 40
-            'UpdateChartAreas()
-        Else
-            ChartLocalPitch.ChartAreas("BladePitchArea").Visible = False
-            ChartLocalPitch.ChartAreas("SummaryArea").Position.Height = 65
-            'UpdateChartAreas()
-        End If
     End Sub
 #End Region
 End Class

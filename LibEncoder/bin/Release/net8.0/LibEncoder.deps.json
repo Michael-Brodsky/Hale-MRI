@@ -1,0 +1,39 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "LibEncoder/1.0.0": {
+        "dependencies": {
+          "USB4Wrapper": "2.0.0.6"
+        },
+        "runtime": {
+          "LibEncoder.dll": {}
+        }
+      },
+      "USB4Wrapper/2.0.0.6": {
+        "runtime": {
+          "USB4Wrapper.dll": {
+            "assemblyVersion": "2.0.0.6",
+            "fileVersion": "2.0.0.8"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "LibEncoder/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "USB4Wrapper/2.0.0.6": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}
