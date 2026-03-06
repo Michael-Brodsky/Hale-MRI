@@ -45,8 +45,27 @@ Public Class ChartBladeAverage
     ''' <summary>
     ''' Loaded RadiusMeasurements for making a Reference Line if no Prog is loaded
     ''' </summary>
-    ''' <returns>Double</returns>
-    Public Property BasisPitch As Double = Nothing
+    ''' <returns>String</returns>
+    Public Property Basis As String = Nothing
+#End Region
+#Region "Computated Properties"
+    Private ReadOnly Property BasisPitch
+        Get
+            If mJobDetails Is Nothing Then
+                Return 0
+            End If
+            Select Case Basis
+                Case "Marked"
+                    Return mJobDetails.Job.MarkedPitch
+                Case "Desired"
+                    Return mJobDetails.Job.DesiredPitch
+                Case "Design"
+                    Return 0 ' need to set  up loading designs for comparison
+                Case Else ' "Mean"
+                    Return mJobDetails.WheelPitch
+            End Select
+        End Get
+    End Property
 #End Region
 #End Region
 #Region "Private Interface"
@@ -59,6 +78,7 @@ Public Class ChartBladeAverage
         Chart1.Legends.Clear()
         Chart1.Titles.Clear()
         Chart1.Annotations.Clear()
+        Dim bp As Double = BasisPitch
 
         Dim cArea As ChartArea = Chart1.ChartAreas.Add("BladeAverage")
         Dim ser As Series = Chart1.Series.Add("Pitch")
@@ -68,14 +88,14 @@ Public Class ChartBladeAverage
         cArea.AxisX2.Enabled = AxisEnabled.False
 
         cArea.Axes(1).Minimum = 0
-        cArea.Axes(1).Maximum = BasisPitch * 1.2
+        cArea.Axes(1).Maximum = bp * 1.2
         cArea.Axes(1).Interval = 1
         cArea.Axes(1).MinorTickMark.Enabled = True
         cArea.Axes(1).MinorTickMark.Interval = 1
         cArea.Axes(1).MajorTickMark.Enabled = True
         cArea.Axes(1).MajorTickMark.Interval = 5
         cArea.Axes(1).MajorGrid.Enabled = True
-        cArea.Axes(1).MajorGrid.Interval = BasisPitch * 1.2
+        cArea.Axes(1).MajorGrid.Interval = bp * 1.2
 
         cArea.Axes(0).Minimum = 0
         cArea.Axes(0).Maximum = mJobDetails.Job.PropellerBlades + 1
@@ -99,22 +119,22 @@ Public Class ChartBladeAverage
             ser.Points(pointind).Color = GraphColorArray(x - 1)
         Next
         Dim slineunder As New StripLine With {
-        .IntervalOffset = BasisPitch - (BasisPitch * (TolClass.MeanPitchPerBladePercent / 100)),
+        .IntervalOffset = bp - (bp * (TolClass.MeanPitchPerBladePercent / 100)),
         .StripWidth = 0.01,
         .BorderColor = Color.Black,
         .BorderWidth = 2,
-        .Text = (BasisPitch - (BasisPitch * (TolClass.MeanPitchPerBladePercent / 100))).ToString(),
+        .Text = (bp - (bp * (TolClass.MeanPitchPerBladePercent / 100))).ToString(),
         .TextOrientation = TextOrientation.Horizontal,
         .TextLineAlignment = StringAlignment.Near,
         .ForeColor = Color.Red
     }
         cArea.Axes(1).StripLines.Add(slineunder)
         Dim slineover As New StripLine With {
-        .IntervalOffset = BasisPitch + (BasisPitch * (TolClass.MeanPitchPerBladePercent / 100)),
+        .IntervalOffset = bp + (bp * (TolClass.MeanPitchPerBladePercent / 100)),
         .StripWidth = 0.01,
         .BorderColor = Color.Black,
         .BorderWidth = 2,
-        .Text = (BasisPitch + (BasisPitch * (TolClass.MeanPitchPerBladePercent / 100))).ToString(),
+        .Text = (bp + (bp * (TolClass.MeanPitchPerBladePercent / 100))).ToString(),
         .TextOrientation = TextOrientation.Horizontal,
         .TextLineAlignment = StringAlignment.Far,
         .ForeColor = Color.Blue

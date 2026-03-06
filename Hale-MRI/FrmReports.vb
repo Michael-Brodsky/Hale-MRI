@@ -23,6 +23,7 @@ Public Class FrmReports
     Private WithEvents mReportGenerator As ReportGenerator  ' Manages report visual elements and operations.
     Private mReport As Report                               ' The currently open report, if any.
     Private mZoomFactor = kZoomFactorDefault
+    Private mTolClass = Nothing
 #End Region
 #Region "Public Interface"
     ' <summary>
@@ -53,6 +54,7 @@ Public Class FrmReports
             If mJobDetails IsNot Nothing Then
                 ' This is the JobDetails and measurements data for the report.
                 ReportDataBindingSource.DataSource = JobDataLoad(mJobDetails)
+                ElementsMenuUpdate()
                 ControlsLoadData(mReportGenerator?.VisibleControls)
             End If
         End Set
@@ -71,6 +73,26 @@ Public Class FrmReports
                 mReport = value
             End If
         End Set
+    End Property
+    Public Property TolClass As Tolerance
+        Get
+            Return mTolClass
+        End Get
+        Set(value As Tolerance)
+            mTolClass = value
+            'Update controls/ repaint function should be here
+        End Set
+    End Property
+    Public ReadOnly Property Basis As String
+        Get
+            If MeanToolStripMenuItem.Checked = True Then
+                Return "Mean"
+            ElseIf MarkedToolStripMenuItem.Checked = True Then
+                Return "Marked"
+            Else
+                Return "Desired"
+            End If
+        End Get
     End Property
 #End Region
 #Region "Private Interface"
@@ -111,7 +133,39 @@ Public Class FrmReports
     End Sub
 
     Private Sub ControlsLoadData(controls As List(Of DisplayControl))
-        For Each dc As DisplayControl In controls
+        For Each dc As DisplayControl In controls 'need to add case statements here for each graph
+            Select Case True
+                Case TypeOf dc Is ChartSummary
+                    Dim summ = DirectCast(dc, ChartSummary)
+                    summ.TolClass = TolClass
+                    summ.mJobDetails = JobDetails
+                    summ.Basis = Basis
+                Case TypeOf dc Is ChartBladeAverage
+                    Dim CBA = DirectCast(dc, ChartBladeAverage)
+                    CBA.TolClass = TolClass
+                    CBA.mJobDetails = JobDetails
+                    CBA.Basis = Basis ' need to add Basis property to ChartBladeAverage the same way it is implemented in ChartSummary and finish case statements
+                Case TypeOf dc Is ChartBladesbySector
+                    Dim CBS = DirectCast(dc, ChartBladesbySector)
+                    CBS.TolClass = TolClass
+                    For Each tool As ToolStripMenuItem In ElementsToolStripMenuItem.DropDown.Controls
+                        If tool.Checked = True Then ' gotta make sure that the menu bar is correctly populating with rads and that this actually passes the value 
+                            CBS.Radius = tool.Text
+                        End If
+                    Next ' need to make this point to Local Pitch form or a menu Item
+                    CBS.Basis = Basis
+                    CBS.mJobDetails = JobDetails
+                Case TypeOf dc Is ChartSectorsbyBlade
+                    Dim CSB = DirectCast(dc, ChartSectorsbyBlade)
+                    CSB.TolClass = TolClass
+                    For Each tool As ToolStripMenuItem In ElementsToolStripMenuItem.DropDown.Controls
+                        If tool.Checked = True Then ' gotta make sure that the menu bar is correctly populating with rads and that this actually passes the value 
+                            CSB.Radius = tool.Text
+                        End If
+                    Next ' need to make this point to local pitch form or menu item
+                    CSB.Basis = Basis
+                    CSB.mJobDetails = JobDetails
+            End Select
             dc.Data = Me.JobDetails
         Next
     End Sub
@@ -515,7 +569,7 @@ Public Class FrmReports
         End If
     End Sub
 
-    Private Sub ReportGeneratorInitialize()
+    Private Sub ReportGeneratorInitialize() 'add my controls and work on select cases to add controls for each graph in the menu
         mReportGenerator = New ReportGenerator() With {
             .Document = New DocumentSettings(New PrintDocument()),
             .ParentForm = Me,
@@ -524,9 +578,15 @@ Public Class FrmReports
                 New ReportLetterhead("ReportLetterhead", "Letterhead", True),
                 New ReportHeader("ReportHeader", "Header", True),
                 New ChartAngularPosition("ChartAngularPosition", "Angular Position", True, True, True),
-                New ChartBladeHeight("ChartBladeHeight", "Blade Height", True, True, True)
+                New ChartBladeHeight("ChartBladeHeight", "Blade Height", True, True, True),
+                New ChartBladeAverage("ChartBladeAverage", "Blade Averages", True, True, True),
+                New ChartBladesbySector("ChartBladesbySector", "Local Pitch by Blades", True, True, True),'need sectors by blade
+                New ChartSummary("ChartSummary", "Summary", True, True, True),
+                New ChartSectorsbyBlade("ChartSectorsbyBlade", "Local Pitch by Sectors", True, True, True)
             }
         }
+    End Sub
+    Private Sub ElementsMenuUpdate()
         For Each dc As DisplayControl In mReportGenerator.ManagedControls
             Dim item As ToolStripMenuItem = ElementsToolStripMenuItem.DropDownItems.OfType(Of ToolStripMenuItem)().FirstOrDefault(Function(it) it.Name = dc.Name)
             If item Is Nothing Then
@@ -537,6 +597,20 @@ Public Class FrmReports
                 }
                 Me.ElementsToolStripMenuItem.DropDownItems.Add(item)
             End If
+            If item.Name <> "ReportLetterhead" Or item.Name <> "ReportHeader" Then
+                item.DropDownItems.Clear()
+            End If
+            Select Case True
+                Case TypeOf dc Is ChartBladesbySector Or TypeOf dc Is ChartSectorsbyBlade
+                    For Each rm As RadiusMeasurement In JobDetails?.RadiusMeasurements?.Where(Function(r) r.BladeId = 1)
+                        Dim radItem As New ToolStripMenuItem With {
+                                .Name = rm.Radius.Value.ToString(),
+                                .Text = Math.Round(rm.Radius.Value, 0).ToString() + "%",
+                                .CheckOnClick = True}
+                        item.DropDownItems.Add(radItem)
+                        AddHandler radItem.CheckedChanged, AddressOf Me.ElementSetting_CheckChanged
+                    Next
+            End Select
             AddHandler item.CheckedChanged, AddressOf Me.ElementsToolStripMenuItem_CheckChanged
             AddHandler dc.MouseDownEvent, AddressOf Me.Control_MouseDown
         Next
@@ -564,6 +638,44 @@ Public Class FrmReports
                             Dim letterhead = DirectCast(dc, ReportLetterhead)
                             If re.Data IsNot Nothing Then
                                 LetterheadLoad(report, letterhead, re.Data)
+                            End If
+                        Case TypeOf dc Is ChartSummary
+                            Dim summ = DirectCast(dc, ChartSummary)
+                            If mJobDetails IsNot Nothing Then
+                                summ.TolClass = TolClass
+                                summ.mJobDetails = JobDetails
+                                summ.Basis = Basis
+                            End If
+                        Case TypeOf dc Is ChartBladeAverage
+                            Dim CBA = DirectCast(dc, ChartBladeAverage)
+                            If mJobDetails IsNot Nothing Then
+                                CBA.TolClass = TolClass
+                                CBA.mJobDetails = JobDetails
+                                CBA.Basis = Basis ' need to add Basis property to ChartBladeAverage the same way it is implemented in ChartSummary and finish case statements
+                            End If
+                        Case TypeOf dc Is ChartBladesbySector
+                            Dim CBS = DirectCast(dc, ChartBladesbySector)
+                            If mJobDetails IsNot Nothing Then
+                                CBS.TolClass = TolClass
+                                For Each tool As ToolStripMenuItem In ElementsToolStripMenuItem.DropDown.Controls
+                                    If tool.Checked = True Then ' gotta make sure that the menu bar is correctly populating with rads and that this actually passes the value 
+                                        CBS.Radius = tool.Text
+                                    End If
+                                Next ' need to make this point to Local Pitch form or a menu Item
+                                CBS.Basis = Basis
+                                CBS.mJobDetails = JobDetails
+                            End If
+                        Case TypeOf dc Is ChartSectorsbyBlade
+                            Dim CSB = DirectCast(dc, ChartSectorsbyBlade)
+                            If mJobDetails IsNot Nothing Then
+                                CSB.TolClass = TolClass
+                                For Each tool As ToolStripMenuItem In ElementsToolStripMenuItem.DropDown.Controls
+                                    If tool.Checked = True Then ' gotta make sure that the menu bar is correctly populating with rads and that this actually passes the value 
+                                        CSB.Radius = tool.Text
+                                    End If
+                                Next ' need to make this point to local pitch form or menu item
+                                CSB.Basis = Basis
+                                CSB.mJobDetails = JobDetails
                             End If
                         Case Else
                     End Select
@@ -1014,31 +1126,67 @@ Public Class FrmReports
     End Sub
 
     Private Sub ClassSpecialToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassSpecialToolStripMenuItem.Click
-
+        If ClassSpecialToolStripMenuItem.Checked = False Then
+            ClassSpecialToolStripMenuItem.Checked = True
+            ClassIToolStripMenuItem.Checked = False
+            ClassIIToolStripMenuItem.Checked = False
+            ClassIIIToolStripMenuItem.Checked = False
+            TolClass = GetToleranceTable(Database, "S")
+        End If
     End Sub
 
     Private Sub ClassIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassIToolStripMenuItem.Click
-
+        If ClassIToolStripMenuItem.Checked = False Then
+            ClassSpecialToolStripMenuItem.Checked = False
+            ClassIToolStripMenuItem.Checked = True
+            ClassIIToolStripMenuItem.Checked = False
+            ClassIIIToolStripMenuItem.Checked = False
+            TolClass = GetToleranceTable(Database, "I")
+        End If
     End Sub
 
-    Private Sub ClasasIIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClasasIIToolStripMenuItem.Click
-
+    Private Sub ClassIIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassIIToolStripMenuItem.Click
+        If ClassIIToolStripMenuItem.Checked = False Then
+            ClassSpecialToolStripMenuItem.Checked = False
+            ClassIToolStripMenuItem.Checked = False
+            ClassIIToolStripMenuItem.Checked = True
+            ClassIIIToolStripMenuItem.Checked = False
+            TolClass = GetToleranceTable(Database, "II")
+        End If
     End Sub
 
     Private Sub ClassIIIToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClassIIIToolStripMenuItem.Click
-
+        If ClassIToolStripMenuItem.Checked = False Then
+            ClassSpecialToolStripMenuItem.Checked = False
+            ClassIToolStripMenuItem.Checked = False
+            ClassIIToolStripMenuItem.Checked = False
+            ClassIIIToolStripMenuItem.Checked = True
+            TolClass = GetToleranceTable(Database, "III")
+        End If
     End Sub
 
     Private Sub MeanToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MeanToolStripMenuItem.Click
-
+        If MeanToolStripMenuItem.Checked = False Then
+            MeanToolStripMenuItem.Checked = True
+            MarkedToolStripMenuItem.Checked = False
+            DesiredToolStripMenuItem.Checked = False
+        End If
     End Sub
 
     Private Sub MarkedToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles MarkedToolStripMenuItem.Click
-
+        If MarkedToolStripMenuItem.Checked = False Then
+            MarkedToolStripMenuItem.Checked = True
+            MeanToolStripMenuItem.Checked = False
+            DesiredToolStripMenuItem.Checked = False
+        End If
     End Sub
 
     Private Sub DesiredToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles DesiredToolStripMenuItem.Click
-
+        If DesiredToolStripMenuItem.Checked = False Then
+            DesiredToolStripMenuItem.Checked = True
+            MeanToolStripMenuItem.Checked = False
+            MarkedToolStripMenuItem.Checked = False
+        End If
     End Sub
 
     Private Sub And00ToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles And00ToolStripMenuItem.Click
@@ -1059,6 +1207,17 @@ Public Class FrmReports
 
     Private Sub PageMarginsToolStripMenuItem_CheckStateChanged(sender As Object, e As EventArgs) Handles PageMarginsToolStripMenuItem.CheckStateChanged
 
+    End Sub
+    Private Sub ElementSetting_CheckChanged(sender As Object, e As EventArgs)
+        Dim ctrl = DirectCast(sender, ToolStripMenuItem)
+        For Each item As ToolStripMenuItem In ctrl.DropDownItems
+            If item.Equals(ctrl) Then
+                Continue For
+            Else
+                item.Checked = False
+            End If
+        Next
+        'update chart now
     End Sub
 #End Region
 #End Region

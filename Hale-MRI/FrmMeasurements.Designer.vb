@@ -996,6 +996,7 @@ Partial Class FrmMeasurements
         ' 
         ChartBladeHeight1.BladeCount = Nothing
         ChartBladeHeight1.Data = Nothing
+        ChartBladeHeight1.DisplayName = "ChartBladeHeight"
         ChartBladeHeight1.Dock = DockStyle.Fill
         ChartBladeHeight1.EdgeSize = 3
         ChartBladeHeight1.IsMovable = False
@@ -1021,6 +1022,7 @@ Partial Class FrmMeasurements
         ' 
         ChartAngularPosition1.BladeCount = Nothing
         ChartAngularPosition1.Data = Nothing
+        ChartAngularPosition1.DisplayName = "ChartAngularPosition"
         ChartAngularPosition1.Dock = DockStyle.Fill
         ChartAngularPosition1.EdgeSize = 3
         ChartAngularPosition1.IsMovable = False
@@ -2067,6 +2069,7 @@ Partial Class FrmMeasurements
         ' CmdMeasureForm
         ' 
         CmdMeasureForm.Dock = DockStyle.Fill
+        CmdMeasureForm.Enabled = False
         CmdMeasureForm.Location = New Point(3, 3)
         CmdMeasureForm.Name = "CmdMeasureForm"
         CmdMeasureForm.Size = New Size(71, 74)

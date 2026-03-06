@@ -1,7 +1,7 @@
 ﻿Imports System.Windows.Forms.DataVisualization.Charting
 Imports LibDatabase.Models
 
-Public Class ChartBladesbySector
+Public Class ChartSectorsbyBlade
     Inherits DisplayControl
 
     Private mItems As String
@@ -86,15 +86,30 @@ Public Class ChartBladesbySector
         Dim cArea As ChartArea = Chart1.ChartAreas.Add("Pitch")
         Dim x As Integer
         Dim y As Integer
-        For x = 1 To mJobDetails.Job.PropellerBlades
-            Dim ser As Series = Chart1.Series.Add("Blade" + x.ToString())
-            ser.ChartType = SeriesChartType.Column
-            ser.ChartArea = cArea.Name
-            ser.Color = GraphColorArray(x)
-            Dim BladeData As RadiusMeasurement = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x And r.Radius = Radius).FirstOrDefault()
-            For y = 1 To TolClass.LocalPitchSectors
-                Dim localpitch As Double = GetLocalPitch(BladeData.CellMeasurements, TolClass.LocalPitchSectors, y, mJobDetails.Job.PropellerDiameter, Radius, mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
-                ser.Points.AddXY("Blade " + x.ToString(), localpitch)
+        For x = 1 To TolClass.LocalPitchSectors
+            Dim ser As Series
+            For y = 1 To mJobDetails.Job.PropellerBlades
+                If x = 1 Then
+                    ser = Chart1.Series.Add("Blade" + y.ToString())
+                    ser.ChartType = SeriesChartType.Column
+                    ser.ChartArea = cArea.Name
+                    ser.Color = GraphColorArray(x)
+                Else
+                    ser = Chart1.Series("Blade" + y.ToString())
+                End If
+                Dim BladeData As RadiusMeasurement = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = y And r.Radius = Radius).FirstOrDefault()
+                Dim localpitch As Double = GetLocalPitch(BladeData.CellMeasurements, TolClass.LocalPitchSectors, x, mJobDetails.Job.PropellerDiameter, Radius, mJobDetails.Job.TeExclusion, mJobDetails.Job.LeExclusion)
+                If TolClass.LocalPitchSectors = 1 Then
+                    ser.Points.AddXY("Local Pitch", localpitch)
+                Else
+                    If y = 1 Then
+                        ser.Points.AddXY("LE", localpitch)
+                    ElseIf y = TolClass.LocalPitchSectors Then
+                        ser.Points.AddXY("TE", localpitch)
+                    Else
+                        ser.Points.AddXY(x.ToString(), localpitch)
+                    End If
+                End If
             Next
         Next
         cArea.AxisY.Minimum = bp * 0.8

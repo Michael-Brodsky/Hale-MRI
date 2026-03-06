@@ -1,4 +1,5 @@
 ﻿Imports System.Windows.Forms.DataVisualization.Charting
+Imports Accessibility
 Imports LibDatabase.Models
 
 Public Class ChartSummary
@@ -84,10 +85,12 @@ Public Class ChartSummary
             String.IsNullOrEmpty(Basis) Then
             Return
         End If
+        Me.SuspendLayout()
         Chart1.Titles.Clear()
         Chart1.ChartAreas.Clear()
         Chart1.Series.Clear()
         Chart1.Legends.Clear()
+        Dim bp As Double = BasisPitch
         Dim cArea As ChartArea = Chart1.ChartAreas.Add("Summary")
         Dim leg As Legend = Chart1.Legends.Add("Legend")
         leg.Alignment = StringAlignment.Center
@@ -98,16 +101,16 @@ Public Class ChartSummary
         cArea.AxisX.MajorGrid.Enabled = False
         cArea.AxisX.MinorGrid.Enabled = False
         cArea.AxisX.MinorTickMark.Enabled = False
-        cArea.AxisY.Minimum = BasisPitch * 0.8
-        cArea.AxisY.Maximum = BasisPitch * 1.2
-        cArea.AxisY.Interval = BasisPitch * 0.1
+        cArea.AxisY.Minimum = bp * 0.8
+        cArea.AxisY.Maximum = bp * 1.2
+        cArea.AxisY.Interval = bp * 0.1
         cArea.AxisY.MajorGrid.Enabled = False
         cArea.AxisY.MinorGrid.Enabled = False
         cArea.AxisY.MajorTickMark.Enabled = True
         cArea.AxisY.MinorTickMark.Enabled = True
         Chart1.Annotations.Clear()
         Chart1.Annotations.Add(New TextAnnotation With {
-                              .Text = "Tol Basis - " + Basis + " Pitch = " + BasisPitch.ToString(),
+                              .Text = "Tol Basis - " + Basis + " Pitch = " + bp.ToString(),
                               .AnchorX = 0.25,
                               .AnchorY = 0.25
         })
@@ -118,8 +121,18 @@ Public Class ChartSummary
                                   .AnchorY = 0.3
             })
         End If ' play with location to put in correct position
+        Dim I As Integer
         Dim x As Integer
+        PitchTable.Controls.Clear()
+        PitchTable.RowCount = 1
+        PitchTable.ColumnCount = 1
         For x = 1 To mJobDetails.Job.PropellerBlades
+            PitchTable.RowCount += 1
+            BladeTable.RowCount += 1
+            Dim bt As New TextBox With {.Text = "Blade " + x,
+                .Dock = DockStyle.Fill,
+                .TextAlign = HorizontalAlignment.Center}
+            BladeTable.Controls.Add(bt, 0, x - 1)
             Dim ser As Series = Chart1.Series.Add("Blade" + x.ToString())
             Dim avgpitch As Double = 0
             Dim pitchcount As Integer = 0
@@ -127,15 +140,26 @@ Public Class ChartSummary
             ser.ChartArea = cArea.Name
             ser.Color = GraphColorArray(x)
             Dim BladeData As List(Of RadiusMeasurement) = mJobDetails.RadiusMeasurements.Where(Function(r) r.BladeId = x)
+            Dim y As Integer = 0
             For Each rm As RadiusMeasurement In BladeData
+                y += 1
+                If x = 1 Then
+                    PitchTable.ColumnCount += 1
+                End If
                 Dim pitch = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJobDetails.Job.TeExclusion.Value, mJobDetails.Job.LeExclusion.Value)
                 avgpitch += pitch
                 pitchcount += 1
                 ser.Points.AddXY(Math.Round(CType(rm.Radius, Double)).ToString(), pitch)
+                Dim fc As Color = ToColor(CheckBladeRadiusPitch(TolClass, pitch, bp, False))
+                Dim txt As New TextBox With {.Text = Math.Round(pitch, 3).ToString(),
+                    .ForeColor = fc,
+                    .Dock = DockStyle.Fill,
+                .TextAlign = HorizontalAlignment.Center}
+                PitchTable.Controls.Add(txt, y, x - 1)
                 If x = 1 Then ' set up strip lines on each column based on tolerance class and APP
                     If APP = False Then
                         Dim sline As New StripLine With {
-                            .IntervalOffset = BasisPitch - (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .IntervalOffset = bp - (bp * (TolClass.MeanPitchPerRadiusPercent / 100)),
                             .BorderWidth = 1,
                             .BorderDashStyle = ChartDashStyle.Solid,
                             .BorderColor = Color.Blue,
@@ -143,7 +167,7 @@ Public Class ChartSummary
                             }
                         cArea.AxisY.StripLines.Add(sline)
                         sline = New StripLine With {
-                            .IntervalOffset = BasisPitch + (BasisPitch * (TolClass.MeanPitchPerRadiusPercent / 100)),
+                            .IntervalOffset = bp + (bp * (TolClass.MeanPitchPerRadiusPercent / 100)),
                             .BorderWidth = 1,
                             .BorderDashStyle = ChartDashStyle.Solid,
                             .BorderColor = Color.Red,
@@ -151,7 +175,7 @@ Public Class ChartSummary
                         }
                         cArea.AxisY.StripLines.Add(sline)
                         sline = New StripLine With {
-                            .IntervalOffset = BasisPitch,
+                            .IntervalOffset = bp,
                             .BorderWidth = 1,
                             .BorderDashStyle = ChartDashStyle.Solid,
                             .BorderColor = Color.Black,
@@ -189,15 +213,41 @@ Public Class ChartSummary
                     End If
                 End If
             Next
+            If x = 1 Then
+                PitchTable.ColumnCount += 1
+            End If
             avgpitch /= pitchcount
             ser.Points.AddXY("Bld Avg", avgpitch)
+            Dim ac As Color = ToColor(CheckBladePitch(TolClass, avgpitch, bp, False))
+            Dim avgtext As New TextBox With {.Text = Math.Round(avgpitch, 3).ToString(),
+                .ForeColor = ac,
+                .Dock = DockStyle.Fill,
+                .TextAlign = HorizontalAlignment.Center}
+            PitchTable.Controls.Add(avgtext, y + 1, x + 1)
+        Next
+        For I = 0 To PitchTable.ColumnCount - 1
+            PitchTable.RowStyles(I).SizeType = SizeType.Percent
+            PitchTable.RowStyles(I).Height = 100 / PitchTable.ColumnCount
         Next
         Dim seri As Series = Chart1.Series.Add("Wheel")
         seri.ChartType = SeriesChartType.Column
         seri.ChartArea = cArea.Name
         seri.Color = GraphColorArray(3)
         seri.Points.AddXY("Wheel Avg", mJobDetails.WheelPitch)
-
+        Dim wc As Color = ToColor(CheckWheelPitch(TolClass, mJobDetails.WheelPitch, bp, False))
+        Dim wheel As New TextBox With {.Text = Math.Round(mJobDetails.WheelPitch.Value, 3).ToString(),
+            .ForeColor = wc,
+            .Dock = DockStyle.Fill,
+            .TextAlign = HorizontalAlignment.Center}
+        PitchTable.Controls.Add(wheel, PitchTable.ColumnCount - 1, PitchTable.RowCount - 1)
+        For I = 0 To PitchTable.RowCount
+            PitchTable.RowStyles(I).SizeType = SizeType.Percent
+            PitchTable.RowStyles(I).Height = 100 / mJobDetails.Job.PropellerBlades + 1
+            BladeTable.RowStyles(I).SizeType = SizeType.Percent
+            BladeTable.RowStyles(I).Height = 100 / mJobDetails.Job.PropellerBlades + 1
+        Next
+        PitchTable.BorderStyle = BorderStyle.Fixed3D
+        Me.ResumeLayout()
     End Sub
 #End Region
 End Class
