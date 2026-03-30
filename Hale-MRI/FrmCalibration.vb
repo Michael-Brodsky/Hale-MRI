@@ -3,6 +3,7 @@ Imports LibDatabase.Models
 Imports LibDatabase.Imex
 Imports LibEncoder
 Imports Hale_MRI.WorkstationStatusStrip
+Imports Windows.UI.Popups
 
 ''' <summary>
 ''' This form provides a user inteface for importing and editing
@@ -65,7 +66,6 @@ Public Class FrmCalibration
     Private Sub CalibrationControlsEnable(ByVal enabled As Boolean)
         CmdZeroCalibration.Enabled = enabled
         CmdDefaultCalibration.Enabled = enabled
-        CmdAngleCalibration.Enabled = enabled
         CmdDefaultCalibration.Enabled = enabled
         CmdDepthCalibration.Enabled = enabled
         CmdRadiusCalibration.Enabled = enabled
@@ -171,7 +171,6 @@ Public Class FrmCalibration
     End Sub
     Private Sub EncodersControlsEnabled(ByVal value As Boolean)
         ' Enable or disable UI encoder controls based on the value parameter
-        CmdAngleCalibration.Enabled = value
         CmdDepthCalibration.Enabled = value
         CmdRadiusCalibration.Enabled = value
         ChkCalibrateAll.Enabled = value
@@ -208,12 +207,73 @@ Public Class FrmCalibration
         TxtAngleCalibration.Text = EncoderStatusStrip1.CalibrateAngle().ToString()
     End Sub
     Private Sub GetDepthCalibration()
+        Dim showMsg As DialogResult = MessageBox.Show("Move the depth probe to an area where it can touch the bottom of the MRI table and click OK", "Depth Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then Exit Sub
+        showMsg = MessageBox.Show("Place a 4 inch size block under the depth probe and lower the probe until it touches the block, then click OK", "Depth Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then Exit Sub
+        EncoderStatusStrip1.Hardware.Encoders.ResetCount(2) ' Reset the depth encoder count so the count for the next step is only for the 4 inch block
+        showMsg = MessageBox.Show("Remove the size block and lower the probe until it touches the MRI table, then click OK", "DepthCalibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then Exit Sub
+        Dim oldcal As Double = EncoderStatusStrip1.Hardware.Encoders.DepthCalibration
+        Dim newcal As Double = Math.Round(EncoderStatusStrip1.CalibrateDepth(), 2)
+        showMsg = MessageBox.Show("New Depth Calibration: " & newcal.ToString(), "Depth Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then
+            EncoderStatusStrip1.Hardware.Encoders.DepthCalibration = oldcal
+            Exit Sub
+        End If
         ' Get the depth calibration value from the encoder hardware and update the UI component
-        TxtDepthCalibration.Text = EncoderStatusStrip1.CalibrateDepth().ToString()
+        TxtDepthCalibration.Text = newcal.ToString()
     End Sub
     Private Sub GetRadiusCalibration()
+        Dim showMsg As DialogResult = MessageBox.Show("Move the radius encoder housing as close to the propeller shaft as possible and click OK", "Radius Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then Exit Sub
+        EncoderStatusStrip1.Hardware.Encoders.ResetCount(1)
+        showMsg = MessageBox.Show("Slide the radius encoder housing away from the propeller shaft and place a 4 inch size block between the housing and shaft. Slide the housing toward the shaft until the size block is touching both then click OK", "Radius Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then Exit Sub
         ' Get the radius calibration value from the encoder hardware and update the UI component
-        TxtRadiusCalibration.Text = EncoderStatusStrip1.CalibrateRadius().ToString()
+        Dim oldcal As Double = EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration
+        Dim newcal As Double = Math.Round(EncoderStatusStrip1.CalibrateRadius(), 2)
+        showMsg = MessageBox.Show("New Radius Calibration: " & newcal.ToString(), "Radius Calibration", MessageBoxButtons.OKCancel)
+        If showMsg = DialogResult.Cancel Then
+            EncoderStatusStrip1.Hardware.Encoders.RadiusCalibration = oldcal
+            Exit Sub
+        End If
+        TxtRadiusCalibration.Text = newcal.ToString()
+    End Sub
+    Private Sub GetRadiusOffset()
+        Dim result = InputBox("Measure the Diameter of the Propeller shaft and enter the value in Inches", "Measure Radius Offset",)
+        Dim probeshaft As Double = 0
+        Dim dhold As Double
+        Dim halfProbe As Double
+        If Double.TryParse(result, dhold) Then
+            probeshaft += dhold
+        Else
+            MsgBox("Invalid input for propeller shaft diameter. Please enter a numeric value.", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+        result = InputBox("Measure the Diameter of the Depth Probe and enter the value in Inches", "Measure Radius Offset")
+        If Double.TryParse(result, dhold) Then
+            probeshaft += dhold
+            halfProbe = dhold / 2
+        Else
+            MsgBox("Invalid input for depth probe diameter. Please enter a numeric value.", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+        result = InputBox("Slide the radius encoder housing as close to the propeller shaft as possible. Measure the distance from the outer side of the depth probe to the outer side of the propeller shaft and enter the value in Inches", "Measure Radius Offset")
+        Dim outertoouter As Double
+        If Double.TryParse(result, dhold) Then
+            outertoouter = dhold
+        Else
+            MsgBox("Invalid input for Radius Measurement. Please enter a numeric value.", MsgBoxStyle.Critical, "Input Error")
+            Exit Sub
+        End If
+        Dim radiusOffset As Double = Math.Round((outertoouter - (probeshaft / 2)) * Hardware.Encoders.RadiusCalibration)
+        halfProbe = Math.Round(halfProbe * Hardware.Encoders.RadiusCalibration)
+        result = MessageBox.Show("New Radius Offset: " & radiusOffset.ToString() & ", New Half Probe Dia: " & halfProbe, "Measure Radius Offset", MessageBoxButtons.OKCancel)
+        If result = DialogResult.Cancel Then Exit Sub
+        Hardware.Encoders.RadiusOffset = radiusOffset
+        TxtRadiusOffsetR.Text = radiusOffset.ToString()
+        TxtHalfProbeDiameter.Text = halfProbe.ToString()
     End Sub
     Private Sub PollingEnable(ByVal enable As Boolean)
         ' Enable or disable the encoder polling timer and update the UI accordingly
@@ -245,14 +305,6 @@ Public Class FrmCalibration
             PollingEnable(ChkCalibrateAll.Checked)
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_APPLICATION_ERROR)
-        End Try
-    End Sub
-
-    Private Sub CmdAngleCalibration_Click(sender As Object, e As EventArgs) Handles CmdAngleCalibration.Click
-        Try
-            GetAngleCalibration()
-        Catch ex As Exception
-            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try
     End Sub
     Private Sub CmdCalibrationFile_Click(sender As Object, e As EventArgs) Handles CmdCalibrationFile.Click
@@ -296,6 +348,13 @@ Public Class FrmCalibration
     Private Sub CmdRadiusCalibration_Click(sender As Object, e As EventArgs) Handles CmdRadiusCalibration.Click
         Try
             GetRadiusCalibration()
+        Catch ex As Exception
+            MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
+        End Try
+    End Sub
+    Private Sub CmdMeasureOffset_Click(sender As Object, e As EventArgs) Handles CmdMeasureOffset.Click
+        Try
+            GetRadiusOffset()
         Catch ex As Exception
             MsgBox(ex.Message, MsgBoxStyle.Critical, STR_TITLE_ENCODER_ERROR)
         End Try

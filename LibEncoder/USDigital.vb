@@ -104,11 +104,10 @@ Public Class USDigital
     End Function
     Public Function Calibrate(ByVal encoderNo As Integer) As Double Implements IEncoderHardware.Calibrate
         ' Calibrate the specified encoder and return the calibration value
-        ResetCountSafely(0, encoderNo)
         Select Case encoderNo
             Case ANGLE_ENCODER
                 ' Save and return the angle calibration value
-                AngleCalibration = 1.0#
+                AngleCalibration = 22.222222222222
                 Return AngleCalibration
             Case RADIUS_ENCODER
                 ' Save and return the radius calibration value
@@ -142,6 +141,11 @@ Public Class USDigital
     Public Function SetEncoderCount(encoderNo As Integer, count As Integer) As Boolean Implements IEncoderHardware.SetEncoderCount
         'Sets the encoder count to the specified value
         Dim worked As Boolean = SetCount(encoderNo, count)
+        Return worked
+    End Function
+    Public Function SetForward(encoderNo As Integer, forward As Boolean) As Boolean Implements IEncoderHardware.SetForward
+        ' sets the count direction for the specified encoder
+        Dim worked As Boolean = SetForward(0, encoderNo, forward) ' false for Right hand true for left hand propellers
         Return worked
     End Function
     Public Sub Init() Implements IEncoderHardware.Initialize
@@ -228,13 +232,14 @@ Public Class USDigital
         result = mUSB4.SetCounterEnabled(ValidEncoder(iEncoder), bVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
     End Sub
-    Private Shared Sub SetForward(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal bVal As Long)
+    Private Shared Function SetForward(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal bVal As Boolean)
         ' Sets the count direction for the specified encoder
         Dim result As Boolean
         mUSB4.DeviceNo = iDeviceNo
         result = mUSB4.SetForward(ValidEncoder(iEncoder), bVal)
         If result <> USB4_SUCCESS Then Throw New Exception(STR_ERR_HARDWARE_INIT)
-    End Sub
+        Return result
+    End Function
     Private Shared Sub SetMultiplier(ByVal iDeviceNo As Integer, ByVal iEncoder As Integer, ByVal iVal As Integer)
         ' Sets the quadrature counter multiplier mode for the specified encoder
         Dim result As Boolean

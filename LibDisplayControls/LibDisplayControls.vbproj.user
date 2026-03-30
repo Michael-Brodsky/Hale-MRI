@@ -10,10 +10,16 @@
     <Compile Update="ChartCompLine.vb">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Update="ChartSectorsbyBlade.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Update="DisplayControl.vb">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Update="ChartSummary.vb">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Update="LocalPitchTable.vb">
       <SubType>UserControl</SubType>
     </Compile>
   </ItemGroup>

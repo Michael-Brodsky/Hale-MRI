@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "kUNj5zHIDpc=",
+  "dgSpecHash": "8SFY+EP7nnM=",
   "success": true,
   "projectFilePath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibDisplayControls\\LibDisplayControls.vbproj",
   "expectedPackageFiles": [
@@ -27,7 +27,8 @@
     "C:\\Users\\82002\\.nuget\\packages\\system.diagnostics.eventlog\\8.0.1\\system.diagnostics.eventlog.8.0.1.nupkg.sha512",
     "C:\\Users\\82002\\.nuget\\packages\\system.diagnostics.performancecounter\\8.0.1\\system.diagnostics.performancecounter.8.0.1.nupkg.sha512",
     "C:\\Users\\82002\\.nuget\\packages\\system.security.cryptography.protecteddata\\8.0.0\\system.security.cryptography.protecteddata.8.0.0.nupkg.sha512",
-    "C:\\Users\\82002\\.nuget\\packages\\winforms.datavisualization\\1.10.0\\winforms.datavisualization.1.10.0.nupkg.sha512"
+    "C:\\Users\\82002\\.nuget\\packages\\winforms.datavisualization\\1.10.0\\winforms.datavisualization.1.10.0.nupkg.sha512",
+    "C:\\Users\\82002\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
   ],
   "logs": []
 }

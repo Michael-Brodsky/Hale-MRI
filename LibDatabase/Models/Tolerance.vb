@@ -12,7 +12,7 @@ Namespace Models
 
         Public Property LocalPitchMinimum As Double
 
-        Public Property MeanPitchPerRadiusPercent As Integer
+        Public Property MeanPitchPerRadiusPercent As Double
 
         Public Property MeanPitchPerRadiusMinimum As Double
 

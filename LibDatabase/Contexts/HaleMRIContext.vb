@@ -241,7 +241,9 @@ Namespace Contexts
                     entity.Property(Function(e) e.DesiredPitch).HasColumnName("Desired Pitch")
                     entity.Property(Function(e) e.InspectedBy).HasColumnName("Inspected By")
                     entity.Property(Function(e) e.JobNumber).HasColumnName("Job Number")
-                    entity.Property(Function(e) e.LeExclusion).HasColumnName("LE Exclusion")
+                    entity.Property(Function(e) e.LeExclusion).
+                        HasDefaultValue(0.0).
+                        HasColumnName("LE Exclusion")
                     entity.Property(Function(e) e.MarkedPitch).HasColumnName("Marked Pitch")
                     entity.Property(Function(e) e.PropellerBlades).HasColumnName("Propeller Blades")
                     entity.Property(Function(e) e.PropellerBore).
@@ -271,7 +273,9 @@ Namespace Contexts
                         HasMaxLength(32).
                         HasColumnName("Stamp Number")
                     entity.Property(Function(e) e.StartDate).HasColumnName("Start Date")
-                    entity.Property(Function(e) e.TeExclusion).HasColumnName("TE Exclusion")
+                    entity.Property(Function(e) e.TeExclusion).
+                        HasDefaultValue(0.0).
+                        HasColumnName("TE Exclusion")
                     entity.Property(Function(e) e.VesselId).HasColumnName("Vessel ID")
 
                     entity.HasOne(Function(d) d.CupNavigation).WithMany(Function(p) p.Jobs).
@@ -682,7 +686,7 @@ Namespace Contexts
                         HasDefaultValue(1000.0).
                         HasColumnName("Mean Pitch Per Radius Minimum")
                     entity.Property(Function(e) e.MeanPitchPerRadiusPercent).
-                        HasDefaultValue(100).
+                        HasDefaultValue(100.0).
                         HasColumnName("Mean Pitch Per Radius Percent")
                 End Sub)
 

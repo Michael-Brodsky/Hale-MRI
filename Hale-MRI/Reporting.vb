@@ -2,6 +2,7 @@
 Imports LibDatabase.Contexts
 Imports LibDatabase.Models
 Imports LibDisplayControls.MRIMath
+Imports LibDisplayControls.Tolerances
 
 Module Reporting
     ' ReportDataDelegate type - a delegate method that can be

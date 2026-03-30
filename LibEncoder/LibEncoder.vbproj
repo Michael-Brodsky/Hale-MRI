@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <RootNamespace>LibEncoder</RootNamespace>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
     <ImportedNamespaces>USB4Wrapper=False,Microsoft.VisualBasic=True,System=True,System.Collections=True,System.Collections.Generic=True,System.Diagnostics=True,System.Linq=True,System.Xml.Linq=True,System.Threading.Tasks=True,LibEncoder=True</ImportedNamespaces>
     <Configurations>Debug;Release;NoEncoders</Configurations>
+    <SupportedOSPlatformVersion>7.0</SupportedOSPlatformVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -44,9 +45,6 @@
 
   <ItemGroup>
     <None Update="USB4.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="USB4Wrapper.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

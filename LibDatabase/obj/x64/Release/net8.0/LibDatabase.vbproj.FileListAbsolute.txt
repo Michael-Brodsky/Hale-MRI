@@ -1,0 +1,15 @@
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\bin\x64\Release\net8.0\LibDatabase.deps.json
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\bin\x64\Release\net8.0\LibDatabase.runtimeconfig.json
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\bin\x64\Release\net8.0\LibDatabase.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\bin\x64\Release\net8.0\LibDatabase.pdb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.vbproj.AssemblyReference.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.AssemblyInfoInputs.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.AssemblyInfo.vb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.vbproj.CoreCompileInputs.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.sourcelink.json
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\refint\LibDatabase.dll
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.pdb
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\LibDatabase.genruntimeconfig.cache
+C:\Users\82002\source\repos\Hale MRI\Hale-MRI\LibDatabase\obj\x64\Release\net8.0\ref\LibDatabase.dll

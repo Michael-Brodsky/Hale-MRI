@@ -23,9 +23,15 @@ Partial Class FrmMeasurements
     <System.Diagnostics.DebuggerStepThrough()>
     Private Sub InitializeComponent()
         components = New ComponentModel.Container()
+        Dim DataGridViewCellStyle9 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle4 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle5 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle6 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle7 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle8 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim ChartArea1 As System.Windows.Forms.DataVisualization.Charting.ChartArea = New DataVisualization.Charting.ChartArea()
         Dim Series1 As System.Windows.Forms.DataVisualization.Charting.Series = New DataVisualization.Charting.Series()
         RecordNavigationBar1 = New RecordNavigationBar()
@@ -102,7 +108,6 @@ Partial Class FrmMeasurements
         ChkPlotAngularDeviation = New CheckBox()
         ComboPitchBasis = New ComboBox()
         LabPitchBasis = New Label()
-        ComboPlotReferenceBlade = New ComboBox()
         LabPanelPlot = New Label()
         PanelLocalPitchDetails = New Panel()
         tLayoutLocalPitchDetails = New TableLayoutPanel()
@@ -199,17 +204,17 @@ Partial Class FrmMeasurements
         RecordNavigationBar1.AutoSize = True
         RecordNavigationBar1.AutoSizeMode = AutoSizeMode.GrowAndShrink
         RecordNavigationBar1.BoundControls = Nothing
-        TLayoutMeasurement.SetColumnSpan(RecordNavigationBar1, 3)
+        TLayoutMeasurement.SetColumnSpan(RecordNavigationBar1, 4)
         RecordNavigationBar1.Database = Nothing
         RecordNavigationBar1.Dock = DockStyle.Right
         RecordNavigationBar1.Filter = Nothing
         RecordNavigationBar1.FilterOn = False
-        RecordNavigationBar1.Location = New Point(600, 0)
-        RecordNavigationBar1.Margin = New Padding(0, 0, 15, 0)
+        RecordNavigationBar1.Location = New Point(590, 5)
+        RecordNavigationBar1.Margin = New Padding(0, 5, 25, 0)
         RecordNavigationBar1.MasterSource = Nothing
         RecordNavigationBar1.Name = "RecordNavigationBar1"
         RecordNavigationBar1.NoUpdates = False
-        RecordNavigationBar1.Size = New Size(569, 33)
+        RecordNavigationBar1.Size = New Size(828, 35)
         RecordNavigationBar1.TabIndex = 0
         ' 
         ' JobDetailsBindingSource
@@ -224,38 +229,33 @@ Partial Class FrmMeasurements
         DataGridJobDetails.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
         DataGridJobDetails.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         DataGridJobDetails.BorderStyle = BorderStyle.Fixed3D
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Control
-        DataGridViewCellStyle2.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
-        DataGridJobDetails.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle2
         DataGridJobDetails.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         DataGridJobDetails.Columns.AddRange(New DataGridViewColumn() {StartDate, MeasurementTypeDataGridViewTextBoxColumn, ToleranceClassDataGridViewTextBoxColumn, PerformedBy, Description})
         TLayoutMeasurement.SetColumnSpan(DataGridJobDetails, 3)
         DataGridJobDetails.DataSource = JobDetailsBindingSource
-        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = SystemColors.Window
-        DataGridViewCellStyle3.Font = New Font("Segoe UI", 10F)
-        DataGridViewCellStyle3.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.False
-        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle3
-        DataGridJobDetails.Dock = DockStyle.Right
-        DataGridJobDetails.Location = New Point(604, 37)
-        DataGridJobDetails.Margin = New Padding(4, 4, 15, 4)
+        DataGridViewCellStyle9.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle9.BackColor = SystemColors.Window
+        DataGridViewCellStyle9.Font = New Font("Segoe UI", 13F)
+        DataGridViewCellStyle9.ForeColor = SystemColors.ButtonFace
+        DataGridViewCellStyle9.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle9.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle9.WrapMode = DataGridViewTriState.False
+        DataGridJobDetails.DefaultCellStyle = DataGridViewCellStyle9
+        DataGridJobDetails.Dock = DockStyle.Fill
+        DataGridJobDetails.Location = New Point(724, 44)
+        DataGridJobDetails.Margin = New Padding(4, 4, 25, 0)
         DataGridJobDetails.Name = "DataGridJobDetails"
         DataGridJobDetails.RowHeadersVisible = False
         DataGridJobDetails.ScrollBars = ScrollBars.None
-        DataGridJobDetails.Size = New Size(565, 72)
+        DataGridJobDetails.Size = New Size(694, 106)
         DataGridJobDetails.TabIndex = 4
         ' 
         ' StartDate
         ' 
+        StartDate.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         StartDate.DataPropertyName = "StartDate"
+        DataGridViewCellStyle4.ForeColor = Color.Black
+        StartDate.DefaultCellStyle = DataGridViewCellStyle4
         StartDate.HeaderText = "Start Date"
         StartDate.MinimumWidth = 120
         StartDate.Name = "StartDate"
@@ -263,8 +263,11 @@ Partial Class FrmMeasurements
         ' 
         ' MeasurementTypeDataGridViewTextBoxColumn
         ' 
+        MeasurementTypeDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         MeasurementTypeDataGridViewTextBoxColumn.DataPropertyName = "MeasurementTypeId"
         MeasurementTypeDataGridViewTextBoxColumn.DataSource = MeasurementTypesBindingSource
+        DataGridViewCellStyle5.ForeColor = Color.Black
+        MeasurementTypeDataGridViewTextBoxColumn.DefaultCellStyle = DataGridViewCellStyle5
         MeasurementTypeDataGridViewTextBoxColumn.DisplayMember = "MeasurementType1"
         MeasurementTypeDataGridViewTextBoxColumn.HeaderText = "Measurement"
         MeasurementTypeDataGridViewTextBoxColumn.MinimumWidth = 90
@@ -272,7 +275,7 @@ Partial Class FrmMeasurements
         MeasurementTypeDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         MeasurementTypeDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         MeasurementTypeDataGridViewTextBoxColumn.ValueMember = "Id"
-        MeasurementTypeDataGridViewTextBoxColumn.Width = 119
+        MeasurementTypeDataGridViewTextBoxColumn.Width = 145
         ' 
         ' MeasurementTypesBindingSource
         ' 
@@ -280,8 +283,11 @@ Partial Class FrmMeasurements
         ' 
         ' ToleranceClassDataGridViewTextBoxColumn
         ' 
+        ToleranceClassDataGridViewTextBoxColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         ToleranceClassDataGridViewTextBoxColumn.DataPropertyName = "ToleranceClass"
         ToleranceClassDataGridViewTextBoxColumn.DataSource = ClassBindingSource
+        DataGridViewCellStyle6.ForeColor = Color.Black
+        ToleranceClassDataGridViewTextBoxColumn.DefaultCellStyle = DataGridViewCellStyle6
         ToleranceClassDataGridViewTextBoxColumn.DisplayMember = "ToleranceClass"
         ToleranceClassDataGridViewTextBoxColumn.HeaderText = "Class"
         ToleranceClassDataGridViewTextBoxColumn.MinimumWidth = 60
@@ -289,7 +295,7 @@ Partial Class FrmMeasurements
         ToleranceClassDataGridViewTextBoxColumn.Resizable = DataGridViewTriState.True
         ToleranceClassDataGridViewTextBoxColumn.SortMode = DataGridViewColumnSortMode.Automatic
         ToleranceClassDataGridViewTextBoxColumn.ValueMember = "ToleranceClass"
-        ToleranceClassDataGridViewTextBoxColumn.Width = 65
+        ToleranceClassDataGridViewTextBoxColumn.Width = 77
         ' 
         ' ClassBindingSource
         ' 
@@ -297,8 +303,11 @@ Partial Class FrmMeasurements
         ' 
         ' PerformedBy
         ' 
+        PerformedBy.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells
         PerformedBy.DataPropertyName = "PerformedBy"
         PerformedBy.DataSource = EmployeesBindingSource
+        DataGridViewCellStyle7.ForeColor = Color.Black
+        PerformedBy.DefaultCellStyle = DataGridViewCellStyle7
         PerformedBy.DisplayMember = "EmployeeName"
         PerformedBy.HeaderText = "Employee"
         PerformedBy.MinimumWidth = 130
@@ -315,10 +324,12 @@ Partial Class FrmMeasurements
         ' 
         ' Description
         ' 
+        Description.AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill
         Description.DataPropertyName = "Description"
+        DataGridViewCellStyle8.ForeColor = Color.Black
+        Description.DefaultCellStyle = DataGridViewCellStyle8
         Description.HeaderText = "Description"
         Description.Name = "Description"
-        Description.Width = 103
         ' 
         ' PanelJob
         ' 
@@ -327,19 +338,19 @@ Partial Class FrmMeasurements
         PanelJob.Controls.Add(tLayoutJobInfo)
         PanelJob.Controls.Add(LabPanelJob)
         PanelJob.Dock = DockStyle.Fill
-        PanelJob.Location = New Point(10, 113)
-        PanelJob.Margin = New Padding(10, 0, 1, 0)
+        PanelJob.Location = New Point(25, 150)
+        PanelJob.Margin = New Padding(25, 0, 0, 0)
         PanelJob.Name = "PanelJob"
-        PanelJob.Size = New Size(201, 162)
+        PanelJob.Size = New Size(215, 185)
         PanelJob.TabIndex = 7
         ' 
         ' tLayoutJobInfo
         ' 
         tLayoutJobInfo.AutoSize = True
         tLayoutJobInfo.AutoSizeMode = AutoSizeMode.GrowAndShrink
-        tLayoutJobInfo.ColumnCount = 2
+        tLayoutJobInfo.ColumnCount = 1
         tLayoutJobInfo.ColumnStyles.Add(New ColumnStyle())
-        tLayoutJobInfo.ColumnStyles.Add(New ColumnStyle())
+        tLayoutJobInfo.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 20F))
         tLayoutJobInfo.Controls.Add(TxtVessel, 0, 3)
         tLayoutJobInfo.Controls.Add(TxtManufacturer, 0, 4)
         tLayoutJobInfo.Controls.Add(TxtStyle, 0, 5)
@@ -364,14 +375,14 @@ Partial Class FrmMeasurements
         tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
         tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
         tLayoutJobInfo.RowStyles.Add(New RowStyle(SizeType.Percent, 10F))
-        tLayoutJobInfo.Size = New Size(197, 158)
+        tLayoutJobInfo.Size = New Size(211, 181)
         tLayoutJobInfo.TabIndex = 6
         ' 
         ' TxtVessel
         ' 
         TxtVessel.BorderStyle = BorderStyle.None
         TxtVessel.Font = New Font("Segoe UI", 8F)
-        TxtVessel.Location = New Point(4, 45)
+        TxtVessel.Location = New Point(4, 54)
         TxtVessel.Margin = New Padding(4, 0, 4, 0)
         TxtVessel.Name = "TxtVessel"
         TxtVessel.ReadOnly = True
@@ -382,7 +393,7 @@ Partial Class FrmMeasurements
         ' 
         TxtManufacturer.BorderStyle = BorderStyle.None
         TxtManufacturer.Font = New Font("Segoe UI", 8F)
-        TxtManufacturer.Location = New Point(4, 60)
+        TxtManufacturer.Location = New Point(4, 72)
         TxtManufacturer.Margin = New Padding(4, 0, 4, 0)
         TxtManufacturer.Name = "TxtManufacturer"
         TxtManufacturer.ReadOnly = True
@@ -393,7 +404,7 @@ Partial Class FrmMeasurements
         ' 
         TxtStyle.BorderStyle = BorderStyle.None
         TxtStyle.Font = New Font("Segoe UI", 8F)
-        TxtStyle.Location = New Point(4, 75)
+        TxtStyle.Location = New Point(4, 90)
         TxtStyle.Margin = New Padding(4, 0, 4, 0)
         TxtStyle.Name = "TxtStyle"
         TxtStyle.ReadOnly = True
@@ -404,7 +415,7 @@ Partial Class FrmMeasurements
         ' 
         TxtMaterial.BorderStyle = BorderStyle.None
         TxtMaterial.Font = New Font("Segoe UI", 8F)
-        TxtMaterial.Location = New Point(4, 90)
+        TxtMaterial.Location = New Point(4, 108)
         TxtMaterial.Margin = New Padding(4, 0, 4, 0)
         TxtMaterial.Name = "TxtMaterial"
         TxtMaterial.ReadOnly = True
@@ -415,7 +426,7 @@ Partial Class FrmMeasurements
         ' 
         TxtBlades.BorderStyle = BorderStyle.None
         TxtBlades.Font = New Font("Segoe UI", 8F)
-        TxtBlades.Location = New Point(4, 105)
+        TxtBlades.Location = New Point(4, 126)
         TxtBlades.Margin = New Padding(4, 0, 4, 0)
         TxtBlades.Name = "TxtBlades"
         TxtBlades.ReadOnly = True
@@ -426,7 +437,7 @@ Partial Class FrmMeasurements
         ' 
         TxtDiameter.BorderStyle = BorderStyle.None
         TxtDiameter.Font = New Font("Segoe UI", 8F)
-        TxtDiameter.Location = New Point(4, 120)
+        TxtDiameter.Location = New Point(4, 144)
         TxtDiameter.Margin = New Padding(4, 0, 4, 0)
         TxtDiameter.Name = "TxtDiameter"
         TxtDiameter.ReadOnly = True
@@ -437,7 +448,7 @@ Partial Class FrmMeasurements
         ' 
         TxtBore.BorderStyle = BorderStyle.None
         TxtBore.Font = New Font("Segoe UI", 8F)
-        TxtBore.Location = New Point(4, 135)
+        TxtBore.Location = New Point(4, 162)
         TxtBore.Margin = New Padding(4, 0, 4, 0)
         TxtBore.Name = "TxtBore"
         TxtBore.ReadOnly = True
@@ -448,7 +459,7 @@ Partial Class FrmMeasurements
         ' 
         TxtCustomer.BorderStyle = BorderStyle.None
         TxtCustomer.Font = New Font("Segoe UI", 8F)
-        TxtCustomer.Location = New Point(4, 30)
+        TxtCustomer.Location = New Point(4, 36)
         TxtCustomer.Margin = New Padding(4, 0, 4, 0)
         TxtCustomer.Name = "TxtCustomer"
         TxtCustomer.ReadOnly = True
@@ -483,10 +494,10 @@ Partial Class FrmMeasurements
         TLayoutMeasurement.SetColumnSpan(PanelMeasurements, 3)
         PanelMeasurements.Controls.Add(tLayoutMeasurementPanel)
         PanelMeasurements.Dock = DockStyle.Fill
-        PanelMeasurements.Location = New Point(212, 113)
+        PanelMeasurements.Location = New Point(240, 150)
         PanelMeasurements.Margin = New Padding(0)
         PanelMeasurements.Name = "PanelMeasurements"
-        PanelMeasurements.Size = New Size(582, 162)
+        PanelMeasurements.Size = New Size(720, 185)
         PanelMeasurements.TabIndex = 8
         ' 
         ' tLayoutMeasurementPanel
@@ -538,7 +549,7 @@ Partial Class FrmMeasurements
         tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
         tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 10F))
         tLayoutMeasurementPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 20F))
-        tLayoutMeasurementPanel.Size = New Size(578, 158)
+        tLayoutMeasurementPanel.Size = New Size(716, 181)
         tLayoutMeasurementPanel.TabIndex = 22
         ' 
         ' LabPanelMeasurements
@@ -547,10 +558,11 @@ Partial Class FrmMeasurements
         tLayoutMeasurementPanel.SetColumnSpan(LabPanelMeasurements, 12)
         LabPanelMeasurements.Dock = DockStyle.Fill
         LabPanelMeasurements.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPanelMeasurements.ForeColor = SystemColors.ActiveCaptionText
         LabPanelMeasurements.Location = New Point(0, 0)
         LabPanelMeasurements.Margin = New Padding(0)
         LabPanelMeasurements.Name = "LabPanelMeasurements"
-        LabPanelMeasurements.Size = New Size(578, 20)
+        LabPanelMeasurements.Size = New Size(716, 20)
         LabPanelMeasurements.TabIndex = 14
         LabPanelMeasurements.Text = "Measurements"
         ' 
@@ -562,7 +574,7 @@ Partial Class FrmMeasurements
         LabAngle.Location = New Point(4, 25)
         LabAngle.Margin = New Padding(4, 0, 4, 0)
         LabAngle.Name = "LabAngle"
-        LabAngle.Size = New Size(94, 20)
+        LabAngle.Size = New Size(120, 25)
         LabAngle.TabIndex = 16
         LabAngle.Text = "Angle"
         ' 
@@ -570,30 +582,32 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtAngle, 2)
         TxtAngle.Dock = DockStyle.Fill
-        TxtAngle.Location = New Point(4, 49)
+        TxtAngle.Font = New Font("Segoe UI", 16F)
+        TxtAngle.Location = New Point(4, 54)
         TxtAngle.Margin = New Padding(4, 4, 0, 4)
         TxtAngle.Name = "TxtAngle"
-        TxtAngle.Size = New Size(98, 27)
+        TxtAngle.Size = New Size(124, 36)
         TxtAngle.TabIndex = 1
         ' 
         ' LabBlade
         ' 
         LabBlade.AutoSize = True
         LabBlade.Dock = DockStyle.Bottom
-        LabBlade.Location = New Point(106, 20)
+        LabBlade.Location = New Point(132, 25)
         LabBlade.Margin = New Padding(4, 0, 4, 0)
         LabBlade.Name = "LabBlade"
-        LabBlade.Size = New Size(43, 25)
+        LabBlade.Size = New Size(56, 25)
         LabBlade.TabIndex = 10
         LabBlade.Text = "Blade"
         ' 
         ' TxtBlade
         ' 
         TxtBlade.Dock = DockStyle.Fill
-        TxtBlade.Location = New Point(102, 49)
+        TxtBlade.Font = New Font("Segoe UI", 16F)
+        TxtBlade.Location = New Point(128, 54)
         TxtBlade.Margin = New Padding(0, 4, 0, 4)
         TxtBlade.Name = "TxtBlade"
-        TxtBlade.Size = New Size(51, 27)
+        TxtBlade.Size = New Size(64, 36)
         TxtBlade.TabIndex = 4
         ' 
         ' LabOffsetToHub
@@ -601,10 +615,10 @@ Partial Class FrmMeasurements
         LabOffsetToHub.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabOffsetToHub, 3)
         LabOffsetToHub.Dock = DockStyle.Bottom
-        LabOffsetToHub.Location = New Point(4, 75)
+        LabOffsetToHub.Location = New Point(4, 85)
         LabOffsetToHub.Margin = New Padding(4, 0, 4, 0)
         LabOffsetToHub.Name = "LabOffsetToHub"
-        LabOffsetToHub.Size = New Size(145, 20)
+        LabOffsetToHub.Size = New Size(184, 25)
         LabOffsetToHub.TabIndex = 13
         LabOffsetToHub.Text = "Offset To Hub"
         ' 
@@ -612,11 +626,12 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(ComboOffsetToHub, 3)
         ComboOffsetToHub.Dock = DockStyle.Fill
+        ComboOffsetToHub.Font = New Font("Segoe UI", 16F)
         ComboOffsetToHub.FormattingEnabled = True
-        ComboOffsetToHub.Location = New Point(4, 99)
+        ComboOffsetToHub.Location = New Point(4, 114)
         ComboOffsetToHub.Margin = New Padding(4, 4, 0, 4)
         ComboOffsetToHub.Name = "ComboOffsetToHub"
-        ComboOffsetToHub.Size = New Size(149, 28)
+        ComboOffsetToHub.Size = New Size(188, 38)
         ComboOffsetToHub.TabIndex = 5
         ' 
         ' LabRadius
@@ -624,21 +639,22 @@ Partial Class FrmMeasurements
         LabRadius.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabRadius, 3)
         LabRadius.Dock = DockStyle.Bottom
-        LabRadius.Location = New Point(157, 25)
+        LabRadius.Location = New Point(196, 25)
         LabRadius.Margin = New Padding(4, 0, 4, 0)
         LabRadius.Name = "LabRadius"
-        LabRadius.Size = New Size(145, 20)
+        LabRadius.Size = New Size(184, 25)
         LabRadius.TabIndex = 11
-        LabRadius.Text = "Radius"
+        LabRadius.Text = "Diameter"
         ' 
         ' TxtRadius
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtRadius, 3)
         TxtRadius.Dock = DockStyle.Top
-        TxtRadius.Location = New Point(157, 49)
+        TxtRadius.Font = New Font("Segoe UI", 16F)
+        TxtRadius.Location = New Point(196, 54)
         TxtRadius.Margin = New Padding(4, 4, 0, 4)
         TxtRadius.Name = "TxtRadius"
-        TxtRadius.Size = New Size(149, 27)
+        TxtRadius.Size = New Size(188, 36)
         TxtRadius.TabIndex = 3
         ' 
         ' LabRadiusPercent
@@ -646,10 +662,10 @@ Partial Class FrmMeasurements
         LabRadiusPercent.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabRadiusPercent, 3)
         LabRadiusPercent.Dock = DockStyle.Bottom
-        LabRadiusPercent.Location = New Point(157, 75)
+        LabRadiusPercent.Location = New Point(196, 85)
         LabRadiusPercent.Margin = New Padding(4, 0, 4, 0)
         LabRadiusPercent.Name = "LabRadiusPercent"
-        LabRadiusPercent.Size = New Size(145, 20)
+        LabRadiusPercent.Size = New Size(184, 25)
         LabRadiusPercent.TabIndex = 14
         LabRadiusPercent.Text = "Radius Percent"
         ' 
@@ -657,10 +673,11 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtRadiusPercent, 3)
         TxtRadiusPercent.Dock = DockStyle.Top
-        TxtRadiusPercent.Location = New Point(157, 99)
+        TxtRadiusPercent.Font = New Font("Segoe UI", 16F)
+        TxtRadiusPercent.Location = New Point(196, 114)
         TxtRadiusPercent.Margin = New Padding(4, 4, 0, 4)
         TxtRadiusPercent.Name = "TxtRadiusPercent"
-        TxtRadiusPercent.Size = New Size(149, 27)
+        TxtRadiusPercent.Size = New Size(188, 36)
         TxtRadiusPercent.TabIndex = 6
         ' 
         ' LabDepth
@@ -668,10 +685,10 @@ Partial Class FrmMeasurements
         LabDepth.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabDepth, 3)
         LabDepth.Dock = DockStyle.Bottom
-        LabDepth.Location = New Point(310, 25)
+        LabDepth.Location = New Point(388, 25)
         LabDepth.Margin = New Padding(4, 0, 4, 0)
         LabDepth.Name = "LabDepth"
-        LabDepth.Size = New Size(145, 20)
+        LabDepth.Size = New Size(184, 25)
         LabDepth.TabIndex = 12
         LabDepth.Text = "Depth"
         ' 
@@ -679,10 +696,11 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtDepth, 3)
         TxtDepth.Dock = DockStyle.Top
-        TxtDepth.Location = New Point(310, 49)
+        TxtDepth.Font = New Font("Segoe UI", 16F)
+        TxtDepth.Location = New Point(388, 54)
         TxtDepth.Margin = New Padding(4, 4, 0, 4)
         TxtDepth.Name = "TxtDepth"
-        TxtDepth.Size = New Size(149, 27)
+        TxtDepth.Size = New Size(188, 36)
         TxtDepth.TabIndex = 2
         ' 
         ' LabWheelPitch
@@ -690,10 +708,10 @@ Partial Class FrmMeasurements
         LabWheelPitch.AutoSize = True
         tLayoutMeasurementPanel.SetColumnSpan(LabWheelPitch, 3)
         LabWheelPitch.Dock = DockStyle.Bottom
-        LabWheelPitch.Location = New Point(310, 75)
+        LabWheelPitch.Location = New Point(388, 85)
         LabWheelPitch.Margin = New Padding(4, 0, 4, 0)
         LabWheelPitch.Name = "LabWheelPitch"
-        LabWheelPitch.Size = New Size(145, 20)
+        LabWheelPitch.Size = New Size(184, 25)
         LabWheelPitch.TabIndex = 15
         LabWheelPitch.Text = "Wheel Pitch"
         ' 
@@ -701,22 +719,24 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtWheelPitch, 3)
         TxtWheelPitch.Dock = DockStyle.Top
-        TxtWheelPitch.Location = New Point(310, 99)
+        TxtWheelPitch.Font = New Font("Segoe UI", 16F)
+        TxtWheelPitch.Location = New Point(388, 114)
         TxtWheelPitch.Margin = New Padding(4, 4, 0, 4)
         TxtWheelPitch.Name = "TxtWheelPitch"
-        TxtWheelPitch.Size = New Size(149, 27)
+        TxtWheelPitch.Size = New Size(188, 36)
         TxtWheelPitch.TabIndex = 7
         ' 
         ' CmdSetTip
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdSetTip, 2)
         CmdSetTip.Dock = DockStyle.Fill
+        CmdSetTip.ForeColor = SystemColors.ActiveCaptionText
         CmdSetTip.Image = My.Resources.Resources.SettingsPanel
         CmdSetTip.ImageAlign = ContentAlignment.MiddleRight
-        CmdSetTip.Location = New Point(469, 130)
-        CmdSetTip.Margin = New Padding(0)
+        CmdSetTip.Location = New Point(586, 150)
+        CmdSetTip.Margin = New Padding(0, 0, 15, 5)
         CmdSetTip.Name = "CmdSetTip"
-        CmdSetTip.Size = New Size(109, 28)
+        CmdSetTip.Size = New Size(115, 26)
         CmdSetTip.TabIndex = 20
         CmdSetTip.Text = "Set tip"
         CmdSetTip.TextAlign = ContentAlignment.MiddleLeft
@@ -725,31 +745,40 @@ Partial Class FrmMeasurements
         ' 
         ' CmdHome
         ' 
+        CmdHome.BackColor = Color.IndianRed
+        CmdHome.BackgroundImageLayout = ImageLayout.Stretch
         tLayoutMeasurementPanel.SetColumnSpan(CmdHome, 2)
         CmdHome.Dock = DockStyle.Fill
+        CmdHome.FlatAppearance.BorderColor = Color.Black
+        CmdHome.FlatAppearance.BorderSize = 3
+        CmdHome.FlatStyle = FlatStyle.Popup
+        CmdHome.ForeColor = SystemColors.ActiveCaptionText
         CmdHome.Image = My.Resources.Resources.Home
         CmdHome.ImageAlign = ContentAlignment.MiddleRight
-        CmdHome.Location = New Point(357, 130)
-        CmdHome.Margin = New Padding(0)
+        CmdHome.Location = New Point(448, 153)
+        CmdHome.Margin = New Padding(0, 3, 0, 5)
         CmdHome.Name = "CmdHome"
-        CmdHome.Size = New Size(102, 28)
+        CmdHome.Size = New Size(128, 23)
         CmdHome.TabIndex = 19
         CmdHome.Text = "Home"
         CmdHome.TextAlign = ContentAlignment.MiddleLeft
         CmdHome.TextImageRelation = TextImageRelation.ImageBeforeText
-        CmdHome.UseVisualStyleBackColor = True
+        CmdHome.UseMnemonic = False
+        CmdHome.UseVisualStyleBackColor = False
         ' 
         ' ChkScan
         ' 
         ChkScan.Appearance = Appearance.Button
         tLayoutMeasurementPanel.SetColumnSpan(ChkScan, 2)
         ChkScan.Dock = DockStyle.Fill
+        ChkScan.Enabled = False
+        ChkScan.ForeColor = SystemColors.ActiveCaptionText
         ChkScan.Image = My.Resources.Resources.Timer
         ChkScan.ImageAlign = ContentAlignment.MiddleRight
-        ChkScan.Location = New Point(204, 130)
-        ChkScan.Margin = New Padding(0)
+        ChkScan.Location = New Point(256, 150)
+        ChkScan.Margin = New Padding(0, 0, 0, 5)
         ChkScan.Name = "ChkScan"
-        ChkScan.Size = New Size(102, 28)
+        ChkScan.Size = New Size(128, 26)
         ChkScan.TabIndex = 17
         ChkScan.Text = " Scan"
         ChkScan.TextImageRelation = TextImageRelation.ImageBeforeText
@@ -759,20 +788,22 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(TxtStatus, 4)
         TxtStatus.Dock = DockStyle.Top
-        TxtStatus.Location = New Point(4, 134)
+        TxtStatus.Location = New Point(4, 154)
         TxtStatus.Margin = New Padding(4)
         TxtStatus.Name = "TxtStatus"
-        TxtStatus.Size = New Size(196, 27)
+        TxtStatus.Size = New Size(248, 31)
         TxtStatus.TabIndex = 21
+        TxtStatus.Text = "Please set home to Scan"
         ' 
         ' CmdSetRef
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdSetRef, 2)
         CmdSetRef.Dock = DockStyle.Fill
-        CmdSetRef.Location = New Point(470, 71)
-        CmdSetRef.Margin = New Padding(1)
+        CmdSetRef.ForeColor = SystemColors.ActiveCaptionText
+        CmdSetRef.Location = New Point(587, 81)
+        CmdSetRef.Margin = New Padding(1, 1, 15, 1)
         CmdSetRef.Name = "CmdSetRef"
-        CmdSetRef.Size = New Size(107, 23)
+        CmdSetRef.Size = New Size(114, 28)
         CmdSetRef.TabIndex = 23
         CmdSetRef.Text = "Set Ref"
         CmdSetRef.UseVisualStyleBackColor = True
@@ -781,10 +812,11 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdMeasureExtremes, 2)
         CmdMeasureExtremes.Dock = DockStyle.Fill
-        CmdMeasureExtremes.Location = New Point(470, 46)
-        CmdMeasureExtremes.Margin = New Padding(1)
+        CmdMeasureExtremes.ForeColor = SystemColors.ActiveCaptionText
+        CmdMeasureExtremes.Location = New Point(587, 51)
+        CmdMeasureExtremes.Margin = New Padding(1, 1, 15, 1)
         CmdMeasureExtremes.Name = "CmdMeasureExtremes"
-        CmdMeasureExtremes.Size = New Size(107, 23)
+        CmdMeasureExtremes.Size = New Size(114, 28)
         CmdMeasureExtremes.TabIndex = 22
         CmdMeasureExtremes.Text = "Measure Extreme Radii"
         CmdMeasureExtremes.UseVisualStyleBackColor = True
@@ -793,10 +825,11 @@ Partial Class FrmMeasurements
         ' 
         tLayoutMeasurementPanel.SetColumnSpan(CmdGetRef, 2)
         CmdGetRef.Dock = DockStyle.Fill
-        CmdGetRef.Location = New Point(470, 96)
-        CmdGetRef.Margin = New Padding(1)
+        CmdGetRef.ForeColor = SystemColors.ActiveCaptionText
+        CmdGetRef.Location = New Point(587, 111)
+        CmdGetRef.Margin = New Padding(1, 1, 15, 1)
         CmdGetRef.Name = "CmdGetRef"
-        CmdGetRef.Size = New Size(107, 23)
+        CmdGetRef.Size = New Size(114, 28)
         CmdGetRef.TabIndex = 24
         CmdGetRef.Text = "Get Ref"
         CmdGetRef.UseVisualStyleBackColor = True
@@ -808,34 +841,56 @@ Partial Class FrmMeasurements
         GridBladePitch.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
         GridBladePitch.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         GridBladePitch.Dock = DockStyle.Fill
-        GridBladePitch.Location = New Point(683, 20)
+        GridBladePitch.Location = New Point(806, 20)
         GridBladePitch.Margin = New Padding(0)
         GridBladePitch.Name = "GridBladePitch"
         GridBladePitch.RowHeadersVisible = False
-        GridBladePitch.Size = New Size(101, 139)
+        GridBladePitch.Size = New Size(125, 161)
         GridBladePitch.TabIndex = 22
         ' 
         ' GridBladebyRadius
         ' 
         GridBladebyRadius.AllowUserToAddRows = False
         GridBladebyRadius.AllowUserToDeleteRows = False
-        GridBladebyRadius.AllowUserToOrderColumns = True
+        GridBladebyRadius.AllowUserToResizeColumns = False
         GridBladebyRadius.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.ColumnHeader
+        GridBladebyRadius.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells
         DataGridViewCellStyle1.Alignment = DataGridViewContentAlignment.MiddleCenter
         DataGridViewCellStyle1.BackColor = SystemColors.Control
-        DataGridViewCellStyle1.Font = New Font("Segoe UI", 11F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
+        DataGridViewCellStyle1.Font = New Font("Segoe UI", 15F)
         DataGridViewCellStyle1.ForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle1.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle1.SelectionForeColor = SystemColors.WindowText
         DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
         GridBladebyRadius.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         GridBladebyRadius.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Window
+        DataGridViewCellStyle2.Font = New Font("Segoe UI", 15F)
+        DataGridViewCellStyle2.ForeColor = SystemColors.ActiveCaptionText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.WindowText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
+        GridBladebyRadius.DefaultCellStyle = DataGridViewCellStyle2
         GridBladebyRadius.Dock = DockStyle.Fill
+        GridBladebyRadius.EditMode = DataGridViewEditMode.EditProgrammatically
         GridBladebyRadius.Location = New Point(0, 20)
         GridBladebyRadius.Margin = New Padding(0)
         GridBladebyRadius.Name = "GridBladebyRadius"
+        GridBladebyRadius.ReadOnly = True
+        GridBladebyRadius.RowHeadersBorderStyle = DataGridViewHeaderBorderStyle.None
+        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle3.BackColor = SystemColors.Control
+        DataGridViewCellStyle3.Font = New Font("Segoe UI", 15F)
+        DataGridViewCellStyle3.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle3.SelectionForeColor = SystemColors.WindowText
+        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.True
+        GridBladebyRadius.RowHeadersDefaultCellStyle = DataGridViewCellStyle3
         GridBladebyRadius.RowHeadersVisible = False
-        GridBladebyRadius.Size = New Size(683, 139)
+        GridBladebyRadius.RowHeadersWidthSizeMode = DataGridViewRowHeadersWidthSizeMode.DisableResizing
+        GridBladebyRadius.SelectionMode = DataGridViewSelectionMode.CellSelect
+        GridBladebyRadius.Size = New Size(806, 161)
         GridBladebyRadius.TabIndex = 0
         ' 
         ' PictureBoxLogo
@@ -847,7 +902,7 @@ Partial Class FrmMeasurements
         PictureBoxLogo.Margin = New Padding(0)
         PictureBoxLogo.Name = "PictureBoxLogo"
         TLayoutMeasurement.SetRowSpan(PictureBoxLogo, 2)
-        PictureBoxLogo.Size = New Size(212, 113)
+        PictureBoxLogo.Size = New Size(240, 150)
         PictureBoxLogo.SizeMode = PictureBoxSizeMode.Zoom
         PictureBoxLogo.TabIndex = 9
         PictureBoxLogo.TabStop = False
@@ -858,10 +913,10 @@ Partial Class FrmMeasurements
         TLayoutMeasurement.SetColumnSpan(PanelTrack, 4)
         PanelTrack.Controls.Add(tLayoutTrack)
         PanelTrack.Dock = DockStyle.Fill
-        PanelTrack.Location = New Point(10, 437)
-        PanelTrack.Margin = New Padding(10, 0, 0, 0)
+        PanelTrack.Location = New Point(25, 520)
+        PanelTrack.Margin = New Padding(25, 0, 0, 0)
         PanelTrack.Name = "PanelTrack"
-        PanelTrack.Size = New Size(784, 162)
+        PanelTrack.Size = New Size(935, 185)
         PanelTrack.TabIndex = 10
         ' 
         ' tLayoutTrack
@@ -895,17 +950,17 @@ Partial Class FrmMeasurements
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutTrack.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
-        tLayoutTrack.Size = New Size(780, 158)
+        tLayoutTrack.Size = New Size(931, 181)
         tLayoutTrack.TabIndex = 0
         ' 
         ' LabRefBlade
         ' 
         LabRefBlade.AutoSize = True
         LabRefBlade.Dock = DockStyle.Bottom
-        LabRefBlade.Location = New Point(316, 20)
+        LabRefBlade.Location = New Point(376, 20)
         LabRefBlade.Margin = New Padding(4, 0, 4, 0)
         LabRefBlade.Name = "LabRefBlade"
-        LabRefBlade.Size = New Size(148, 17)
+        LabRefBlade.Size = New Size(178, 20)
         LabRefBlade.TabIndex = 2
         LabRefBlade.Text = "Reference Blade"
         ' 
@@ -913,20 +968,20 @@ Partial Class FrmMeasurements
         ' 
         ComboReferenceBlade.Dock = DockStyle.Top
         ComboReferenceBlade.FormattingEnabled = True
-        ComboReferenceBlade.Location = New Point(316, 37)
-        ComboReferenceBlade.Margin = New Padding(4, 0, 4, 0)
+        ComboReferenceBlade.Location = New Point(387, 40)
+        ComboReferenceBlade.Margin = New Padding(15, 0, 15, 0)
         ComboReferenceBlade.Name = "ComboReferenceBlade"
-        ComboReferenceBlade.Size = New Size(148, 28)
+        ComboReferenceBlade.Size = New Size(156, 31)
         ComboReferenceBlade.TabIndex = 3
         ' 
         ' LabRefPoint
         ' 
         LabRefPoint.AutoSize = True
         LabRefPoint.Dock = DockStyle.Bottom
-        LabRefPoint.Location = New Point(316, 54)
+        LabRefPoint.Location = New Point(376, 60)
         LabRefPoint.Margin = New Padding(4, 0, 4, 0)
         LabRefPoint.Name = "LabRefPoint"
-        LabRefPoint.Size = New Size(148, 17)
+        LabRefPoint.Size = New Size(178, 20)
         LabRefPoint.TabIndex = 4
         LabRefPoint.Text = "Reference Point"
         ' 
@@ -934,49 +989,52 @@ Partial Class FrmMeasurements
         ' 
         LabRefRadius.AutoSize = True
         LabRefRadius.Dock = DockStyle.Bottom
-        LabRefRadius.Location = New Point(316, 88)
+        LabRefRadius.Location = New Point(376, 100)
         LabRefRadius.Margin = New Padding(4, 0, 4, 0)
         LabRefRadius.Name = "LabRefRadius"
-        LabRefRadius.Size = New Size(148, 17)
+        LabRefRadius.Size = New Size(178, 20)
         LabRefRadius.TabIndex = 6
         LabRefRadius.Text = "Reference Radius"
         ' 
         ' ComboReferenceRadius
         ' 
+        ComboReferenceRadius.Dock = DockStyle.Top
         ComboReferenceRadius.FormattingEnabled = True
-        ComboReferenceRadius.Location = New Point(316, 105)
-        ComboReferenceRadius.Margin = New Padding(4, 0, 4, 0)
+        ComboReferenceRadius.Location = New Point(387, 120)
+        ComboReferenceRadius.Margin = New Padding(15, 0, 15, 0)
         ComboReferenceRadius.Name = "ComboReferenceRadius"
-        ComboReferenceRadius.Size = New Size(125, 28)
+        ComboReferenceRadius.Size = New Size(156, 31)
         ComboReferenceRadius.TabIndex = 7
         ' 
         ' LabRake
         ' 
         LabRake.AutoSize = True
         LabRake.Dock = DockStyle.Bottom
-        LabRake.Location = New Point(316, 122)
+        LabRake.Location = New Point(376, 140)
         LabRake.Margin = New Padding(4, 0, 4, 0)
         LabRake.Name = "LabRake"
-        LabRake.Size = New Size(148, 17)
+        LabRake.Size = New Size(178, 20)
         LabRake.TabIndex = 8
         LabRake.Text = "Rake"
         ' 
         ' ComboReferencePoint
         ' 
+        ComboReferencePoint.Dock = DockStyle.Top
         ComboReferencePoint.FormattingEnabled = True
         ComboReferencePoint.Items.AddRange(New Object() {"LE", "Mid", "TE"})
-        ComboReferencePoint.Location = New Point(316, 71)
-        ComboReferencePoint.Margin = New Padding(4, 0, 4, 0)
+        ComboReferencePoint.Location = New Point(387, 80)
+        ComboReferencePoint.Margin = New Padding(15, 0, 15, 0)
         ComboReferencePoint.Name = "ComboReferencePoint"
-        ComboReferencePoint.Size = New Size(125, 28)
+        ComboReferencePoint.Size = New Size(156, 31)
         ComboReferencePoint.TabIndex = 5
         ' 
         ' TxtRake
         ' 
-        TxtRake.Location = New Point(316, 139)
-        TxtRake.Margin = New Padding(4, 0, 4, 0)
+        TxtRake.Dock = DockStyle.Top
+        TxtRake.Location = New Point(387, 160)
+        TxtRake.Margin = New Padding(15, 0, 15, 0)
         TxtRake.Name = "TxtRake"
-        TxtRake.Size = New Size(125, 27)
+        TxtRake.Size = New Size(156, 31)
         TxtRake.TabIndex = 9
         ' 
         ' LabTrackPanel
@@ -985,10 +1043,11 @@ Partial Class FrmMeasurements
         tLayoutTrack.SetColumnSpan(LabTrackPanel, 3)
         LabTrackPanel.Dock = DockStyle.Top
         LabTrackPanel.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabTrackPanel.ForeColor = SystemColors.ActiveCaptionText
         LabTrackPanel.Location = New Point(0, 0)
         LabTrackPanel.Margin = New Padding(0)
         LabTrackPanel.Name = "LabTrackPanel"
-        LabTrackPanel.Size = New Size(780, 20)
+        LabTrackPanel.Size = New Size(931, 20)
         LabTrackPanel.TabIndex = 12
         LabTrackPanel.Text = "Track"
         ' 
@@ -1015,7 +1074,7 @@ Partial Class FrmMeasurements
         ChartBladeHeight1.ResizePoint = LibDisplayControls.DisplayControl.ResizePoints.None
         tLayoutTrack.SetRowSpan(ChartBladeHeight1, 8)
         ChartBladeHeight1.Selected = False
-        ChartBladeHeight1.Size = New Size(306, 132)
+        ChartBladeHeight1.Size = New Size(366, 155)
         ChartBladeHeight1.TabIndex = 13
         ' 
         ' ChartAngularPosition1
@@ -1030,7 +1089,7 @@ Partial Class FrmMeasurements
         ChartAngularPosition1.IsSizeable = False
         ChartAngularPosition1.LastPosition = New Point(0, 0)
         ChartAngularPosition1.LastSize = New Size(0, 0)
-        ChartAngularPosition1.Location = New Point(471, 23)
+        ChartAngularPosition1.Location = New Point(561, 23)
         ChartAngularPosition1.MaxSize = New Size(0, 0)
         ChartAngularPosition1.MinSize = New Size(0, 0)
         ChartAngularPosition1.Name = "ChartAngularPosition1"
@@ -1041,7 +1100,7 @@ Partial Class FrmMeasurements
         ChartAngularPosition1.ResizePoint = LibDisplayControls.DisplayControl.ResizePoints.None
         tLayoutTrack.SetRowSpan(ChartAngularPosition1, 8)
         ChartAngularPosition1.Selected = False
-        ChartAngularPosition1.Size = New Size(306, 132)
+        ChartAngularPosition1.Size = New Size(367, 155)
         ChartAngularPosition1.TabIndex = 14
         ' 
         ' PanelPlot
@@ -1049,17 +1108,17 @@ Partial Class FrmMeasurements
         PanelPlot.BorderStyle = BorderStyle.Fixed3D
         PanelPlot.Controls.Add(tLayoutPlotPanel)
         PanelPlot.Dock = DockStyle.Fill
-        PanelPlot.Location = New Point(5, 0)
-        PanelPlot.Margin = New Padding(5, 0, 15, 0)
+        PanelPlot.Location = New Point(0, 0)
+        PanelPlot.Margin = New Padding(0, 0, 25, 0)
         PanelPlot.Name = "PanelPlot"
-        PanelPlot.Size = New Size(370, 243)
+        PanelPlot.Size = New Size(458, 277)
         PanelPlot.TabIndex = 11
         ' 
         ' tLayoutPlotPanel
         ' 
         tLayoutPlotPanel.ColumnCount = 2
-        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 100F))
-        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 25F))
+        tLayoutPlotPanel.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 75F))
         tLayoutPlotPanel.Controls.Add(LabPlot, 0, 0)
         tLayoutPlotPanel.Controls.Add(chartPlot, 1, 1)
         tLayoutPlotPanel.Controls.Add(LabTolerance, 0, 3)
@@ -1069,23 +1128,20 @@ Partial Class FrmMeasurements
         tLayoutPlotPanel.Controls.Add(ChkPlotAngularDeviation, 0, 7)
         tLayoutPlotPanel.Controls.Add(ComboPitchBasis, 0, 2)
         tLayoutPlotPanel.Controls.Add(LabPitchBasis, 0, 1)
-        tLayoutPlotPanel.Controls.Add(ComboPlotReferenceBlade, 0, 10)
         tLayoutPlotPanel.Dock = DockStyle.Fill
         tLayoutPlotPanel.Location = New Point(0, 0)
         tLayoutPlotPanel.Name = "tLayoutPlotPanel"
-        tLayoutPlotPanel.RowCount = 11
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 15F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Percent, 14.2857141F))
+        tLayoutPlotPanel.RowCount = 9
         tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
-        tLayoutPlotPanel.Size = New Size(366, 239)
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 40F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 50F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 40F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 50F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 40F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 50F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle(SizeType.Absolute, 60F))
+        tLayoutPlotPanel.RowStyles.Add(New RowStyle())
+        tLayoutPlotPanel.Size = New Size(454, 273)
         tLayoutPlotPanel.TabIndex = 1
         ' 
         ' LabPlot
@@ -1094,27 +1150,42 @@ Partial Class FrmMeasurements
         tLayoutPlotPanel.SetColumnSpan(LabPlot, 2)
         LabPlot.Dock = DockStyle.Fill
         LabPlot.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabPlot.ForeColor = SystemColors.ActiveCaptionText
         LabPlot.Location = New Point(0, 0)
         LabPlot.Margin = New Padding(0)
         LabPlot.Name = "LabPlot"
-        LabPlot.Size = New Size(366, 15)
+        LabPlot.Size = New Size(454, 20)
         LabPlot.TabIndex = 15
-        LabPlot.Text = "Measurements"
+        LabPlot.Text = "Plot"
         ' 
         ' chartPlot
         ' 
+        chartPlot.BackColor = Color.Transparent
+        chartPlot.BackgroundImageLayout = ImageLayout.Stretch
+        chartPlot.BorderlineColor = Color.Transparent
+        ChartArea1.BackColor = Color.Transparent
+        ChartArea1.BackImageTransparentColor = Color.Transparent
+        ChartArea1.BackImageWrapMode = DataVisualization.Charting.ChartImageWrapMode.Scaled
+        ChartArea1.BackSecondaryColor = Color.Transparent
+        ChartArea1.InnerPlotPosition.Auto = False
+        ChartArea1.InnerPlotPosition.Height = 100F
+        ChartArea1.InnerPlotPosition.Width = 100F
         ChartArea1.Name = "ChartArea1"
+        ChartArea1.Position.Auto = False
+        ChartArea1.Position.Height = 100F
+        ChartArea1.Position.Width = 100F
         chartPlot.ChartAreas.Add(ChartArea1)
         chartPlot.Dock = DockStyle.Fill
-        chartPlot.Location = New Point(103, 18)
+        chartPlot.Location = New Point(113, 23)
+        chartPlot.Margin = New Padding(0, 3, 0, 3)
         chartPlot.Name = "chartPlot"
-        tLayoutPlotPanel.SetRowSpan(chartPlot, 10)
+        tLayoutPlotPanel.SetRowSpan(chartPlot, 8)
         Series1.ChartArea = "ChartArea1"
         Series1.ChartType = DataVisualization.Charting.SeriesChartType.Radar
         Series1.IsVisibleInLegend = False
         Series1.Name = "Series1"
         chartPlot.Series.Add(Series1)
-        chartPlot.Size = New Size(260, 218)
+        chartPlot.Size = New Size(341, 324)
         chartPlot.TabIndex = 0
         chartPlot.Text = "ChartPlot"
         ' 
@@ -1122,9 +1193,9 @@ Partial Class FrmMeasurements
         ' 
         LabTolerance.AutoSize = True
         LabTolerance.Dock = DockStyle.Bottom
-        LabTolerance.Location = New Point(3, 64)
+        LabTolerance.Location = New Point(3, 125)
         LabTolerance.Name = "LabTolerance"
-        LabTolerance.Size = New Size(94, 20)
+        LabTolerance.Size = New Size(107, 25)
         LabTolerance.TabIndex = 17
         LabTolerance.Text = "Tolerance"
         ' 
@@ -1132,68 +1203,63 @@ Partial Class FrmMeasurements
         ' 
         ComboTolerance.Dock = DockStyle.Top
         ComboTolerance.FormattingEnabled = True
-        ComboTolerance.Location = New Point(3, 87)
+        ComboTolerance.Location = New Point(3, 153)
         ComboTolerance.Name = "ComboTolerance"
-        ComboTolerance.Size = New Size(94, 28)
+        ComboTolerance.Size = New Size(107, 31)
         ComboTolerance.TabIndex = 18
         ' 
         ' LabBasis
         ' 
         LabBasis.AutoSize = True
         LabBasis.Dock = DockStyle.Bottom
-        LabBasis.Location = New Point(3, 110)
+        LabBasis.Location = New Point(3, 215)
         LabBasis.Name = "LabBasis"
-        LabBasis.Size = New Size(94, 20)
+        LabBasis.Size = New Size(107, 25)
         LabBasis.TabIndex = 19
         LabBasis.Text = "Basis"
         ' 
         ' TxtBasis
         ' 
         TxtBasis.Dock = DockStyle.Top
-        TxtBasis.Location = New Point(3, 133)
+        TxtBasis.Location = New Point(3, 243)
         TxtBasis.Name = "TxtBasis"
-        TxtBasis.Size = New Size(94, 27)
+        TxtBasis.Size = New Size(107, 31)
         TxtBasis.TabIndex = 20
         ' 
         ' ChkPlotAngularDeviation
         ' 
         ChkPlotAngularDeviation.AutoSize = True
-        ChkPlotAngularDeviation.Dock = DockStyle.Fill
-        ChkPlotAngularDeviation.Location = New Point(15, 156)
+        ChkPlotAngularDeviation.Checked = True
+        ChkPlotAngularDeviation.CheckState = CheckState.Checked
+        ChkPlotAngularDeviation.Dock = DockStyle.Top
+        ChkPlotAngularDeviation.Location = New Point(15, 293)
         ChkPlotAngularDeviation.Margin = New Padding(15, 3, 3, 3)
         ChkPlotAngularDeviation.Name = "ChkPlotAngularDeviation"
         tLayoutPlotPanel.SetRowSpan(ChkPlotAngularDeviation, 2)
-        ChkPlotAngularDeviation.Size = New Size(82, 37)
+        ChkPlotAngularDeviation.Size = New Size(95, 54)
         ChkPlotAngularDeviation.TabIndex = 21
-        ChkPlotAngularDeviation.Text = "Angular Deviation"
+        ChkPlotAngularDeviation.Text = "Angular " & vbCrLf & "Deviation"
         ChkPlotAngularDeviation.UseVisualStyleBackColor = True
         ' 
         ' ComboPitchBasis
         ' 
         ComboPitchBasis.Dock = DockStyle.Top
         ComboPitchBasis.FormattingEnabled = True
-        ComboPitchBasis.Location = New Point(3, 41)
+        ComboPitchBasis.Location = New Point(3, 63)
         ComboPitchBasis.Name = "ComboPitchBasis"
-        ComboPitchBasis.Size = New Size(94, 28)
+        ComboPitchBasis.Size = New Size(107, 31)
         ComboPitchBasis.TabIndex = 16
+        ComboPitchBasis.Text = "Mean"
         ' 
         ' LabPitchBasis
         ' 
         LabPitchBasis.AutoSize = True
         LabPitchBasis.Dock = DockStyle.Bottom
-        LabPitchBasis.Location = New Point(3, 18)
+        LabPitchBasis.Location = New Point(3, 35)
         LabPitchBasis.Name = "LabPitchBasis"
-        LabPitchBasis.Size = New Size(94, 20)
+        LabPitchBasis.Size = New Size(107, 25)
         LabPitchBasis.TabIndex = 22
         LabPitchBasis.Text = "Pitch Basis"
-        ' 
-        ' ComboPlotReferenceBlade
-        ' 
-        ComboPlotReferenceBlade.FormattingEnabled = True
-        ComboPlotReferenceBlade.Location = New Point(3, 219)
-        ComboPlotReferenceBlade.Name = "ComboPlotReferenceBlade"
-        ComboPlotReferenceBlade.Size = New Size(94, 28)
-        ComboPlotReferenceBlade.TabIndex = 23
         ' 
         ' LabPanelPlot
         ' 
@@ -1209,12 +1275,13 @@ Partial Class FrmMeasurements
         ' 
         ' PanelLocalPitchDetails
         ' 
+        PanelLocalPitchDetails.BorderStyle = BorderStyle.Fixed3D
         PanelLocalPitchDetails.Controls.Add(tLayoutLocalPitchDetails)
         PanelLocalPitchDetails.Dock = DockStyle.Fill
-        PanelLocalPitchDetails.Location = New Point(5, 243)
-        PanelLocalPitchDetails.Margin = New Padding(5, 0, 15, 0)
+        PanelLocalPitchDetails.Location = New Point(0, 277)
+        PanelLocalPitchDetails.Margin = New Padding(0, 0, 25, 0)
         PanelLocalPitchDetails.Name = "PanelLocalPitchDetails"
-        PanelLocalPitchDetails.Size = New Size(370, 243)
+        PanelLocalPitchDetails.Size = New Size(458, 278)
         PanelLocalPitchDetails.TabIndex = 22
         ' 
         ' tLayoutLocalPitchDetails
@@ -1260,7 +1327,7 @@ Partial Class FrmMeasurements
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
         tLayoutLocalPitchDetails.RowStyles.Add(New RowStyle(SizeType.Percent, 12.5F))
-        tLayoutLocalPitchDetails.Size = New Size(370, 243)
+        tLayoutLocalPitchDetails.Size = New Size(454, 274)
         tLayoutLocalPitchDetails.TabIndex = 0
         ' 
         ' LabLocalPitchDetails
@@ -1269,10 +1336,11 @@ Partial Class FrmMeasurements
         tLayoutLocalPitchDetails.SetColumnSpan(LabLocalPitchDetails, 7)
         LabLocalPitchDetails.Dock = DockStyle.Fill
         LabLocalPitchDetails.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabLocalPitchDetails.ForeColor = SystemColors.ActiveCaptionText
         LabLocalPitchDetails.Location = New Point(0, 0)
         LabLocalPitchDetails.Margin = New Padding(0)
         LabLocalPitchDetails.Name = "LabLocalPitchDetails"
-        LabLocalPitchDetails.Size = New Size(370, 20)
+        LabLocalPitchDetails.Size = New Size(454, 20)
         LabLocalPitchDetails.TabIndex = 18
         LabLocalPitchDetails.Text = "ISO 484/Custom Tolerances"
         ' 
@@ -1284,7 +1352,7 @@ Partial Class FrmMeasurements
         LabPrintPitch.Location = New Point(4, 20)
         LabPrintPitch.Margin = New Padding(4, 0, 4, 0)
         LabPrintPitch.Name = "LabPrintPitch"
-        LabPrintPitch.Size = New Size(148, 27)
+        LabPrintPitch.Size = New Size(184, 31)
         LabPrintPitch.TabIndex = 0
         LabPrintPitch.Text = "Print Pitch Details"
         LabPrintPitch.TextAlign = ContentAlignment.BottomCenter
@@ -1292,10 +1360,11 @@ Partial Class FrmMeasurements
         ' CmdPrintClassS
         ' 
         CmdPrintClassS.Dock = DockStyle.Fill
-        CmdPrintClassS.Location = New Point(1, 48)
+        CmdPrintClassS.ForeColor = SystemColors.ActiveCaptionText
+        CmdPrintClassS.Location = New Point(1, 52)
         CmdPrintClassS.Margin = New Padding(1)
         CmdPrintClassS.Name = "CmdPrintClassS"
-        CmdPrintClassS.Size = New Size(50, 25)
+        CmdPrintClassS.Size = New Size(62, 29)
         CmdPrintClassS.TabIndex = 1
         CmdPrintClassS.Text = "S"
         CmdPrintClassS.UseVisualStyleBackColor = True
@@ -1303,10 +1372,11 @@ Partial Class FrmMeasurements
         ' CmdPrintClassI
         ' 
         CmdPrintClassI.Dock = DockStyle.Fill
-        CmdPrintClassI.Location = New Point(53, 48)
+        CmdPrintClassI.ForeColor = SystemColors.ActiveCaptionText
+        CmdPrintClassI.Location = New Point(65, 52)
         CmdPrintClassI.Margin = New Padding(1)
         CmdPrintClassI.Name = "CmdPrintClassI"
-        CmdPrintClassI.Size = New Size(50, 25)
+        CmdPrintClassI.Size = New Size(62, 29)
         CmdPrintClassI.TabIndex = 2
         CmdPrintClassI.Text = "I"
         CmdPrintClassI.UseVisualStyleBackColor = True
@@ -1314,10 +1384,11 @@ Partial Class FrmMeasurements
         ' CmdPrintClassII
         ' 
         CmdPrintClassII.Dock = DockStyle.Fill
-        CmdPrintClassII.Location = New Point(105, 48)
+        CmdPrintClassII.ForeColor = SystemColors.ActiveCaptionText
+        CmdPrintClassII.Location = New Point(129, 52)
         CmdPrintClassII.Margin = New Padding(1)
         CmdPrintClassII.Name = "CmdPrintClassII"
-        CmdPrintClassII.Size = New Size(50, 25)
+        CmdPrintClassII.Size = New Size(62, 29)
         CmdPrintClassII.TabIndex = 3
         CmdPrintClassII.Text = "II"
         CmdPrintClassII.UseVisualStyleBackColor = True
@@ -1325,10 +1396,11 @@ Partial Class FrmMeasurements
         ' CmdPrintClassIII
         ' 
         CmdPrintClassIII.Dock = DockStyle.Fill
-        CmdPrintClassIII.Location = New Point(157, 48)
+        CmdPrintClassIII.ForeColor = SystemColors.ActiveCaptionText
+        CmdPrintClassIII.Location = New Point(193, 52)
         CmdPrintClassIII.Margin = New Padding(1)
         CmdPrintClassIII.Name = "CmdPrintClassIII"
-        CmdPrintClassIII.Size = New Size(50, 25)
+        CmdPrintClassIII.Size = New Size(62, 29)
         CmdPrintClassIII.TabIndex = 4
         CmdPrintClassIII.Text = "III"
         CmdPrintClassIII.UseVisualStyleBackColor = True
@@ -1336,10 +1408,11 @@ Partial Class FrmMeasurements
         ' CmdPrintClassCustom
         ' 
         CmdPrintClassCustom.Dock = DockStyle.Fill
-        CmdPrintClassCustom.Location = New Point(209, 48)
+        CmdPrintClassCustom.ForeColor = SystemColors.ActiveCaptionText
+        CmdPrintClassCustom.Location = New Point(257, 52)
         CmdPrintClassCustom.Margin = New Padding(1)
         CmdPrintClassCustom.Name = "CmdPrintClassCustom"
-        CmdPrintClassCustom.Size = New Size(50, 25)
+        CmdPrintClassCustom.Size = New Size(62, 29)
         CmdPrintClassCustom.TabIndex = 5
         CmdPrintClassCustom.Text = "Cust"
         CmdPrintClassCustom.UseVisualStyleBackColor = True
@@ -1349,10 +1422,10 @@ Partial Class FrmMeasurements
         ChkAllowProgPitch.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkAllowProgPitch, 2)
         ChkAllowProgPitch.Dock = DockStyle.Fill
-        ChkAllowProgPitch.Location = New Point(160, 24)
+        ChkAllowProgPitch.Location = New Point(196, 24)
         ChkAllowProgPitch.Margin = New Padding(4)
         ChkAllowProgPitch.Name = "ChkAllowProgPitch"
-        ChkAllowProgPitch.Size = New Size(96, 19)
+        ChkAllowProgPitch.Size = New Size(120, 23)
         ChkAllowProgPitch.TabIndex = 6
         ChkAllowProgPitch.Text = "App"
         ChkAllowProgPitch.UseVisualStyleBackColor = True
@@ -1362,10 +1435,10 @@ Partial Class FrmMeasurements
         ChkMinimumsApply.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMinimumsApply, 2)
         ChkMinimumsApply.Dock = DockStyle.Fill
-        ChkMinimumsApply.Location = New Point(264, 24)
+        ChkMinimumsApply.Location = New Point(324, 24)
         ChkMinimumsApply.Margin = New Padding(4)
         ChkMinimumsApply.Name = "ChkMinimumsApply"
-        ChkMinimumsApply.Size = New Size(102, 19)
+        ChkMinimumsApply.Size = New Size(126, 23)
         ChkMinimumsApply.TabIndex = 7
         ChkMinimumsApply.Text = "Minimums Apply"
         ChkMinimumsApply.UseVisualStyleBackColor = True
@@ -1375,10 +1448,10 @@ Partial Class FrmMeasurements
         ChkDisplayOnly.AutoSize = True
         tLayoutLocalPitchDetails.SetColumnSpan(ChkDisplayOnly, 2)
         ChkDisplayOnly.Dock = DockStyle.Fill
-        ChkDisplayOnly.Location = New Point(264, 51)
+        ChkDisplayOnly.Location = New Point(324, 55)
         ChkDisplayOnly.Margin = New Padding(4)
         ChkDisplayOnly.Name = "ChkDisplayOnly"
-        ChkDisplayOnly.Size = New Size(102, 19)
+        ChkDisplayOnly.Size = New Size(126, 23)
         ChkDisplayOnly.TabIndex = 8
         ChkDisplayOnly.Text = "Display Only"
         ChkDisplayOnly.UseVisualStyleBackColor = True
@@ -1386,12 +1459,14 @@ Partial Class FrmMeasurements
         ' ChkAxialPosition
         ' 
         ChkAxialPosition.AutoSize = True
+        ChkAxialPosition.Checked = True
+        ChkAxialPosition.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkAxialPosition, 3)
         ChkAxialPosition.Dock = DockStyle.Fill
-        ChkAxialPosition.Location = New Point(12, 213)
+        ChkAxialPosition.Location = New Point(12, 241)
         ChkAxialPosition.Margin = New Padding(12, 4, 4, 4)
         ChkAxialPosition.Name = "ChkAxialPosition"
-        ChkAxialPosition.Size = New Size(140, 26)
+        ChkAxialPosition.Size = New Size(176, 29)
         ChkAxialPosition.TabIndex = 14
         ChkAxialPosition.Text = "Relative Axial Position of consecutive blades"
         ChkAxialPosition.UseVisualStyleBackColor = True
@@ -1399,12 +1474,14 @@ Partial Class FrmMeasurements
         ' ChkAngularDeviation
         ' 
         ChkAngularDeviation.AutoSize = True
+        ChkAngularDeviation.Checked = True
+        ChkAngularDeviation.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkAngularDeviation, 3)
         ChkAngularDeviation.Dock = DockStyle.Fill
-        ChkAngularDeviation.Location = New Point(12, 186)
+        ChkAngularDeviation.Location = New Point(12, 210)
         ChkAngularDeviation.Margin = New Padding(12, 4, 4, 4)
         ChkAngularDeviation.Name = "ChkAngularDeviation"
-        ChkAngularDeviation.Size = New Size(140, 19)
+        ChkAngularDeviation.Size = New Size(176, 23)
         ChkAngularDeviation.TabIndex = 13
         ChkAngularDeviation.Text = "Angular Deviation between consecutive blades"
         ChkAngularDeviation.UseVisualStyleBackColor = True
@@ -1412,12 +1489,14 @@ Partial Class FrmMeasurements
         ' ChkMeanPitchPropeller
         ' 
         ChkMeanPitchPropeller.AutoSize = True
+        ChkMeanPitchPropeller.Checked = True
+        ChkMeanPitchPropeller.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchPropeller, 3)
         ChkMeanPitchPropeller.Dock = DockStyle.Fill
-        ChkMeanPitchPropeller.Location = New Point(12, 159)
+        ChkMeanPitchPropeller.Location = New Point(12, 179)
         ChkMeanPitchPropeller.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchPropeller.Name = "ChkMeanPitchPropeller"
-        ChkMeanPitchPropeller.Size = New Size(140, 19)
+        ChkMeanPitchPropeller.Size = New Size(176, 23)
         ChkMeanPitchPropeller.TabIndex = 12
         ChkMeanPitchPropeller.Text = "Mean Pitch of Propeller"
         ChkMeanPitchPropeller.UseVisualStyleBackColor = True
@@ -1425,12 +1504,14 @@ Partial Class FrmMeasurements
         ' ChkMeanPitchBlade
         ' 
         ChkMeanPitchBlade.AutoSize = True
+        ChkMeanPitchBlade.Checked = True
+        ChkMeanPitchBlade.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchBlade, 3)
         ChkMeanPitchBlade.Dock = DockStyle.Fill
-        ChkMeanPitchBlade.Location = New Point(12, 132)
+        ChkMeanPitchBlade.Location = New Point(12, 148)
         ChkMeanPitchBlade.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchBlade.Name = "ChkMeanPitchBlade"
-        ChkMeanPitchBlade.Size = New Size(140, 19)
+        ChkMeanPitchBlade.Size = New Size(176, 23)
         ChkMeanPitchBlade.TabIndex = 11
         ChkMeanPitchBlade.Text = "Mean Pitch of Blades"
         ChkMeanPitchBlade.UseVisualStyleBackColor = True
@@ -1438,12 +1519,14 @@ Partial Class FrmMeasurements
         ' ChkMeanPitchRadius
         ' 
         ChkMeanPitchRadius.AutoSize = True
+        ChkMeanPitchRadius.Checked = True
+        ChkMeanPitchRadius.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkMeanPitchRadius, 3)
         ChkMeanPitchRadius.Dock = DockStyle.Fill
-        ChkMeanPitchRadius.Location = New Point(12, 105)
+        ChkMeanPitchRadius.Location = New Point(12, 117)
         ChkMeanPitchRadius.Margin = New Padding(12, 4, 4, 4)
         ChkMeanPitchRadius.Name = "ChkMeanPitchRadius"
-        ChkMeanPitchRadius.Size = New Size(140, 19)
+        ChkMeanPitchRadius.Size = New Size(176, 23)
         ChkMeanPitchRadius.TabIndex = 10
         ChkMeanPitchRadius.Text = "Mean Pitch of Radius"
         ChkMeanPitchRadius.UseVisualStyleBackColor = True
@@ -1451,12 +1534,14 @@ Partial Class FrmMeasurements
         ' ChkLocalPitch
         ' 
         ChkLocalPitch.AutoSize = True
+        ChkLocalPitch.Checked = True
+        ChkLocalPitch.CheckState = CheckState.Checked
         tLayoutLocalPitchDetails.SetColumnSpan(ChkLocalPitch, 3)
         ChkLocalPitch.Dock = DockStyle.Fill
-        ChkLocalPitch.Location = New Point(12, 78)
+        ChkLocalPitch.Location = New Point(12, 86)
         ChkLocalPitch.Margin = New Padding(12, 4, 4, 4)
         ChkLocalPitch.Name = "ChkLocalPitch"
-        ChkLocalPitch.Size = New Size(140, 19)
+        ChkLocalPitch.Size = New Size(176, 23)
         ChkLocalPitch.TabIndex = 9
         ChkLocalPitch.Text = "Local Pitch"
         ChkLocalPitch.UseVisualStyleBackColor = True
@@ -1500,7 +1585,7 @@ Partial Class FrmMeasurements
         tLayoutLPLabels.Controls.Add(LabTolLPI, 1, 0)
         tLayoutLPLabels.Controls.Add(LabTolLPS, 0, 0)
         tLayoutLPLabels.Dock = DockStyle.Fill
-        tLayoutLPLabels.Location = New Point(156, 74)
+        tLayoutLPLabels.Location = New Point(192, 82)
         tLayoutLPLabels.Margin = New Padding(0)
         tLayoutLPLabels.Name = "tLayoutLPLabels"
         tLayoutLPLabels.RowCount = 6
@@ -1511,17 +1596,17 @@ Partial Class FrmMeasurements
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
         tLayoutLPLabels.RowStyles.Add(New RowStyle(SizeType.Percent, 16.666666F))
-        tLayoutLPLabels.Size = New Size(104, 169)
+        tLayoutLPLabels.Size = New Size(128, 192)
         tLayoutLPLabels.TabIndex = 15
         ' 
         ' LabTolAPC
         ' 
         LabTolAPC.AutoSize = True
         LabTolAPC.Dock = DockStyle.Fill
-        LabTolAPC.Location = New Point(84, 140)
+        LabTolAPC.Location = New Point(104, 160)
         LabTolAPC.Margin = New Padding(4, 0, 4, 0)
         LabTolAPC.Name = "LabTolAPC"
-        LabTolAPC.Size = New Size(16, 29)
+        LabTolAPC.Size = New Size(20, 32)
         LabTolAPC.TabIndex = 29
         LabTolAPC.Text = "C"
         LabTolAPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1530,10 +1615,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolAPIII.AutoSize = True
         LabTolAPIII.Dock = DockStyle.Fill
-        LabTolAPIII.Location = New Point(64, 140)
+        LabTolAPIII.Location = New Point(79, 160)
         LabTolAPIII.Margin = New Padding(4, 0, 4, 0)
         LabTolAPIII.Name = "LabTolAPIII"
-        LabTolAPIII.Size = New Size(12, 29)
+        LabTolAPIII.Size = New Size(17, 32)
         LabTolAPIII.TabIndex = 28
         LabTolAPIII.Text = "III"
         LabTolAPIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1542,10 +1627,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolAPII.AutoSize = True
         LabTolAPII.Dock = DockStyle.Fill
-        LabTolAPII.Location = New Point(44, 140)
+        LabTolAPII.Location = New Point(54, 160)
         LabTolAPII.Margin = New Padding(4, 0, 4, 0)
         LabTolAPII.Name = "LabTolAPII"
-        LabTolAPII.Size = New Size(12, 29)
+        LabTolAPII.Size = New Size(17, 32)
         LabTolAPII.TabIndex = 27
         LabTolAPII.Text = "II"
         LabTolAPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1554,10 +1639,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolAPI.AutoSize = True
         LabTolAPI.Dock = DockStyle.Fill
-        LabTolAPI.Location = New Point(24, 140)
+        LabTolAPI.Location = New Point(29, 160)
         LabTolAPI.Margin = New Padding(4, 0, 4, 0)
         LabTolAPI.Name = "LabTolAPI"
-        LabTolAPI.Size = New Size(12, 29)
+        LabTolAPI.Size = New Size(17, 32)
         LabTolAPI.TabIndex = 26
         LabTolAPI.Text = "I"
         LabTolAPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1566,10 +1651,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolAPS.AutoSize = True
         LabTolAPS.Dock = DockStyle.Fill
-        LabTolAPS.Location = New Point(4, 140)
+        LabTolAPS.Location = New Point(4, 160)
         LabTolAPS.Margin = New Padding(4, 0, 4, 0)
         LabTolAPS.Name = "LabTolAPS"
-        LabTolAPS.Size = New Size(12, 29)
+        LabTolAPS.Size = New Size(17, 32)
         LabTolAPS.TabIndex = 25
         LabTolAPS.Text = "S"
         LabTolAPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1578,10 +1663,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolADC.AutoSize = True
         LabTolADC.Dock = DockStyle.Fill
-        LabTolADC.Location = New Point(84, 112)
+        LabTolADC.Location = New Point(104, 128)
         LabTolADC.Margin = New Padding(4, 0, 4, 0)
         LabTolADC.Name = "LabTolADC"
-        LabTolADC.Size = New Size(16, 28)
+        LabTolADC.Size = New Size(20, 32)
         LabTolADC.TabIndex = 24
         LabTolADC.Text = "C"
         LabTolADC.TextAlign = ContentAlignment.MiddleCenter
@@ -1590,10 +1675,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolADIII.AutoSize = True
         LabTolADIII.Dock = DockStyle.Fill
-        LabTolADIII.Location = New Point(64, 112)
+        LabTolADIII.Location = New Point(79, 128)
         LabTolADIII.Margin = New Padding(4, 0, 4, 0)
         LabTolADIII.Name = "LabTolADIII"
-        LabTolADIII.Size = New Size(12, 28)
+        LabTolADIII.Size = New Size(17, 32)
         LabTolADIII.TabIndex = 23
         LabTolADIII.Text = "III"
         LabTolADIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1602,10 +1687,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolADII.AutoSize = True
         LabTolADII.Dock = DockStyle.Fill
-        LabTolADII.Location = New Point(44, 112)
+        LabTolADII.Location = New Point(54, 128)
         LabTolADII.Margin = New Padding(4, 0, 4, 0)
         LabTolADII.Name = "LabTolADII"
-        LabTolADII.Size = New Size(12, 28)
+        LabTolADII.Size = New Size(17, 32)
         LabTolADII.TabIndex = 22
         LabTolADII.Text = "II"
         LabTolADII.TextAlign = ContentAlignment.MiddleCenter
@@ -1614,10 +1699,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolADI.AutoSize = True
         LabTolADI.Dock = DockStyle.Fill
-        LabTolADI.Location = New Point(24, 112)
+        LabTolADI.Location = New Point(29, 128)
         LabTolADI.Margin = New Padding(4, 0, 4, 0)
         LabTolADI.Name = "LabTolADI"
-        LabTolADI.Size = New Size(12, 28)
+        LabTolADI.Size = New Size(17, 32)
         LabTolADI.TabIndex = 21
         LabTolADI.Text = "I"
         LabTolADI.TextAlign = ContentAlignment.MiddleCenter
@@ -1626,10 +1711,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolADS.AutoSize = True
         LabTolADS.Dock = DockStyle.Fill
-        LabTolADS.Location = New Point(4, 112)
+        LabTolADS.Location = New Point(4, 128)
         LabTolADS.Margin = New Padding(4, 0, 4, 0)
         LabTolADS.Name = "LabTolADS"
-        LabTolADS.Size = New Size(12, 28)
+        LabTolADS.Size = New Size(17, 32)
         LabTolADS.TabIndex = 20
         LabTolADS.Text = "S"
         LabTolADS.TextAlign = ContentAlignment.MiddleCenter
@@ -1638,10 +1723,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPPC.AutoSize = True
         LabTolMPPC.Dock = DockStyle.Fill
-        LabTolMPPC.Location = New Point(84, 84)
+        LabTolMPPC.Location = New Point(104, 96)
         LabTolMPPC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPC.Name = "LabTolMPPC"
-        LabTolMPPC.Size = New Size(16, 28)
+        LabTolMPPC.Size = New Size(20, 32)
         LabTolMPPC.TabIndex = 19
         LabTolMPPC.Text = "C"
         LabTolMPPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1650,10 +1735,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPPIII.AutoSize = True
         LabTolMPPIII.Dock = DockStyle.Fill
-        LabTolMPPIII.Location = New Point(64, 84)
+        LabTolMPPIII.Location = New Point(79, 96)
         LabTolMPPIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPIII.Name = "LabTolMPPIII"
-        LabTolMPPIII.Size = New Size(12, 28)
+        LabTolMPPIII.Size = New Size(17, 32)
         LabTolMPPIII.TabIndex = 18
         LabTolMPPIII.Text = "III"
         LabTolMPPIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1662,10 +1747,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPPII.AutoSize = True
         LabTolMPPII.Dock = DockStyle.Fill
-        LabTolMPPII.Location = New Point(44, 84)
+        LabTolMPPII.Location = New Point(54, 96)
         LabTolMPPII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPII.Name = "LabTolMPPII"
-        LabTolMPPII.Size = New Size(12, 28)
+        LabTolMPPII.Size = New Size(17, 32)
         LabTolMPPII.TabIndex = 17
         LabTolMPPII.Text = "II"
         LabTolMPPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1674,10 +1759,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPPI.AutoSize = True
         LabTolMPPI.Dock = DockStyle.Fill
-        LabTolMPPI.Location = New Point(24, 84)
+        LabTolMPPI.Location = New Point(29, 96)
         LabTolMPPI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPI.Name = "LabTolMPPI"
-        LabTolMPPI.Size = New Size(12, 28)
+        LabTolMPPI.Size = New Size(17, 32)
         LabTolMPPI.TabIndex = 16
         LabTolMPPI.Text = "I"
         LabTolMPPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1686,10 +1771,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPPS.AutoSize = True
         LabTolMPPS.Dock = DockStyle.Fill
-        LabTolMPPS.Location = New Point(4, 84)
+        LabTolMPPS.Location = New Point(4, 96)
         LabTolMPPS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPPS.Name = "LabTolMPPS"
-        LabTolMPPS.Size = New Size(12, 28)
+        LabTolMPPS.Size = New Size(17, 32)
         LabTolMPPS.TabIndex = 15
         LabTolMPPS.Text = "S"
         LabTolMPPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1698,10 +1783,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPBC.AutoSize = True
         LabTolMPBC.Dock = DockStyle.Fill
-        LabTolMPBC.Location = New Point(84, 56)
+        LabTolMPBC.Location = New Point(104, 64)
         LabTolMPBC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBC.Name = "LabTolMPBC"
-        LabTolMPBC.Size = New Size(16, 28)
+        LabTolMPBC.Size = New Size(20, 32)
         LabTolMPBC.TabIndex = 14
         LabTolMPBC.Text = "C"
         LabTolMPBC.TextAlign = ContentAlignment.MiddleCenter
@@ -1710,10 +1795,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPBIII.AutoSize = True
         LabTolMPBIII.Dock = DockStyle.Fill
-        LabTolMPBIII.Location = New Point(64, 56)
+        LabTolMPBIII.Location = New Point(79, 64)
         LabTolMPBIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBIII.Name = "LabTolMPBIII"
-        LabTolMPBIII.Size = New Size(12, 28)
+        LabTolMPBIII.Size = New Size(17, 32)
         LabTolMPBIII.TabIndex = 13
         LabTolMPBIII.Text = "III"
         LabTolMPBIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1722,10 +1807,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPBII.AutoSize = True
         LabTolMPBII.Dock = DockStyle.Fill
-        LabTolMPBII.Location = New Point(44, 56)
+        LabTolMPBII.Location = New Point(54, 64)
         LabTolMPBII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBII.Name = "LabTolMPBII"
-        LabTolMPBII.Size = New Size(12, 28)
+        LabTolMPBII.Size = New Size(17, 32)
         LabTolMPBII.TabIndex = 12
         LabTolMPBII.Text = "II"
         LabTolMPBII.TextAlign = ContentAlignment.MiddleCenter
@@ -1734,10 +1819,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPBI.AutoSize = True
         LabTolMPBI.Dock = DockStyle.Fill
-        LabTolMPBI.Location = New Point(24, 56)
+        LabTolMPBI.Location = New Point(29, 64)
         LabTolMPBI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBI.Name = "LabTolMPBI"
-        LabTolMPBI.Size = New Size(12, 28)
+        LabTolMPBI.Size = New Size(17, 32)
         LabTolMPBI.TabIndex = 11
         LabTolMPBI.Text = "I"
         LabTolMPBI.TextAlign = ContentAlignment.MiddleCenter
@@ -1746,10 +1831,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPBS.AutoSize = True
         LabTolMPBS.Dock = DockStyle.Fill
-        LabTolMPBS.Location = New Point(4, 56)
+        LabTolMPBS.Location = New Point(4, 64)
         LabTolMPBS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPBS.Name = "LabTolMPBS"
-        LabTolMPBS.Size = New Size(12, 28)
+        LabTolMPBS.Size = New Size(17, 32)
         LabTolMPBS.TabIndex = 10
         LabTolMPBS.Text = "S"
         LabTolMPBS.TextAlign = ContentAlignment.MiddleCenter
@@ -1758,10 +1843,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPRC.AutoSize = True
         LabTolMPRC.Dock = DockStyle.Fill
-        LabTolMPRC.Location = New Point(84, 28)
+        LabTolMPRC.Location = New Point(104, 32)
         LabTolMPRC.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRC.Name = "LabTolMPRC"
-        LabTolMPRC.Size = New Size(16, 28)
+        LabTolMPRC.Size = New Size(20, 32)
         LabTolMPRC.TabIndex = 9
         LabTolMPRC.Text = "C"
         LabTolMPRC.TextAlign = ContentAlignment.MiddleCenter
@@ -1770,10 +1855,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPRIII.AutoSize = True
         LabTolMPRIII.Dock = DockStyle.Fill
-        LabTolMPRIII.Location = New Point(64, 28)
+        LabTolMPRIII.Location = New Point(79, 32)
         LabTolMPRIII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRIII.Name = "LabTolMPRIII"
-        LabTolMPRIII.Size = New Size(12, 28)
+        LabTolMPRIII.Size = New Size(17, 32)
         LabTolMPRIII.TabIndex = 8
         LabTolMPRIII.Text = "III"
         LabTolMPRIII.TextAlign = ContentAlignment.MiddleCenter
@@ -1782,10 +1867,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPRII.AutoSize = True
         LabTolMPRII.Dock = DockStyle.Fill
-        LabTolMPRII.Location = New Point(44, 28)
+        LabTolMPRII.Location = New Point(54, 32)
         LabTolMPRII.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRII.Name = "LabTolMPRII"
-        LabTolMPRII.Size = New Size(12, 28)
+        LabTolMPRII.Size = New Size(17, 32)
         LabTolMPRII.TabIndex = 7
         LabTolMPRII.Text = "II"
         LabTolMPRII.TextAlign = ContentAlignment.MiddleCenter
@@ -1794,10 +1879,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPRI.AutoSize = True
         LabTolMPRI.Dock = DockStyle.Fill
-        LabTolMPRI.Location = New Point(24, 28)
+        LabTolMPRI.Location = New Point(29, 32)
         LabTolMPRI.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRI.Name = "LabTolMPRI"
-        LabTolMPRI.Size = New Size(12, 28)
+        LabTolMPRI.Size = New Size(17, 32)
         LabTolMPRI.TabIndex = 6
         LabTolMPRI.Text = "I"
         LabTolMPRI.TextAlign = ContentAlignment.MiddleCenter
@@ -1806,10 +1891,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolMPRS.AutoSize = True
         LabTolMPRS.Dock = DockStyle.Fill
-        LabTolMPRS.Location = New Point(4, 28)
+        LabTolMPRS.Location = New Point(4, 32)
         LabTolMPRS.Margin = New Padding(4, 0, 4, 0)
         LabTolMPRS.Name = "LabTolMPRS"
-        LabTolMPRS.Size = New Size(12, 28)
+        LabTolMPRS.Size = New Size(17, 32)
         LabTolMPRS.TabIndex = 5
         LabTolMPRS.Text = "S"
         LabTolMPRS.TextAlign = ContentAlignment.MiddleCenter
@@ -1818,10 +1903,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolLPC.AutoSize = True
         LabTolLPC.Dock = DockStyle.Fill
-        LabTolLPC.Location = New Point(84, 0)
+        LabTolLPC.Location = New Point(104, 0)
         LabTolLPC.Margin = New Padding(4, 0, 4, 0)
         LabTolLPC.Name = "LabTolLPC"
-        LabTolLPC.Size = New Size(16, 28)
+        LabTolLPC.Size = New Size(20, 32)
         LabTolLPC.TabIndex = 4
         LabTolLPC.Text = "C"
         LabTolLPC.TextAlign = ContentAlignment.MiddleCenter
@@ -1830,10 +1915,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolLPII.AutoSize = True
         LabTolLPII.Dock = DockStyle.Fill
-        LabTolLPII.Location = New Point(44, 0)
+        LabTolLPII.Location = New Point(54, 0)
         LabTolLPII.Margin = New Padding(4, 0, 4, 0)
         LabTolLPII.Name = "LabTolLPII"
-        LabTolLPII.Size = New Size(12, 28)
+        LabTolLPII.Size = New Size(17, 32)
         LabTolLPII.TabIndex = 2
         LabTolLPII.Text = "II"
         LabTolLPII.TextAlign = ContentAlignment.MiddleCenter
@@ -1842,10 +1927,10 @@ Partial Class FrmMeasurements
         ' 
         LabTolLPI.AutoSize = True
         LabTolLPI.Dock = DockStyle.Fill
-        LabTolLPI.Location = New Point(24, 0)
+        LabTolLPI.Location = New Point(29, 0)
         LabTolLPI.Margin = New Padding(4, 0, 4, 0)
         LabTolLPI.Name = "LabTolLPI"
-        LabTolLPI.Size = New Size(12, 28)
+        LabTolLPI.Size = New Size(17, 32)
         LabTolLPI.TabIndex = 1
         LabTolLPI.Text = "I"
         LabTolLPI.TextAlign = ContentAlignment.MiddleCenter
@@ -1857,7 +1942,7 @@ Partial Class FrmMeasurements
         LabTolLPS.Location = New Point(4, 0)
         LabTolLPS.Margin = New Padding(4, 0, 4, 0)
         LabTolLPS.Name = "LabTolLPS"
-        LabTolLPS.Size = New Size(12, 28)
+        LabTolLPS.Size = New Size(17, 32)
         LabTolLPS.TabIndex = 0
         LabTolLPS.Text = "S"
         LabTolLPS.TextAlign = ContentAlignment.MiddleCenter
@@ -1866,26 +1951,26 @@ Partial Class FrmMeasurements
         ' 
         tLayoutLocalPitchDetails.SetColumnSpan(TxtAngularDeviation, 2)
         TxtAngularDeviation.Dock = DockStyle.Top
-        TxtAngularDeviation.Location = New Point(264, 186)
+        TxtAngularDeviation.Location = New Point(324, 210)
         TxtAngularDeviation.Margin = New Padding(4)
         TxtAngularDeviation.Name = "TxtAngularDeviation"
-        TxtAngularDeviation.Size = New Size(102, 27)
+        TxtAngularDeviation.Size = New Size(126, 31)
         TxtAngularDeviation.TabIndex = 16
         ' 
         ' TxtAxialPosition
         ' 
         tLayoutLocalPitchDetails.SetColumnSpan(TxtAxialPosition, 2)
         TxtAxialPosition.Dock = DockStyle.Top
-        TxtAxialPosition.Location = New Point(264, 213)
+        TxtAxialPosition.Location = New Point(324, 241)
         TxtAxialPosition.Margin = New Padding(4)
         TxtAxialPosition.Name = "TxtAxialPosition"
-        TxtAxialPosition.Size = New Size(102, 27)
+        TxtAxialPosition.Size = New Size(126, 31)
         TxtAxialPosition.TabIndex = 17
         ' 
         ' TLayoutMeasurement
         ' 
         TLayoutMeasurement.ColumnCount = 6
-        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 212F))
+        TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 240F))
         TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
         TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
         TLayoutMeasurement.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 20F))
@@ -1897,7 +1982,7 @@ Partial Class FrmMeasurements
         TLayoutMeasurement.Controls.Add(PanelJob, 0, 2)
         TLayoutMeasurement.Controls.Add(PanelMeasurements, 1, 2)
         TLayoutMeasurement.Controls.Add(PanelTrack, 0, 4)
-        TLayoutMeasurement.Controls.Add(RecordNavigationBar1, 3, 0)
+        TLayoutMeasurement.Controls.Add(RecordNavigationBar1, 2, 0)
         TLayoutMeasurement.Controls.Add(DataGridJobDetails, 3, 1)
         TLayoutMeasurement.Controls.Add(TLayoutPlotandLP, 4, 2)
         TLayoutMeasurement.Controls.Add(tLayoutNavigationButtons, 1, 1)
@@ -1906,25 +1991,26 @@ Partial Class FrmMeasurements
         TLayoutMeasurement.Margin = New Padding(4)
         TLayoutMeasurement.Name = "TLayoutMeasurement"
         TLayoutMeasurement.RowCount = 6
-        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 33F))
-        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 80F))
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 40F))
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 110F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
         TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Percent, 33.3333321F))
-        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 35F))
-        TLayoutMeasurement.Size = New Size(1184, 636)
+        TLayoutMeasurement.RowStyles.Add(New RowStyle(SizeType.Absolute, 45F))
+        TLayoutMeasurement.Size = New Size(1443, 751)
         TLayoutMeasurement.TabIndex = 23
         ' 
         ' EncoderStatusStrip1
         ' 
         EncoderStatusStrip1.AutoSizeMode = AutoSizeMode.GrowAndShrink
+        EncoderStatusStrip1.BackColor = Color.AliceBlue
         TLayoutMeasurement.SetColumnSpan(EncoderStatusStrip1, 6)
         EncoderStatusStrip1.Dock = DockStyle.Fill
         EncoderStatusStrip1.Hardware = Nothing
-        EncoderStatusStrip1.Location = New Point(3, 603)
-        EncoderStatusStrip1.Margin = New Padding(3, 4, 3, 4)
+        EncoderStatusStrip1.Location = New Point(0, 705)
+        EncoderStatusStrip1.Margin = New Padding(0)
         EncoderStatusStrip1.Name = "EncoderStatusStrip1"
-        EncoderStatusStrip1.Size = New Size(1178, 29)
+        EncoderStatusStrip1.Size = New Size(1443, 46)
         EncoderStatusStrip1.TabIndex = 24
         EncoderStatusStrip1.TimerInterval = 100L
         EncoderStatusStrip1.TimerOn = False
@@ -1932,20 +2018,22 @@ Partial Class FrmMeasurements
         ' 
         ' PanelGrids
         ' 
+        PanelGrids.BorderStyle = BorderStyle.Fixed3D
         TLayoutMeasurement.SetColumnSpan(PanelGrids, 4)
         PanelGrids.Controls.Add(TLayoutGrids)
         PanelGrids.Dock = DockStyle.Fill
-        PanelGrids.Location = New Point(10, 275)
-        PanelGrids.Margin = New Padding(10, 0, 0, 3)
+        PanelGrids.ForeColor = SystemColors.ActiveCaptionText
+        PanelGrids.Location = New Point(25, 335)
+        PanelGrids.Margin = New Padding(25, 0, 0, 0)
         PanelGrids.Name = "PanelGrids"
-        PanelGrids.Size = New Size(784, 159)
+        PanelGrids.Size = New Size(935, 185)
         PanelGrids.TabIndex = 24
         ' 
         ' TLayoutGrids
         ' 
         TLayoutGrids.ColumnCount = 2
         TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Percent, 100F))
-        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 101F))
+        TLayoutGrids.ColumnStyles.Add(New ColumnStyle(SizeType.Absolute, 125F))
         TLayoutGrids.Controls.Add(Lab, 1, 0)
         TLayoutGrids.Controls.Add(LabGrids, 0, 0)
         TLayoutGrids.Controls.Add(GridBladePitch, 1, 1)
@@ -1957,7 +2045,7 @@ Partial Class FrmMeasurements
         TLayoutGrids.RowCount = 2
         TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Absolute, 20F))
         TLayoutGrids.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        TLayoutGrids.Size = New Size(784, 159)
+        TLayoutGrids.Size = New Size(931, 181)
         TLayoutGrids.TabIndex = 0
         ' 
         ' Lab
@@ -1965,10 +2053,11 @@ Partial Class FrmMeasurements
         Lab.BackColor = SystemColors.ActiveCaption
         Lab.Dock = DockStyle.Top
         Lab.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
-        Lab.Location = New Point(683, 0)
+        Lab.ForeColor = SystemColors.ActiveCaptionText
+        Lab.Location = New Point(806, 0)
         Lab.Margin = New Padding(0)
         Lab.Name = "Lab"
-        Lab.Size = New Size(101, 20)
+        Lab.Size = New Size(125, 20)
         Lab.TabIndex = 24
         Lab.Text = "Blade Pitch"
         ' 
@@ -1977,10 +2066,11 @@ Partial Class FrmMeasurements
         LabGrids.BackColor = SystemColors.ActiveCaption
         LabGrids.Dock = DockStyle.Top
         LabGrids.Font = New Font("Segoe UI", 9F, FontStyle.Bold)
+        LabGrids.ForeColor = SystemColors.ActiveCaptionText
         LabGrids.Location = New Point(0, 0)
         LabGrids.Margin = New Padding(0)
         LabGrids.Name = "LabGrids"
-        LabGrids.Size = New Size(683, 20)
+        LabGrids.Size = New Size(806, 20)
         LabGrids.TabIndex = 23
         LabGrids.Text = "Avg Pitch"
         ' 
@@ -1993,14 +2083,14 @@ Partial Class FrmMeasurements
         TLayoutPlotandLP.Controls.Add(PanelLocalPitchDetails, 0, 1)
         TLayoutPlotandLP.Controls.Add(PanelPlot, 0, 0)
         TLayoutPlotandLP.Dock = DockStyle.Fill
-        TLayoutPlotandLP.Location = New Point(794, 113)
+        TLayoutPlotandLP.Location = New Point(960, 150)
         TLayoutPlotandLP.Margin = New Padding(0)
         TLayoutPlotandLP.Name = "TLayoutPlotandLP"
         TLayoutPlotandLP.RowCount = 2
         TLayoutMeasurement.SetRowSpan(TLayoutPlotandLP, 3)
         TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
         TLayoutPlotandLP.RowStyles.Add(New RowStyle(SizeType.Percent, 50F))
-        TLayoutPlotandLP.Size = New Size(390, 486)
+        TLayoutPlotandLP.Size = New Size(483, 555)
         TLayoutPlotandLP.TabIndex = 25
         ' 
         ' tLayoutNavigationButtons
@@ -2018,20 +2108,20 @@ Partial Class FrmMeasurements
         tLayoutNavigationButtons.Controls.Add(CmdLocalPitchForm, 1, 0)
         tLayoutNavigationButtons.Controls.Add(CmdMeasureForm, 0, 0)
         tLayoutNavigationButtons.Dock = DockStyle.Fill
-        tLayoutNavigationButtons.Location = New Point(212, 33)
+        tLayoutNavigationButtons.Location = New Point(240, 40)
         tLayoutNavigationButtons.Margin = New Padding(0)
         tLayoutNavigationButtons.Name = "tLayoutNavigationButtons"
         tLayoutNavigationButtons.RowCount = 1
         tLayoutNavigationButtons.RowStyles.Add(New RowStyle(SizeType.Percent, 100F))
-        tLayoutNavigationButtons.Size = New Size(388, 80)
+        tLayoutNavigationButtons.Size = New Size(480, 110)
         tLayoutNavigationButtons.TabIndex = 26
         ' 
         ' CmdComparisonForm
         ' 
         CmdComparisonForm.Dock = DockStyle.Fill
-        CmdComparisonForm.Location = New Point(311, 3)
+        CmdComparisonForm.Location = New Point(387, 3)
         CmdComparisonForm.Name = "CmdComparisonForm"
-        CmdComparisonForm.Size = New Size(74, 74)
+        CmdComparisonForm.Size = New Size(90, 104)
         CmdComparisonForm.TabIndex = 4
         CmdComparisonForm.Text = "Comp."
         CmdComparisonForm.UseVisualStyleBackColor = True
@@ -2039,9 +2129,9 @@ Partial Class FrmMeasurements
         ' CmdInspectForm
         ' 
         CmdInspectForm.Dock = DockStyle.Fill
-        CmdInspectForm.Location = New Point(234, 3)
+        CmdInspectForm.Location = New Point(291, 3)
         CmdInspectForm.Name = "CmdInspectForm"
-        CmdInspectForm.Size = New Size(71, 74)
+        CmdInspectForm.Size = New Size(90, 104)
         CmdInspectForm.TabIndex = 3
         CmdInspectForm.Text = "Inspect"
         CmdInspectForm.UseVisualStyleBackColor = True
@@ -2049,9 +2139,9 @@ Partial Class FrmMeasurements
         ' CmdGraphForm
         ' 
         CmdGraphForm.Dock = DockStyle.Fill
-        CmdGraphForm.Location = New Point(157, 3)
+        CmdGraphForm.Location = New Point(195, 3)
         CmdGraphForm.Name = "CmdGraphForm"
-        CmdGraphForm.Size = New Size(71, 74)
+        CmdGraphForm.Size = New Size(90, 104)
         CmdGraphForm.TabIndex = 2
         CmdGraphForm.Text = "Graph"
         CmdGraphForm.UseVisualStyleBackColor = True
@@ -2059,9 +2149,9 @@ Partial Class FrmMeasurements
         ' CmdLocalPitchForm
         ' 
         CmdLocalPitchForm.Dock = DockStyle.Fill
-        CmdLocalPitchForm.Location = New Point(80, 3)
+        CmdLocalPitchForm.Location = New Point(99, 3)
         CmdLocalPitchForm.Name = "CmdLocalPitchForm"
-        CmdLocalPitchForm.Size = New Size(71, 74)
+        CmdLocalPitchForm.Size = New Size(90, 104)
         CmdLocalPitchForm.TabIndex = 1
         CmdLocalPitchForm.Text = "Local Pitch"
         CmdLocalPitchForm.UseVisualStyleBackColor = True
@@ -2072,19 +2162,21 @@ Partial Class FrmMeasurements
         CmdMeasureForm.Enabled = False
         CmdMeasureForm.Location = New Point(3, 3)
         CmdMeasureForm.Name = "CmdMeasureForm"
-        CmdMeasureForm.Size = New Size(71, 74)
+        CmdMeasureForm.Size = New Size(90, 104)
         CmdMeasureForm.TabIndex = 0
         CmdMeasureForm.Text = "Measure"
         CmdMeasureForm.UseVisualStyleBackColor = True
         ' 
         ' FrmMeasurements
         ' 
-        AutoScaleDimensions = New SizeF(8F, 20F)
+        AutoScaleDimensions = New SizeF(9F, 23F)
         AutoScaleMode = AutoScaleMode.Font
-        BackColor = SystemColors.Control
-        ClientSize = New Size(1184, 636)
+        AutoSize = True
+        BackColor = Color.MidnightBlue
+        ClientSize = New Size(1443, 751)
         Controls.Add(TLayoutMeasurement)
-        Font = New Font("Segoe UI", 11F)
+        Font = New Font("Segoe UI", 13F)
+        ForeColor = SystemColors.ButtonFace
         Margin = New Padding(3, 1, 3, 1)
         Name = "FrmMeasurements"
         Text = "Measurements"
@@ -2143,11 +2235,6 @@ Partial Class FrmMeasurements
     Friend WithEvents PanelMeasurements As Panel
     Friend WithEvents PictureBoxLogo As PictureBox
     Friend WithEvents MeasurementTypesBindingSource As BindingSource
-    Friend WithEvents StartDate As DataGridViewTextBoxColumn
-    Friend WithEvents MeasurementTypeDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
-    Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
-    Friend WithEvents Description As DataGridViewTextBoxColumn
     Friend WithEvents GridBladebyRadius As DataGridView
     Friend WithEvents TxtBlade As TextBox
     Friend WithEvents TxtRadius As TextBox
@@ -2257,7 +2344,6 @@ Partial Class FrmMeasurements
     Friend WithEvents LabPlot As Label
     Friend WithEvents ChkPlotAngularDeviation As CheckBox
     Friend WithEvents LabPitchBasis As Label
-    Friend WithEvents ComboPlotReferenceBlade As ComboBox
     Friend WithEvents tLayoutNavigationButtons As TableLayoutPanel
     Friend WithEvents CmdInspectForm As Button
     Friend WithEvents CmdGraphForm As Button
@@ -2266,5 +2352,10 @@ Partial Class FrmMeasurements
     Friend WithEvents CmdComparisonForm As Button
     Friend WithEvents ChartBladeHeight1 As LibDisplayControls.ChartBladeHeight
     Friend WithEvents ChartAngularPosition1 As LibDisplayControls.ChartAngularPosition
+    Friend WithEvents StartDate As DataGridViewTextBoxColumn
+    Friend WithEvents MeasurementTypeDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents ToleranceClassDataGridViewTextBoxColumn As DataGridViewComboBoxColumn
+    Friend WithEvents PerformedBy As DataGridViewComboBoxColumn
+    Friend WithEvents Description As DataGridViewTextBoxColumn
     'Friend WithEvents ComboPlotRefBlade As ComboBox
 End Class

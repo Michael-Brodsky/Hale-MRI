@@ -22,4 +22,5 @@ Public Interface IEncoderHardware
     Function Depth() As Double
     Function Radius(ByVal diameter As Double) As RadiusMeasurement
     Function SetEncoderCount(ByVal encoderNo As Integer, ByVal count As Integer) As Boolean
+    Function SetForward(ByVal encoderNo As Integer, ByVal forward As Boolean) As Boolean
 End Interface

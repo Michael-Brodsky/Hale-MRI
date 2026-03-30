@@ -232,6 +232,7 @@ Public Class FrmVessels
         Try
             Dim newVessel As Vessel = If(mNewVessel, New Vessel())
             e.NewObject = newVessel
+            newVessel.Customer = CustomerBindingSource.Current
             Database.Vessels.Add(newVessel)
             mNewVessel = Nothing
         Catch ex As Exception

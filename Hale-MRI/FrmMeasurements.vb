@@ -9,7 +9,8 @@ Imports LibDatabase.StoredProcedures
 Imports LibEncoder
 Imports Microsoft.EntityFrameworkCore
 Imports LibDisplayControls.MRIMath
-
+Imports LibDisplayControls.Tolerances
+Imports LibDisplayControls
 Public Class FrmMeasurements
     Inherits FrmDatabaseForm
 #Region "Private Members"
@@ -23,7 +24,10 @@ Public Class FrmMeasurements
     Private mRadiusMeasurement As RadiusMeasurement = Nothing   ' Stores the RadiusMeasurement to which CellMeasurements collected during a scan are assigned to. 
     Private mSampleCount As Integer                             ' Number of samples for the current scan.
     Private mScanIncrement As Double = 1.8                      ' The angle increment between samples in degrees(this will be recalculated on form load but this is the default value).
+    Private mHomeSet As Boolean = False                       ' Whether the home position has been set for the current JobDetail.
     Private mLastScannedAngle As Double = Double.MaxValue       ' The last angle measurement saved during scanning (Used with mScanIncrement to determine when to save a new measurement).
+    Private mTolerance As String = String.Empty
+    Private mScannedPoints As Integer = 0
 
 #If NO_ENCODERS Then
     Private mCm As Integer = 0
@@ -59,7 +63,6 @@ Public Class FrmMeasurements
     ''' to access data. Overrides MyBase.Database.
     ''' </summary>
     Public Overrides Property Database As HaleMRIContext
-
     ''' <summary>
     ''' Finds the given JobDetail and, if found, makes it the current record.
     ''' </summary>
@@ -74,7 +77,6 @@ Public Class FrmMeasurements
         End If
         Return result
     End Function
-
     ''' <summary>
     ''' Gets/sets the encoder hardware used by the form.
     ''' </summary>
@@ -96,7 +98,6 @@ Public Class FrmMeasurements
             End With
         End Set
     End Property
-
     ''' <summary>
     ''' Loads all JobDetails and their Cell, Extreme and RadiusMeasurements
     ''' for the given Job.
@@ -110,15 +111,68 @@ Public Class FrmMeasurements
             mJob = value
             If mJob IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJob)
-#If NO_ENCODERS Then
-                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
-#End If
+                If mJob.LeExclusion Is Nothing Then mJob.LeExclusion = 0
+                If mJob.TeExclusion Is Nothing Then mJob.TeExclusion = 0
+                If Job.PropellerRotation = "L" Then
+                    EncoderStatusStrip1.Hardware.Encoders.SetForward(0, False)
+                Else
+                    EncoderStatusStrip1.Hardware.Encoders.SetForward(0, True)
+                End If
                 ShowJobInfo()
             End If
         End Set
     End Property
 
+    Public Property SelectedTolerance As String
+        Get
+            Return mJobDetails.ToleranceClass
+        End Get
+        Set(value As String)
+            mTolerance = value
+            If mJobDetails IsNot Nothing Then
+                mJobDetails.ToleranceClass = value
+                Database.SaveChanges()
+                ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
+                ShowBladePlot()
+                ShowTrack()
+                RefreshAll()
+            End If
+        End Set
+    End Property
+
+    Public Property HomeSet As Boolean
+        Get
+            Return mHomeSet
+        End Get
+        Set(value As Boolean)
+            mHomeSet = value
+            CmdHome.Enabled = Not value
+            If value = True Then
+                If JobDetails.RadiusMeasurements.Count >= 1 Then
+                    Dim result = MessageBox.Show("Setting Home Position for this job will remove the previously scanned data.", "Set Home", MessageBoxButtons.OKCancel)
+                    If result = DialogResult.OK Then
+                        mJobDetails.RadiusMeasurements.Clear()
+                        Database.SaveChanges()
+                        ShowBladePitch(True)
+                        ShowBladePlot()
+                        ShowTrack()
+                        ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
+                        CmdHome.Visible = False
+                        ChkScan.Enabled = True
+                        ChkScan.BackColor = Color.ForestGreen
+                    Else
+                        mHomeSet = False
+                        CmdHome.Enabled = True
+                    End If
+                    Exit Property
+                End If
+                CmdHome.Visible = False
+                ChkScan.Enabled = True
+                TxtStatus.Text = "Ready to Scan"
+                ChkScan.BackColor = Color.ForestGreen
+            End If
+        End Set
+    End Property
     ''' <summary>
     ''' Loads only the given JobDetail and its Cell, Extreme and RadiusMeasurements.
     ''' </summary>
@@ -130,12 +184,9 @@ Public Class FrmMeasurements
         Set(value As JobDetail)
             mJobDetails = value
             mJob = mJobDetails?.Job
+            CmdHome.Enabled = True
             If mJobDetails IsNot Nothing Then
                 JobDetailsBindingSource.DataSource = GetMeasurementData(mJobDetails)
-#If NO_ENCODERS Then
-                Dim jd = Database.JobDetails.Min(Function(cm) cm.Id)
-                mEncoderData = Database.RadiusMeasurements.Where(Function(cm) cm.JobDetailsId = jd.ToString()).Include(Function(m) m.CellMeasurements).ToList()
-#End If
                 ShowJobInfo()
             End If
         End Set
@@ -149,7 +200,7 @@ Public Class FrmMeasurements
             ShowBladePitch(True)
             ShowBladePlot()
             ShowTrack()
-            ShowTolerances(value, False)
+            ShowTolerances(value, ChkAllowProgPitch.Checked)
         End Set
     End Property
 #End Region
@@ -207,37 +258,6 @@ Public Class FrmMeasurements
         FormSort(data)
         Return data
     End Function
-#If NO_ENCODERS Then
-    Private Sub MeasurementsGet()
-        Dim rand As New System.Random()
-        Dim offset As Double = rand.Next(-500, 500 + 1) / 1000.0
-        Dim angle As Double = mEncoderData(mRd).CellMeasurements(mCm).Angle
-        Dim depth As Double = mEncoderData(mRd).CellMeasurements(mCm).Depth
-        Dim radius As New IEncoderHardware.RadiusMeasurement With {.Value = mEncoderData(mRd).Radius + offset, .Percent = .Value / Job?.PropellerDiameter / 2.0}
-        Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
-        TxtBlade.Text = blade
-        TxtAngle.Text = angle.ToString()
-        TxtRadius.Text = radius.Value.ToString()
-        TxtDepth.Text = depth.ToString()
-        TxtRadiusPercent.Text = (radius.Percent * 100).ToString()
-    End Sub
-
-    Private Sub MeasurementsGet(lastAngle As Double)
-        With EncoderStatusStrip1
-            Dim angle As Double = .Angle()
-            Dim depth As Double = .Depth()
-            Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
-            TxtAngle.Text = Math.Round(angle, 2).ToString()
-            TxtRadius.Text = radius.Value.ToString()
-            TxtDepth.Text = depth.ToString()
-            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
-            If (lastAngle - angle) > mScanIncrement Then
-                MeasurementsSave(angle, depth, radius)
-                mSampleCount += 1
-            End If
-        End With
-    End Sub
-#Else
     Private Sub MeasurementsGet()
         ' Calls encoder angle, depth and radius methods ONCE, and uses the returned
         ' values as required. This one doesn't save Measurements.
@@ -247,10 +267,11 @@ Public Class FrmMeasurements
             Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
             Dim blade As Integer = GetBladeNumber(angle, Job.PropellerBlades)
             TxtBlade.Text = blade
-            TxtAngle.Text = Math.Round(angle, 2).ToString()
-            TxtRadius.Text = radius.Value.ToString()
-            TxtDepth.Text = depth.ToString()
-            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
+            TxtAngle.Text = Math.Round(angle, 2).ToString() + " °"
+            TxtRadius.Text = Math.Round(radius.Value * 2, 2).ToString() + " In."
+            TxtDepth.Text = Math.Round(depth, 2).ToString() + " In."
+            TxtRadiusPercent.Text = Math.Round(radius.Percent * 100.0, 2).ToString() + " %"
+            PlotVisualization(angle, radius.Percent * 100)
         End With
     End Sub
     Private Sub MeasurementsGet(lastAngle As Double)
@@ -262,17 +283,19 @@ Public Class FrmMeasurements
             Dim angle As Double = .Angle()
             Dim depth As Double = .Depth()
             Dim radius As IEncoderHardware.RadiusMeasurement = .Radius(Job.PropellerDiameter)
-            TxtAngle.Text = Math.Round(angle, 2).ToString()
-            TxtRadius.Text = radius.Value.ToString()
-            TxtDepth.Text = depth.ToString()
-            TxtRadiusPercent.Text = (radius.Percent * 100.0).ToString()
+            If TxtBlade.Text = "1" And angle >= 180 Then
+                angle -= 360.0 'this is a simple way to handle overscan when crossing 0 degrees on blade 1 - this will make the change in angle consistent when crossing 0 degrees
+            End If
+            TxtAngle.Text = Math.Round(angle, 2).ToString() + " °"
+            TxtRadius.Text = Math.Round(radius.Value * 2, 2).ToString() + " In."
+            TxtDepth.Text = Math.Round(depth, 2).ToString() + " In."
+            TxtRadiusPercent.Text = Math.Round(radius.Percent * 100.0, 2).ToString() + " %"
             If (lastAngle - angle) > mScanIncrement Then
                 MeasurementsSave(angle, depth, radius)
                 mSampleCount += 1
             End If
         End With
     End Sub
-#End If
     Private Sub MeasurementsSave(ByVal angle As Double, ByVal depth As Double, ByVal radius As IEncoderHardware.RadiusMeasurement)
         ' Updates the RadiusPercent moving average and saves the given angle and depth measurements.
         If TxtBlade.Text = "1" And angle > 180.0 Then 'this is a simple way to handle overscan when crossing 0 degrees on blade 1
@@ -286,6 +309,34 @@ Public Class FrmMeasurements
         }
         Database.CellMeasurements.Add(cm)
         mLastScannedAngle = angle
+    End Sub
+    Private Sub PlotVisualization(angle As Double, radius As Double)
+        If mJobDetails.Job.PropellerRotation = "L" Then
+            angle = 360 - angle
+        End If
+        Dim img As New NamedImage With {
+            .Name = "PlotVisualization",
+            .Image = New Bitmap(1600, 1600)}
+        Using g As Graphics = Graphics.FromImage(img.Image)
+            g.Clear(Color.Transparent)
+            Dim pen As New Pen(Color.White, 15)
+            Dim halfheight As Double = 800
+            Dim halfwidth As Double = 800
+            Dim adjustedheight As Double = halfheight + (halfheight * Math.Sin(angle * Math.PI / 180.0))
+            Dim adjustedwidth As Double = halfwidth + (halfwidth * Math.Cos(angle * Math.PI / 180.0))
+            g.DrawLine(pen, New Point(halfwidth, halfheight), New Point(adjustedwidth, adjustedheight))
+            Dim adjustedradius As Double = radius / 100
+            Dim adjwidth As Double = halfwidth * adjustedradius
+            Dim adjheight As Double = halfheight * adjustedradius
+            Dim Ellipsewidth As Double = adjwidth * 2
+            Dim Ellipseheight As Double = adjheight * 2
+            pen.Color = Color.White
+            g.DrawEllipse(pen, CType(halfwidth - adjwidth, Integer), CType(halfheight - adjheight, Integer), CType(Ellipsewidth, Integer), CType(Ellipseheight, Integer))
+        End Using
+        chartPlot.Images.Clear()
+        chartPlot.Images.Add(img)
+        If chartPlot.ChartAreas.Count = 0 Then Return
+        chartPlot.ChartAreas(0).BackImage = "PlotVisualization"
     End Sub
 
     Protected Overrides Property MasterSource As BindingSource
@@ -307,8 +358,6 @@ Public Class FrmMeasurements
             If mNavigator IsNot Nothing Then mNavigator.Database = Database
         End Set
     End Property
-
-
     Private Sub NewRadiusMeasurement()
         ' RadiusMeasurement is now parent (PK) of Cell and ExtremeMeasurements
         ' (FK). Clear the previous moving average and create a new
@@ -342,21 +391,26 @@ Public Class FrmMeasurements
         If Database.RadiusMeasurements.Local.Where(Function(rm) rm.JobDetailsId = mJobDetails.Id And rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).Any() Then
             Database.RadiusMeasurements.Local.Remove(Database.RadiusMeasurements.Local.Where(Function(rm) rm.JobDetailsId = mJobDetails.Id And rm.BladeId = Integer.Parse(TxtBlade.Text) And Math.Round(rm.Radius().Value) = Math.Round(mRadiusPercent.Output())).FirstOrDefault())
         End If
+        If mSampleCount < 3 Then ' if less than 3 samples then we consider this a bad scan and we don't save the measurement
+            JobDetails.RadiusMeasurements.Remove(mRadiusMeasurement)
+            TxtStatus.Text = "Ready to Scan"
+            ChkScan.Text = "Scan"
+            Return
+        End If
         mRadiusMeasurement.Radius = mRadiusPercent.Output()
         mRadiusMeasurement.BladeId = Integer.Parse(TxtBlade.Text)
         mRadiusMeasurement.TeCell = mSampleCount - 1
         Database.RadiusMeasurements.Add(mRadiusMeasurement)
         Database.SaveChanges()
-        ShowBladePitch(True)
         TxtStatus.Text = "Ready to Scan"
         ChkScan.Text = "Scan"
+        ComboReferenceBlade.SelectedIndex = mRadiusMeasurement.BladeId - 1
+        Dim radlist = ReferenceRadiiGet(mRadiusMeasurement.BladeId)
+        ComboReferenceRadius.DataSource = radlist
+        ComboReferenceRadius.SelectedIndex = radlist.IndexOf(Math.Round(mRadiusMeasurement.Radius.Value))
     End Sub
 
     Private Sub ScanControlsEnabled(ByVal isScanning As Boolean)
-        ' Disable any controls that can interfere with the
-        ' encoders while scanning. Enable them when done.
-        CmdHome.Enabled = Not isScanning
-        CmdSetTip.Enabled = CmdHome.Enabled
     End Sub
 
     Private Property Scanning As Boolean
@@ -369,99 +423,22 @@ Public Class FrmMeasurements
                 mSampleCount = 0
                 TxtStatus.Text = "Scanning..."
                 ChkScan.Text = "Stop"
+                ChkScan.BackColor = Color.Red
+                TxtStatus.BackColor = Color.Red
             Else
-#If NO_ENCODERS Then
-                mRd += 1
-                If mRd = mEncoderData.Count Then mRd = 0
-#End If
                 TxtStatus.Text = "Saving Measurements..."
+                ChkScan.BackColor = Color.ForestGreen
+                TxtStatus.BackColor = Color.ForestGreen
                 SaveRadiusMeasurement()
+                ShowBladePitch(True)
+                ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
+                ShowBladePlot()
+                ShowTrack()
             End If
             ScanControlsEnabled(value)
         End Set
     End Property
 
-    Private Function ShowLocalPitchTolerance(minsApply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        ' made for use in ShowTolerances only returns an integer representing which class passed
-        Dim passingClass As Integer = 0
-        If app Then
-
-        Else
-            For Each tol As Tolerance In classes
-                If passingClass < classes.IndexOf(tol) Then
-                    Return passingClass 'return the highest class that passed - means that all others will auto pass
-                End If
-                Dim Sectors As Integer = tol.LocalPitchSectors
-                For Each rm In mJobDetails?.RadiusMeasurements
-                    For n = 1 To Sectors
-                        Dim pitch As Double = GetLocalPitch(rm.CellMeasurements.ToList(), Sectors, n, Job.PropellerDiameter, rm.Radius, mJob.TeExclusion, mJob.LeExclusion)
-                        Dim LocalPitch As ToleranceColor = CheckLocalPitchTolerance(tol, pitch, Job.DesiredPitch, minsApply)
-                        If LocalPitch <> ToleranceColor.Pass Then
-                            passingClass += 1
-                            Exit For ' exit n loop because this class failed
-                        End If
-                    Next
-                    If passingClass > classes.IndexOf(tol) Then
-                        Exit For ' exit rm loop because this class already failed
-                    End If
-                Next
-            Next
-        End If
-        Return 3 ' if we get here it means that Class S I and II failed so we return 3 meaning III auto passes
-    End Function
-
-    Private Function ShowMeanPitchRadiusTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        Dim passingClass As Integer = 0
-        If app Then
-
-        Else
-            For Each tol As Tolerance In classes
-                If passingClass < classes.IndexOf(tol) Then
-                    Return passingClass 'return the highest class that passed - means that all others will auto pass
-                End If
-                For Each rm In mJobDetails?.RadiusMeasurements
-                    Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
-                    Dim MeanPitch As ToleranceColor = CheckBladeRadiusPitch(tol, pitch, Job.DesiredPitch, minsapply)
-                    If MeanPitch <> ToleranceColor.BadData Then
-                        passingClass += 1
-                        Exit For ' exit n loop because this class failed
-                    End If
-                Next
-                If passingClass > classes.IndexOf(tol) Then
-                    Exit For ' exit rm loop because this class already failed
-                End If
-            Next
-        End If
-        Return passingClass
-    End Function
-    Private Function ShowMeanPitchBladeTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
-        Dim passingClass As Integer = 0
-        If app Then
-
-        Else
-            For Each tol As Tolerance In classes
-                If passingClass < classes.IndexOf(tol) Then
-                    Return passingClass
-                End If
-                Dim blade As Integer
-                For blade = 1 To mJob?.PropellerBlades
-                    Dim pitchTotal As Double = 0
-                    Dim Count As Integer = 0
-                    For Each rm In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = blade).ToList()
-                        Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements, mJob.TeExclusion, mJob.LeExclusion)
-                        pitchTotal += pitch
-                        Count += 1
-                    Next
-                    Dim BladePitch As ToleranceColor = CheckBladePitch(tol, (pitchTotal / Count), mJob?.DesiredPitch, minsapply)
-                    If BladePitch <> ToleranceColor.BadData Then
-                        passingClass += 1
-                        Exit For ' Exit blade loop - class already failed
-                    End If
-                Next
-            Next
-        End If
-        Return passingClass
-    End Function
     Private Function ShowMeanPitchPropellerTolerance(minsapply As Boolean, app As Boolean, classes As List(Of Tolerance)) As Integer
         Dim passingClass = 0
         For Each tol As Tolerance In classes
@@ -476,13 +453,12 @@ Public Class FrmMeasurements
         Next
         Return passingClass
     End Function
-
     Private Function ShowAngularDeviationTolerance(classes As List(Of Tolerance), radius As Double) As Integer
         Dim passingClass As Integer = 0
         Dim largestDeviation As Double = 0.0
         For Each tol As Tolerance In classes
             If passingClass < classes.IndexOf(tol) Then
-                Return passingClass
+                Exit For
             End If
             Dim blade As Integer
             For blade = 1 To mJob?.PropellerBlades
@@ -500,8 +476,27 @@ Public Class FrmMeasurements
                 End If
                 Dim bladeMidAngle = GetChordMidAngle(rad.CellMeasurements) ' need to make all necessary checks to select a good radius measurement
                 Dim nextBladeMidAngle = GetChordMidAngle(rad2.CellMeasurements)
-                If largestDeviation < Math.Abs(bladeMidAngle - nextBladeMidAngle) Then
-                    largestDeviation = Math.Abs(bladeMidAngle - nextBladeMidAngle)
+                If rad2.BladeId = 1 Then
+                    nextBladeMidAngle += 360
+                End If
+                Dim CurrentDeviation As Double
+                If bladeMidAngle - nextBladeMidAngle < 0 Then
+                    CurrentDeviation = nextBladeMidAngle - bladeMidAngle
+                    If CurrentDeviation < mJobDetails.Job.PropellerBlades / 360 Then
+                        CurrentDeviation = (mJobDetails.Job.PropellerBlades / 360) - CurrentDeviation
+                    Else
+                        CurrentDeviation = CurrentDeviation - (360 / mJobDetails.Job.PropellerBlades)
+                    End If
+                Else
+                    CurrentDeviation = Math.Abs(bladeMidAngle - nextBladeMidAngle)
+                    If CurrentDeviation < mJobDetails.Job.PropellerBlades / 360 Then
+                        CurrentDeviation = (mJobDetails.Job.PropellerBlades / 360) - CurrentDeviation
+                    Else
+                        CurrentDeviation = CurrentDeviation - (360 / mJobDetails.Job.PropellerBlades)
+                    End If
+                End If
+                If largestDeviation < Math.Abs(CurrentDeviation) Then
+                    largestDeviation = CurrentDeviation
                 End If
                 Dim angDeviationCheck As ToleranceColor = CheckAngularDeviation(tol, mJob.PropellerBlades, bladeMidAngle, nextBladeMidAngle)
                 If angDeviationCheck <> ToleranceColor.Pass Then
@@ -510,10 +505,9 @@ Public Class FrmMeasurements
                 End If
             Next
         Next
-        TxtAngularDeviation.Text = Math.Round(largestDeviation, 2).ToString() + "°"
+        TxtAngularDeviation.Text = Math.Round(Math.Abs(largestDeviation), 2).ToString("F2") + "°"
         Return passingClass
     End Function
-
     Private Function ShowAxialPositionTolerance(classes As List(Of Tolerance), radius As Double) As Integer
         Dim passingClass As Integer = 0
         Dim largestDeviation As Double = 0.0
@@ -550,7 +544,6 @@ Public Class FrmMeasurements
         TxtAxialPosition.Text = Math.Round(largestDeviation, 2).ToString() + " In."
         Return passingClass
     End Function
-
     Private Sub ShowTolerances(mins As Boolean, app As Boolean)
         If mJobDetails Is Nothing Then
             Return
@@ -558,7 +551,7 @@ Public Class FrmMeasurements
         Dim Classes As New List(Of Tolerance) From {GetToleranceTable(Database, "S"), GetToleranceTable(Database, "I"), GetToleranceTable(Database, "II"), GetToleranceTable(Database, "III"), GetToleranceTable(Database, "Custom")}
         ' Classes(0) = Class S Classes(1) = Class I Classes(2) = Class II Classes(3) = Class III Classes(4) = Custom
         If ChkLocalPitch.Checked Then
-            Dim LocalPitchClass As Integer = ShowLocalPitchTolerance(mins, app, Classes) 'need to implement local pitch radius restrictions IE class S needs 5 radii
+            Dim LocalPitchClass As Integer = ShowLocalPitchTolerance(JobDetails, mins, app, Classes) 'need to implement local pitch radius restrictions IE class S needs 5 radii
             Select Case LocalPitchClass
                 Case 0
                     LabTolLPS.ForeColor = Color.Green
@@ -588,7 +581,7 @@ Public Class FrmMeasurements
             End Select
         End If
         If ChkMeanPitchRadius.Checked Then
-            Dim MeanPitchRadiusClass As Integer = ShowMeanPitchRadiusTolerance(mins, app, Classes)
+            Dim MeanPitchRadiusClass As Integer = ShowMeanPitchRadiusTolerance(mJobDetails, mins, app, Classes)
             Select Case MeanPitchRadiusClass
                 Case 0
                     LabTolMPRS.ForeColor = Color.Green
@@ -629,7 +622,7 @@ Public Class FrmMeasurements
             End Select
         End If
         If ChkMeanPitchBlade.Checked Then
-            Dim MeanPitchBladeClass As Integer = ShowMeanPitchBladeTolerance(mins, app, Classes)
+            Dim MeanPitchBladeClass As Integer = ShowMeanPitchBladeTolerance(mJobDetails, mins, app, Classes)
             Select Case MeanPitchBladeClass
                 Case 0
                     LabTolMPBS.ForeColor = Color.Green
@@ -798,6 +791,14 @@ Public Class FrmMeasurements
         If mJobDetails Is Nothing Then
             Return
         End If
+        Dim PitchBasis As Double
+        If ComboPitchBasis.Text = "Mean" Then
+            PitchBasis = mJobDetails.WheelPitch
+        ElseIf ComboPitchBasis.Text = "Marked" Then
+            PitchBasis = mJobDetails.Job.MarkedPitch
+        ElseIf ComboPitchBasis.Text = "Desired" Then
+            PitchBasis = mJobDetails.Job.DesiredPitch
+        End If
         Dim ToleranceTable As Tolerance = GetToleranceTable(Database, If(mJobDetails?.ToleranceClass, "D"))
         Dim TotalPitchWheel As Double = 0.0
         Dim dtBladePitchByRadius As New DataTable()
@@ -811,38 +812,48 @@ Public Class FrmMeasurements
             rowBladeBlade = dtBladePitch.Rows.Add(x)
         Next
         GridBladePitch.DataSource = dtBladePitch
-        dtBladePitch.Columns.Add("Avg Pitch", GetType(Double))
+        dtBladePitch.Columns.Add("Avg Pitch", GetType(String))
         GridBladebyRadius.DataSource = dtBladePitchByRadius
         dtBladePitch.PrimaryKey = New DataColumn() {colPitch}
         dtBladePitchByRadius.PrimaryKey = New DataColumn() {colRadius}
-        GridBladebyRadius.Refresh()
         For Each row As DataRow In dtBladePitchByRadius.Rows
             Dim totalPitch As Double = 0.0
             Dim pitchCount As Integer = 0 ' Condensed these for loops into one to increase speed
-            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade"))
+            For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = row.Item("Blade")).ToList().OrderBy(Function(r) r.Radius)
                 Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
                 rowRadiusBlade = If(dtBladePitchByRadius.Rows.Find(rm.BladeId), dtBladePitchByRadius.Rows.Add(rm.BladeId))
-                colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(Double)))
+                colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(String)))
                 Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
-                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2)
-                Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
-                GridBladebyRadius.Rows(rm.BladeId - 1).Cells(colRadius.Ordinal).Style.ForeColor = Tolerances.ToColor(textAvgBladePitchColor)
-                rowBladeBlade = If(dtBladePitch.Rows.Find(rm.BladeId), dtBladePitch.Rows.Find(1))
-                colPitch = If(dtBladePitch.Columns("Avg Pitch"), dtBladePitch.Columns.Add("Avg Pitch", GetType(Double)))
+                rowRadiusBlade.Item(colRadius) = Math.Round(pitch, 2).ToString("F2")
+                Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, PitchBasis, MinsApply) ' Check tolerance and adjust text color
+                GridBladebyRadius.Rows(dtBladePitchByRadius.Rows.IndexOf(row)).Cells(colRadius.Ordinal).Style.ForeColor = ToColor(textAvgBladePitchColor)
                 totalPitch += pitch
                 pitchCount += 1
             Next
+            colPitch = If(dtBladePitch.Columns("Avg Pitch"), dtBladePitch.Columns.Add("Avg Pitch", GetType(String)))
             Dim avgPitch As Double = totalPitch / pitchCount
             TotalPitchWheel += avgPitch
-            Dim bladePitchColor As ToleranceColor = CheckBladePitch(ToleranceTable, avgPitch, Job.DesiredPitch, MinsApply) ' Check tolerance and adjust text color
-            dtBladePitch.Rows(row.Item("Blade") - 1).Item("Avg Pitch") = Math.Round(totalPitch / pitchCount, 2)
+            Dim bladePitchColor As ToleranceColor = CheckBladePitch(ToleranceTable, avgPitch, PitchBasis, MinsApply) ' Check tolerance and adjust text color
+            dtBladePitch.Rows(row.Item("Blade") - 1).Item("Avg Pitch") = Math.Round(totalPitch / pitchCount, 3).ToString("F3")
             GridBladePitch.Rows(row.Item("Blade") - 1).Cells(1).Style.ForeColor = Tolerances.ToColor(bladePitchColor)
         Next
         mJobDetails.WheelPitch = TotalPitchWheel / mJob.PropellerBlades
-        Dim textWheelPitchColor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, Job.DesiredPitch, True)
+        Dim textWheelPitchColor As ToleranceColor = CheckWheelPitch(ToleranceTable, mJobDetails.WheelPitch, PitchBasis, True)
         TxtWheelPitch.ForeColor = Tolerances.ToColor(textWheelPitchColor)
         TxtWheelPitch.Text = mJobDetails.WheelPitch.ToString()
         GridBladePitch.Columns(0).Visible = False
+        TLayoutGrids.ColumnStyles(1).Width = GridBladePitch.Columns(1).Width + 3
+        For Each Col As DataGridViewColumn In GridBladebyRadius.Columns
+            Col.SortMode = DataGridViewColumnSortMode.NotSortable
+        Next
+        rowRadiusBlade = dtBladePitchByRadius.Rows(0)
+        For Each rm As RadiusMeasurement In mJobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = 1).ToList().OrderBy(Function(r) r.Radius)
+            Dim radiusPercent As String = Math.Round(CType(rm.Radius, Double)).ToString(STR_PARAM_DECIMAL_PLACES)
+            colRadius = If(dtBladePitchByRadius.Columns(radiusPercent), dtBladePitchByRadius.Columns.Add(radiusPercent, GetType(String)))
+            Dim pitch As Double = GetAverageBladePitch(rm.CellMeasurements.ToList(), mJob.TeExclusion, mJob.LeExclusion)
+            Dim textAvgBladePitchColor As ToleranceColor = CheckBladeRadiusPitch(ToleranceTable, pitch, PitchBasis, MinsApply) ' Check tolerance and adjust text color
+            GridBladebyRadius.Rows(0).Cells(colRadius.Ordinal).Style.ForeColor = ToColor(textAvgBladePitchColor)
+        Next
     End Sub
 
     Private Sub ShowJobInfo()
@@ -864,11 +875,11 @@ Public Class FrmMeasurements
         TxtDiameter.Text = strDiameter
         TxtBore.Text = strBore
         ComboReferenceBlade.DataSource = bsReferenceBlades
-        ComboPlotReferenceBlade.DataSource = bsReferenceBlades
         ComboReferencePoint.SelectedItem = "LE"
         ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
         ComboPitchBasis.SelectedItem = "Marked"
-        ComboTolerance.SelectedItem = JobDetails?.ToleranceClass
+        ComboTolerance.SelectedItem = GetToleranceTable(Database, JobDetails?.ToleranceClass)
+        CmdHome.Visible = True
         ShowPitchBasis()
     End Sub
 
@@ -898,6 +909,11 @@ Public Class FrmMeasurements
     End Sub
 
     Private Sub ShowTrack()
+        If ComboReferenceRadius.Items.Count > 0 Then
+            If ComboReferenceRadius.SelectedValue Is Nothing Then
+                ComboReferenceRadius.SelectedIndex = 0
+            End If
+        End If
 
         ChartBladeHeight1.BladeCount = mJobDetails?.Job?.PropellerBlades
         ChartBladeHeight1.ReferenceBlade = ComboReferenceBlade.SelectedValue
@@ -928,9 +944,9 @@ Public Class FrmMeasurements
         If mJobDetails Is Nothing Then Return
 
         ' Clear any existing chart areas and series.
-        ChartPlot.ChartAreas.Clear()
-        ChartPlot.Series.Clear()
-        ChartPlot.Titles.Clear()
+        chartPlot.ChartAreas.Clear()
+        chartPlot.Series.Clear()
+        chartPlot.Titles.Clear()
 
         ' Add a ChartArea and Title for the point graph
         Dim chartArea1 As New ChartArea()
@@ -942,8 +958,11 @@ Public Class FrmMeasurements
         chartArea1.AxisY.MajorTickMark.Enabled = False
         chartArea1.AxisX.LineWidth = 0
         chartArea1.AxisY.LineWidth = 0
+        chartArea1.Position = New ElementPosition(0, 0, 100, 100)
+        chartArea1.InnerPlotPosition = New ElementPosition(0, 0, 100, 100)
+        chartArea1.BackColor = Color.Transparent
+        chartArea1.BackImageWrapMode = ChartImageWrapMode.Scaled
         chartPlot.ChartAreas.Add(chartArea1)
-        chartPlot.Titles.Add("Blade Tolerances By Radius")
 
         ' Get a list of RadiusMeasurements for this JobDetail.
         Dim radiusMeasurements As List(Of RadiusMeasurement) =
@@ -965,32 +984,71 @@ Public Class FrmMeasurements
         If TxtBasis.Text = "" Then
             Return
         End If
-        Dim tolClass As Tolerance = Database.Tolerances.FirstOrDefault(Function(t) t.ToleranceClass = ComboTolerance.Text)
+        Dim tolClass As Tolerance = Database.Tolerances.Where(Function(t) t.ToleranceClass = ComboTolerance.Text).FirstOrDefault()
         Dim basisPitch As Double = Double.Parse(TxtBasis.Text)
-        For Each rm As RadiusMeasurement In radiusMeasurements
-            Dim s As New Series With {
-                .ChartType = SeriesChartType.Point,
-                .MarkerStyle = MarkerStyle.Circle,
-                .MarkerSize = 5
-            }
-            Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
-            Dim arcColors As New List(Of ToleranceColor)
-            Dim sector As Integer = 1
-            For sector = 1 To tolClass.LocalPitchSectors
-                arcColors.Add(CheckLocalPitchTolerance(tolClass, GetLocalPitch(cellMeasurements, tolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius, mJob.TeExclusion, mJob.LeExclusion), basisPitch, True))
+        Dim x As Integer
+        For x = 1 To Job.PropellerBlades
+            Dim midangfound As Boolean = False
+            Dim midang As Double = 0
+            Dim sr As New Series With {
+                    .ChartType = SeriesChartType.Point,
+                    .MarkerSize = 20,
+                    .MarkerStyle = MarkerStyle.Star10,
+                    .MarkerColor = GraphColorArray(x - 1),
+                    .Name = "BladeLab" + x.ToString(),
+                    .Label = x.ToString(),
+                    .LabelForeColor = Color.White}
+            If JobDetails?.RadiusMeasurements.Contains(JobDetails?.RadiusMeasurements.FirstOrDefault(Function(r) r.BladeId = x)) Then
+                Dim rad As RadiusMeasurement = JobDetails?.RadiusMeasurements.Where(Function(r) r.BladeId = x).FirstOrDefault()
+                Dim mid As Double = GetChordMidAngle(rad.CellMeasurements)
+                Dim bladelabpoint = PolarToCartesian(25, mid)
+                sr.Points.AddXY(bladelabpoint.x, bladelabpoint.y)
+                chartPlot.Series.Add(sr)
+            End If
+            For Each rm As RadiusMeasurement In radiusMeasurements.Where(Function(r) r.BladeId = x).ToList()
+                If ChkPlotAngularDeviation.Checked Then
+                    If midangfound = False Then
+                        If rm.Radius >= 65 And rm.Radius <= 75 Then
+                            midangfound = True
+                            midang = GetChordMidAngle(rm.CellMeasurements)
+                            Dim ser As New Series With {
+                                .ChartType = SeriesChartType.Line,
+                                .Name = "MidAngBlade" + x.ToString(),
+                                .Color = Color.White,
+                                .BorderWidth = 3
+                            }
+                            Dim midangcoordslow = PolarToCartesian(25, midang)
+                            Dim midangcoordshigh = PolarToCartesian(100, midang)
+                            ser.Points.AddXY(midangcoordslow.x, midangcoordslow.y)
+                            ser.Points.AddXY(midangcoordshigh.x, midangcoordshigh.y)
+                            chartPlot.Series.Add(ser)
+                        End If
+                    End If
+                End If
+                Dim s As New Series With {
+                    .ChartType = SeriesChartType.Line,
+                    .MarkerStyle = MarkerStyle.Circle,
+                    .MarkerSize = 5
+                }
+                Dim cellMeasurements As List(Of CellMeasurement) = rm.CellMeasurements.ToList()
+                Dim arcColors As New List(Of ToleranceColor)
+                Dim sector As Integer = 1
+                For sector = 1 To tolClass.LocalPitchSectors
+                    arcColors.Add(CheckLocalPitchTolerance(tolClass, GetLocalPitch(cellMeasurements, tolClass.LocalPitchSectors, sector, Job.PropellerDiameter, rm.Radius, Job.TeExclusion, Job.LeExclusion), basisPitch, True))
+                Next
+                Dim cellPerSector As Integer = (Math.Floor(cellMeasurements.Count / tolClass.LocalPitchSectors))
+                For i As Integer = 1 To cellMeasurements.Count - 1
+                    Dim currentSector As Integer = Math.Truncate(i / cellPerSector)
+                    Dim cmCurrent As CellMeasurement = cellMeasurements(i)
+                    Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
+                    Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
+                    Dim coordinates = PolarToCartesian(rm.Radius, angle)
+                    Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
+                    Dim pointcolor As ToleranceColor = arcColors(Math.Min(currentSector, arcColors.Count - 1))
+                    s.Points(p).Color = ToColor(pointcolor)
+                Next
+                chartPlot.Series.Add(s)
             Next
-            Dim cellPerSector As Integer = CInt(Math.Floor(cellMeasurements.Count / tolClass.LocalPitchSectors))
-            For i As Integer = 1 To cellMeasurements.Count - 1
-                Dim currentSector As Integer = Math.Truncate(i / cellPerSector)
-                Dim cmCurrent As CellMeasurement = cellMeasurements(i)
-                Dim cmPrevious As CellMeasurement = cellMeasurements(i - 1)
-                Dim angle As Double = (cmCurrent?.Angle + cmPrevious?.Angle) / 2
-                Dim coordinates = PolarToCartesian(rm.Radius, angle)
-                Dim p As Integer = s.Points.AddXY(coordinates.x, coordinates.y) ' Need a mathematical formula based on data in the dB or functions in MRIMath module x,y=f(a,b) ???
-                Dim pointcolor As ToleranceColor = arcColors(Math.Min(currentSector, arcColors.Count - 1))
-                s.Points(p).Color = ToColor(pointcolor)
-            Next
-            chartPlot.Series.Add(s)
         Next
     End Sub
 
@@ -1011,6 +1069,10 @@ Public Class FrmMeasurements
     End Sub
 
     Private Sub CmdHome_Click(sender As Object, e As EventArgs) Handles CmdHome.Click
+        HomeSet = True
+        If HomeSet = False Then
+            Exit Sub
+        End If
         Try
             EncoderStatusStrip1.ResetAll()
         Catch ex As Exception
@@ -1026,12 +1088,20 @@ Public Class FrmMeasurements
 
     End Sub
 
-    Private Sub ComboPitchBasis_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub ComboPitchBasis_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboPitchBasis.SelectedIndexChanged
         ShowPitchBasis()
     End Sub
 
     Private Sub ComboReferenceBlade_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboReferenceBlade.SelectedIndexChanged
-        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue)
+        Dim selrad As Integer = ComboReferenceRadius.SelectedIndex
+        ComboReferenceRadius.DataSource = ReferenceRadiiGet(ComboReferenceBlade.SelectedValue).Order().ToList()
+        If selrad <> 0 And selrad <= ComboReferenceRadius.Items.Count Then
+            ComboReferenceRadius.SelectedIndex = selrad
+        ElseIf ComboReferenceBlade.Items.Count = 0 Then
+            ComboReferenceBlade.SelectedIndex = Nothing
+        Else
+            ComboReferenceRadius.SelectedIndex = 0
+        End If
         ShowTrack()
     End Sub
 
@@ -1043,7 +1113,9 @@ Public Class FrmMeasurements
         ShowTrack()
     End Sub
 
-    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs)
+    Private Sub ComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs) Handles ComboTolerance.SelectedIndexChanged
+        SelectedTolerance = DirectCast(ComboTolerance.SelectedItem, Tolerance).ToleranceClass
+        RefreshAll()
         ShowBladePlot()
     End Sub
 
@@ -1078,12 +1150,14 @@ Public Class FrmMeasurements
             ' they're not initialized or in an error state, then disable all controls that 
             ' can access the encoders. 
             Dim tolerances = Database.Tolerances.Local.ToList
-            tolerances.Add(New Tolerance With {.ToleranceClass = "Custom"})
+            tolerances.Add(New Tolerance With {.ToleranceClass = "C"})
             ComboTolerance.DataSource = tolerances
             ComboTolerance.DisplayMember = "ToleranceClass"
             ComboTolerance.ValueMember = "ToleranceClass"
             ComboReferencePoint.DataSource = New List(Of String) From {"LE", "Mid", "TE"}
             ComboPitchBasis.DataSource = New List(Of String) From {"Mean", "Marked", "Desired"}
+
+            Me.WindowState = FormWindowState.Maximized
 
             ' Initialize the DataGridJobDetails.
             DataGridJobDetails.AutoGenerateColumns = False
@@ -1122,6 +1196,10 @@ Public Class FrmMeasurements
         End Try
     End Sub
 
+    Private Sub GridComboTolerance_SelectedIndexChanged(sender As Object, e As EventArgs)
+
+    End Sub
+
     Private Sub JobDetailsBindingSource_AddingNew(sender As Object, e As AddingNewEventArgs) Handles JobDetailsBindingSource.AddingNew
         Try
             Dim newJobDetail As JobDetail = If(mNewJobDetail, CreateNewJobDetail())
@@ -1135,7 +1213,9 @@ Public Class FrmMeasurements
     Private Sub JobDetailsBindingSource_CurrentChanged(sender As Object, e As EventArgs) Handles JobDetailsBindingSource.CurrentChanged
         If mJobDetails IsNot Current Then
             mJobDetails = Current
-            If JobDetails IsNot Nothing Then ShowJobDetailsInfo()
+            If JobDetails IsNot Nothing Then
+                ShowJobDetailsInfo()
+            End If
         End If
     End Sub
 
@@ -1245,8 +1325,8 @@ Public Class FrmMeasurements
 
     Private Sub ChkLocalPitch_CheckedChanged(sender As Object, e As EventArgs) Handles ChkLocalPitch.CheckedChanged
         If ChkLocalPitch.Checked Then
-            ChkLocalPitch.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkLocalPitch.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             ChkLocalPitch.ForeColor = Color.DimGray
             LabTolLPS.ForeColor = Color.DimGray
@@ -1258,8 +1338,8 @@ Public Class FrmMeasurements
 
     Private Sub ChkMeanPitchRadius_CheckedChanged(sender As Object, e As EventArgs) Handles ChkMeanPitchRadius.CheckedChanged
         If ChkMeanPitchRadius.Checked Then
-            ChkMeanPitchRadius.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkMeanPitchRadius.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             LabTolMPRS.ForeColor = Color.DimGray
             LabTolMPRI.ForeColor = Color.DimGray
@@ -1271,8 +1351,8 @@ Public Class FrmMeasurements
 
     Private Sub ChkMeanPitchBlade_CheckedChanged(sender As Object, e As EventArgs) Handles ChkMeanPitchBlade.CheckedChanged
         If ChkMeanPitchBlade.Checked Then
-            ChkMeanPitchBlade.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkMeanPitchBlade.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             LabTolMPBS.ForeColor = Color.DimGray
             LabTolMPBI.ForeColor = Color.DimGray
@@ -1284,8 +1364,8 @@ Public Class FrmMeasurements
 
     Private Sub ChkMeanPitchPropeller_CheckedChanged(sender As Object, e As EventArgs) Handles ChkMeanPitchPropeller.CheckedChanged
         If ChkMeanPitchPropeller.Checked Then
-            ChkMeanPitchPropeller.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkMeanPitchPropeller.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             LabTolMPPS.ForeColor = Color.DimGray
             LabTolMPPI.ForeColor = Color.DimGray
@@ -1297,8 +1377,8 @@ Public Class FrmMeasurements
 
     Private Sub ChkAngularDeviation_CheckedChanged(sender As Object, e As EventArgs) Handles ChkAngularDeviation.CheckedChanged
         If ChkAngularDeviation.Checked Then
-            ChkAngularDeviation.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkAngularDeviation.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             LabTolADS.ForeColor = Color.DimGray
             LabTolADI.ForeColor = Color.DimGray
@@ -1309,8 +1389,8 @@ Public Class FrmMeasurements
     End Sub
     Private Sub ChkAxialPosition_CheckedChanged(sender As Object, e As EventArgs) Handles ChkAxialPosition.CheckedChanged
         If ChkAxialPosition.Checked Then
-            ChkAxialPosition.ForeColor = Color.Black
-            ShowTolerances(ChkMinimumsApply.Checked, ChkAllowProgPitch.Checked)
+            ChkAxialPosition.ForeColor = Color.White
+            ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
         Else
             LabTolAPS.ForeColor = Color.DimGray
             LabTolAPI.ForeColor = Color.DimGray
@@ -1324,11 +1404,13 @@ Public Class FrmMeasurements
         If mJobDetails Is Nothing Then
             Return
         End If
+        Dim refcell As New ReferenceCell
+        mJobDetails.ReferenceCell = refcell
         Dim userInput As String = InputBox("Describe where the Reference is being taken from (e.g. 'Leading Edge at 70 Radius on Blade 1'):", "Reference Set")
         mJobDetails.ReferenceCell.ReferenceDescription = userInput
-        mJobDetails.ReferenceCell.ReferenceRadius = Double.Parse(TxtRadius.Text)
-        mJobDetails.ReferenceCell.ReferenceAngle = Double.Parse(TxtAngle.Text)
-        mJobDetails.ReferenceCell.ReferenceDepth = Double.Parse(TxtDepth.Text)
+        mJobDetails.ReferenceCell.ReferenceRadius = Double.Parse(TxtRadius.Text.Remove(TxtRadius.Text.IndexOf(CType(" ", Char))))
+        mJobDetails.ReferenceCell.ReferenceAngle = Double.Parse(TxtAngle.Text.Remove(TxtAngle.Text.IndexOf(CType(" ", Char))))
+        mJobDetails.ReferenceCell.ReferenceDepth = Double.Parse(TxtDepth.Text.Remove(TxtDepth.Text.IndexOf(CType(" ", Char))))
         Database.SaveChanges()
     End Sub
 
@@ -1336,7 +1418,24 @@ Public Class FrmMeasurements
         If mJobDetails Is Nothing Then
             Return
         End If
+        Dim res As DialogResult = MessageBox.Show("This will set the encoder counts to the Reference Cell values. The reference point was recorded at " + mJobDetails.ReferenceCell.ReferenceDescription, "Reference Point", MessageBoxButtons.OKCancel)
+        If res = DialogResult.Cancel Then
+            Return
+        End If
         'resetting counts is multiplying by calibrations
+        Dim refRadius As Double = mJobDetails.ReferenceCell.ReferenceRadius
+        Dim refAngle As Double = mJobDetails.ReferenceCell.ReferenceAngle
+        Dim refDepth As Double = mJobDetails.ReferenceCell.ReferenceDepth
+
+        If Math.Round(refRadius) <> Math.Round(Double.Parse(TxtRadius.Text.Remove(TxtRadius.Text.IndexOf(CType(" ", Char))))) Then
+            Hardware.Encoders.SetEncoderCount(1, CInt(refRadius * Hardware.Encoders.RadiusCalibration))
+        End If
+        If Math.Round(refAngle) <> Math.Round(Double.Parse(TxtAngle.Text.Remove(TxtAngle.Text.IndexOf(CType(" ", Char))))) Then
+            Hardware.Encoders.SetEncoderCount(0, CInt(refAngle * Hardware.Encoders.AngleCalibration))
+        End If
+        If Math.Round(refDepth) <> Math.Round(Double.Parse(TxtDepth.Text.Remove(TxtDepth.Text.IndexOf(CType(" ", Char))))) Then
+            Hardware.Encoders.SetEncoderCount(2, CInt(refDepth * Hardware.Encoders.DepthCalibration))
+        End If
     End Sub
 
     Private Sub CmdComparisonForm_Click(sender As Object, e As EventArgs) Handles CmdComparisonForm.Click
@@ -1345,5 +1444,54 @@ Public Class FrmMeasurements
             gFrmComparison.JobDetails = Current
         End If
     End Sub
+
+    Private Sub FrmMeasurements_ResizeEnd(sender As Object, e As EventArgs) Handles MyBase.ResizeEnd
+        Dim halfheight As Integer = CInt((chartPlot.Width - chartPlot.Height) / 2)
+        chartPlot.Margin = New Padding(halfheight, 0, halfheight, 0)
+    End Sub
+
+    Private Sub FrmMeasurements_StyleChanged(sender As Object, e As EventArgs) Handles MyBase.StyleChanged
+        Dim halfheight As Integer = CInt((chartPlot.Width - chartPlot.Height) / 2)
+        chartPlot.Margin = New Padding(halfheight, 0, halfheight, 0)
+    End Sub
+
+    Private Sub ChkPlotAngularDeviation_CheckedChanged(sender As Object, e As EventArgs) Handles ChkPlotAngularDeviation.CheckedChanged
+        ShowBladePlot()
+    End Sub
+
+    Private Sub ChkMinimumsApply_CheckedChanged(sender As Object, e As EventArgs) Handles ChkMinimumsApply.CheckedChanged
+        MinsApply = ChkMinimumsApply.Checked
+    End Sub
+
+    Private Sub CmdPrintClassS_Click(sender As Object, e As EventArgs) Handles CmdPrintClassS.Click
+        Dim inspect As New FrmInspect(JobDetails, GetToleranceTable(Database, "S"), ComboPitchBasis.Text, ChkAllowProgPitch.Checked, MinsApply)
+        inspect.Show()
+    End Sub
+
+    Private Sub CmdPrintClassI_Click(sender As Object, e As EventArgs) Handles CmdPrintClassI.Click
+        Dim inspect As New FrmInspect(JobDetails, GetToleranceTable(Database, "I"), ComboPitchBasis.Text, ChkAllowProgPitch.Checked, MinsApply)
+        inspect.Show()
+    End Sub
+
+    Private Sub CmdPrintClassII_Click(sender As Object, e As EventArgs) Handles CmdPrintClassII.Click
+        Dim inspect As New FrmInspect(JobDetails, GetToleranceTable(Database, "II"), ComboPitchBasis.Text, ChkAllowProgPitch.Checked, MinsApply)
+        inspect.Show()
+    End Sub
+
+    Private Sub CmdPrintClassIII_Click(sender As Object, e As EventArgs) Handles CmdPrintClassIII.Click
+        Dim inspect As New FrmInspect(JobDetails, GetToleranceTable(Database, "III"), ComboPitchBasis.Text, ChkAllowProgPitch.Checked, MinsApply)
+        inspect.Show()
+    End Sub
+
+    Private Sub CmdPrintClassCustom_Click(sender As Object, e As EventArgs) Handles CmdPrintClassCustom.Click
+
+    End Sub
+
+    Private Sub ChkAllowProgPitch_CheckedChanged(sender As Object, e As EventArgs) Handles ChkAllowProgPitch.CheckedChanged
+        ShowBladePlot()
+        ShowBladePitch(True)
+        ShowTolerances(MinsApply, ChkAllowProgPitch.Checked)
+    End Sub
+
 #End Region
 End Class

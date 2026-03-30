@@ -94,4 +94,8 @@ Public Class EncoderHardware
         ' Set the encoder count value
         Return mEncoder.SetEncoderCount(encoderNo, count)
     End Function
+    Public Function SetForward(ByVal encoderNo As Integer, ByVal forward As Boolean) As Boolean
+        'set encoder forward direction
+        Return mEncoder.SetForward(encoderNo, forward)
+    End Function
 End Class

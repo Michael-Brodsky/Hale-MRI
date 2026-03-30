@@ -15,10 +15,28 @@ Public Module MRIMath
         Dim sectorstartangle As Double = startangle - (sectorArc * (sector - 1))
         Dim sectorendangle As Double = sectorstartangle - sectorArc
 
-        Dim sectorstartovercell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorstartangle).LastOrDefault()
-        Dim sectorstartundercell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorstartangle).FirstOrDefault()
-        Dim sectorendundercell As CellMeasurement = cm.Where(Function(c) c.Angle >= sectorendangle).FirstOrDefault()
-        Dim sectorendovercell As CellMeasurement = cm.Where(Function(c) c.Angle <= sectorendangle).LastOrDefault()
+        Dim sectorstartovercell As CellMeasurement
+        Dim sectorstartundercell As CellMeasurement
+        Dim sectorendovercell As CellMeasurement
+        Dim sectorendundercell As CellMeasurement
+        If TeExclusion = 0 Then
+            sectorstartovercell = cm.Where(Function(c) Math.Round(c.Angle.Value, 5) >= Math.Round(sectorstartangle, 5)).LastOrDefault()
+            sectorstartundercell = cm.Where(Function(c) Math.Round(c.Angle.Value, 5) <= Math.Round(sectorstartangle, 5)).FirstOrDefault()
+        Else
+            sectorstartovercell = cm.Where(Function(c) c.Angle.Value >= sectorstartangle).LastOrDefault()
+            sectorstartundercell = cm.Where(Function(c) c.Angle.Value <= sectorstartangle).FirstOrDefault()
+        End If
+        If LeExclusion = 0 Then
+            sectorendundercell = cm.Where(Function(c) Math.Round(c.Angle.Value, 5) <= Math.Round(sectorendangle, 2)).FirstOrDefault()
+            sectorendovercell = cm.Where(Function(c) Math.Round(c.Angle.Value, 5) >= Math.Round(sectorendangle, 2)).LastOrDefault()
+            If sector = sectors And LeExclusion Then
+                sectorendundercell = cm.LastOrDefault()
+                sectorendovercell = cm.LastOrDefault()
+            End If
+        Else
+            sectorendundercell = cm.Where(Function(c) c.Angle.Value <= sectorendangle).FirstOrDefault()
+            sectorendovercell = cm.Where(Function(c) c.Angle.Value >= sectorendangle).LastOrDefault()
+        End If
         Dim sectorstartdepth As Double = 0.0
         Dim sectorenddepth As Double = 0.0
         Dim Ratio As Double = 0.0
@@ -191,8 +209,19 @@ Public Module MRIMath
     Public Function GetChordMidAngle(cm As List(Of CellMeasurement)) As Double
         Dim startangle As Double = cm.FirstOrDefault().Angle
         Dim endangle As Double = cm.LastOrDefault().Angle
-        Dim deltaangle As Double = Math.Abs(startangle - endangle)
-        Return startangle + (deltaangle / 2) ' returns the computed midpoint angle
+        Dim deltaangle As Double = 0.0
+        Dim negativeend As Boolean = False
+        If endangle < 0 Then
+            deltaangle = Math.Abs((startangle + 360) - (endangle + 360))
+            negativeend = True
+        Else
+            deltaangle = Math.Abs(startangle - endangle)
+        End If
+        If negativeend Then
+            Return startangle - (deltaangle / 2)
+        Else
+            Return startangle - (deltaangle / 2) ' returns the computed midpoint angle
+        End If
     End Function
     Public Function GetChordMidDepth(cm As List(Of CellMeasurement)) As Double
         Dim angle As Double = GetChordMidAngle(cm)
@@ -206,6 +235,14 @@ Public Module MRIMath
     Public Function GetPitch(firstangle As Double, secondangle As Double, firstdepth As Double, seconddepth As Double) As Double
         'Pitch = (360 * Change in Depth) / Change in Angle
         ' Can be used to get local pitch between two cellmeasurements,
+        If firstangle < 0 Or secondangle < 0 Then
+            firstangle += 360
+            secondangle += 360
+        End If
+        If firstdepth < 0 Or secondangle < 0 Then
+            firstdepth += 1000
+            seconddepth += 1000
+        End If
         Dim deltaangle = secondangle - firstangle
         Dim deltadepth = seconddepth - firstdepth
         Return If(deltaangle <> 0.0, Math.Abs((360.0 * deltadepth) / deltaangle), 0.0)
@@ -245,16 +282,15 @@ Public Module MRIMath
         ' Return CInt(Math.Ceiling(Angle / (360 / Blades)))
         Return If(Blades <> 0, CInt(Math.Ceiling(Angle / (360 / Blades))), 1)
     End Function
-    Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement), TeExclusion As Double, LeExclusion As Double) As Double
-        Dim avgPitch As Double = 0.0 ' Changed this due to terms written in the ISO standard of how to measure average pitch of a radial section
+    Public Function GetAverageBladePitch(ByVal cellMeasurements As List(Of CellMeasurement), TeExclusion As Double, LeExclusion As Double) As Double ' Changed this due to terms written in the ISO standard of how to measure average pitch of a radial section
         'Dim pitch As New List(Of Double)
         'For i As Integer = 1 To 10
         '    Dim p As Double = GetLocalPitch(cellMeasurements, 10, i, 22, cellMeasurements.FirstOrDefault().RadiusMeasurement.Radius)
         '    If p <> 0.0 Then pitch.Add(p)
         'Next
         'If pitch.Count > 0 Then avgPitch = pitch.Average()
-        avgPitch = GetLocalPitch(cellMeasurements, 1, 1, cellMeasurements.FirstOrDefault().RadiusMeasurement.JobDetails.Job.PropellerDiameter, cellMeasurements.FirstOrDefault().RadiusMeasurement.Radius, TeExclusion, LeExclusion)
-        'Dim avgPitch As Double = GetPitch(cellMeasurements.First().Angle, cellMeasurements.Last().Angle, cellMeasurements.First().Depth, cellMeasurements.Last().Depth)
+        Dim avgPitch = GetLocalPitch(cellMeasurements, 1, 1, cellMeasurements.FirstOrDefault().RadiusMeasurement.JobDetails.Job.PropellerDiameter, cellMeasurements.FirstOrDefault().RadiusMeasurement.Radius, TeExclusion, LeExclusion)
+        'Dim avgPitch = GetPitch(cellMeasurements.First().Angle, cellMeasurements.Last().Angle, cellMeasurements.First().Depth, cellMeasurements.Last().Depth)
         Return avgPitch
     End Function
     Public Function PolarToCartesian(radius As Double, angleDegrees As Double) As (x As Double, y As Double)

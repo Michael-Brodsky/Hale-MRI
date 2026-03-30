@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "nlkWGCPk+oI=",
+  "dgSpecHash": "wJ43LYG9alE=",
   "success": true,
   "projectFilePath": "C:\\Users\\82002\\source\\repos\\Hale MRI\\Hale-MRI\\LibEncoder\\LibEncoder.vbproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Users\\82002\\.nuget\\packages\\microsoft.windows.sdk.net.ref\\10.0.26100.57\\microsoft.windows.sdk.net.ref.10.0.26100.57.nupkg.sha512"
+  ],
   "logs": []
 }

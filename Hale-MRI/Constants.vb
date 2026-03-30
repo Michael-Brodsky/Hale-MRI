@@ -13,5 +13,5 @@ Module Constants
     Public Const kBladePlotMarkerStyle As MarkerStyle = MarkerStyle.Circle
     Public Const kInchToMm As Double = 25.4 ' Multiply inches by this to get millimeters
     Public Const kMmToInch As Double = 0.0393701 ' Multiply millimeters by this to get inches
-    Public Const kEncoderPollingIntervalDefault As Integer = 200
+    Public Const kEncoderPollingIntervalDefault As Integer = 5
 End Module
