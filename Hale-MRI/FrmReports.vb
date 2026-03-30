@@ -853,8 +853,8 @@ Public Class FrmReports
     End Sub
 
     Private Sub FrmReports2_Load(sender As Object, e As EventArgs) Handles MyBase.Load
-        mContent = Me.ToolStripContainer2.ContentPanel
         Me.ToolStripContainer2.ContentPanel.AutoScroll = True
+        mContent = Me.ToolStripContainer2.ContentPanel
         MasterSource = ReportsBindingSource
         ReportGeneratorInitialize()
         ReportsMenuInitialize()
@@ -869,11 +869,11 @@ Public Class FrmReports
         Next
     End Sub
 
-    Protected Overrides Function ScrollToControl(activeControl As Control) As Point
-        ' Returning the current DisplayRectangle location prevents the 
-        ' automatic scroll-back to the top or the start position.
-        Return Me.DisplayRectangle.Location
-    End Function
+    'Protected Overrides Function ScrollToControl(activeControl As Control) As Point
+    ' Returning the current DisplayRectangle location prevents the 
+    ' automatic scroll-back to the top or the start position.
+    'Return Me.DisplayRectangle.Location
+    ' End Function
 
     Private Sub FrmReports_ZoomChanged(zoomFactor As Single) Handles mReportGenerator.ZoomEvent
         For Each pg As ReportPage In Me.Controls.OfType(Of ReportPage)()
@@ -890,6 +890,10 @@ Public Class FrmReports
             End If
             PageContextMenuStrip.Show(DirectCast(sender, Control), e.Location)
         End If
+    End Sub
+
+    Private Sub ReportGenerator_DCParentEvent(sender As Control, e As EventArgs) Handles mReportGenerator.DCParentEvent
+        Me.Content.ScrollControlIntoView(sender)
     End Sub
 #End Region
 #Region "Form Menu Events"

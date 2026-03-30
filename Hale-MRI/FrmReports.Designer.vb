@@ -102,7 +102,7 @@ Partial Class FrmReports
         ClassToolStripMenuItem = New ToolStripMenuItem()
         ClassSpecialToolStripMenuItem = New ToolStripMenuItem()
         ClassIToolStripMenuItem = New ToolStripMenuItem()
-        ClassIIToolStripMenuItem = New ToolStripMenuItem()
+        ClasasIIToolStripMenuItem = New ToolStripMenuItem()
         ClassIIIToolStripMenuItem = New ToolStripMenuItem()
         BasisToolStripMenuItem = New ToolStripMenuItem()
         MeanToolStripMenuItem = New ToolStripMenuItem()
@@ -131,7 +131,7 @@ Partial Class FrmReports
         ControlContextMenuStrip.SuspendLayout()
         PageContextMenuStrip.SuspendLayout()
         FormMenuStrip.SuspendLayout()
-        ToolStripContainer2.ContentPanel.SuspendLayout()
+        ToolStripContainer2.TopToolStripPanel.SuspendLayout()
         ToolStripContainer2.SuspendLayout()
         SuspendLayout()
         ' 
@@ -324,9 +324,9 @@ Partial Class FrmReports
         ' 
         FormMenuStrip.Dock = DockStyle.None
         FormMenuStrip.Items.AddRange(New ToolStripItem() {FileToolStripMenuItem, EditToolStripMenuItem, JobsToolStripMenuItem, ReportsToolStripMenuItem, ElementsToolStripMenuItem, SettingsToolStripMenuItem, ViewToolStripMenuItem})
-        FormMenuStrip.Location = New Point(1, 1)
+        FormMenuStrip.Location = New Point(0, 0)
         FormMenuStrip.Name = "FormMenuStrip"
-        FormMenuStrip.Size = New Size(357, 24)
+        FormMenuStrip.Size = New Size(1036, 24)
         FormMenuStrip.TabIndex = 4
         FormMenuStrip.Text = "MenuStrip1"
         ' 
@@ -612,7 +612,7 @@ Partial Class FrmReports
         ' 
         ' ClassToolStripMenuItem
         ' 
-        ClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassSpecialToolStripMenuItem, ClassIToolStripMenuItem, ClassIIToolStripMenuItem, ClassIIIToolStripMenuItem})
+        ClassToolStripMenuItem.DropDownItems.AddRange(New ToolStripItem() {ClassSpecialToolStripMenuItem, ClassIToolStripMenuItem, ClasasIIToolStripMenuItem, ClassIIIToolStripMenuItem})
         ClassToolStripMenuItem.Name = "ClassToolStripMenuItem"
         ClassToolStripMenuItem.Size = New Size(122, 22)
         ClassToolStripMenuItem.Text = "Class"
@@ -631,12 +631,12 @@ Partial Class FrmReports
         ClassIToolStripMenuItem.Size = New Size(83, 22)
         ClassIToolStripMenuItem.Text = "I"
         ' 
-        ' ClassIIToolStripMenuItem
+        ' ClasasIIToolStripMenuItem
         ' 
-        ClassIIToolStripMenuItem.CheckOnClick = True
-        ClassIIToolStripMenuItem.Name = "ClassIIToolStripMenuItem"
-        ClassIIToolStripMenuItem.Size = New Size(83, 22)
-        ClassIIToolStripMenuItem.Text = "II"
+        ClasasIIToolStripMenuItem.CheckOnClick = True
+        ClasasIIToolStripMenuItem.Name = "ClasasIIToolStripMenuItem"
+        ClasasIIToolStripMenuItem.Size = New Size(83, 22)
+        ClasasIIToolStripMenuItem.Text = "II"
         ' 
         ' ClassIIIToolStripMenuItem
         ' 
@@ -753,20 +753,22 @@ Partial Class FrmReports
         ' 
         ' ToolStripContainer2.ContentPanel
         ' 
-        ToolStripContainer2.ContentPanel.Controls.Add(FormMenuStrip)
-        ToolStripContainer2.ContentPanel.Size = New Size(1036, 660)
-        ToolStripContainer2.Dock = DockStyle.Fill
+        ToolStripContainer2.ContentPanel.Size = New Size(1036, 661)
+        ToolStripContainer2.Dock = DockStyle.Top
         ToolStripContainer2.Location = New Point(0, 0)
         ToolStripContainer2.Name = "ToolStripContainer2"
         ToolStripContainer2.Size = New Size(1036, 685)
         ToolStripContainer2.TabIndex = 5
         ToolStripContainer2.Text = "ToolStripContainer2"
         ' 
+        ' ToolStripContainer2.TopToolStripPanel
+        ' 
+        ToolStripContainer2.TopToolStripPanel.Controls.Add(FormMenuStrip)
+        ' 
         ' FrmReports
         ' 
-        AutoScaleDimensions = New SizeF(7F, 15F)
+        AutoScaleDimensions = New SizeF(7.0F, 15.0F)
         AutoScaleMode = AutoScaleMode.Font
-        AutoScroll = True
         ClientSize = New Size(1036, 685)
         Controls.Add(ToolStripContainer2)
         KeyPreview = True
@@ -784,8 +786,8 @@ Partial Class FrmReports
         PageContextMenuStrip.ResumeLayout(False)
         FormMenuStrip.ResumeLayout(False)
         FormMenuStrip.PerformLayout()
-        ToolStripContainer2.ContentPanel.ResumeLayout(False)
-        ToolStripContainer2.ContentPanel.PerformLayout()
+        ToolStripContainer2.TopToolStripPanel.ResumeLayout(False)
+        ToolStripContainer2.TopToolStripPanel.PerformLayout()
         ToolStripContainer2.ResumeLayout(False)
         ToolStripContainer2.PerformLayout()
         ResumeLayout(False)
@@ -870,7 +872,7 @@ Partial Class FrmReports
     Friend WithEvents ClassToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassSpecialToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassIToolStripMenuItem As ToolStripMenuItem
-    Friend WithEvents ClassIIToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ClasasIIToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ClassIIIToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents BasisToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MeanToolStripMenuItem As ToolStripMenuItem

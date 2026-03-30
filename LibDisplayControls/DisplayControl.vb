@@ -23,10 +23,10 @@ Partial Public Class DisplayControl
     Public Delegate Sub MouseEventHandler(sender As DisplayControl, e As MouseEventArgs)
     Public Delegate Sub KeyEventHandler(sender As DisplayControl, e As KeyEventArgs)
     Public Event ControlEvent As ControlEventHandler
+    Public Event KeyEvent As KeyEventHandler
     Public Event MouseDownEvent As MouseEventHandler
     Public Event MouseMoveEvent As MouseEventHandler
     Public Event MouseUpEvent As MouseEventHandler
-    Public Event KeyEvent As KeyEventHandler
 
     Private Const kControlEdgeSizeMin As Integer = 3                            ' Control's selection border size in pixels.
     Private Const kControlBorderSize As Integer = 3                             ' Control's selection border size in pixels.
